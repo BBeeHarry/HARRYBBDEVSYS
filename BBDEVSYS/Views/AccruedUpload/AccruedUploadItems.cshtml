@@ -1,0 +1,74 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@model List<BBDEVSYS.ViewModels.AccruedUpload.AccruedUploadItemViewModel>
+
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        @*<tr>
+    @using (Html.BeginCollectionItem("AccruedUploadItemList"))
+    {
+        <td style="width:200px;" class="colStatus">@Html.Raw(item.Message)</td>
+        <td style="width:190px;">@item.AccruedUploadCode</td>
+        <td style="width:300px;" >@item.AccruedUploadName</td>
+        <td>@item.Amount</td>
+        <td>@item.PricePerUnit</td>
+        <td>@item.StartDate</td>
+        <td>@item.CostCenter</td>
+        <td>@item.OrgName</td>
+
+
+
+        @Html.HiddenFor(m => item.ID)
+        @Html.HiddenFor(m => item.ErrorFlag)*@
+                @*@Html.HiddenFor(m => item.Message)*@ //Message contain html code, cannot send value to backend
+                @*@Html.HiddenFor(m => item.AccruedUploadCode)
+                @Html.HiddenFor(m => item.AccruedUploadName)
+                @Html.HiddenFor(m => item.Amount)
+                @Html.HiddenFor(m => item.PricePerUnit)
+                @Html.HiddenFor(m => item.StartDate)
+                @Html.HiddenFor(m => item.CostCenter)
+                @Html.HiddenFor(m => item.OrgID)
+                @Html.HiddenFor(m => item.OrgName)
+            }
+        </tr>*@
+
+    }
+}
+
+
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        //Set height of fixed column to equals another column
+        var bodyOffset = 17; //padding top + bottom + border in pixel
+        var headerOffset = 17; //padding top + bottom + border in pixel
+        var $table = $('#uploadItemTable');
+        var tableClone = $table.clone();
+        tableClone.find('tr').each(function (i, elem) {
+
+            if (i != 0) {
+                var row = $table.find('tr:eq(' + i + ')');
+
+
+                var fixColumn = row.find('td:nth-child(2)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(3)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(4)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+            }
+
+        });
+
+
+        //Change item name for sending to controller
+        ModifyCollectionItemName('uploadItemBody');
+    });
+</script>

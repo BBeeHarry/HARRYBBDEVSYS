@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="554a1d664ba044feb901d70d73d6e18d" Name="Diagram1">
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.AppCompositeRole" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.AppCompositeRoleItem" Width="1.5" PointX="2.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.AppMenu" Width="1.5" PointX="2.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.AppSingleRole" Width="1.5" PointX="4.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.Attachment" Width="1.5" PointX="4.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.COMPANY" Width="1.5" PointX="6.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.COST_CENTER" Width="1.5" PointX="8.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN" Width="1.5" PointX="0.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_ITEM" Width="1.5" PointX="2.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_ITEM_SUB" Width="1.5" PointX="8.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_UPLOAD" Width="1.5" PointX="4.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG" Width="1.5" PointX="10.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_INVOICE" Width="1.5" PointX="6.75" PointY="10.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_INVOICE_ITEM" Width="1.5" PointX="10.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_INVOICE_UPLOAD" Width="1.5" PointX="12.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_INVOICE_UPLOAD_ITEM_LOG" Width="1.5" PointX="12.75" PointY="3.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.FEE_RPT_EXPENSE" Width="1.5" PointX="8.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.PAYMENT_ITEMS" Width="1.5" PointX="10.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.PAYMENT_ITEMS_CHAGE" Width="1.5" PointX="12.75" PointY="13.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.UserRole" Width="1.5" PointX="14.75" PointY="0.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.ValueHelp" Width="1.5" PointX="14.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.USER_COMPANY" Width="1.5" PointX="14.75" PointY="8.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.USER_LOG" Width="1.5" PointX="14.75" PointY="11.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.USER_TYPE" Width="1.5" PointX="14.75" PointY="14.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="MIS_PAYMENT_FEEModel.USER" Width="1.5" PointX="0.75" PointY="15.75" IsExpanded="true" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

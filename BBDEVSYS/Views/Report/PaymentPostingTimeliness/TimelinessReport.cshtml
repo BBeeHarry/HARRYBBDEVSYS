@@ -1,0 +1,173 @@
+﻿@model BBDEVSYS.ViewModels.Posting.PaymentPostingViewModel
+
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitlePaymentPostingTimeliness;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("SubmitForm", "Timeliness", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+ 
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.TitlePaymentPostingTimeliness</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                     
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.StartDate)
+                            </label>
+                         
+                            <div class="col-xs-12 col-md-3">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.StartDate, "{0:dd/MM/yyyy}", new { @class = "form-control pull-right datepicker-th" })
+                                </div>
+                               @* @Html.ValidationMessageFor(m => m.StartDate, "", new { @class = "text-danger" })*@
+                            </div>
+                          
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.EndDate)
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                <div class="input-group date">
+                                    <div class="input-group-addon">
+                                        <i class="fa fa-calendar"></i>
+                                    </div>
+                                    @Html.TextBoxFor(m => m.EndDate, "{0:dd/MM/yyyy}", new { @class = "form-control pull-right datepicker-th" })
+                                </div>
+                                @* @Html.ValidationMessageFor(m => m.EndDate, "", new { @class = "text-danger" })*@
+                            </div>
+
+                        </div>
+                        @*
+    <div class="form-group">
+        <label class="col-xs-12 col-md-2 true-control-label">
+            @Html.LabelFor(m => m.EvaluateSearch.YearBE)
+        </label>
+        <div class="col-xs-12 col-md-2">
+            @Html.TextBoxFor(m => m.EvaluateSearch.YearBE, new { @class = "form-control", @readonly = true })
+        </div>
+
+        <label class="col-xs-12 col-md-2 true-control-label">
+            @Html.LabelFor(m => m.EvaluateSearch.Quarter)
+        </label>
+        <div class="col-xs-12 col-md-2">
+            @Html.TextBoxFor(m => m.EvaluateSearch.Quarter, new { @class = "form-control", @readonly = true })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-12 col-md-2 true-control-label ">
+            @Html.LabelFor(m => m.OrgGroupText)
+        </label>
+        <div class="col-xs-12 col-md-6">
+            @Html.DropDownListFor(m => m.OrgGroup, new SelectList(Model.OrgSaleGroup, "OrgID", "OrgName"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeGetOrgLevel(this.value)" })
+        </div>
+    </div>
+    <div class="form-group">
+        <label class="col-xs-12 col-md-2 true-control-label ">
+            @Html.LabelFor(m => m.OrgFractionText)
+        </label>
+        <div class="col-xs-12 col-md-6">
+            @Html.DropDownListFor(m => m.OrgFraction, new SelectList(Model.belowOrgFunction, "OrgID", "OrgName"), @BBDEVSYS.Content.text.ResourceText.SelectedOrgGroup, new { @class = "form-control", style = "width:100%;", @onchange = "onChangeGetOrgSubLevel(this.value)" })
+        </div>
+    </div>
+
+    <div class="form-group">
+        <label class="col-xs-12 col-md-2 true-control-label ">
+            @Html.LabelFor(m => m.OrgDivisionPartText)
+        </label>
+        <div class="col-xs-12 col-md-6">
+            @Html.DropDownListFor(m => m.OrgDivisionPart, new SelectList(Model.belowOrgDivision, "OrgID", "OrgName"), @BBDEVSYS.Content.text.ResourceText.SelectedOrgFunction, new { @class = "form-control", style = "width:100%;" })
+        </div>
+    </div>
+
+                        *@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+  
+    <div class="row">
+        <div class="col-xs-2">
+            <a href="@Url.Action("ExportToExcel", "Timeliness", new { Area = "Report" })" class="btn btn-block btn-danger btn-sm"><span class="fa fa-file-excel-o"></span>Export</a>
+            <button type="button" class="btn btn-block btn-danger btn-sm " id="reportButton" onclick="getActionButton();">
+                <span class="fa fa-file-excel-o"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonReport</span>
+            </button>
+
+        </div>
+    </div>
+
+    @*<div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+  
+
+    @Html.HiddenFor(m => m.ID)*@
+
+}
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+    $(document).ready(function () {
+        //Date picker
+        //$('#EndDate').datepicker({
+        //    autoclose: true
+
+           
+        //})
+        //var val = $('#EndDate').val();
+
+        //console.log('display : ' + val)
+    });
+    function getActionButton() {
+        //blockUI();
+        var formID = 'detailForm';
+        //var message = "";
+        var form = $('#' + formID);
+
+        //$.validator.unobtrusive.parse(form);
+        //var validator = form.validate();
+        //if (form.valid()) {
+            var url = '@Url.Action("SubmitForm", "Timeliness", new { Area = "Report" })?' + form.serialize();
+            $.ajax({
+                contentType: 'json',
+                data: form.serialize(),
+                //url: url,
+                success: function (response) {
+                   
+                }
+            }).done(function (result) {
+                window.open(url);
+                //unblockUI();
+            });
+            return false;
+
+        //} else {
+
+        //    for (var i = 0; i < validator.errorList.length; i++) {
+        //        message = message + validator.errorList[i].message + "<br />";
+        //        unblockUI();
+        //    }
+        //}
+    }
+</script>

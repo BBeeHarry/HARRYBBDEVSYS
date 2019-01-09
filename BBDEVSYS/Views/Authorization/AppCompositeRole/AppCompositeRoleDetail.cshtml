@@ -1,0 +1,291 @@
+﻿@model BBDEVSYS.ViewModels.Authorization.AppCompositeRoleViewModel
+@using BBDEVSYS.Services.Shared
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAppCompositeRole;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("SubmitForm", "AppCompositeRole", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.BoxDetail</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.Name)
+                            </label>
+                            <div class="col-xs-12 col-md-9">
+                                @Html.TextBoxFor(m => m.Name, new { @class = "form-control" })
+                                @Html.ValidationMessageFor(m => m.Name, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.Description)
+                            </label>
+                            <div class="col-xs-12 col-md-9">
+                                @Html.TextAreaFor(m => m.Description, new { @class = "form-control", style = "resize: none;", rows = "5" })
+                                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                        @*<div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label ">
+
+                            </label>
+                            <div class="col-xs-12 col-md-4 true-text">
+                                @Html.CheckBoxFor(m => (m.StockSuperAdmin))
+                                @Html.LabelFor(m => m.StockSuperAdmin, new { @class = "true-option-text" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label ">
+
+                            </label>
+                            <div class="col-xs-12 col-md-4 true-text">
+                                @Html.CheckBoxFor(m => (m.ConsReqAutoApprove))
+                                @Html.LabelFor(m => m.ConsReqAutoApprove, new { @class = "true-option-text" })
+                            </div>
+                        </div>*@
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.Status)
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.DropDownListFor(m => m.Status, new SelectList(Model.StatusValueHelp, "ValueKey", "ValueText"), "", new { @class = "form-control", style = "width:100%;" })
+                                @Html.ValidationMessageFor(m => m.Status, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="box box-success true-box">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.List</h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="box-body">
+                            <div class="row">
+                                <div class="col-xs-12">
+
+                                    <div>
+                                        <table class="table table-striped table-striped table-hover dataTable no-footer dtr-inline true-table-detail-item">
+                                            <thead>
+                                                <tr>
+                                                    <th style="width:66%; text-align: center;"><label>@BBDEVSYS.Content.text.ResourceText.EvaMenu</label></th>
+                                                    <th style="width:17%; text-align: center;"><label>@BBDEVSYS.Content.text.ResourceText.RoleDisplay</label></th>
+                                                    <th style="width:17%; text-align: center;"><label>@BBDEVSYS.Content.text.ResourceText.RoleManage</label></th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="itemBody">
+                                                @foreach (var item in Model.AppMenuItems)
+                                                {
+                                                    var parentDisplay = item.ParentMenuCode + "Display";
+                                                    var parentManage = item.ParentMenuCode + "Manage";
+                                                    var nameClass = "true-indent-level" + item.Level;
+                                                    var CheckDisplay = "Display";
+                                                    var CheckManage = "Manage";
+
+                                                    <tr class="rowData">
+                                                        <td><span class="@nameClass">@item.MenuText</span></td>
+                                                        <td class="ColCheckBox CheckRoleForDisplay @parentDisplay" style="text-align: center">
+                                                            @if (item.IsRoleForDisplay)
+                                                            {
+                                                                var CheckRoleForDisplay = item.CheckRoleForDisplay;
+                                                                @Html.CheckBoxFor(m => CheckRoleForDisplay, new { @class = "inputCheck Display" })
+                                                                var RoleForDisplay = item.RoleForDisplay;
+                                                                @Html.HiddenFor(m => RoleForDisplay);
+                                                                @Html.HiddenFor(m => CheckDisplay);
+                                                            }
+                                                            else
+                                                            {
+                                                                var CheckRoleForDisplay = item.CheckRoleForDisplay;
+                                                                @Html.HiddenFor(m => CheckRoleForDisplay)
+                                                                var RoleForDisplay = item.RoleForDisplay;
+                                                                @Html.HiddenFor(m => RoleForDisplay);
+                                                                @Html.HiddenFor(m => CheckDisplay);
+                                                            }
+                                                        </td>
+                                                        <td class="ColCheckBox CheckRoleForManage @parentManage" style="text-align: center">
+                                                            @if (item.IsRoleForManage)
+                                                            {
+                                                                var CheckRoleForManage = item.CheckRoleForManage;
+                                                                @Html.CheckBoxFor(m => CheckRoleForManage, new { @class = "inputCheck Manage" })
+                                                                var RoleForManage = item.RoleForManage;
+                                                                @Html.HiddenFor(m => RoleForManage);
+                                                                @Html.HiddenFor(m => CheckManage);
+                                                            }
+                                                            else
+                                                            {
+                                                                var CheckRoleForManage = item.CheckRoleForManage;
+                                                                @Html.HiddenFor(m => CheckRoleForManage)
+                                                                var RoleForManage = item.RoleForManage;
+                                                                @Html.HiddenFor(m => RoleForManage);
+                                                                @Html.HiddenFor(m => CheckManage);
+                                                            }
+                                                        </td>
+                                                        @{
+                                                            var MenuCode = item.MenuCode;
+                                                            var MenuType = item.MenuType;
+                                                        }
+                                                        @Html.HiddenFor(m => MenuCode)
+                                                        @Html.HiddenFor(m => MenuType)
+                                                    </tr>
+                                                            }
+
+                                                @if (Model.AppMenuItems.Count == 0)
+                                                {
+                                                    <tr class="NoDataRow"><td colspan="3">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>
+                                                }
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <button type="button" class="btn btn-warning authDisplay" id="backButton" onclick="goBack('@Model.FormState','@Url.Action("List", "AppCompositeRole", new { Area = "Authorization" })');">
+                <span class="fa fa-chevron-circle-left"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
+            </button>
+
+            <button type="button" class="btn btn-success authManage" id="saveButton" style="display:none;" onclick="SaveSubmit()">
+                <span class="glyphicon glyphicon-save"></span>
+                <span id="saveButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonSave</span>
+            </button>
+
+        </div>
+    </div>
+
+    <div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmPopup">
+            @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+        </div>
+    </div>
+    <div>
+        <div id="confirmBackPopup">
+            @Html.Partial("~/Views/Shared/ConfirmBackPopup.cshtml")
+        </div>
+    </div>
+
+    @Html.HiddenFor(m => m.ID)
+                                                            @Html.HiddenFor(m => m.FormState)
+                                                            @Html.HiddenFor(m => m.FormAction)
+                                                            @Html.HiddenFor(m => m.AppMenuSelectedJSON)
+                                                            }
+@Html.HiddenFor(m => m.CREATE_BY)
+@Html.HiddenFor(m => m.CREATE_DATE)
+@Html.HiddenFor(m => m.MODIFIED_BY)
+@Html.HiddenFor(m => m.MODIFIED_DATE)
+
+<!--button id="test">test</!--button-->
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+
+    //Callback function when click ok button on confirmation popup
+    function okActionCallback() {
+        detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', '@Url.Action("List", "AppCompositeRole", new { Area = "Authorization" })')
+    }
+
+    function SaveSubmit() {
+        AppMenuJSON();
+        detailActionButton('@Model.FormState', '@Model.FormAction', 'detailForm', 'default', 'default', 'default');
+    }
+
+    function AppMenuJSON() {
+        var appMenus = [];
+        for (var i = 0; i < $(".rowData").length; i++) {
+            var id = $($(".rowData")[i]).children('input[name=MenuCode]').val();
+            var display = $($(".rowData")[i]).children('.CheckRoleForDisplay').children('.checked').length;
+            var manage = $($(".rowData")[i]).children('.CheckRoleForManage').children('.checked').length;
+            var displayRole = $($(".rowData")[i]).children('.CheckRoleForDisplay').children('input[name=RoleForDisplay]').val();
+            var manageRole = $($(".rowData")[i]).children('.CheckRoleForManage').children('input[name=RoleForManage]').val();
+            if (display > 0) {
+                appMenus.push(displayRole);
+            }
+            if (manage > 0) {
+                appMenus.push(manageRole);
+            }
+        }
+        var appMenuJSON = JSON.stringify(appMenus);
+        $("#AppMenuSelectedJSON").val(appMenuJSON);
+        //console.log($("#AppMenuSelectedJSON").val());
+    }
+
+    function AppMenuSelect(select, level, colType, isCheck) {
+        var $row = $(select);
+        var $colCheckBox = $row.children('.ColCheckBox');
+        var menuCode = $row.children('input[name=MenuCode]').val();
+        var menuType = $row.children('input[name=MenuType]').val();
+
+        if (menuType == "GROUP") {
+            var parentCodeClass = "." + menuCode + colType;
+            if (isCheck) {
+                $(parentCodeClass).children(".icheckbox_minimal-blue").children(".inputCheck").iCheck('check');
+            } else {
+                $(parentCodeClass).children(".icheckbox_minimal-blue").children(".inputCheck").iCheck('uncheck');
+            }
+        }
+    }
+
+    $(document).ready(function () {
+        //$("#test").click(AppMenuJSON);
+
+        $(".rowData .inputCheck").on("ifChecked", function () {
+            var $rowData = $(this).parents(".rowData");
+            if ($(this).hasClass("Display")) var colType = "Display";
+            if ($(this).hasClass("Manage")) var colType = "Manage";
+            AppMenuSelect($rowData, 1, colType, true);
+        });
+
+        $(".rowData .inputCheck").on("ifUnchecked", function () {
+            var $rowData = $(this).parents(".rowData");
+            if ($(this).hasClass("Display")) var colType = "Display";
+            if ($(this).hasClass("Manage")) var colType = "Manage";
+            AppMenuSelect($rowData, 1, colType, false);
+        });
+
+        //Set UI from form state (readonly, editable etc.)
+        detailSetFormUI($('#FormState').val());
+
+        if ($('#FormState').val() == '@ConstantVariableService.FormStateCreate') {
+            $("#saveButtonDummy").show();
+        }
+
+     
+    });
+</script>

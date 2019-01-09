@@ -1,0 +1,1622 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+      <Schema Namespace="MIS_PAYMENT_FEEModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AppCompositeRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Name" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="50" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="40" />
+          <Property Name="LastModifyDate" Type="datetime" />
+          <Property Name="LastModifyBy" Type="nvarchar" MaxLength="40" />
+        </EntityType>
+        <EntityType Name="AppCompositeRoleItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CompositeRoleID" Type="int" />
+          <Property Name="RoleID" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="AppMenu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MenuCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="ResourceName" Type="nvarchar" MaxLength="50" />
+          <Property Name="MenuType" Type="nvarchar" MaxLength="50" />
+          <Property Name="ParentMenuCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="RoleForManage" Type="nvarchar" MaxLength="50" />
+          <Property Name="RoleForDisplay" Type="nvarchar" MaxLength="50" />
+          <Property Name="Controller" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar(max)" />
+          <Property Name="Area" Type="nvarchar(max)" />
+          <Property Name="Icon" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="AppSingleRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleID" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ProcessCode" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataKey" Type="nvarchar" MaxLength="50" />
+          <Property Name="FileName" Type="text" />
+          <Property Name="FileSize" Type="int" />
+          <Property Name="MimeType" Type="text" />
+          <Property Name="AttachDate" Type="datetime" />
+          <Property Name="AttachBy" Type="nvarchar" MaxLength="30" />
+          <Property Name="SavedFileName" Type="nvarchar" MaxLength="100" />
+          <Property Name="FileExtension" Type="nvarchar" MaxLength="100" />
+          <Property Name="FileUniqueKey" Type="nvarchar" MaxLength="100" />
+          <Property Name="DocumentDate" Type="datetime" />
+          <Property Name="DocumentType" Type="nvarchar" MaxLength="100" />
+          <Property Name="Remark" Type="text" />
+          <Property Name="AttachmentGroup" Type="nvarchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="COMPANY">
+          <Key>
+            <PropertyRef Name="BAN_COMPANY" />
+          </Key>
+          <Property Name="BAN_COMPANY" Type="nvarchar" MaxLength="5" Nullable="false" />
+          <Property Name="_COMPANY_GROUP" Type="nvarchar" MaxLength="5" />
+          <Property Name="contraction" Type="nvarchar" MaxLength="10" />
+          <Property Name="TRM_COMPANY" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMPANY_NAME" Type="nvarchar" MaxLength="100" />
+          <Property Name="COMPANY_NAME_CPG" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMPANY_NAME_EN" Type="nvarchar" MaxLength="100" />
+          <Property Name="NEW_PAY_POINT" Type="nvarchar" MaxLength="20" />
+          <Property Name="Description" Type="nvarchar" MaxLength="300" />
+          <Property Name="Com_picture" Type="image" />
+          <Property Name="Address" Type="nvarchar" MaxLength="100" />
+          <Property Name="Road" Type="nvarchar" MaxLength="50" />
+          <Property Name="District" Type="nvarchar" MaxLength="50" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="50" />
+          <Property Name="City" Type="nvarchar" MaxLength="50" />
+          <Property Name="Post_code" Type="nvarchar" MaxLength="7" />
+          <Property Name="Address_en" Type="nvarchar" MaxLength="100" />
+          <Property Name="Road_en" Type="nvarchar" MaxLength="50" />
+          <Property Name="District_en" Type="nvarchar" MaxLength="50" />
+          <Property Name="Zone_en" Type="nvarchar" MaxLength="50" />
+          <Property Name="City_en" Type="nvarchar" MaxLength="50" />
+          <Property Name="Telephone" Type="nvarchar" MaxLength="30" />
+          <Property Name="Fax" Type="nvarchar" MaxLength="30" />
+          <Property Name="TaxNo" Type="nvarchar" MaxLength="15" />
+          <Property Name="COMPANY_TYPE" Type="nvarchar" MaxLength="15" />
+          <Property Name="CODE_SAP" Type="nvarchar" MaxLength="50" />
+          <Property Name="IsReconcile" Type="bit" />
+          <Property Name="STATUS" Type="bit" Nullable="false" />
+          <Property Name="Bussiness_Unit" Type="nvarchar" MaxLength="50" />
+          <Property Name="order_id" Type="int" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="IsPaymentFee" Type="bit" />
+        </EntityType>
+        <EntityType Name="COST_CENTER">
+          <Key>
+            <PropertyRef Name="CCT_CODE" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="CCT_CODE" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="GL_ACCOUNT" Type="nvarchar" MaxLength="40" />
+          <Property Name="COST_CENTER" Type="nvarchar" MaxLength="40" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="FUND_CODE" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN">
+          <Key>
+            <PropertyRef Name="ACCRUED_ID" />
+          </Key>
+          <Property Name="ACCRUED_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PERIOD_MONTH" Type="int" />
+          <Property Name="PERIOD_YEAR" Type="int" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="TOTAL_AMT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="UPLOAD_TYPE" Type="bit" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_ITEM">
+          <Key>
+            <PropertyRef Name="ACCRUED_ITEM_ID" />
+          </Key>
+          <Property Name="ACCRUED_ITEM_ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACCRUED_ID" Type="int" />
+          <Property Name="INV_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="PRO_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="SEQUENCE" Type="int" />
+          <Property Name="ACCRUED_MONTH" Type="int" />
+          <Property Name="ACCRUED_YEAR" Type="int" />
+          <Property Name="INV_MONTH" Type="int" />
+          <Property Name="INV_YEAR" Type="int" />
+          <Property Name="PERIOD_ACCRUED" Type="nvarchar" MaxLength="30" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="TRANSACTIONS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="INV_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="CURRENCY" Type="char" MaxLength="10" />
+          <Property Name="REMARK_INVOICE" Type="text" />
+          <Property Name="ISPLAN" Type="bit" />
+          <Property Name="EDITION" Type="int" />
+          <Property Name="REMARK" Type="text" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_ITEM_SUB">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACCRUED_ITEM_ID" Type="int" />
+          <Property Name="PAYMENT_ITEMS_FEE_ITEM" Type="text" />
+          <Property Name="SEQUENCE" Type="int" />
+          <Property Name="ACCRUED_MONTH" Type="int" />
+          <Property Name="ACCRUED_YEAR" Type="int" />
+          <Property Name="TRANSACTIONS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="ACTUAL_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="TOTAL_CHARGE_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_TRANS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_AMT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="INV_MONTH" Type="int" />
+          <Property Name="INV_YEAR" Type="int" />
+          <Property Name="INV_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="PRO_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="NET_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_UPLOAD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PERIOD_MONTH" Type="int" />
+          <Property Name="PERIOD_YEAR" Type="int" />
+          <Property Name="UPLOAD_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="UPLOAD_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="text" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ACCRUED_UPLOAD_ID" Type="int" Nullable="false" />
+          <Property Name="PERIOD_MONTH" Type="int" />
+          <Property Name="PERIOD_YEAR" Type="int" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="TOTAL_AMT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="APPROVED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="APPROVED_DATE" Type="datetime" />
+          <Property Name="INV_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="PRO_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="SEQUENCE" Type="int" />
+          <Property Name="ACCRUED_MONTH" Type="int" />
+          <Property Name="ACCRUED_YEAR" Type="int" />
+          <Property Name="PERIOD_ACCRUED" Type="nvarchar" MaxLength="30" />
+          <Property Name="CCT_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="TRANSACTIONS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="INV_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="CURRENCY" Type="char" MaxLength="10" />
+          <Property Name="REMARK_INVOICE" Type="text" />
+          <Property Name="ISPLAN" Type="bit" />
+          <Property Name="EDITION" Type="int" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="GL_ACCOUNT" Type="nvarchar" MaxLength="40" />
+          <Property Name="FUND_CODE" Type="nvarchar" MaxLength="40" />
+          <Property Name="FEE" Type="nvarchar" MaxLength="50" />
+          <Property Name="CHAGED" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="INV_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="PRO_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_MONTH" Type="int" />
+          <Property Name="INV_YEAR" Type="int" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_REC_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_REC_DATE" Type="datetime" />
+          <Property Name="INV_APPROVED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_APPROVED_DATE" Type="datetime" />
+          <Property Name="INV_DUE_DATE" Type="datetime" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="IS_STATUS" Type="char" MaxLength="1" />
+          <Property Name="CONDITION_PYM" Type="nvarchar" MaxLength="50" />
+          <Property Name="NET_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="WHT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="DEDUCT_WHT_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="CURRENCY" Type="char" MaxLength="10" />
+          <Property Name="INCLUDE_VAT_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="VAT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PRO_REC_DATE" Type="datetime" />
+          <Property Name="DISCOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="PRO_DUE_DATE" Type="datetime" />
+          <Property Name="UPLOAD_TYPE" Type="bit" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE_ITEM">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="INV_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="PAYMENT_ITEMS_FEE_ITEM" Type="text" />
+          <Property Name="INV_ITEM_NO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="SEQUENCE" Type="int" />
+          <Property Name="TRANSACTIONS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="ACTUAL_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="TOTAL_CHARGE_AMOUNT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_TRANS" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_AMT" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="INV_MONTH" Type="int" />
+          <Property Name="INV_YEAR" Type="int" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE_UPLOAD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="INV_MONTH" Type="int" />
+          <Property Name="INV_YEAR" Type="int" />
+          <Property Name="UPLOAD_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="UPLOAD_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="text" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE_UPLOAD_ITEM_LOG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="INV_UPLOAD_ID" Type="int" Nullable="false" />
+          <Property Name="INV_NO" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PRO_NO" Type="nvarchar" MaxLength="50" />
+          <Property Name="CCT_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_MONTH" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_YEAR" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_REC_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_REC_DATE" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_APPROVED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_APPROVED_DATE" Type="nvarchar" MaxLength="30" />
+          <Property Name="INV_DUE_DATE" Type="nvarchar" MaxLength="30" />
+          <Property Name="IS_STATUS" Type="char" MaxLength="10" />
+          <Property Name="CONDITION_PYM" Type="text" />
+          <Property Name="NET_AMOUNT" Type="nvarchar" MaxLength="30" />
+          <Property Name="WHT" Type="nvarchar" MaxLength="30" />
+          <Property Name="DEDUCT_WHT_AMOUNT" Type="nvarchar" MaxLength="30" />
+          <Property Name="CURRENCY" Type="char" MaxLength="10" />
+          <Property Name="INCLUDE_VAT_AMOUNT" Type="nvarchar" MaxLength="30" />
+          <Property Name="VAT" Type="nvarchar" MaxLength="30" />
+          <Property Name="PRO_REC_DATE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_FEE_ITEM" Type="text" />
+          <Property Name="SEQUENCE" Type="int" />
+          <Property Name="TRANSACTIONS" Type="nvarchar" MaxLength="30" />
+          <Property Name="ACTUAL_AMOUNT" Type="nvarchar" MaxLength="30" />
+          <Property Name="RATE_TRANS" Type="nvarchar" MaxLength="30" />
+          <Property Name="RATE_AMT" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="text" />
+          <Property Name="FUND_CODE" Type="nvarchar" MaxLength="50" />
+          <Property Name="GL_ACCOUNT" Type="nvarchar" MaxLength="50" />
+          <Property Name="FEE" Type="nvarchar" MaxLength="50" />
+          <Property Name="CHARGED" Type="nvarchar" MaxLength="50" />
+          <Property Name="CHANNELS" Type="nvarchar" MaxLength="50" />
+          <Property Name="TOTAL_CHARGE_AMOUNT" Type="nvarchar" MaxLength="30" />
+          <Property Name="DISCOUNT" Type="nvarchar" MaxLength="30" />
+          <Property Name="PRO_DUE_DATE" Type="nvarchar" MaxLength="30" />
+        </EntityType>
+        <EntityType Name="FEE_RPT_EXPENSE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PRODUCT" Type="nvarchar" MaxLength="40" />
+          <Property Name="PERIODMONTH" Type="int" />
+          <Property Name="PERIODYEAR" Type="int" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="CHANNELS" Type="nvarchar" MaxLength="100" />
+          <Property Name="FEE" Type="text" />
+          <Property Name="CHARGE" Type="text" />
+          <Property Name="TYPECHARGE" Type="char" MaxLength="10" />
+          <Property Name="NET_CHARGE" Type="decimal" Precision="18" Scale="4" />
+          <Property Name="ISTYPE" Type="bit" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="text" />
+        </EntityType>
+        <EntityType Name="PAYMENT_ITEMS">
+          <Key>
+            <PropertyRef Name="PAYMENT_ITEMS_CODE" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="nvarchar" MaxLength="30" Nullable="false" />
+          <Property Name="PAYMENT_ITEMS_NAME" Type="nvarchar(max)" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="LASTMODIFIED_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="LASTMODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="30" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="REMARK" Type="nvarchar" MaxLength="100" />
+          <Property Name="Supplier" Type="nvarchar" MaxLength="50" />
+          <Property Name="CCT_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="CHANNELS" Type="nvarchar" MaxLength="50" />
+          <Property Name="GL_ACCOUNT" Type="nvarchar" MaxLength="40" />
+          <Property Name="COST_CENTER" Type="nvarchar" MaxLength="40" />
+          <Property Name="FUND_CODE" Type="nvarchar" MaxLength="40" />
+          <Property Name="GROUP_SEQ_CHANNELS" Type="int" />
+          <Property Name="SEQ_CHANNELS" Type="int" />
+          <Property Name="IS_ACTIVE" Type="bit" />
+          <Property Name="DURATION" Type="nvarchar" MaxLength="10" />
+        </EntityType>
+        <EntityType Name="PAYMENT_ITEMS_CHAGE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="SEQUENCE" Type="int" />
+          <Property Name="PAYMENT_ITEMS_ID" Type="int" />
+          <Property Name="PAYMENT_ITEMS_FEE_NAME" Type="nvarchar(max)" />
+          <Property Name="CHARGE_TYPE" Type="nvarchar" MaxLength="40" />
+          <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
+          <Property Name="PAYMENT_ITEMS_NAME" Type="nvarchar(max)" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USER_COMPANY' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="USER_COMPANY">
+          <Key>
+            <PropertyRef Name="UCID" />
+          </Key>
+          <Property Name="UCID" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="USERID" Type="nvarchar" MaxLength="10" />
+          <Property Name="Bussiness_Unit" Type="nvarchar" MaxLength="50" />
+          <Property Name="BAN_COMPANY" Type="nvarchar" MaxLength="2" />
+          <Property Name="create_date" Type="datetime" />
+          <Property Name="create_by" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USER_LOG' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="USER_LOG">
+          <Key>
+            <PropertyRef Name="TRAN_ID" />
+          </Key>
+          <Property Name="TRAN_ID" Type="int" Nullable="false" />
+          <Property Name="USERID" Type="nvarchar" MaxLength="10" />
+          <Property Name="START_TIME" Type="datetime" />
+          <Property Name="END_TIME" Type="datetime" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USER_TYPE' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="USER_TYPE">
+          <Key>
+            <PropertyRef Name="USER_TYPE_ID" />
+          </Key>
+          <Property Name="USER_TYPE_ID" Type="tinyint" Nullable="false" />
+          <Property Name="USER_TYPE_NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="order_id" Type="int" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="USERID" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="CompositeRoleID" Type="int" />
+          <Property Name="CreateDate" Type="datetime" />
+          <Property Name="CreateBy" Type="nvarchar" MaxLength="40" />
+          <Property Name="LastModifyDate" Type="datetime" />
+          <Property Name="LastModifyBy" Type="nvarchar" MaxLength="40" />
+        </EntityType>
+        <!--Errors Found During Generation:
+warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USERS' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="USERS">
+          <Key>
+            <PropertyRef Name="USERID" />
+          </Key>
+          <Property Name="USERID" Type="nvarchar" MaxLength="10" Nullable="false" />
+          <Property Name="USERNAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="USERPASS" Type="nvarchar" MaxLength="50" />
+          <Property Name="NAME" Type="nvarchar" MaxLength="50" />
+          <Property Name="GROUP_POSITION" Type="nvarchar" MaxLength="50" />
+          <Property Name="FNID" Type="int" />
+          <Property Name="USER_TYPE_ID" Type="tinyint" />
+          <Property Name="Business_Unit1" Type="nvarchar" MaxLength="15" />
+          <Property Name="Business_Unit2" Type="nvarchar" MaxLength="15" />
+          <Property Name="Business_Unit3" Type="nvarchar" MaxLength="15" />
+          <Property Name="Auth" Type="nvarchar" MaxLength="255" />
+          <Property Name="Telephone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Email" Type="nvarchar" MaxLength="50" />
+          <Property Name="STATUS" Type="tinyint" />
+          <Property Name="INPUT_ID" Type="nvarchar" MaxLength="10" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+          <Property Name="_LAW" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="ValueHelp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Sequence" Type="int" />
+          <Property Name="ValueKey" Type="nvarchar" MaxLength="50" />
+          <Property Name="ValueText" Type="nvarchar" MaxLength="50" />
+          <Property Name="ValueType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Status" Type="nvarchar" MaxLength="20" />
+          <Property Name="MODIFIED_BY" Type="nvarchar" MaxLength="40" />
+          <Property Name="MODIFIED_DATE" Type="datetime" />
+          <Property Name="CREATE_BY" Type="nvarchar" MaxLength="40" />
+          <Property Name="CREATE_DATE" Type="datetime" />
+        </EntityType>
+        <Function Name="Validate_User" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="Username" Type="nvarchar" Mode="In" />
+          <Parameter Name="Password" Type="nvarchar" Mode="In" />
+        </Function>
+        <EntityContainer Name="MIS_PAYMENT_FEEModelStoreContainer">
+          <EntitySet Name="AppCompositeRole" EntityType="Self.AppCompositeRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppCompositeRoleItem" EntityType="Self.AppCompositeRoleItem" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppMenu" EntityType="Self.AppMenu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="AppSingleRole" EntityType="Self.AppSingleRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Attachment" EntityType="Self.Attachment" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="COMPANY" EntityType="Self.COMPANY" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="COST_CENTER" EntityType="Self.COST_CENTER" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_ACCRUED_PLAN" EntityType="Self.FEE_ACCRUED_PLAN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_ITEM" EntityType="Self.FEE_ACCRUED_PLAN_ITEM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_ITEM_SUB" EntityType="Self.FEE_ACCRUED_PLAN_ITEM_SUB" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_UPLOAD" EntityType="Self.FEE_ACCRUED_PLAN_UPLOAD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG" EntityType="Self.FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_INVOICE" EntityType="Self.FEE_INVOICE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_INVOICE_ITEM" EntityType="Self.FEE_INVOICE_ITEM" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_INVOICE_UPLOAD" EntityType="Self.FEE_INVOICE_UPLOAD" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_INVOICE_UPLOAD_ITEM_LOG" EntityType="Self.FEE_INVOICE_UPLOAD_ITEM_LOG" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FEE_RPT_EXPENSE" EntityType="Self.FEE_RPT_EXPENSE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAYMENT_ITEMS" EntityType="Self.PAYMENT_ITEMS" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PAYMENT_ITEMS_CHAGE" EntityType="Self.PAYMENT_ITEMS_CHAGE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ValueHelp" EntityType="Self.ValueHelp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="USER_COMPANY" EntityType="Self.USER_COMPANY" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [USER_COMPANY].[UCID] AS [UCID], 
+    [USER_COMPANY].[USERID] AS [USERID], 
+    [USER_COMPANY].[Bussiness_Unit] AS [Bussiness_Unit], 
+    [USER_COMPANY].[BAN_COMPANY] AS [BAN_COMPANY], 
+    [USER_COMPANY].[create_date] AS [create_date], 
+    [USER_COMPANY].[create_by] AS [create_by]
+    FROM [dbo].[USER_COMPANY] AS [USER_COMPANY]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="USER_LOG" EntityType="Self.USER_LOG" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [USER_LOG].[TRAN_ID] AS [TRAN_ID], 
+    [USER_LOG].[USERID] AS [USERID], 
+    [USER_LOG].[START_TIME] AS [START_TIME], 
+    [USER_LOG].[END_TIME] AS [END_TIME]
+    FROM [dbo].[USER_LOG] AS [USER_LOG]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="USER_TYPE" EntityType="Self.USER_TYPE" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [USER_TYPE].[USER_TYPE_ID] AS [USER_TYPE_ID], 
+    [USER_TYPE].[USER_TYPE_NAME] AS [USER_TYPE_NAME], 
+    [USER_TYPE].[order_id] AS [order_id]
+    FROM [dbo].[USER_TYPE] AS [USER_TYPE]</DefiningQuery>
+          </EntitySet>
+          <EntitySet Name="USERS" EntityType="Self.USERS" store:Type="Tables" store:Schema="dbo">
+            <DefiningQuery>SELECT 
+    [USERS].[USERID] AS [USERID], 
+    [USERS].[USERNAME] AS [USERNAME], 
+    [USERS].[USERPASS] AS [USERPASS], 
+    [USERS].[NAME] AS [NAME], 
+    [USERS].[GROUP_POSITION] AS [GROUP_POSITION], 
+    [USERS].[FNID] AS [FNID], 
+    [USERS].[USER_TYPE_ID] AS [USER_TYPE_ID], 
+    [USERS].[Business_Unit1] AS [Business_Unit1], 
+    [USERS].[Business_Unit2] AS [Business_Unit2], 
+    [USERS].[Business_Unit3] AS [Business_Unit3], 
+    [USERS].[Auth] AS [Auth], 
+    [USERS].[Telephone] AS [Telephone], 
+    [USERS].[Email] AS [Email], 
+    [USERS].[STATUS] AS [STATUS], 
+    [USERS].[INPUT_ID] AS [INPUT_ID], 
+    [USERS].[CREATE_DATE] AS [CREATE_DATE], 
+    [USERS].[_LAW] AS [_LAW]
+    FROM [dbo].[USERS] AS [USERS]</DefiningQuery>
+          </EntitySet>
+        </EntityContainer>
+      </Schema>
+    </edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="MIS_PAYMENT_FEEModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityType Name="AppCompositeRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Name" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="LastModifyBy" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AppCompositeRoleItem">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CompositeRoleID" Type="Int32" />
+          <Property Name="RoleID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AppMenu">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MenuCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ResourceName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MenuType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ParentMenuCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="RoleForManage" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RoleForDisplay" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Controller" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Area" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Icon" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="AppSingleRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Attachment">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ProcessCode" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FileName" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FileSize" Type="Int32" />
+          <Property Name="MimeType" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AttachDate" Type="DateTime" Precision="3" />
+          <Property Name="AttachBy" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="SavedFileName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FileExtension" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FileUniqueKey" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DocumentDate" Type="DateTime" Precision="3" />
+          <Property Name="DocumentType" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Remark" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="AttachmentGroup" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="COMPANY">
+          <Key>
+            <PropertyRef Name="BAN_COMPANY" />
+          </Key>
+          <Property Name="BAN_COMPANY" Type="String" MaxLength="5" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="C_COMPANY_GROUP" Type="String" MaxLength="5" FixedLength="false" Unicode="true" />
+          <Property Name="contraction" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="TRM_COMPANY" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NAME" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NAME_CPG" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_NAME_EN" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="NEW_PAY_POINT" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="300" FixedLength="false" Unicode="true" />
+          <Property Name="Com_picture" Type="Binary" MaxLength="Max" FixedLength="false" />
+          <Property Name="Address" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Road" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="District" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Zone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="City" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Post_code" Type="String" MaxLength="7" FixedLength="false" Unicode="true" />
+          <Property Name="Address_en" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Road_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="District_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Zone_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="City_en" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Telephone" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="Fax" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TaxNo" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_TYPE" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="CODE_SAP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="IsReconcile" Type="Boolean" />
+          <Property Name="STATUS" Type="Boolean" Nullable="false" />
+          <Property Name="Bussiness_Unit" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="order_id" Type="Int32" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="IsPaymentFee" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="COST_CENTER">
+          <Key>
+            <PropertyRef Name="CCT_CODE" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="CCT_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="GL_ACCOUNT" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="COST_CENTER1" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FUND_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN">
+          <Key>
+            <PropertyRef Name="ACCRUED_ID" />
+          </Key>
+          <Property Name="ACCRUED_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PERIOD_MONTH" Type="Int32" />
+          <Property Name="PERIOD_YEAR" Type="Int32" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TOTAL_AMT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="UPLOAD_TYPE" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_ITEM">
+          <Key>
+            <PropertyRef Name="ACCRUED_ITEM_ID" />
+          </Key>
+          <Property Name="ACCRUED_ITEM_ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACCRUED_ID" Type="Int32" />
+          <Property Name="INV_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PRO_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SEQUENCE" Type="Int32" />
+          <Property Name="ACCRUED_MONTH" Type="Int32" />
+          <Property Name="ACCRUED_YEAR" Type="Int32" />
+          <Property Name="INV_MONTH" Type="Int32" />
+          <Property Name="INV_YEAR" Type="Int32" />
+          <Property Name="PERIOD_ACCRUED" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TRANSACTIONS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="INV_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CURRENCY" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="REMARK_INVOICE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ISPLAN" Type="Boolean" />
+          <Property Name="EDITION" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_ITEM_SUB">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACCRUED_ITEM_ID" Type="Int32" />
+          <Property Name="PAYMENT_ITEMS_FEE_ITEM" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SEQUENCE" Type="Int32" />
+          <Property Name="ACCRUED_MONTH" Type="Int32" />
+          <Property Name="ACCRUED_YEAR" Type="Int32" />
+          <Property Name="TRANSACTIONS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="ACTUAL_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="TOTAL_CHARGE_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_TRANS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_AMT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="INV_MONTH" Type="Int32" />
+          <Property Name="INV_YEAR" Type="Int32" />
+          <Property Name="INV_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PRO_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="NET_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_UPLOAD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PERIOD_MONTH" Type="Int32" />
+          <Property Name="PERIOD_YEAR" Type="Int32" />
+          <Property Name="UPLOAD_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="UPLOAD_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ACCRUED_UPLOAD_ID" Type="Int32" Nullable="false" />
+          <Property Name="PERIOD_MONTH" Type="Int32" />
+          <Property Name="PERIOD_YEAR" Type="Int32" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TOTAL_AMT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="APPROVED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="INV_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PRO_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SEQUENCE" Type="Int32" />
+          <Property Name="ACCRUED_MONTH" Type="Int32" />
+          <Property Name="ACCRUED_YEAR" Type="Int32" />
+          <Property Name="PERIOD_ACCRUED" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CCT_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="TRANSACTIONS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="INV_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CURRENCY" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="REMARK_INVOICE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ISPLAN" Type="Boolean" />
+          <Property Name="EDITION" Type="Int32" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GL_ACCOUNT" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="FUND_CODE" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="FEE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CHAGED" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="INV_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PRO_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_MONTH" Type="Int32" />
+          <Property Name="INV_YEAR" Type="Int32" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_REC_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_REC_DATE" Type="DateTime" Precision="3" />
+          <Property Name="INV_APPROVED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_APPROVED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="INV_DUE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="IS_STATUS" Type="String" MaxLength="1" FixedLength="true" Unicode="false" />
+          <Property Name="CONDITION_PYM" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NET_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="WHT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="DEDUCT_WHT_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="CURRENCY" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="INCLUDE_VAT_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="VAT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PRO_REC_DATE" Type="DateTime" Precision="3" />
+          <Property Name="DISCOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="PRO_DUE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="UPLOAD_TYPE" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE_ITEM">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="INV_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_FEE_ITEM" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="INV_ITEM_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="SEQUENCE" Type="Int32" />
+          <Property Name="TRANSACTIONS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="ACTUAL_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="TOTAL_CHARGE_AMOUNT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_TRANS" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="RATE_AMT" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="INV_MONTH" Type="Int32" />
+          <Property Name="INV_YEAR" Type="Int32" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE_UPLOAD">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="INV_MONTH" Type="Int32" />
+          <Property Name="INV_YEAR" Type="Int32" />
+          <Property Name="UPLOAD_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="UPLOAD_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="FEE_INVOICE_UPLOAD_ITEM_LOG">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="INV_UPLOAD_ID" Type="Int32" Nullable="false" />
+          <Property Name="INV_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PRO_NO" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CCT_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_MONTH" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_YEAR" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_REC_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_REC_DATE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_APPROVED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_APPROVED_DATE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="INV_DUE_DATE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="IS_STATUS" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="CONDITION_PYM" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="NET_AMOUNT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="WHT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DEDUCT_WHT_AMOUNT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CURRENCY" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="INCLUDE_VAT_AMOUNT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="VAT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PRO_REC_DATE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_FEE_ITEM" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SEQUENCE" Type="Int32" />
+          <Property Name="TRANSACTIONS" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="ACTUAL_AMOUNT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RATE_TRANS" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="RATE_AMT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="FUND_CODE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GL_ACCOUNT" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FEE" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CHARGED" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CHANNELS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TOTAL_CHARGE_AMOUNT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="DISCOUNT" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PRO_DUE_DATE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="FEE_RPT_EXPENSE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PRODUCT" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="PERIODMONTH" Type="Int32" />
+          <Property Name="PERIODYEAR" Type="Int32" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CHANNELS" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="FEE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CHARGE" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="TYPECHARGE" Type="String" MaxLength="10" FixedLength="true" Unicode="false" />
+          <Property Name="NET_CHARGE" Type="Decimal" Precision="18" Scale="4" />
+          <Property Name="ISTYPE" Type="Boolean" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="PAYMENT_ITEMS">
+          <Key>
+            <PropertyRef Name="PAYMENT_ITEMS_CODE" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PAYMENT_ITEMS_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="PAYMENT_ITEMS_NAME" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="LASTMODIFIED_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="LASTMODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="REMARK" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Supplier" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="CCT_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="CHANNELS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GL_ACCOUNT" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="COST_CENTER" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="FUND_CODE" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="GROUP_SEQ_CHANNELS" Type="Int32" />
+          <Property Name="SEQ_CHANNELS" Type="Int32" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
+          <Property Name="DURATION" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PAYMENT_ITEMS_CHAGE">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="SEQUENCE" Type="Int32" />
+          <Property Name="PAYMENT_ITEMS_ID" Type="Int32" />
+          <Property Name="PAYMENT_ITEMS_FEE_NAME" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="CHARGE_TYPE" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
+          <Property Name="PAYMENT_ITEMS_NAME" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="USERID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="CompositeRoleID" Type="Int32" />
+          <Property Name="CreateDate" Type="DateTime" Precision="3" />
+          <Property Name="CreateBy" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifyDate" Type="DateTime" Precision="3" />
+          <Property Name="LastModifyBy" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="ValueHelp">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Sequence" Type="Int32" />
+          <Property Name="ValueKey" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ValueText" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ValueType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_BY" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="MODIFIED_DATE" Type="DateTime" Precision="3" />
+          <Property Name="CREATE_BY" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="USER_COMPANY">
+          <Key>
+            <PropertyRef Name="UCID" />
+          </Key>
+          <Property Name="UCID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USERID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="Bussiness_Unit" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="BAN_COMPANY" Type="String" MaxLength="2" FixedLength="false" Unicode="true" />
+          <Property Name="create_date" Type="DateTime" Precision="3" />
+          <Property Name="create_by" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="USER_LOG">
+          <Key>
+            <PropertyRef Name="TRAN_ID" />
+          </Key>
+          <Property Name="TRAN_ID" Type="Int32" Nullable="false" />
+          <Property Name="USERID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="START_TIME" Type="DateTime" Precision="3" />
+          <Property Name="END_TIME" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="USER_TYPE">
+          <Key>
+            <PropertyRef Name="USER_TYPE_ID" />
+          </Key>
+          <Property Name="USER_TYPE_ID" Type="Byte" Nullable="false" />
+          <Property Name="USER_TYPE_NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="order_id" Type="Int32" />
+        </EntityType>
+        <EntityType Name="USER">
+          <Key>
+            <PropertyRef Name="USERID" />
+          </Key>
+          <Property Name="USERID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" Nullable="false" />
+          <Property Name="USERNAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="USERPASS" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="NAME" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="GROUP_POSITION" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FNID" Type="Int32" />
+          <Property Name="USER_TYPE_ID" Type="Byte" />
+          <Property Name="Business_Unit1" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Business_Unit2" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Business_Unit3" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="Auth" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Telephone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="STATUS" Type="Byte" />
+          <Property Name="INPUT_ID" Type="String" MaxLength="10" FixedLength="false" Unicode="true" />
+          <Property Name="CREATE_DATE" Type="DateTime" Precision="3" />
+          <Property Name="C_LAW" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityContainer Name="PYMFEEEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AppCompositeRoles" EntityType="Self.AppCompositeRole" />
+          <EntitySet Name="AppCompositeRoleItems" EntityType="Self.AppCompositeRoleItem" />
+          <EntitySet Name="AppMenus" EntityType="Self.AppMenu" />
+          <EntitySet Name="AppSingleRoles" EntityType="Self.AppSingleRole" />
+          <EntitySet Name="Attachments" EntityType="Self.Attachment" />
+          <EntitySet Name="COMPANies" EntityType="Self.COMPANY" />
+          <EntitySet Name="COST_CENTER" EntityType="Self.COST_CENTER" />
+          <EntitySet Name="FEE_ACCRUED_PLAN" EntityType="Self.FEE_ACCRUED_PLAN" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_ITEM" EntityType="Self.FEE_ACCRUED_PLAN_ITEM" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_ITEM_SUB" EntityType="Self.FEE_ACCRUED_PLAN_ITEM_SUB" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_UPLOAD" EntityType="Self.FEE_ACCRUED_PLAN_UPLOAD" />
+          <EntitySet Name="FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG" EntityType="Self.FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG" />
+          <EntitySet Name="FEE_INVOICE" EntityType="Self.FEE_INVOICE" />
+          <EntitySet Name="FEE_INVOICE_ITEM" EntityType="Self.FEE_INVOICE_ITEM" />
+          <EntitySet Name="FEE_INVOICE_UPLOAD" EntityType="Self.FEE_INVOICE_UPLOAD" />
+          <EntitySet Name="FEE_INVOICE_UPLOAD_ITEM_LOG" EntityType="Self.FEE_INVOICE_UPLOAD_ITEM_LOG" />
+          <EntitySet Name="FEE_RPT_EXPENSE" EntityType="Self.FEE_RPT_EXPENSE" />
+          <EntitySet Name="PAYMENT_ITEMS" EntityType="Self.PAYMENT_ITEMS" />
+          <EntitySet Name="PAYMENT_ITEMS_CHAGE" EntityType="Self.PAYMENT_ITEMS_CHAGE" />
+          <EntitySet Name="UserRoles" EntityType="Self.UserRole" />
+          <EntitySet Name="ValueHelps" EntityType="Self.ValueHelp" />
+          <EntitySet Name="USER_COMPANY" EntityType="Self.USER_COMPANY" />
+          <EntitySet Name="USER_LOG" EntityType="Self.USER_LOG" />
+          <EntitySet Name="USER_TYPE" EntityType="Self.USER_TYPE" />
+          <EntitySet Name="USERS" EntityType="Self.USER" />
+          <FunctionImport Name="Validate_User" ReturnType="Collection(String)">
+            <Parameter Name="Username" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ValidateUser" ReturnType="Collection(String)">
+            <Parameter Name="Username" Mode="In" Type="String" />
+            <Parameter Name="Password" Mode="In" Type="String" />
+          </FunctionImport>
+        </EntityContainer>
+      </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="MIS_PAYMENT_FEEModelStoreContainer" CdmEntityContainer="PYMFEEEntities">
+          <EntitySetMapping Name="AppCompositeRoles">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.AppCompositeRole">
+              <MappingFragment StoreEntitySet="AppCompositeRole">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="LastModifyDate" ColumnName="LastModifyDate" />
+                <ScalarProperty Name="LastModifyBy" ColumnName="LastModifyBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppCompositeRoleItems">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.AppCompositeRoleItem">
+              <MappingFragment StoreEntitySet="AppCompositeRoleItem">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CompositeRoleID" ColumnName="CompositeRoleID" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppMenus">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.AppMenu">
+              <MappingFragment StoreEntitySet="AppMenu">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="MenuCode" ColumnName="MenuCode" />
+                <ScalarProperty Name="ResourceName" ColumnName="ResourceName" />
+                <ScalarProperty Name="MenuType" ColumnName="MenuType" />
+                <ScalarProperty Name="ParentMenuCode" ColumnName="ParentMenuCode" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="RoleForManage" ColumnName="RoleForManage" />
+                <ScalarProperty Name="RoleForDisplay" ColumnName="RoleForDisplay" />
+                <ScalarProperty Name="Controller" ColumnName="Controller" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="Icon" ColumnName="Icon" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="AppSingleRoles">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.AppSingleRole">
+              <MappingFragment StoreEntitySet="AppSingleRole">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="RoleID" ColumnName="RoleID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Attachments">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.Attachment">
+              <MappingFragment StoreEntitySet="Attachment">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ProcessCode" ColumnName="ProcessCode" />
+                <ScalarProperty Name="DataKey" ColumnName="DataKey" />
+                <ScalarProperty Name="FileName" ColumnName="FileName" />
+                <ScalarProperty Name="FileSize" ColumnName="FileSize" />
+                <ScalarProperty Name="MimeType" ColumnName="MimeType" />
+                <ScalarProperty Name="AttachDate" ColumnName="AttachDate" />
+                <ScalarProperty Name="AttachBy" ColumnName="AttachBy" />
+                <ScalarProperty Name="SavedFileName" ColumnName="SavedFileName" />
+                <ScalarProperty Name="FileExtension" ColumnName="FileExtension" />
+                <ScalarProperty Name="FileUniqueKey" ColumnName="FileUniqueKey" />
+                <ScalarProperty Name="DocumentDate" ColumnName="DocumentDate" />
+                <ScalarProperty Name="DocumentType" ColumnName="DocumentType" />
+                <ScalarProperty Name="Remark" ColumnName="Remark" />
+                <ScalarProperty Name="AttachmentGroup" ColumnName="AttachmentGroup" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="COMPANies">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.COMPANY">
+              <MappingFragment StoreEntitySet="COMPANY">
+                <ScalarProperty Name="BAN_COMPANY" ColumnName="BAN_COMPANY" />
+                <ScalarProperty Name="C_COMPANY_GROUP" ColumnName="_COMPANY_GROUP" />
+                <ScalarProperty Name="contraction" ColumnName="contraction" />
+                <ScalarProperty Name="TRM_COMPANY" ColumnName="TRM_COMPANY" />
+                <ScalarProperty Name="COMPANY_NAME" ColumnName="COMPANY_NAME" />
+                <ScalarProperty Name="COMPANY_NAME_CPG" ColumnName="COMPANY_NAME_CPG" />
+                <ScalarProperty Name="COMPANY_NAME_EN" ColumnName="COMPANY_NAME_EN" />
+                <ScalarProperty Name="NEW_PAY_POINT" ColumnName="NEW_PAY_POINT" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Com_picture" ColumnName="Com_picture" />
+                <ScalarProperty Name="Address" ColumnName="Address" />
+                <ScalarProperty Name="Road" ColumnName="Road" />
+                <ScalarProperty Name="District" ColumnName="District" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="City" ColumnName="City" />
+                <ScalarProperty Name="Post_code" ColumnName="Post_code" />
+                <ScalarProperty Name="Address_en" ColumnName="Address_en" />
+                <ScalarProperty Name="Road_en" ColumnName="Road_en" />
+                <ScalarProperty Name="District_en" ColumnName="District_en" />
+                <ScalarProperty Name="Zone_en" ColumnName="Zone_en" />
+                <ScalarProperty Name="City_en" ColumnName="City_en" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Fax" ColumnName="Fax" />
+                <ScalarProperty Name="TaxNo" ColumnName="TaxNo" />
+                <ScalarProperty Name="COMPANY_TYPE" ColumnName="COMPANY_TYPE" />
+                <ScalarProperty Name="CODE_SAP" ColumnName="CODE_SAP" />
+                <ScalarProperty Name="IsReconcile" ColumnName="IsReconcile" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="Bussiness_Unit" ColumnName="Bussiness_Unit" />
+                <ScalarProperty Name="order_id" ColumnName="order_id" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="IsPaymentFee" ColumnName="IsPaymentFee" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="COST_CENTER">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.COST_CENTER">
+              <MappingFragment StoreEntitySet="COST_CENTER">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="CCT_CODE" ColumnName="CCT_CODE" />
+                <ScalarProperty Name="GL_ACCOUNT" ColumnName="GL_ACCOUNT" />
+                <ScalarProperty Name="COST_CENTER1" ColumnName="COST_CENTER" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="FUND_CODE" ColumnName="FUND_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_ACCRUED_PLAN">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN">
+              <MappingFragment StoreEntitySet="FEE_ACCRUED_PLAN">
+                <ScalarProperty Name="ACCRUED_ID" ColumnName="ACCRUED_ID" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="TOTAL_AMT" ColumnName="TOTAL_AMT" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="UPLOAD_TYPE" ColumnName="UPLOAD_TYPE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_ACCRUED_PLAN_ITEM">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_ITEM">
+              <MappingFragment StoreEntitySet="FEE_ACCRUED_PLAN_ITEM">
+                <ScalarProperty Name="ACCRUED_ITEM_ID" ColumnName="ACCRUED_ITEM_ID" />
+                <ScalarProperty Name="ACCRUED_ID" ColumnName="ACCRUED_ID" />
+                <ScalarProperty Name="INV_NO" ColumnName="INV_NO" />
+                <ScalarProperty Name="PRO_NO" ColumnName="PRO_NO" />
+                <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
+                <ScalarProperty Name="ACCRUED_MONTH" ColumnName="ACCRUED_MONTH" />
+                <ScalarProperty Name="ACCRUED_YEAR" ColumnName="ACCRUED_YEAR" />
+                <ScalarProperty Name="INV_MONTH" ColumnName="INV_MONTH" />
+                <ScalarProperty Name="INV_YEAR" ColumnName="INV_YEAR" />
+                <ScalarProperty Name="PERIOD_ACCRUED" ColumnName="PERIOD_ACCRUED" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="TRANSACTIONS" ColumnName="TRANSACTIONS" />
+                <ScalarProperty Name="AMOUNT" ColumnName="AMOUNT" />
+                <ScalarProperty Name="INV_AMOUNT" ColumnName="INV_AMOUNT" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="CURRENCY" ColumnName="CURRENCY" />
+                <ScalarProperty Name="REMARK_INVOICE" ColumnName="REMARK_INVOICE" />
+                <ScalarProperty Name="ISPLAN" ColumnName="ISPLAN" />
+                <ScalarProperty Name="EDITION" ColumnName="EDITION" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_ACCRUED_PLAN_ITEM_SUB">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_ITEM_SUB">
+              <MappingFragment StoreEntitySet="FEE_ACCRUED_PLAN_ITEM_SUB">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ACCRUED_ITEM_ID" ColumnName="ACCRUED_ITEM_ID" />
+                <ScalarProperty Name="PAYMENT_ITEMS_FEE_ITEM" ColumnName="PAYMENT_ITEMS_FEE_ITEM" />
+                <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
+                <ScalarProperty Name="ACCRUED_MONTH" ColumnName="ACCRUED_MONTH" />
+                <ScalarProperty Name="ACCRUED_YEAR" ColumnName="ACCRUED_YEAR" />
+                <ScalarProperty Name="TRANSACTIONS" ColumnName="TRANSACTIONS" />
+                <ScalarProperty Name="ACTUAL_AMOUNT" ColumnName="ACTUAL_AMOUNT" />
+                <ScalarProperty Name="TOTAL_CHARGE_AMOUNT" ColumnName="TOTAL_CHARGE_AMOUNT" />
+                <ScalarProperty Name="RATE_TRANS" ColumnName="RATE_TRANS" />
+                <ScalarProperty Name="RATE_AMT" ColumnName="RATE_AMT" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="INV_MONTH" ColumnName="INV_MONTH" />
+                <ScalarProperty Name="INV_YEAR" ColumnName="INV_YEAR" />
+                <ScalarProperty Name="INV_NO" ColumnName="INV_NO" />
+                <ScalarProperty Name="PRO_NO" ColumnName="PRO_NO" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="NET_AMOUNT" ColumnName="NET_AMOUNT" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_ACCRUED_PLAN_UPLOAD">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_UPLOAD">
+              <MappingFragment StoreEntitySet="FEE_ACCRUED_PLAN_UPLOAD">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="UPLOAD_BY" ColumnName="UPLOAD_BY" />
+                <ScalarProperty Name="UPLOAD_DATE" ColumnName="UPLOAD_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG">
+              <MappingFragment StoreEntitySet="FEE_ACCRUED_PLAN_UPLOAD_ITEM_LOG">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="ACCRUED_UPLOAD_ID" ColumnName="ACCRUED_UPLOAD_ID" />
+                <ScalarProperty Name="PERIOD_MONTH" ColumnName="PERIOD_MONTH" />
+                <ScalarProperty Name="PERIOD_YEAR" ColumnName="PERIOD_YEAR" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="TOTAL_AMT" ColumnName="TOTAL_AMT" />
+                <ScalarProperty Name="APPROVED_BY" ColumnName="APPROVED_BY" />
+                <ScalarProperty Name="APPROVED_DATE" ColumnName="APPROVED_DATE" />
+                <ScalarProperty Name="INV_NO" ColumnName="INV_NO" />
+                <ScalarProperty Name="PRO_NO" ColumnName="PRO_NO" />
+                <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
+                <ScalarProperty Name="ACCRUED_MONTH" ColumnName="ACCRUED_MONTH" />
+                <ScalarProperty Name="ACCRUED_YEAR" ColumnName="ACCRUED_YEAR" />
+                <ScalarProperty Name="PERIOD_ACCRUED" ColumnName="PERIOD_ACCRUED" />
+                <ScalarProperty Name="CCT_CODE" ColumnName="CCT_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="TRANSACTIONS" ColumnName="TRANSACTIONS" />
+                <ScalarProperty Name="AMOUNT" ColumnName="AMOUNT" />
+                <ScalarProperty Name="INV_AMOUNT" ColumnName="INV_AMOUNT" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="CURRENCY" ColumnName="CURRENCY" />
+                <ScalarProperty Name="REMARK_INVOICE" ColumnName="REMARK_INVOICE" />
+                <ScalarProperty Name="ISPLAN" ColumnName="ISPLAN" />
+                <ScalarProperty Name="EDITION" ColumnName="EDITION" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="GL_ACCOUNT" ColumnName="GL_ACCOUNT" />
+                <ScalarProperty Name="FUND_CODE" ColumnName="FUND_CODE" />
+                <ScalarProperty Name="FEE" ColumnName="FEE" />
+                <ScalarProperty Name="CHAGED" ColumnName="CHAGED" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_INVOICE">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_INVOICE">
+              <MappingFragment StoreEntitySet="FEE_INVOICE">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="INV_NO" ColumnName="INV_NO" />
+                <ScalarProperty Name="PRO_NO" ColumnName="PRO_NO" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="INV_MONTH" ColumnName="INV_MONTH" />
+                <ScalarProperty Name="INV_YEAR" ColumnName="INV_YEAR" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="INV_REC_BY" ColumnName="INV_REC_BY" />
+                <ScalarProperty Name="INV_REC_DATE" ColumnName="INV_REC_DATE" />
+                <ScalarProperty Name="INV_APPROVED_BY" ColumnName="INV_APPROVED_BY" />
+                <ScalarProperty Name="INV_APPROVED_DATE" ColumnName="INV_APPROVED_DATE" />
+                <ScalarProperty Name="INV_DUE_DATE" ColumnName="INV_DUE_DATE" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="IS_STATUS" ColumnName="IS_STATUS" />
+                <ScalarProperty Name="CONDITION_PYM" ColumnName="CONDITION_PYM" />
+                <ScalarProperty Name="NET_AMOUNT" ColumnName="NET_AMOUNT" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="WHT" ColumnName="WHT" />
+                <ScalarProperty Name="DEDUCT_WHT_AMOUNT" ColumnName="DEDUCT_WHT_AMOUNT" />
+                <ScalarProperty Name="CURRENCY" ColumnName="CURRENCY" />
+                <ScalarProperty Name="INCLUDE_VAT_AMOUNT" ColumnName="INCLUDE_VAT_AMOUNT" />
+                <ScalarProperty Name="VAT" ColumnName="VAT" />
+                <ScalarProperty Name="PRO_REC_DATE" ColumnName="PRO_REC_DATE" />
+                <ScalarProperty Name="DISCOUNT" ColumnName="DISCOUNT" />
+                <ScalarProperty Name="PRO_DUE_DATE" ColumnName="PRO_DUE_DATE" />
+                <ScalarProperty Name="UPLOAD_TYPE" ColumnName="UPLOAD_TYPE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_INVOICE_ITEM">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_INVOICE_ITEM">
+              <MappingFragment StoreEntitySet="FEE_INVOICE_ITEM">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="INV_NO" ColumnName="INV_NO" />
+                <ScalarProperty Name="PAYMENT_ITEMS_FEE_ITEM" ColumnName="PAYMENT_ITEMS_FEE_ITEM" />
+                <ScalarProperty Name="INV_ITEM_NO" ColumnName="INV_ITEM_NO" />
+                <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
+                <ScalarProperty Name="TRANSACTIONS" ColumnName="TRANSACTIONS" />
+                <ScalarProperty Name="ACTUAL_AMOUNT" ColumnName="ACTUAL_AMOUNT" />
+                <ScalarProperty Name="TOTAL_CHARGE_AMOUNT" ColumnName="TOTAL_CHARGE_AMOUNT" />
+                <ScalarProperty Name="RATE_TRANS" ColumnName="RATE_TRANS" />
+                <ScalarProperty Name="RATE_AMT" ColumnName="RATE_AMT" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="INV_MONTH" ColumnName="INV_MONTH" />
+                <ScalarProperty Name="INV_YEAR" ColumnName="INV_YEAR" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_INVOICE_UPLOAD">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_INVOICE_UPLOAD">
+              <MappingFragment StoreEntitySet="FEE_INVOICE_UPLOAD">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="INV_MONTH" ColumnName="INV_MONTH" />
+                <ScalarProperty Name="INV_YEAR" ColumnName="INV_YEAR" />
+                <ScalarProperty Name="UPLOAD_BY" ColumnName="UPLOAD_BY" />
+                <ScalarProperty Name="UPLOAD_DATE" ColumnName="UPLOAD_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_INVOICE_UPLOAD_ITEM_LOG">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_INVOICE_UPLOAD_ITEM_LOG">
+              <MappingFragment StoreEntitySet="FEE_INVOICE_UPLOAD_ITEM_LOG">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="INV_UPLOAD_ID" ColumnName="INV_UPLOAD_ID" />
+                <ScalarProperty Name="INV_NO" ColumnName="INV_NO" />
+                <ScalarProperty Name="PRO_NO" ColumnName="PRO_NO" />
+                <ScalarProperty Name="CCT_CODE" ColumnName="CCT_CODE" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="INV_MONTH" ColumnName="INV_MONTH" />
+                <ScalarProperty Name="INV_YEAR" ColumnName="INV_YEAR" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="INV_REC_BY" ColumnName="INV_REC_BY" />
+                <ScalarProperty Name="INV_REC_DATE" ColumnName="INV_REC_DATE" />
+                <ScalarProperty Name="INV_APPROVED_BY" ColumnName="INV_APPROVED_BY" />
+                <ScalarProperty Name="INV_APPROVED_DATE" ColumnName="INV_APPROVED_DATE" />
+                <ScalarProperty Name="INV_DUE_DATE" ColumnName="INV_DUE_DATE" />
+                <ScalarProperty Name="IS_STATUS" ColumnName="IS_STATUS" />
+                <ScalarProperty Name="CONDITION_PYM" ColumnName="CONDITION_PYM" />
+                <ScalarProperty Name="NET_AMOUNT" ColumnName="NET_AMOUNT" />
+                <ScalarProperty Name="WHT" ColumnName="WHT" />
+                <ScalarProperty Name="DEDUCT_WHT_AMOUNT" ColumnName="DEDUCT_WHT_AMOUNT" />
+                <ScalarProperty Name="CURRENCY" ColumnName="CURRENCY" />
+                <ScalarProperty Name="INCLUDE_VAT_AMOUNT" ColumnName="INCLUDE_VAT_AMOUNT" />
+                <ScalarProperty Name="VAT" ColumnName="VAT" />
+                <ScalarProperty Name="PRO_REC_DATE" ColumnName="PRO_REC_DATE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_FEE_ITEM" ColumnName="PAYMENT_ITEMS_FEE_ITEM" />
+                <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
+                <ScalarProperty Name="TRANSACTIONS" ColumnName="TRANSACTIONS" />
+                <ScalarProperty Name="ACTUAL_AMOUNT" ColumnName="ACTUAL_AMOUNT" />
+                <ScalarProperty Name="RATE_TRANS" ColumnName="RATE_TRANS" />
+                <ScalarProperty Name="RATE_AMT" ColumnName="RATE_AMT" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="FUND_CODE" ColumnName="FUND_CODE" />
+                <ScalarProperty Name="GL_ACCOUNT" ColumnName="GL_ACCOUNT" />
+                <ScalarProperty Name="FEE" ColumnName="FEE" />
+                <ScalarProperty Name="CHARGED" ColumnName="CHARGED" />
+                <ScalarProperty Name="CHANNELS" ColumnName="CHANNELS" />
+                <ScalarProperty Name="TOTAL_CHARGE_AMOUNT" ColumnName="TOTAL_CHARGE_AMOUNT" />
+                <ScalarProperty Name="DISCOUNT" ColumnName="DISCOUNT" />
+                <ScalarProperty Name="PRO_DUE_DATE" ColumnName="PRO_DUE_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FEE_RPT_EXPENSE">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.FEE_RPT_EXPENSE">
+              <MappingFragment StoreEntitySet="FEE_RPT_EXPENSE">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PRODUCT" ColumnName="PRODUCT" />
+                <ScalarProperty Name="PERIODMONTH" ColumnName="PERIODMONTH" />
+                <ScalarProperty Name="PERIODYEAR" ColumnName="PERIODYEAR" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="CHANNELS" ColumnName="CHANNELS" />
+                <ScalarProperty Name="FEE" ColumnName="FEE" />
+                <ScalarProperty Name="CHARGE" ColumnName="CHARGE" />
+                <ScalarProperty Name="TYPECHARGE" ColumnName="TYPECHARGE" />
+                <ScalarProperty Name="NET_CHARGE" ColumnName="NET_CHARGE" />
+                <ScalarProperty Name="ISTYPE" ColumnName="ISTYPE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAYMENT_ITEMS">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.PAYMENT_ITEMS">
+              <MappingFragment StoreEntitySet="PAYMENT_ITEMS">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="PAYMENT_ITEMS_CODE" ColumnName="PAYMENT_ITEMS_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_NAME" ColumnName="PAYMENT_ITEMS_NAME" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="LASTMODIFIED_BY" ColumnName="LASTMODIFIED_BY" />
+                <ScalarProperty Name="LASTMODIFIED_DATE" ColumnName="LASTMODIFIED_DATE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="REMARK" ColumnName="REMARK" />
+                <ScalarProperty Name="Supplier" ColumnName="Supplier" />
+                <ScalarProperty Name="CCT_CODE" ColumnName="CCT_CODE" />
+                <ScalarProperty Name="CHANNELS" ColumnName="CHANNELS" />
+                <ScalarProperty Name="GL_ACCOUNT" ColumnName="GL_ACCOUNT" />
+                <ScalarProperty Name="COST_CENTER" ColumnName="COST_CENTER" />
+                <ScalarProperty Name="FUND_CODE" ColumnName="FUND_CODE" />
+                <ScalarProperty Name="GROUP_SEQ_CHANNELS" ColumnName="GROUP_SEQ_CHANNELS" />
+                <ScalarProperty Name="SEQ_CHANNELS" ColumnName="SEQ_CHANNELS" />
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
+                <ScalarProperty Name="DURATION" ColumnName="DURATION" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PAYMENT_ITEMS_CHAGE">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.PAYMENT_ITEMS_CHAGE">
+              <MappingFragment StoreEntitySet="PAYMENT_ITEMS_CHAGE">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_ID" ColumnName="PAYMENT_ITEMS_ID" />
+                <ScalarProperty Name="PAYMENT_ITEMS_FEE_NAME" ColumnName="PAYMENT_ITEMS_FEE_NAME" />
+                <ScalarProperty Name="CHARGE_TYPE" ColumnName="CHARGE_TYPE" />
+                <ScalarProperty Name="COMPANY_CODE" ColumnName="COMPANY_CODE" />
+                <ScalarProperty Name="PAYMENT_ITEMS_NAME" ColumnName="PAYMENT_ITEMS_NAME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRole">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="CompositeRoleID" ColumnName="CompositeRoleID" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="CreateBy" ColumnName="CreateBy" />
+                <ScalarProperty Name="LastModifyDate" ColumnName="LastModifyDate" />
+                <ScalarProperty Name="LastModifyBy" ColumnName="LastModifyBy" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ValueHelps">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.ValueHelp">
+              <MappingFragment StoreEntitySet="ValueHelp">
+                <ScalarProperty Name="ID" ColumnName="ID" />
+                <ScalarProperty Name="Sequence" ColumnName="Sequence" />
+                <ScalarProperty Name="ValueKey" ColumnName="ValueKey" />
+                <ScalarProperty Name="ValueText" ColumnName="ValueText" />
+                <ScalarProperty Name="ValueType" ColumnName="ValueType" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="MODIFIED_BY" ColumnName="MODIFIED_BY" />
+                <ScalarProperty Name="MODIFIED_DATE" ColumnName="MODIFIED_DATE" />
+                <ScalarProperty Name="CREATE_BY" ColumnName="CREATE_BY" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_COMPANY">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.USER_COMPANY">
+              <MappingFragment StoreEntitySet="USER_COMPANY">
+                <ScalarProperty Name="UCID" ColumnName="UCID" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="Bussiness_Unit" ColumnName="Bussiness_Unit" />
+                <ScalarProperty Name="BAN_COMPANY" ColumnName="BAN_COMPANY" />
+                <ScalarProperty Name="create_date" ColumnName="create_date" />
+                <ScalarProperty Name="create_by" ColumnName="create_by" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_LOG">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.USER_LOG">
+              <MappingFragment StoreEntitySet="USER_LOG">
+                <ScalarProperty Name="TRAN_ID" ColumnName="TRAN_ID" />
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="START_TIME" ColumnName="START_TIME" />
+                <ScalarProperty Name="END_TIME" ColumnName="END_TIME" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USER_TYPE">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.USER_TYPE">
+              <MappingFragment StoreEntitySet="USER_TYPE">
+                <ScalarProperty Name="USER_TYPE_ID" ColumnName="USER_TYPE_ID" />
+                <ScalarProperty Name="USER_TYPE_NAME" ColumnName="USER_TYPE_NAME" />
+                <ScalarProperty Name="order_id" ColumnName="order_id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="USERS">
+            <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.USER">
+              <MappingFragment StoreEntitySet="USERS">
+                <ScalarProperty Name="USERID" ColumnName="USERID" />
+                <ScalarProperty Name="USERNAME" ColumnName="USERNAME" />
+                <ScalarProperty Name="USERPASS" ColumnName="USERPASS" />
+                <ScalarProperty Name="NAME" ColumnName="NAME" />
+                <ScalarProperty Name="GROUP_POSITION" ColumnName="GROUP_POSITION" />
+                <ScalarProperty Name="FNID" ColumnName="FNID" />
+                <ScalarProperty Name="USER_TYPE_ID" ColumnName="USER_TYPE_ID" />
+                <ScalarProperty Name="Business_Unit1" ColumnName="Business_Unit1" />
+                <ScalarProperty Name="Business_Unit2" ColumnName="Business_Unit2" />
+                <ScalarProperty Name="Business_Unit3" ColumnName="Business_Unit3" />
+                <ScalarProperty Name="Auth" ColumnName="Auth" />
+                <ScalarProperty Name="Telephone" ColumnName="Telephone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="STATUS" ColumnName="STATUS" />
+                <ScalarProperty Name="INPUT_ID" ColumnName="INPUT_ID" />
+                <ScalarProperty Name="CREATE_DATE" ColumnName="CREATE_DATE" />
+                <ScalarProperty Name="C_LAW" ColumnName="_LAW" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="Validate_User" FunctionName="MIS_PAYMENT_FEEModel.Store.Validate_User" />
+          <FunctionImportMapping FunctionImportName="ValidateUser" FunctionName="MIS_PAYMENT_FEEModel.Store.Validate_User" />
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="true" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

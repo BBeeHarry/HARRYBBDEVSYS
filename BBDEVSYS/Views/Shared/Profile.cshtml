@@ -1,0 +1,75 @@
+﻿@using BBDEVSYS.Models.Shared
+<li class="dropdown user user-menu">
+    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+        @*<img src="~/Content/css/themes/base/images/logo.jpg" class="user-image" alt="User Image">*@
+        <img src="~/Content/css/themes/base/images/if_JD-17_2246811.png" class="user-image" alt="User Image">
+        <span class="hidden-xs">
+            @{
+                var _userInfo = (User)Session["USERINFO"];
+                if (_userInfo != null)
+                {
+                    @_userInfo.DisplayNameTH
+                }
+            }
+        </span>
+    </a>
+    <ul class="dropdown-menu">
+        <!-- User image -->
+        <li class="user-header">
+            @*<img src="~/Content/css/themes/base/images/logo.jpg" class="img-circle" alt="User Image">*@
+
+            <img src="~/Content/css/themes/base/images/if_2_330395.png" class="img-circle" alt="User Image">
+            <p>
+                @{
+                    var userInfo = (User)Session["USERINFO"];
+                    if (userInfo != null)
+                    {
+                        @userInfo.DisplayNameTH
+                    }
+                }
+                <small>@userInfo.Email@*users@truecorp.co.th*@</small>
+            </p>
+        </li>
+        <!-- Menu Body -->
+        @*<li class="user-body">
+            <div class="row">
+                <div class="col-xs-4 text-center">
+                    <a href="#">Followers</a>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <a href="#">Sales</a>
+                </div>
+                <div class="col-xs-4 text-center">
+                    <a href="#">Friends</a>
+                </div>
+            </div>
+        </li>*@
+        <!-- Menu Footer-->
+        <li class="user-footer">
+            <div class="pull-left">
+                <a href="#" class="btn btn-default btn-flat"><i class="fa fa-user"></i>&nbsp;Profile</a>
+            </div>
+            <div class="pull-right">
+
+                @using (Html.BeginForm("Logout", "Authentication", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <button class="btn btn-default btn-flat" type="submit" ><i class="fa fa-sign-out"></i>&nbsp;Sign Out</button>
+
+                  
+                }
+                @*<a href="#" class="btn btn-app true-app-sign-out" style="float: right; background-color: transparent; border-color: transparent; margin: auto !important; padding: 0px !important; height: 50px !important;" title="@BBDEVSYS.Content.text.ResourceText.ButtonLogout" onclick="logout();">
+                    <span class="fa fa-sign-out" style="display: table;height: 100%;width: 100%;"></span>
+                    <style>
+                        .true-app-sign-out .fa-sign-out:before {
+                            display: table-cell;
+                            vertical-align: middle;
+                        }
+                    </style>
+                </a>*@
+
+            </div>
+           @* @Html.Partial("Javascript/AppJavaScript")*@
+        </li>
+    </ul>
+</li>

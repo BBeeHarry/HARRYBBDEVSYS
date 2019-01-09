@@ -1,0 +1,632 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@model BBDEVSYS.ViewModels.Accrued.AccruedViewModel
+@using BBDEVSYS.Services.Shared
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAccruedList;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("SubmitForm", "Accrued", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    <div class="row ">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.BoxDetail</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="col-md-12">
+                            @*<div class="form-group">
+                                    <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                        @Html.LabelFor(m => m.ACCRUED_NO)
+                                    </label>
+                                    <div class="col-xs-12 col-md-3">
+                                        @Html.TextBoxFor(m => m.ACCRUED_NO, new { @class = "form-control" })
+                                        @Html.ValidationMessageFor(m => m.ACCRUED_NO, "", new { @class = "text-danger" })
+                                    </div>
+                                </div>*@
+
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.COMPANY_CODE)
+                                </label>
+                                <div class="col-xs-12 col-md-6">
+                                    @*@Html.DropDownListFor(m => m.CompanyCode, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeFormPeriod(this.value, false)" })*@
+                                    @Html.DropDownListFor(m => m.COMPANY_CODE, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;" })
+                                    @Html.ValidationMessageFor(m => m.COMPANY_CODE, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.PERIOD_MONTH)
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.TextBoxFor(m => m.PERIOD_MONTH, new { @class = "form-control"})
+                                    @*@Html.DropDownListFor(m => m.PERIOD_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.PERIOD_MONTH), "", new { @class = "form-control", style = "width:100%;" })*@
+                                    @Html.ValidationMessageFor(m => m.PERIOD_MONTH, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.PERIOD_YEAR)
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.TextBoxFor(m => m.PERIOD_YEAR, new { @class = "form-control"  })
+                                    @*@Html.DropDownListFor(m => m.PERIOD_YEAR, new SelectList(Model.YearLst, "Value", "Text", Model.PERIOD_YEAR), "", new { @class = "form-control", style = "width:100%;" })*@
+                                    @Html.ValidationMessageFor(m => m.PERIOD_YEAR, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label">
+                                    @Html.LabelFor(m => m.TOTAL_AMT)
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.TextBoxFor(m => m.TOTAL_AMT, new { @class = "form-control decimal2digit", @readonly = true })
+                                    @Html.ValidationMessageFor(m => m.TOTAL_AMT, "", new { @class = "text-danger" })
+                                </div>
+
+                            </div>
+                            <div class="form-group ">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.APPROVED_BY)
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.DropDownListFor(m => m.APPROVED_BY, new SelectList(Model.UserApprovedList, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;" })
+                                    @Html.ValidationMessageFor(m => m.APPROVED_BY, "", new { @class = "text-danger" })
+                                </div>
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.APPROVED_DATE)
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.TextBoxFor(m => m.APPROVED_DATE, "{0:dd/MM/yyyy}", new { @class = "form-control datepicker-th" })
+                                    @Html.ValidationMessageFor(m => m.APPROVED_DATE, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label">
+                                    @Html.LabelFor(m => m.REMARK)
+                                </label>
+                                <div class="col-xs-12 col-md-9">
+                                    @Html.TextAreaFor(m => m.REMARK, new { @class = "form-control", rows = 3 })
+                                </div>
+                            </div>
+
+
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12 " style="text-align:right;">
+                            <button type="button" class="btn btn-danger " id="searchButton" onclick="initialItem()">
+                                <span class="fa fa-search"></span>
+                                @BBDEVSYS.Content.text.ResourceText.ButtonBrowse
+                            </button>
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success true-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Accrued Details</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <div class="table-responsive">
+                                <table class="table table-striped  table-bordered   " style="width:1900px">
+
+                                    @*<table class="table table-striped table-striped table-bordered table-hover dataTable no-footer dtr-inline true-table-detail-itemtable-fix-column " style="display: block; overflow-x: auto; overflow-y: auto; table-layout: fixed; width:100%; word-wrap:break-word; ">*@
+                                    @*<table id="itemTable" class="table table-striped table-bordered table-hover paginate_button  table-responsive dtr-inline true-datatable   table-fix-column " style="display: block; overflow-x: auto; table-layout: fixed; width:100%; word-wrap:break-word; ">*@
+
+                                    <thead>
+                                        <tr>
+                                            <th colspan="2" style="width:50px">@Html.LabelFor(m => m.AccruedItem.SEQUENCE)</th>
+                                            <th style="width:100px">@BBDEVSYS.Content.text.ResourceText.GLAccount</th>
+                                            <th style="width:150px">Cost Center / Fund</th>
+                                            @*<th style="width:100px">@Html.LabelFor(m => m.AccruedItem.FUND_CODE)</th>*@
+                                            @*<th style="width:200px">@Html.LabelFor(m => m.AccruedItem.CHANNELS)</th>*@
+                                            <th style="width:300px">@Html.LabelFor(m => m.AccruedItem.PAYMENT_ITEMS_NAME)</th>
+                                            @*<th style="width:200px">@Html.LabelFor(m => m.AccruedItem.CHARGED)</th>*@
+                                            <th style="width:100px">@Html.LabelFor(m => m.AccruedItem.PERIOD_ACCRUED)</th>
+                                            <th style="width:100px">@Html.LabelFor(m => m.AccruedItem.TRANSACTIONS)</th>
+                                            <th style="width:100px">Amount (Excl.VAT)</th>
+                                            <th style="width:100px">Invoice Amount (Excl.VAT)</th>
+                                            <th style="width:300px">@Html.LabelFor(m => m.AccruedItem.Supplier)</th>
+                                            <th style="width:300px">Invoice No. (If Had)</th>
+                                            @*<th style="width:100px">@Html.LabelFor(m => m.AccruedItem.CURRENCY)</th>
+                                                <th style="width:100px">@Html.LabelFor(m => m.AccruedItem.EDITION)</th>*@
+                                            <th style="width:300px">@Html.LabelFor(m => m.AccruedItem.REMARK)</th>
+
+                                        </tr>
+                                    </thead>
+                                    <tbody id="itemBody">
+                                        @if (Model.AccruedItemList.Count == 0)
+                                        {
+                                        <tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>
+                                        }
+                                        else
+                                        {
+                                            Html.RenderPartial("~/Views/Accrued/AccruedItemsDetail.cshtml", Model.AccruedItemList);
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <button type="button" class="btn btn-warning authDisplay" id="backButton" onclick="goBack('@Model.FormState','@Url.Action("List", "Accrued", new { Area = "Accrued" })');">
+                <span class="fa fa-chevron-circle-left"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
+            </button>
+
+            <button type="button" class="btn btn-danger authManage" id="saveButton" onclick="actionButton('@Model.FormAction');">
+                <span class="glyphicon glyphicon-save"></span>
+                <span id="saveButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonSave</span>
+            </button>
+            @*<a style="position: absolute; right: 0;" href="@Url.Action("SubmitFormReportExport", "Accrued", new { Area = "Accrued" })" class="btn btn-warning ">
+                    <span class="fa fa-file-excel-o"></span>
+                    <span>@BBDEVSYS.Content.text.ResourceText.ButtonReportDisplay</span>
+                </a>*@
+            <button type="button" class="btn btn-info " id="printButton" onclick="getActionReport()">
+                <span class="fa fa-file-excel-o"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonReportDisplay</span>
+            </button>
+        </div>
+    </div>
+
+    <div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmPopup">
+            @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmBackPopup">
+            @Html.Partial("~/Views/Shared/ConfirmBackPopup.cshtml")
+        </div>
+    </div>
+    @Html.Partial("Javascript/AttachmentJavaScript")
+
+    @*@Html.HiddenFor(m => m.ID)*@
+    @Html.HiddenFor(m => m.ACCRUED_ID)
+    @Html.HiddenFor(m => m.FormState)
+    @Html.HiddenFor(m => m.FormAction)
+    @Html.HiddenFor(m => m.UPLOAD_TYPE)
+
+    @Html.HiddenFor(m => m.CREATE_BY)
+    @Html.HiddenFor(m => m.CREATE_DATE)
+    @Html.HiddenFor(m => m.MODIFIED_BY)
+    @Html.HiddenFor(m => m.MODIFIED_DATE)
+
+    @Html.HiddenFor(m => m.TOTAL_AMT)
+    @Html.HiddenFor(m => m.PERIOD_YEAR)
+    @Html.HiddenFor(m => m.PERIOD_MONTH)
+    @Html.HiddenFor(m => m.COMPANY_CODE)
+    @Html.HiddenFor(m => m.APPROVED_BY)
+    @Html.HiddenFor(m => m.APPROVED_DATE)
+    @Html.HiddenFor(m => m.REMARK)
+
+
+
+}
+
+<script type="text/javascript">
+
+    @*//Callback function when click ok button on confirmation popup
+    function okActionCallback() {
+        detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', '@Url.Action("List", "Accrued", new { Area = "Accrued" })')
+    }*@
+    //Callback function when click ok button on confirmation popup
+    var $idList;
+    function editAccruedItem(btnedit) {
+
+
+        var tr = $(btnedit).closest("tr");
+
+        var accrueddetailIndex = tr.find('input[name="AccruedItemList.index"]').val();
+        //var indexElem = $('#itemBody input[value = "' + accrueddetailIndex + '"]')
+        $idList = accrueddetailIndex;
+
+        $(btnedit).attr('data-id', accrueddetailIndex);
+        var $this_id = $('[data-id=' + accrueddetailIndex + ']');
+        var row = $($this_id).parents('tr').find('.txtEnableamt').attr('data-id', 'txtEnableamt_' + accrueddetailIndex);
+
+        var $this = $('[data-id=' + 'txtEnableamt_' + accrueddetailIndex + ']');
+
+
+        var html = $($this).html();
+        var input = $('<input type="text" class = "  dec2digit " onchange="countEdit()"  data-id="enableamt_' + accrueddetailIndex + '"/>');
+        input.val(html);
+        $($this).html(input);
+
+
+        //$('#editParamValues').click(function () {
+        //    $('tr td:nth-child(8)').each(function () {
+        //        var html = $(this).html();
+        //        var input = $('<input type="text" />');
+        //        input.val(html);
+        //        $(this).html(input);
+        //    });
+        //});
+
+        //var table1 = $('#itemBody').dataTable();
+        //var textbox = '<input type="text" class="txtBox">';
+        //var checkbox = '<input type="checkbox">';
+        //$('#btnedit).on('click', function () {
+        //    table1.fnAddData([table1.fnSettings().fnRecordsTotal() + 1, 'Windows 7', 7.1, textbox, checkbox]);
+        //});
+
+        $('.dec2digit').inputmask("decimal", {
+            placeholder: "0",
+            digits: 2,
+            greedy: false,
+            digitsOptional: false,
+            radixPoint: ".",
+            groupSeparator: ",",
+            autoGroup: true,
+            allowPlus: false,
+            allowMinus: false,
+            clearMaskOnLostFocus: false,
+            removeMaskOnSubmit: true,
+            autoUnmask: true,
+            //onUnMask: function (maskedValue, unmaskedValue) {
+            //    var x = unmaskedValue.split(',');
+
+            //    if (x.length != 2)
+            //        return "0.00";
+            //    return x[0].replace(/\./g, '') + '.' + x[1];
+            //}
+        });
+    }
+    function calculateTotalAmt() {
+        $(this).focus();
+        var amtTotalSum = 0;
+        $('#itemBody tr').each(function () {
+
+            var rowId = $(this).find('input[name="AccruedItemList.index"]').val();
+            var $idTotal = $("#AccruedItemList_" + rowId + "__item_INV_AMOUNT");
+
+            amtTotalSum = amtTotalSum + parseFloat(isNaN($idTotal.val()) ? '0' : $idTotal.val())
+
+        });
+        $("#TOTAL_AMT").val(amtTotalSum)
+    }
+    function countEdit() {
+        var id = $idList;
+        //--remove evnt onchange
+        var $this = $('[data-id=' + 'enableamt_' + id + ']');
+        $this.removeAttr('onchange')
+
+
+        //--check count edit
+        var $amt_id = '#AccruedItemList_' + id + '__item_INV_AMOUNT'
+        var $count_id = '#AccruedItemList_' + id + '__item_EDITION';
+        var $modified = '#AccruedItemList_' + id + '__item_MODIFIED_BY';
+        var $modified_date = '#AccruedItemList_' + id + '__item_MODIFIED_DATE';
+        var $val_count = parseFloat($($count_id).val() == undefined || $($count_id).val() == '' ? '0' : $($count_id).val());
+
+
+        var $json_id = '#AccruedItemList_' + id + '__item_AccruedJSON'
+
+        if (parseFloat($($amt_id).val()) != parseFloat($this.val())) {
+            $val_count = $val_count + 1;
+
+            $($modified).val($("#CREATE_BY").val() == '' ? $("#MODIFIED_BY").val() : $("#CREATE_BY").val())
+            //$($modified_date).val(new Date().getDate)
+
+
+            //Inv_Amount
+            $($amt_id).val(parseFloat($this.val()));
+
+
+            //TOTAL_CHARGE_AMOUNT
+            var accJSON = jQuery.parseJSON($($json_id).val());
+
+            $.each(accJSON.AccruedItemSubList, function (index, item) {
+                
+                accJSON.AccruedItemSubList[index].TOTAL_CHARGE_AMOUNT = parseFloat($this.val());
+            });
+            //var result = JSON.stringify(accJSON);
+            //$($json_id).val();
+            //$($json_id).val(accJSON);
+          
+
+
+            //calculate  amount automate
+            calculateTotalAmt();
+
+        }
+        $($count_id).val($val_count)
+
+    }
+
+    function okActionCallback() {
+
+        if (isNoHistory()) {
+            var url = '@Url.Action("List", "Accrued", new { Area = "Accrued" })';
+
+
+            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', url)
+        }
+        else {
+            var action = $('#FormAction').val();
+
+            if (action == '@ConstantVariableService.FormActionValidate') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
+            }
+            else if (action == '@ConstantVariableService.FormActionCreate' || action == '@ConstantVariableService.FormActionEdit') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+            }
+        }
+    }
+    function actionButton(formAction) {
+        $('#FormAction').val(formAction);
+        var headerMessage = "default";
+        var bodyMessage = "default";
+
+        if (formAction == '@ConstantVariableService.FormActionValidate') {
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmValidateHeader';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmValidateBody';
+        }
+        else if (formAction == '@ConstantVariableService.FormActionCreate') {//|| formAction == '@ConstantVariableService.FormActionEdit') {
+
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody';
+        }
+
+        detailActionButton('@Model.FormState', formAction, 'detailForm', headerMessage, bodyMessage, 'default');
+    }
+
+    function onChangeCompanyCode(code) {
+        //var $this = $(this);
+        $("[data-valmsg-for='COMPANY_CODE']").html("");
+        if (code) {
+            var error = false;
+            var month = $('#PERIOD_MONTH').val();
+            var year = $('#PERIOD_YEAR').val();
+            @*if (!code) {
+                $("[data-valmsg-for='COMPANY_CODE']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.COMPANY_CODE)");
+                error = true;
+            }
+            var year = $('#PERIOD_YEAR').val();
+            if (!year) {
+                $("[data-valmsg-for='PERIOD_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+                error = true;
+                year = 0;
+            }
+            if (!month) {
+                $("[data-valmsg-for='PERIOD_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+                error = true;
+                month = 0;
+            }*@
+            initialItem();
+        }
+    }
+    function initialItem() {
+        
+        $('#confirmDiv').modal('hide');
+        if ($("#PERIOD_MONTH").val() != '' && $("#COMPANY_CODE").val() != '' && $("#PERIOD_YEAR").val() != '') {
+
+            $.ajax({
+                url: '@Url.Action("InitialAccruedItemsList", "Accrued", new { Area = "Accrued" })',
+                data: {
+                    "compCode": $("#COMPANY_CODE").val(),
+                    "month": $("#PERIOD_MONTH").val(),
+                    "year": $("#PERIOD_YEAR").val(),
+                    "formState": $('#FormState').val()
+
+                },
+                cache: false,
+                success: function (response) {
+                    if (response.success) {
+
+                        $("#itemBody").html(response.html);
+
+                        var amt = 0;
+                        $('#itemBody tr').each(function () {
+                            var amtTotal = 0;
+                            var valamtTotal = '';
+                            var rowId = $(this).find('input[name="AccruedItemList.index"]').val();
+
+                            var $idTotal = $("#AccruedItemList_" + rowId + "__item_INV_AMOUNT");
+                            valamtTotal = $idTotal.val();
+                            if (valamtTotal == '') {
+                                valamtTotal = '0';
+                            }
+                            amtTotal = parseFloat(valamtTotal)
+
+                            if (!isNaN(amtTotal)) {
+                                //amtDeductSum = amtIncl - (amtTotal * 0.03)
+                                amt += amtTotal
+                                if (amt < 0) {
+                                    amt = 0
+                                }
+                                //TOTAL_AMT
+                            }
+                        });
+                        $("#TOTAL_AMT").val(numberWithCommas(amt.toFixed(2)))
+
+                    }
+                    else {
+                        //var message = '';
+                        //for (var i = 0; i < response.errorList.length; i++) {
+                        //    message = message + response.errorList[i].Message + "<br />";
+                        
+                        //}
+
+                        //deleteAllAttachFile('attachmentTable');
+                        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
+
+                        //row = $('#uploadItemBody').children('tr:first');
+                        //LoadingRow(row, 'off', true)
+                        //setEmpltyUploadTable();
+                    }
+                }
+            }).done(function (result) {
+
+            });
+        }
+        return false;
+    }
+    function numberWithCommas(number) {
+        var parts = number.toString().split(".");
+        parts[0] = parts[0].replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+        return parts.join(".");
+    }
+    function getActionReport() {
+        blockUI();
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+        if (form.valid()) {
+            var url = '@Url.Action("SubmitReportForm", "Accrued", new { Area = "Accrued" })';// + form.serialize();
+
+
+            //$.ajax({
+            //    //contentType: 'json',
+            //    //type: "POST",
+            //    url: url,
+            //    data: {
+            //        "id": $("#ACCRUED_ID").val(),
+            //        "compCode": $("#COMPANY_CODE").val(),
+            //        "month": $("#PERIOD_MONTH").val(),
+            //        "year": $("#PERIOD_YEAR").val()
+            //    },
+            //    //data: JSON.stringify(form.serialize()),
+            //    contentType: 'application/json; charset=utf-8',
+            //    dataType: 'json',
+            //    success: function (data) {
+            //        window.location = url + '?' + 'id=' + $("#ACCRUED_ID").val() + '&compCode=' + $("#COMPANY_CODE").val()
+            //            + '&month=' + $("#PERIOD_MONTH").val() + '&year=' + $("#PERIOD_YEAR").val();
+            //        //var win = window.open();
+            //        //win.document.write(data);
+            //    }
+            //}).done(function (result) {
+        
+            //    //window.open(url+'?'+form.serialize());
+            //    //window.location.href = url;
+            //    //unblockUI();
+
+            //});
+            $.ajax({
+                //type: 'post',
+                //url: url,
+                data: {
+                    "recordKey": $("#ACCRUED_ID").val()
+                    //,"compCode": $("#COMPANY_CODE").val(),
+                    //"month": $("#PERIOD_MONTH").val(),
+                    //"year": $("#PERIOD_YEAR").val()
+                },
+                //data: form.serialize(),
+                contentType: 'json',
+                success: function (response) {
+                    //unblockUI();
+                }
+            }).done(function (result) {
+                window.open(url + '?' + 'recordKey=' + $("#ACCRUED_ID").val());
+                //+ '&compCode=' + $("#COMPANY_CODE").val()
+                //  + '&month=' + $("#PERIOD_MONTH").val() + '&year=' + $("#PERIOD_YEAR").val()
+                unblockUI();
+            });
+            return false;
+            @*$.post(form.attr("action"), form.serialize(), function (response) {
+
+            if (response != null && response.success) {
+
+            }
+        });*@
+
+        } else {
+
+            for (var i = 0; i < validator.errorList.length; i++) {
+                message = message + validator.errorList[i].message + "<br />";
+                unblockUI();
+            }
+        }
+
+    }
+    $(document).ready(function () {
+
+        //Set UI from form state (readonly, editable etc.)
+        detailSetFormUI($('#FormState').val())
+
+        if ($("#FormState").val() == '@ConstantVariableService.FormActionDisplay') {
+            $("#printButton").show();
+        }
+        else {
+            $("#printButton").hide();
+        }
+
+        if ($("#FormState").val() == '@ConstantVariableService.FormActionEdit') {
+            $("#COMPANY_CODE").attr('readonly', true);
+            $("#PERIOD_MONTH").attr('readonly', true);
+            $("#PERIOD_YEAR").attr('readonly', true);
+        }
+        else {
+            $("#COMPANY_CODE").removeAttr('readonly');
+            $("#PERIOD_MONTH").removeAttr('readonly');
+            $("#PERIOD_YEAR").removeAttr('readonly');
+        }
+
+        @*$("#addItem").click(function () {
+            var $this = $(this);
+
+            $this.button("loading");
+            $.ajax({
+                url: '@Url.Action("AddItem", "Accrued", new { Area = "Accrued" })',
+                cache: false,
+                success: function (html) { $("#itemBody").append(html); }
+            }).done(function (result) {
+                $this.button('reset');
+            });
+            return false;
+        });*@
+        onChangeCompanyCode($("#COMAPNY_CODE").val());
+        //Change item name for sending to controller
+        //ModifyCollectionItemName('itemBody');
+    });
+</script>
+<style>
+    .table-fix-column > thead:first-child > tr:first-child > th:nth-child(5) {
+        padding-left: 200px;
+    }
+
+    .table-fix-column > tbody > tr > td:nth-child(6) {
+        /*padding-left: 2px !important;*/
+        z-index: 1;
+    }
+</style>
+
+

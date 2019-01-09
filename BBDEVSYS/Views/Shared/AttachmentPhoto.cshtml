@@ -1,0 +1,28 @@
+﻿@model BBDEVSYS.ViewModels.Shared.AttachmentPhotoViewModel
+
+<div class="col-xs-12">
+    <img id="previewPhoto" src="@Model.PreviewPhoto" style="width: 100%; padding: 0px" />
+</div>
+<div class="col-xs-12" style="padding: 10px 0px 0px 0px;">
+    <span class="btn btn-success btn-sm fileinput-button authManage" id="uploadPhoto" style="display: block;">
+        <i class="fa fa-upload "></i>
+        <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.UploadPhoto</span>
+        <input id="empPhotoFileUpload" type="file" name="files[]" class="photo-file-upload">
+    </span>
+
+    <button type="button" class="btn btn-danger  btn-sm authManage" id="delPhotoButton" style="width: 100%" onclick="deletePhoto();">
+        <span class="glyphicon glyphicon-trash"></span>
+        <span>@BBDEVSYS.Content.text.ResourceText.DeletePhoto</span>
+    </button>
+
+    <div id="photofilecon" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="display: none;">
+        <div id="photofileprogress" class="progress-bar progress-bar-success" style="width:0%;"></div>
+    </div>
+
+    @Html.HiddenFor(m => m.PhotoSavedFilename)
+    @Html.HiddenFor(m => m.FilenameToDelete)
+    @Html.HiddenFor(m => m.DeletedPhotoFlag)
+    @Html.HiddenFor(m => m.PreviewNoPhoto)
+</div>
+@Html.Partial("Javascript/AttachmentJavaScript")
+

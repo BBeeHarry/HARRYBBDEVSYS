@@ -1,0 +1,83 @@
+﻿@model BBDEVSYS.ViewModels.CenterSetting.ValueHelpSettingViewModel
+@using BBDEVSYS.Services.Shared
+
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleValueHelpSetting;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-xs-12 ">
+
+        <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable"></table>
+
+
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+
+        var columns = [
+            { "data": "ValueText", "title": "@BBDEVSYS.Content.text.ResourceText.Type", "type": "string", "width": "90%" },            
+            { "data": null, "defaultContent": getDataTableButton([ "display","edit"]), "orderable": false, "width": "10%", "className": "true-dt-button-column" },
+            { "data": "ID", "type": "num", "hidden": true }
+        ];
+
+        displayDataTable('dataListTable', '@Url.Action("GetList", "ValueHelpSetting", new { Area = "CenterSetting" })', columns);
+
+        //Button action
+        //Display
+        $('#dataListTable tbody').on('click', '.true-dt-button-display', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Detail", "ValueHelpSetting", new { Area = "CenterSetting" })?recordKey=' + id;
+
+            redirectTo(url);
+        });
+
+
+        //Create
+        $('#createButton').click(function () {
+            var recordKey = $('#recordKey').val(0);
+            $('#formState').val('@ConstantVariableService.FormStateCreate');
+
+            var url = '@Url.Action("Manage", "ValueHelpSetting", new { Area = "CenterSetting" })?recordKey=0&formState=' + '@ConstantVariableService.FormStateCreate';
+
+            redirectTo(url);
+        });
+
+        //Edit
+        $('#dataListTable tbody').on('click', '.true-dt-button-edit', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "ValueHelpSetting", new { Area = "CenterSetting" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateEdit';
+
+            redirectTo(url);
+        });
+
+        //Copy
+        $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "ValueHelpSetting", new { Area = "CenterSetting" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
+
+            redirectTo(url);
+        });
+
+        //Delete
+        $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "ValueHelpSetting", new { Area = "CenterSetting" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateDelete';
+
+            redirectTo(url);
+        });
+
+        var SpinBtn = ['display', 'edit'];
+        loadingButton(SpinBtn);
+    });
+
+
+</script>
+

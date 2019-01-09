@@ -1,0 +1,405 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="attachment_file_size_exceed" xml:space="preserve">
+    <value>ขนาดไฟล์เกินที่กำหนด</value>
+  </data>
+  <data name="attachment_invalid_type" xml:space="preserve">
+    <value>ประเภทไฟล์ไม่ถูกต้อง</value>
+  </data>
+  <data name="calculatescore_log_notfound" xml:space="preserve">
+    <value>ไม่พบการประมวลผลคะแนนการประเมิน {0}</value>
+  </data>
+  <data name="cannot_assignuserrole_action" xml:space="preserve">
+    <value>ไม่สามารถทำรายการกำหนดสิทธ์ผู้ใช้ได้ เนื่องจากไม่พบ Username</value>
+  </data>
+  <data name="cannot_evaluate" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้</value>
+  </data>
+  <data name="cannot_evaluate_agent_close" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้ เนื่องจากตัวแทนจำหน่ายอยู่ในสถานะปิดกิจการ</value>
+  </data>
+  <data name="cannot_evaluate_approve_eva" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้ เนื่องจากผลการประเมินถูกอนุมัติแล้ว</value>
+  </data>
+  <data name="cannot_evaluate_finish_eva" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้ เนื่องจากเสร็จสิ้นการประเมินแล้ว</value>
+  </data>
+  <data name="cannot_evaluate_notin_period" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้ เนื่องจากอยู่นอกช่วงเวลาการประเมิน</value>
+  </data>
+  <data name="cannot_evaluate_not_initial_appraiser" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้ เนื่องจากถูกประเมินโดยบุคคลอื่นแล้ว</value>
+  </data>
+  <data name="cannot_evaluate_wait_approve_eva" xml:space="preserve">
+    <value>ไม่สามารถประเมินผลได้ เนื่องจากอยู่ระหว่างการอนุมัติผลการประเมิน</value>
+  </data>
+  <data name="cannot_request_approved" xml:space="preserve">
+    <value>ไม่สามารถส่งอนุมัติได้ เนื่องจากคำขอได้รับการอนุมัติแล้ว</value>
+  </data>
+  <data name="cannot_request_inwfprocess" xml:space="preserve">
+    <value>ไม่สามารถส่งอนุมัติได้ เนื่องจากคำขออยู่ในขั้นตอนการพิจารณา</value>
+  </data>
+  <data name="duplicate_error" xml:space="preserve">
+    <value>ข้อมูล {0} ที่ระบุมีอยู่แล้วในระบบ</value>
+  </data>
+  <data name="email_error" xml:space="preserve">
+    <value>รูปแบบ E-mail ไม่ถูกต้อง</value>
+  </data>
+  <data name="formperiod_notfound" xml:space="preserve">
+    <value>ไม่พบการประเมิน</value>
+  </data>
+  <data name="form_period_fail" xml:space="preserve">
+    <value>ปีการประเมิน {0} ประเภท {1} ยังไม่มีผลใช้งาน</value>
+  </data>
+  <data name="form_period_found" xml:space="preserve">
+    <value>ไม่พบปีการประเมิน {0} ประเภท {1}</value>
+  </data>
+  <data name="id_not_found" xml:space="preserve">
+    <value>ไม่พบ ID ของฟอร์ม</value>
+  </data>
+  <data name="items_line_duplicate_error" xml:space="preserve">
+    <value>ข้อมูล {0} {1} ซ้ำ (บรรทัดที่ {2})</value>
+  </data>
+  <data name="item_agent_notfound" xml:space="preserve">
+    <value>ไม่พบรายการตัวแทนจำหน่าย</value>
+  </data>
+  <data name="item_duplicate_error" xml:space="preserve">
+    <value>ข้อมูล {0} ซ้ำ</value>
+  </data>
+  <data name="item_line_duplicate_error" xml:space="preserve">
+    <value>ข้อมูล {0} ที่ระบุมีอยู่แล้วในระบบ (บรรทัดที่ {1})</value>
+  </data>
+  <data name="item_listnull_error" xml:space="preserve">
+    <value>โปรดเพิ่มรายการ {0}</value>
+  </data>
+  <data name="item_notempty_at_error" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {0} ที่ {1}</value>
+  </data>
+  <data name="item_notempty_error" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {0}  (บรรทัดที่ {1})</value>
+  </data>
+  <data name="item_not_found" xml:space="preserve">
+    <value>ไม่พบรายการ</value>
+  </data>
+  <data name="item_not_match_period_type" xml:space="preserve">
+    <value>รายการไม่สอดคล้องกับประเภท Period {0}</value>
+  </data>
+  <data name="item_startevadate_morethan_endevadate" xml:space="preserve">
+    <value>บรรทัดที่ {0} วันที่เริ่มต้นการประเมิน ({1}) มากกว่าวันที่สิ้นสุดการประเมิน ({2})</value>
+  </data>
+  <data name="length_error" xml:space="preserve">
+    <value>'{PropertyName}' ต้องมีความยาว {MinLength} ถึง {MaxLength} ตัวอักษร</value>
+  </data>
+  <data name="lessthan_error" xml:space="preserve">
+    <value>{PropertyName} ต้องน้อยกว่า {0}</value>
+  </data>
+  <data name="login_fail" xml:space="preserve">
+    <value>Username หรือ Password ไม่ถูกต้อง</value>
+  </data>
+  <data name="notempty_error" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {PropertyName}</value>
+  </data>
+  <data name="notempty_error_at" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {0} บรรทัด {1}</value>
+  </data>
+  <data name="note_formitem_not_found" xml:space="preserve">
+    <value>ไม่พบ Form Item ในวันที่แจ้งเตือน</value>
+  </data>
+  <data name="note_formperiod_not_found" xml:space="preserve">
+    <value>ไม่พบ Form Period ในวันที่แจ้งเตือน</value>
+  </data>
+  <data name="note_perioditem_not_found" xml:space="preserve">
+    <value>ไม่พบ Period Item ในวันที่แจ้งเตือน</value>
+  </data>
+  <data name="note_period_not_found" xml:space="preserve">
+    <value>ไม่พบ Period ในวันที่แจ้งเตือน</value>
+  </data>
+  <data name="notnull_error" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {PropertyName}</value>
+  </data>
+  <data name="no_eva_score" xml:space="preserve">
+    <value>ตัวแทนจำหน่าย {0} ยังไม่ถูกประมวลผลคะแนน</value>
+  </data>
+  <data name="periodtype_exist" xml:space="preserve">
+    <value>ข้อมูลซ้ำซ้อน ไม่สามารถสร้าง Period ประเภท {0}  ในปี {1} ได้</value>
+  </data>
+  <data name="period_is_invalid_type" xml:space="preserve">
+    <value>บรรทัดที่ {0} วันที่เริ่มต้นและสิ้นสุดข้อมูลประเมิน ไม่สอดคล้องกับประเภทช่วงเวลา</value>
+  </data>
+  <data name="period_item_not_rel_year" xml:space="preserve">
+    <value>วันที่ {0} และ {1} ของรายการบรรทัด {2} ไม่สอดคล้องกับปี {3}</value>
+  </data>
+  <data name="period_not_found" xml:space="preserve">
+    <value>ไม่พบช่วงเวลาประเมินของปี {0} ประเภท {1} ในไตรมาส {2}</value>
+  </data>
+  <data name="period_not_rel_year" xml:space="preserve">
+    <value>วันที่ {0} และ {1} ไม่สอดคล้องกับปี {2}</value>
+  </data>
+  <data name="period_year_not_in_range" xml:space="preserve">
+    <value>ไม่สามารถระบุปี {0} ได้</value>
+  </data>
+  <data name="process_exist" xml:space="preserve">
+    <value>ไม่สามารถสร้างการประมวลผลได้ เพราะมีการประเมินในสถานะ "{0}" อยู่</value>
+  </data>
+  <data name="process_recalculate" xml:space="preserve">
+    <value>ข้อมูลที่เคยประมวลผลไปแล้วจะถูกประมวลผลทับ</value>
+  </data>
+  <data name="quarter_error" xml:space="preserve">
+    <value>{PropertyName}</value>
+  </data>
+  <data name="start_greater_than_end" xml:space="preserve">
+    <value>วันที่เริ่มต้นมากกว่าวันที่สิ้นสุด</value>
+  </data>
+  <data name="string_maxlength" xml:space="preserve">
+    <value>'{PropertyName}' สามารถมีจำนวนตัวอักษรสูงสุดได้ {MaxLength}</value>
+  </data>
+  <data name="summary_fail" xml:space="preserve">
+    <value>ไม่สามารถทำรายการวมได้</value>
+  </data>
+  <data name="unauthorize_error" xml:space="preserve">
+    <value>ไม่มีสิทธิ์เข้าใช้งาน กรุณาลองเข้าสู่ระบบอีกครั้ง</value>
+  </data>
+  <data name="workflow_action_error" xml:space="preserve">
+    <value>ไม่สามารถดำเนินการได้</value>
+  </data>
+  <data name="workflow_no_approver_error" xml:space="preserve">
+    <value>ไม่พบข้อมูลผู้อนุมัติ</value>
+  </data>
+  <data name="workflow_start_error" xml:space="preserve">
+    <value>ไม่สามารถส่งคำขอได้</value>
+  </data>
+  <data name="item_notempty_seq_at_error" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {0}  (ลำดับที่ {1})</value>
+  </data>
+  <data name="item_sequence_duplicate_error" xml:space="preserve">
+    <value>ข้อมูล {0} ที่ระบุมีอยู่แล้วในระบบ (ลำดับที่ {1})</value>
+  </data>
+  <data name="upload_file_content_error" xml:space="preserve">
+    <value>โปรดตรวจสอบข้อมูลในไฟล์ Upload</value>
+  </data>
+  <data name="upload_file_notempty_error" xml:space="preserve">
+    <value>โปรดเลือกไฟล์สำหรับ Upload</value>
+  </data>
+  <data name="id_not_found1" xml:space="preserve">
+    <value>ไม่พบ ID ของฟอร์ม</value>
+  </data>
+  <data name="incorrect_amount_materialstock" xml:space="preserve">
+    <value>จำนวนที่ระบุไม่ถูกต้องเนื่องจากมีการเบิก/จองวัสดุไปแล้วจำนวน {0}</value>
+  </data>
+  <data name="incorrect_amount_materialstock_at" xml:space="preserve">
+    <value>จำนวนที่ระบุไม่ถูกต้องเนื่องจากมีการเบิก/จองวัสดุไปแล้วจำนวน {0} (บรรทัดที่ {1})</value>
+  </data>
+  <data name="incorrect_format" xml:space="preserve">
+    <value>ข้อมูล {0} ไม่ถูกต้อง</value>
+  </data>
+  <data name="incorrect_format_at" xml:space="preserve">
+    <value>ข้อมูล {0} ไม่ถูกต้อง ลำดับที่ {1}</value>
+  </data>
+  <data name="incorrect_format_datetime" xml:space="preserve">
+    <value>ข้อมูล {0} ไม่ถูกต้อง (ควรระบุ "วันที่ / เดือน / ปี(ค.ศ.) "  : "xx / xx / xxxx"  )</value>
+  </data>
+  <data name="invalid_amount_error" xml:space="preserve">
+    <value>ข้อมูลไม่ถูกต้อง  {0} ต้องไม่น้อยกว่าที่ เบิกไปแล้ว (บรรทัดที่ {1})</value>
+  </data>
+  <data name="cannot_found" xml:space="preserve">
+    <value>ไม่พบ {0}</value>
+  </data>
+  <data name="cannot_found_action" xml:space="preserve">
+    <value>ไม่พบ Action</value>
+  </data>
+  <data name="cannot_found_activity" xml:space="preserve">
+    <value>ไม่พบกลุ่มกิจกรรม</value>
+  </data>
+  <data name="cannot_found_at_data" xml:space="preserve">
+    <value>ข้อมูล{0}ที่ระบุ ไม่มีในระบบ (บรรทัดที่ {1})</value>
+  </data>
+  <data name="cannot_found_budgetplan" xml:space="preserve">
+    <value>ไม่พบแผนงาน {0}</value>
+  </data>
+  <data name="cannot_found_budgetsubplan" xml:space="preserve">
+    <value>ไม่พบแผนงานย่อย {0}</value>
+  </data>
+  <data name="cannot_found_data" xml:space="preserve">
+    <value>ไม่พบข้อมูล {0}</value>
+  </data>
+  <data name="cannot_found_document_created" xml:space="preserve">
+    <value>ไม่พบการสร้าง Interface ใบสั่งจ่ายไปยังระบบ SAP ของเอกสาร {0}</value>
+  </data>
+  <data name="cannot_found_employee" xml:space="preserve">
+    <value>ไม่พบข้อมูลพนักงาน {0}</value>
+  </data>
+  <data name="cannot_found_expense" xml:space="preserve">
+    <value>ไม่พบรายละอียดค่าใช้จ่าย</value>
+  </data>
+  <data name="cannot_found_fi_document_in_invoice" xml:space="preserve">
+    <value>ไม่พบเลขที่เอง FI Document ในใบแจ้งหนี้ {0}</value>
+  </data>
+  <data name="cannot_found_fi_document_in_jobgl" xml:space="preserve">
+    <value>ไม่พบเลขที่ของ FI Document ใน JobGL {0}/{1}</value>
+  </data>
+  <data name="cannot_found_gl_detail" xml:space="preserve">
+    <value>ไม่พบรายละเอียดค่าใช้จ่าย</value>
+  </data>
+  <data name="cannot_found_io_under_glAccount" xml:space="preserve">
+    <value>ไม่พบ IO ของรหัสบัญชีที่ระบุ</value>
+  </data>
+  <data name="cannot_found_job_for_requester" xml:space="preserve">
+    <value>ไม่พบ Job</value>
+  </data>
+  <data name="cannot_found_matCode" xml:space="preserve">
+    <value>กรุณาเลือกรหัสวัสดุ</value>
+  </data>
+  <data name="cannot_found_matType" xml:space="preserve">
+    <value>กรุณาเลือกประเภทวัสดุ</value>
+  </data>
+  <data name="cannot_found_plancode" xml:space="preserve">
+    <value>ไม่พบแผนงาน</value>
+  </data>
+  <data name="cannot_found_plancode_salechanneltype" xml:space="preserve">
+    <value>กรุณาเลือกช่องทาง</value>
+  </data>
+  <data name="cannot_found_plancode_under_activity" xml:space="preserve">
+    <value>ไม่พบแผนงานภายใต้กลุ่มกิจกรรม</value>
+  </data>
+  <data name="cannot_found_posting_date" xml:space="preserve">
+    <value>ไม่พบ Posting Date ของเอกสาร {0}</value>
+  </data>
+  <data name="cannot_found_pragroup" xml:space="preserve">
+    <value>ไม่พบใบปะหน้าคำขออนุมัติจ่ายชดเชยคืนตัวแทน {0}</value>
+  </data>
+  <data name="cannot_found_processcode" xml:space="preserve">
+    <value>ไม่พบ Process Code: {0} ในปี {1}</value>
+  </data>
+  <data name="notempty_error_in" xml:space="preserve">
+    <value>โปรดกรอกข้อมูล {0}</value>
+  </data>
+  <data name="login_fail_no_user_role" xml:space="preserve">
+    <value>ไม่มีสิทธิ์เข้าใช้งาน กรุณาติดต่อผู้ดูแลระบบ</value>
+  </data>
+  <data name="cannot_action_error" xml:space="preserve">
+    <value>ไม่สามารถทำรายการได้</value>
+  </data>
+  <data name="cannot_request_delete" xml:space="preserve">
+    <value>ไม่สามารถดำเนินการลบข้อมูลได้  เนื่องจากที่การใช้ข้อมูล{0}อยู่</value>
+  </data>
+  <data name="lessthanandequal_error" xml:space="preserve">
+    <value>{PropertyName} ต้องน้อยกว่าหรือเท่ากับ {0}</value>
+  </data>
+</root>

@@ -1,0 +1,172 @@
+﻿@using BBDEVSYS.Models.Shared
+<section class="sidebar">
+    <ul class="sidebar-menu">
+        <li class="header">Menu </li>
+        <li>
+            <a href="@(Url.Action("Index","Home"))">
+                <i class="fa fa-home fa-fw"></i> <span>Home</span>
+            </a>
+        </li>
+        @*<li>
+            <a href="@(Url.Action("List","Invoice",new{ Area = "Invoice"}))"><i class="fa fa-money fa-fw"></i> <span>Invoice</span></a>
+        </li>
+        <li>
+            <a href="@(Url.Action("List","InvoiceUpload",new{ Area = "Invoice"}))"><i class="fa fa-money fa-fw"></i><span> Invoice Upload</span></a>
+        </li>
+        <li>
+
+            <a href="@(Url.Action("List","Accrued",new{ Area = "Accrued"}))"><i class="fa fa-money fa-fw"></i><span> Accrued</span></a>
+        </li>
+        <li>
+
+            <a href="@(Url.Action("List","AccruedUpload",new{ Area = "Accrued"}))"><i class="fa fa-money fa-fw"></i> <span>Accrued Upload</span></a>
+        </li>
+        <li>
+            <a href="@(Url.Action("List","AccruedSummaryReport",new{ Area = "Accrued"}))"><i class="fa fa-bar-chart-o fa-fw"></i><span>Report Accrued Summary</span></a>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-gears fa-fw"></i>
+                <span>Center Setting</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="@(Url.Action("List","PaymentItems",new{ Area = "CenterSetting"}))"><i class="fa fa-list-ul text-red"></i> Payment Fee Items</a></li>
+                
+            </ul>
+            <ul class="treeview-menu">
+                <li><a href="@(Url.Action("List","ValueHelpSetting",new{ Area = "CenterSetting"}))"><i class="fa fa-list-ul text-red"></i> ValueHelp Setting</a></li>
+
+            </ul>
+        </li>
+        <li class="treeview">
+            <a href="#">
+                <i class="fa fa-expeditedssl fa-fw"></i>
+                <span>Authentications</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="@(Url.Action("List","AppCompositeRole",new{ Area = "Authorization"}))"><i class="fa fa-list-ul text-red"></i> App Composite Role</a></li>
+
+            </ul>
+            <ul class="treeview-menu">
+                <li><a href="@(Url.Action("List","AssignUserRole",new{ Area = "Authorization"}))"><i class="fa fa-list-ul text-red"></i> User Role</a></li>
+
+            </ul>
+        </li>*@
+       
+
+
+        @if (User.IsInRole("Role"))
+        {
+
+        }
+        @{
+            var userInfo = (User)Session["USERINFO"];
+            if (userInfo != null)
+            {
+                @Html.Raw(userInfo.SideMenuHTML)
+            }
+        }
+
+        
+        @*<li class="treeview">
+            <a href="#">
+                <i class="fa fa-bar-chart-o fa-fw"></i>
+                <span>Report Options</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="@(Url.Action("List","AccruedSummaryReport",new{ Area = "Accrued"}))"><i class="fa fa-circle-o text-red"></i> Accrued Summary</a></li>
+                <li><a href="@(Url.Action("List","Timeliness",new{ Area = "Report"}))"><i class="fa fa-circle-o text-red"></i> Timeliness</a></li>
+            </ul>
+        </li>*@
+        @*<li class="treeview">
+                <a href="#">
+                    <i class="fa fa-money fa-fw"></i>
+                    <span>Accrued Options</span>
+                    <span class="pull-right-container">
+                        <i class="fa fa-angle-left pull-right"></i>
+                    </span>
+                </a>
+                <ul class="treeview-menu">
+
+                    <li><a href="@(Url.Action("List","Invoice",new{ Area = "Invoice"}))"><i class="fa fa-circle-o text-red"></i> Invoice</a></li>
+                    <li><a href="@(Url.Action("List","InvoiceUpload",new{ Area = "Invoice"}))"><i class="fa fa-circle-o text-red"></i> Invoice Upload</a></li>
+                    <li><a href="@(Url.Action("List","Accrued",new{ Area = "Accrued"}))"><i class="fa fa-circle-o text-red"></i> Accrued</a></li>
+                    <li><a href="@(Url.Action("List","AccruedUpload",new{ Area = "Accrued"}))"><i class="fa fa-circle-o text-red"></i> Accrued Upload</a></li>
+                </ul>
+            </li>*@
+
+
+
+    </ul>
+</section>
+@*
+     <li>
+        <a href="@(Url.Action("","",new{ Area = ""}))">
+            <i class="fa fa-th fa-fw"></i> <span>Widgets</span>
+        </a>
+    </li>
+
+    <li>
+        <a href="@(Url.Action("","",new{ Area = ""}))">
+            <i class="fa fa-th fa-fw"></i> <span>Widgets</span>
+            <span class="pull-right-container">
+                <small class="label pull-right bg-green">new</small>
+            </span>
+        </a>
+    </li>
+
+    <li class="treeview">
+        <a href="#">
+            <i class="fa fa-files-o fa-fw"></i>
+            <span>Layout Options</span>
+        </a>
+        <ul class="treeview-menu">
+            <li><a href="@(Url.Action("","",new{ Area = ""}))"><i class="fa fa-circle-o"></i> Top Navigation</a></li>
+        </ul>
+    </li>
+
+    <li class="treeview">
+            <a href="#">
+                <i class="fa fa-share"></i> <span>Multilevel</span>
+                <span class="pull-right-container">
+                    <i class="fa fa-angle-left pull-right"></i>
+                </span>
+            </a>
+            <ul class="treeview-menu">
+                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+                <li>
+                    <a href="#">
+                        <i class="fa fa-circle-o"></i> Level One
+                        <span class="pull-right-container">
+                            <i class="fa fa-angle-left pull-right"></i>
+                        </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="#"><i class="fa fa-circle-o"></i> Level Two</a></li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-circle-o"></i> Level Two
+                                <span class="pull-right-container">
+                                    <i class="fa fa-angle-left pull-right"></i>
+                                </span>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                                <li><a href="#"><i class="fa fa-circle-o"></i> Level Three</a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><a href="#"><i class="fa fa-circle-o"></i> Level One</a></li>
+            </ul>
+        </li>
+*@

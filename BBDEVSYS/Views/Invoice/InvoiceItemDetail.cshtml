@@ -1,0 +1,91 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@model BBDEVSYS.ViewModels.Invoice.InvoiceDetailViewModel
+
+<tr>
+    @using (Html.BeginCollectionItem("InvoiceDetailList"))
+    {
+        <td style="width:50px">@Model.SEQUENCE</td>
+        <td style="width:250px;word-wrap:break-word;">
+            @Html.DropDownListFor(m => m.PAYMENT_ITEMS_FEE_ITEM, new SelectList(Model.PaymentItemsFeeItemList, "Value", "Text"), "", new { @class = "form-control input-sm col-md-2", style = "width:100%;" })
+
+
+            @*@Html.DropDownListFor(m => m.PAYMENT_ITEMS_FEE_ITEM_Code, new SelectList(Model.PaymentItemsFeeItemList, "Value", "Text"), "", new { @class = "form-control input-sm col-md-2", style = "width:100%;  display:none;", @onchange = "onChangeChargingItem(this)" })
+            <br />
+            @Html.TextAreaFor(m => m.PAYMENT_ITEMS_FEE_ITEM_dis, new { @class = "form-control  input-sm ", style = "display:none", row = 3, @onChange = "onChangeGetChargingItem()" })*@
+            @*@Html.HiddenFor(m => m.PAYMENT_ITEMS_FEE_ITEM)*@
+            @*@Html.TextBoxFor(m => m.PAYMENT_ITEMS_FEE_ITEM, new { @class = "form-control   ", style = "width:100%"})*@
+        </td>
+
+        <td style="width:200px;word-wrap:break-word">@Html.TextBoxFor(m => m.TRANSACTIONS, new { @class = "form-control integeronly ", style = "width:100%", @onChange = "calTotalAmt()" })</td>
+        <td style="width:200px">@Html.TextBoxFor(m => m.RATE_TRANS, new { @class = "form-control  decimal2digit ", style = "width:100%", @onChange = "calTotalAmt()" })</td>
+        <td style="width:200px">@Html.TextBoxFor(m => m.ACTUAL_AMOUNT, new { @class = "form-control  decimal2digit ", style = "width:100%", @onChange = "calTotalAmt()" })</td>
+        <td style="width:200px">@Html.TextBoxFor(m => m.RATE_AMT, new { @class = "form-control  decimal2digit ", style = "width:100%", @onChange = "calTotalAmt()" })</td>
+        @*<td class="col-md-1">@Html.TextBoxFor(m => m.INCLUDE_VAT_AMOUNT, new { @class = "form-control  decimal4digit ", style = "width:100%" ,@readonly = true })</td>
+            <td class="col-md-1">@Html.TextBoxFor(m => m.DEDUCT_WHT_AMOUNT, new { @class = "form-control  decimal4digit ", style = "width:100%", @readonly = true })</td>*@
+        <td style="width:200px">@Html.TextBoxFor(m => m.TOTAL_CHARGE_AMOUNT, new { @class = "form-control  decimal2digit ", style = "width:100%", @readonly = true })</td>
+
+
+        <td style="text-align:right;" class="true-table-column-fit-content col-md-1">
+            <button type="button" class="true-table-detail-icon-button authManage" title="Up" onclick="moveItemRowUp(this)">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-arrow-up"></i>
+            </button>
+
+            <button type="button" class="true-table-detail-icon-button authManage" title="Down" onclick="moveItemRowDown(this)">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-arrow-down"></i>
+            </button>
+           
+            <button type="button" class="true-table-detail-icon-button authManage" onclick="actionDeleteItemRow(this)" title="ลบ">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-trash"></i>
+            </button>
+        </td>
+
+        @Html.HiddenFor(m => m.DeleteFlag, new { @class = "detail-item-delete-flag" })
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.INV_ITEM_NO)
+
+
+    }
+
+</tr>
+<script src="~/Content/js/input.initialization.js"></script>
+<script>
+
+    function actionDeleteItemRow(btndel) {
+        deleteItemRow(btndel)
+
+        calTotalAmt();
+        @*var valdeductAmount = $(btndel).closest("tr").find(".deductAmount").val();
+
+        if (valdeductAmount == '' || valdeductAmount == '0') {
+
+            deleteItemRow(btndel)
+
+            calTotalAmt();
+        }
+        else {
+            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "@BBDEVSYS.Content.text.ValidatorMessage.cannot_delete_deductamount", "E");
+        }*@
+    }
+    $(document).ready(function () {
+        //$("select").select2();
+
+        //$('.datepicker-th').datepicker(
+        //    $.extend({
+        //        changeMonth: true,
+        //        changeYear: true,
+        //        dateFormat: 'dd/mm/yy',
+        //        isBuddhist: true,
+        //    },
+        //    $.datepicker.regional['th']
+        //));
+
+        //$('.decimal2digit').inputmask({
+        //    'alias': 'decimal',
+        //    'mask': '9{0,10}[.]9{0,2}'
+        //});
+
+
+        //ModifyCollectionItemName('itemBody');
+    });
+</script>
+

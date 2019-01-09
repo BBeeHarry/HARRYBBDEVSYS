@@ -1,0 +1,55 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+
+@model BBDEVSYS.ViewModels.CenterSetting.ValueHelpSettingItemViewModel
+
+<tr>
+    @using (Html.BeginCollectionItem("ValueHelpSettingList"))
+    {
+
+        <td class="col-md-3">
+            @Html.TextBoxFor(m => m.ValueKey, new { @class = "form-control input-sm" })
+
+        </td>
+        <td class="col-md-5">
+           @Html.TextBoxFor(m => m.ValueText, new { @class = "form-control input-sm" }) </td>
+        <td class="col-md-3">
+            @Html.DropDownListFor(m => m.Status, new SelectList(Model.StatusValueHelp, "ValueKey", "ValueText"), "", new { @class = "form-control input-sm ", style = "width:100%;" })
+        </td>
+        <td style="text-align:right;" class="true-table-column-fit-content col-md-1">
+            <button type="button" class="true-table-detail-icon-button authManage" title="Up" onclick="moveItemRowUp(this)">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-arrow-up"></i>
+            </button>
+
+            <button type="button" class="true-table-detail-icon-button authManage" title="Down" onclick="moveItemRowDown(this)">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-arrow-down"></i>
+            </button>
+            <button type="button" class="true-table-detail-icon-button authManage" onclick="deleteItemRow(this)" title="ลบ">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-trash"></i>
+            </button>
+        </td>
+        @Html.HiddenFor(m => m.DeleteFlag, new { @class = "detail-item-delete-flag" })
+        @Html.HiddenFor(m => m.ID)
+    }
+
+</tr>
+<script src="~/Content/js/input.initialization.js"></script>
+@*<script>
+        $(document).ready(function () {
+            $("select").select2();
+
+            $('.datepicker-th').datepicker(
+                $.extend({
+                    changeMonth: true,
+                    changeYear: true,
+                    dateFormat: 'dd/mm/yy',
+                    isBuddhist: true,
+                },
+                $.datepicker.regional['th']
+            ));
+
+            $('.decimal2digit').inputmask({
+                'alias': 'decimal',
+                'mask': '9{0,10}[.]9{0,2}'
+            });
+        });
+    </script>*@

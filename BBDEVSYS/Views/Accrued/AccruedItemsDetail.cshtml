@@ -1,0 +1,126 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@model List<BBDEVSYS.ViewModels.Accrued.AccruedDetailViewModel>
+
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            @using (Html.BeginCollectionItem("AccruedItemList"))
+            {
+                <td style="width:50px; text-align:right;" class="true-table-column-fit-content ">
+                    <button type="button" class="true-table-detail-icon-button editItem authManage" title="แก้ไข" onclick="editAccruedItem(this)">
+                        <i style="vertical-align:middle" class="glyphicon glyphicon-edit"></i>
+                    </button>
+                </td>
+                <td style="width:50px">@item.SEQUENCE</td>
+                <td style="width:100px">@item.GL_ACCOUNT</td>
+                <td style="width:150px">@item.COST_CENTER_FUND</td>
+                @*<td style="width:100px">@item.FUND_CODE</td>*@
+                @*<td style="width:200px">@item.CHANNELS</td>*@
+                <td style="width:300px">@item.PAYMENT_ITEMS_NAME</td>
+                @*<td style="width:200px">@item.CHARGED</td>*@
+                <td style="width:100px">@item.PERIOD_ACCRUED</td>
+                <td class= "decimal2digit" style="width:100px">@item.TRANSACTIONS</td>
+                <td class="decimal2digit" style="width:100px">@item.AMOUNT</td>
+                @*<td class="col-md-1 decimal2digit ">@item.INV_AMOUNT</td>*@
+                <td class="decimal2digit txtEnableamt"  style="width:100px">@item.INV_AMOUNT </td>
+                @*<td style="width:200px">@Html.TextBoxFor(m => item.TRANSACTIONS, new { @class = "form-control  decimal2digit ", style = "width:200px" })</td>
+                    <td style="width:200px">@Html.TextBoxFor(m => item.AMOUNT, new { @class = "form-control  decimal2digit ", style = "width:200px" })</td>
+                    <td style="width:200px">@Html.TextBoxFor(m => item.INV_AMOUNT, new { @class = "form-control  decimal2digit ", style = "width:200px" })</td>*@
+                <td  style="width:300px">@item.Supplier</td>
+                <td style="width:300px">@item.INV_NO</td>
+                <td  style="width:300px">@item.REMARK</td>
+              
+
+
+                @Html.HiddenFor(m => item.SEQUENCE)
+                @Html.HiddenFor(m => item.ACCRUED_MONTH)
+                @Html.HiddenFor(m => item.ACCRUED_YEAR)
+                @Html.HiddenFor(m => item.PERIOD_ACCRUED)
+
+                @Html.HiddenFor(m => item.CCT_CODE)
+                @Html.HiddenFor(m => item.COMPANY_CODE)
+                @Html.HiddenFor(m => item.PAYMENT_ITEMS_NAME)
+                @Html.HiddenFor(m => item.CURRENCY)
+                @Html.HiddenFor(m => item.EDITION)
+                @Html.HiddenFor(m => item.PAYMENT_ITEMS_CODE)
+
+                @Html.HiddenFor(m => item.REMARK_INVOICE)
+                @Html.HiddenFor(m => item.ISPLAN)
+
+                @*@Html.HiddenFor(m => item.Supplier)*@
+
+                @Html.HiddenFor(m => item.TRANSACTIONS)
+                @Html.HiddenFor(m => item.AMOUNT)
+                @Html.HiddenFor(m => item.INV_AMOUNT)
+
+
+                @Html.HiddenFor(m => item.REMARK)
+
+
+                @Html.HiddenFor(m => item.INV_NO)
+                @Html.HiddenFor(m => item.PRO_NO)
+
+                @Html.HiddenFor(m => item.FUND_CODE)
+                @Html.HiddenFor(m => item.COST_CENTER)
+                @Html.HiddenFor(m => item.GL_ACCOUNT)
+                @Html.HiddenFor(m => item.CHANNELS)
+
+
+                @Html.HiddenFor(m => item.DeleteFlag, new { @class = "detail-item-delete-flag" })
+                @Html.HiddenFor(m => item.ACCRUED_ITEM_ID)
+                @Html.HiddenFor(m => item.ACCRUED_ID)
+                //@Html.HiddenFor(m => item.AccruedItemSubList)
+
+
+                @Html.HiddenFor(m => item.CREATE_BY)
+                @Html.HiddenFor(m => item.CREATE_DATE)
+                @Html.HiddenFor(m => item.MODIFIED_BY)
+                @Html.HiddenFor(m => item.MODIFIED_DATE)
+                @Html.HiddenFor(m => item.INV_MONTH)
+                @Html.HiddenFor(m => item.INV_YEAR)
+                @Html.HiddenFor(m => item.AccruedJSON, new { @class = "accruedjson" })
+            }
+        </tr>
+
+    }
+}
+
+
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+      
+        ////Set height of fixed column to equals another column
+        //var bodyOffset = 17; //padding top + bottom + border in pixel
+        //var headerOffset = 17; //padding top + bottom + border in pixel
+        //var $table = $('#itemBody');
+        //var tableClone = $table.clone();
+        //tableClone.find('tr').each(function (i, elem) {
+
+        //    if (i != 0) {
+        //        var row = $table.find('tr:eq(' + i + ')');
+
+
+        //        var fixColumn = row.find('td:nth-child(2)');
+        //        setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+        //        fixColumn = row.find('td:nth-child(3)');
+        //        setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+        //        fixColumn = row.find('td:nth-child(4)');
+        //        setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+        //    }
+
+        //});
+
+
+        //Change item name for sending to controller
+        ModifyCollectionItemName('itemBody');
+    });
+</script>

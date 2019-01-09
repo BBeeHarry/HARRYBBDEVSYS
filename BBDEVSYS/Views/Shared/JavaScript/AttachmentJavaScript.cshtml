@@ -1,0 +1,524 @@
+﻿@using BBDEVSYS.Services.Shared
+<script type="text/javascript">
+
+    function deleteAttachFile(button, uniqueKey) {
+        
+        $(button).parents("tr").css("display", "none");
+        $("#deleteflag_" + uniqueKey).val(true);
+
+        //Get div id
+        var attachmentDivID = getAttachmentDivID($(button).parents("tr").parents("tbody").parents("table"));
+
+        //Check attach only single file
+        var attachSingleFile = $(attachmentDivID + '#attachSingleFile').val();
+        if (attachSingleFile) {
+            if (attachSingleFile.toUpperCase() === "TRUE") {
+                $(attachmentDivID + '#addAttachment').show();
+            }
+        }
+
+        //Callback function
+        if ($.isFunction(window.callbackDeleteAttachFile)) {            
+            callbackDeleteAttachFile(button);
+        }        
+    }
+
+    function deleteAllAttachFile(tableID) {
+
+        //Set delete flag and hide row for all attachment item
+        $('#' + tableID + ' > tbody > tr').each(function() {
+            $this = $(this);
+            $this.css("display", "none");
+            $this.find("input.deleteAttachFlag").val(true)
+        });
+
+        //Check attach only single file
+        var attachSingleFile = $('#attachSingleFile').val();
+        if (attachSingleFile) {
+            if (attachSingleFile.toUpperCase() === "TRUE") {
+                $('#addAttachment').show();
+            }
+        }
+
+        //Callback function
+        if ($.isFunction(window.callbackDeleteAllAttachFile)) {
+            callbackDeleteAllAttachFile(tableID);
+        }
+    }
+
+    function waitForElement(elementPath, countLoop, callBack) {
+
+        window.setTimeout(function () {
+            if ($(elementPath).length) {
+                callBack(elementPath, $(elementPath));
+            } else {
+                countLoop++;
+                if (countLoop < 10)
+                    waitForElement(elementPath, countLoop, callBack);
+            }
+        }, 500)
+    }
+
+
+    function previewPhoto(input) {
+
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $('#previewPhoto').attr('src', e.target.result);
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    }
+
+    function deletePhoto() {
+        $.ajax({
+            dataType: 'json',
+            url: '@Url.Action("DeletePhoto", "Attachment", new { Area = "Shared" })?' + "fileName=" + $("#PhotoSavedFilename").val(),
+            cache: false,
+            success: function (response) {
+                if (response != null && response.success) {
+                    var previewNoPhoto = $('#PreviewNoPhoto').val();
+                    $('#previewPhoto').attr('src', previewNoPhoto);
+                    $('#DeletedPhotoFlag').val(true);
+
+                    $('#Photo_DeletedPhotoFlag').val(true);//For send data to model when submit form
+
+                } else {
+
+                }
+            },
+        });
+    }
+
+    function setColumnVisibility(attachmentDivID) {
+
+        if (attachmentDivID) {            
+            if (!attachmentDivID.match('^#')) {
+                attachmentDivID = '#' + attachmentDivID
+            }
+
+            attachmentDivID = attachmentDivID + ' ';
+        }
+        else {
+            attachmentDivID = '';
+        }
+
+        console.log("div id : " + attachmentDivID);
+        console.log("Doc type " + $(attachmentDivID + "#attachDocumentTypeVisible").val());
+
+        var visible = $(attachmentDivID + "#attachDocumentDateVisible").val();
+        if (visible) {
+            if (visible.toUpperCase() === "TRUE") {
+                $(attachmentDivID + '.attachDocumentDateCol').show();
+            }
+        }
+
+        visible = $(attachmentDivID + "#attachDocumentTypeVisible").val();
+        if (visible) {
+            if (visible.toUpperCase() === "TRUE") {
+                $(attachmentDivID + '.attachDocumentTypeCol').show();
+            }
+        }
+
+        visible = $(attachmentDivID + "#attachFileNameVisible").val();
+        if (visible) {
+            if (visible.toUpperCase() === "TRUE") {
+                $(attachmentDivID + '.attachFileNameCol').show();
+            }
+        }
+
+        visible = $(attachmentDivID + "#attachFileSizeMBVisible").val();
+        if (visible) {
+            if (visible.toUpperCase() === "TRUE") {
+                $(attachmentDivID + '.attachFileSizeMBCol').show();
+            }
+        }
+
+        visible = $(attachmentDivID + "#attachRemarkVisible").val();
+        if (visible) {
+            if (visible.toUpperCase() === "TRUE") {
+                $(attachmentDivID + '.attachRemarkCol').show();
+            }
+        }
+        
+    }
+
+    function getAttachmentDivID(elem) {
+
+        var attachmentDivID = '';
+        if (elem.attr('attach-div-id')) {
+            attachmentDivID = '#' + elem.attr('attach-div-id') + ' ';
+        }
+        else {
+            attachmentDivID = '';
+        }
+        //console.log("getAttachmentDivID : " + attachmentDivID);
+        return attachmentDivID;
+    }
+
+    $(document).ready(function () {
+
+        //Upload single photo file with preview 
+        $('.photo-file-upload').fileupload({
+            add: function (e, data) {
+                var encodeFileName = encodeURIComponent(data.originalFiles[0]['name']);
+
+                $.ajax({
+                    dataType: 'json',
+                    url: '@Url.Action("ValidatePhotoFile", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[0]['size'],
+                    cache: false,
+                    success: function (response) {
+                        if (response != null && response.success) {
+                            data.originalFiles[0].uploadID = response.fileUniqueKey;
+
+                            //Move old file to filenameToDelete for delete
+                            $("#FilenameToDelete").val($("#PhotoSavedFilename").val());
+                            $("#PhotoSavedFilename").val(response.savedFilename);
+                            $('#DeletedPhotoFlag').val(false); //Have photo to upload
+
+                            //For send data to model when submit form
+                            $("#Photo_FilenameToDelete").val($("#PhotoSavedFilename").val());
+                            $("#Photo_PhotoSavedFilename").val(response.savedFilename);
+                            $('#Photo_DeletedPhotoFlag').val(false); //Have photo to upload
+
+                            data.submit();
+                        } else {
+                            var popupPrefix = $('#attDisplayPopupPrefix').val();
+
+                            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", response.message, "E", popupPrefix);
+                        }
+                    },
+                });
+
+                //var uploadErrors = [];
+                //var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
+                //if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                //    uploadErrors.push('Not an accepted file type');
+                //}
+                //if (data.originalFiles[0]['size'] > 1000000) {
+                //    uploadErrors.push('Filesize is too big');
+                //}
+                //if (uploadErrors.length > 0) {
+                //    alert(uploadErrors.join("\n"));
+                //} else {
+                //    //data.submit();
+                //    previewPhoto(data);
+                //}
+
+            },
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: false,
+            url: '@Url.Action("UploadFileToTemp", "Attachment", new { Area = "Shared" })',
+            autoUpload: true,
+            formData: function () {
+                var arr = [];
+                arr.push({ name: "savedFilename", value: $("#PhotoSavedFilename").val() },
+                         { name: "filenameToDelete", value: $("#FilenameToDelete").val() });
+                return arr;
+            },
+            success: function (response) {
+                if (response != null && response.success) {
+                    waitForElement("#filedownloadurl_" + response.fileUniqueKey, 0, function () {
+                        $("#filename_" + response.fileUniqueKey).hide()
+                        $("#filedownloadurl_" + response.fileUniqueKey).show()
+                        $("a#filedownloadurl_" + response.fileUniqueKey).attr('href', response.downloadURL);
+                    });
+
+                } else {
+                }
+            },
+            error: function (error) {
+                //alert("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
+                //displayErrorPopup("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
+            }
+        }).on('fileuploadsubmit', function (e, data) {
+            $('#photofilecon').show();
+        }).on('fileuploaddone', function (e, data) {
+            previewPhoto(data);
+        }).on('fileuploadfail', function (e, data) {
+            $("#fileerror_" + data.files[0].uploadID).text("- error");
+            //Set error flag
+            $("#error_" + data.files[0].uploadID).val(true);
+        }).on('fileuploadalways', function (e, data) {
+            waitForElement("#photofilecon", 0, function () {
+                $("#photofilecon").hide()
+                $('#photofileprogress').css(
+                    'width',
+                    '0%'
+                );
+                $("#photodelfile").show()
+            });
+
+        }).on('fileuploadprogress', function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+
+            $('#photofileprogress').css(
+                'width',
+                progress + '%'
+            );
+        });
+
+
+
+
+        //Upload multiple file
+        $('.file-upload').fileupload({
+            add: function (e, data) {
+                
+                var attachmentDivID = getAttachmentDivID($(this));
+                
+
+                var documentType = $(attachmentDivID + '#attachDocTypeValueType').val();
+                if (!documentType) {
+                    documentType = '';
+                }
+
+                var encodeFileName = encodeURIComponent(data.originalFiles[0]['name']);
+
+                var validationType = $(attachmentDivID + '#attachValidationType').val();
+                if (!validationType) {
+                    validationType = 'ATTACHMENT';
+                }
+                
+                $.ajax({
+                    dataType: 'json',
+                    url: '@Url.Action("AddAttachmentLine", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[0]['size'] + "&documentTypeValueType=" + documentType + "&validationType=" + validationType,
+                    cache: false,
+                    success: function (response) {
+                        console.log(response)
+                        if (response != null && response.success) {
+                            $.post(response.Url, function (partial) {
+                                $(attachmentDivID + "#attachmentBody").append(partial);
+
+                                setColumnVisibility(attachmentDivID);
+
+                                //Check attach only single file
+                                var attachSingleFile = $(attachmentDivID + '#attachSingleFile').val();
+                                if (attachSingleFile) {                                    
+                                    if (attachSingleFile.toUpperCase() === "TRUE") {
+                                        $(attachmentDivID + '#addAttachment').hide();
+                                    }
+                                }                               
+
+                            });
+                            data.originalFiles[0].uploadID = response.fileUniqueKey;
+                            $(attachmentDivID + "#lastSavedFilename").val(response.savedFilename);
+
+                            //$("attachmentDivID + #filename_" + response.fileUniqueKey).show()
+                            //$("attachmentDivID + #filedownloadurl_" + response.fileUniqueKey).hide()
+
+                            data.submit();
+                        } else {
+                            var popupPrefix = $(attachmentDivID + '#attDisplayPopupPrefix').val();
+
+                            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", response.message, "E", popupPrefix);
+                        }
+                    },
+                });
+
+            },
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: false,
+            url: '@Url.Action("UploadFileToTemp", "Attachment", new { Area = "Shared" })',
+            autoUpload: true,
+            formData: function () {
+                //console.log("formdata");
+                //console.dir($(this));
+                //console.dir($(this)[0]);
+
+                ////$.each($(this), function (key, element) {
+                ////    console.log('key: ' + key + '\n' + 'value: ' + element);
+                ////    console.dir(element.fileInput.attr('attach-div-id'));
+                ////});
+
+                var inputElem = $(this)[0].fileInput;
+                var attachmentDivID = getAttachmentDivID(inputElem);
+
+                //console.log("formdata " + $(attachmentDivID + "#lastSavedFilename").val());
+                var arr = [];
+                arr.push({ name: "savedFilename", value: $(attachmentDivID + "#lastSavedFilename").val() });
+                return arr;
+            },
+            success: function (response) {
+
+                var inputElem = $(this)[0].fileInput;
+                var attachmentDivID = getAttachmentDivID(inputElem);
+
+                if (response != null && response.success) {
+                    waitForElement(attachmentDivID + "#filedownloadurl_" + response.fileUniqueKey, 0, function () {
+                        $(attachmentDivID + "#filename_" + response.fileUniqueKey).hide()
+                        $(attachmentDivID + "#filedownloadurl_" + response.fileUniqueKey).show()
+                        $(attachmentDivID + "a#filedownloadurl_" + response.fileUniqueKey).attr('href', response.downloadURL);
+                        $(attachmentDivID + "#downloadurl_" + response.fileUniqueKey).val(response.downloadURL);
+
+                        var attachmentGroup = attachmentDivID.replace('#', '').replace(' ', '');
+
+                        $(attachmentDivID + "#attachmentgroup_" + response.fileUniqueKey).val(attachmentGroup);
+
+                        console.log("success");
+                        //Callback function
+                        if ($.isFunction(window.callbackAddAttachFile)) {
+                            callbackAddAttachFile();
+                        }
+                    });                    
+
+                } else {
+                }
+            },
+            error: function (error) {
+                //alert("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
+                //displayErrorPopup("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
+            }
+        }).on('fileuploadsubmit', function (e, data) {
+
+        }).on('fileuploaddone', function (e, data) {
+
+        }).on('fileuploadfail', function (e, data) {
+
+            var attachmentDivID = getAttachmentDivID($(this));
+
+            $(attachmentDivID + "#fileerror_" + data.files[0].uploadID).text("- error");
+            //Set error flag
+            $(attachmentDivID + "#error_" + data.files[0].uploadID).val(true);
+        }).on('fileuploadalways', function (e, data) {
+            var attachmentDivID = getAttachmentDivID($(this));
+
+            waitForElement(attachmentDivID + "#filecon_" + data.files[0].uploadID, 0, function () {
+                $(attachmentDivID + "#filecon_" + data.files[0].uploadID).hide()
+                $(attachmentDivID + "#delfile_" + data.files[0].uploadID).show()
+            });
+            console.log("alway");
+
+        }).on('fileuploadprogress', function (e, data) {
+
+            var attachmentDivID = getAttachmentDivID($(this));            
+
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+
+            $(attachmentDivID + "#filecon_" + data.files[0].uploadID).show()
+
+            $(attachmentDivID + '#fileprogress_' + data.files[0].uploadID).css(
+            'width',
+            progress + '%'
+            );
+        });
+
+
+
+        @*//Import data from excel
+        $('.import-excel').fileupload({
+            add: function (e, data) {
+
+                var documentType = $('#attachDocTypeValueType').val();
+                if (!documentType) {
+                    documentType = '';
+                }
+
+                var encodeFileName = encodeURIComponent(data.originalFiles[0]['name']);
+
+                var validationType = $('#attachValidationType').val();
+                if (!validationType) {
+                    validationType = 'ATTACHMENT';
+                }
+
+                $.ajax({
+                    dataType: 'json',
+                    url: '@Url.Action("AddAttachmentLine", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[0]['size'] + "&documentTypeValueType=" + documentType + "&validationType=" + validationType,
+                    cache: false,
+                    success: function (response) {
+                        if (response != null && response.success) {
+                            $.post(response.Url, function (partial) {
+                                $("#attachmentBody").append(partial);
+
+                                setColumnVisibility();
+
+                                //Check attach only single file
+                                var attachSingleFile = $('#attachSingleFile').val();
+                                if (attachSingleFile) {
+                                    if (attachSingleFile.toUpperCase() === "TRUE") {
+                                        $('#addAttachment').hide();
+                                    }
+                                }
+
+                            });
+                            data.originalFiles[0].uploadID = response.fileUniqueKey;
+                            $("#lastSavedFilename").val(response.savedFilename);
+
+                            //$("#filename_" + response.fileUniqueKey).show()
+                            //$("#filedownloadurl_" + response.fileUniqueKey).hide()
+
+                            data.submit();
+                        } else {
+                            var popupPrefix = $('#attDisplayPopupPrefix').val();
+
+                            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", response.message, "E", popupPrefix);
+                        }
+                    },
+                });
+
+            },
+            type: 'POST',
+            dataType: 'JSON',
+            contentType: false,
+            url: '@Url.Action("UploadFileToTemp", "Attachment", new { Area = "Shared" })',
+            autoUpload: true,
+            formData: function () {
+                //console.log("formdata " + $("#lastSavedFilename").val());
+                var arr = [];
+                arr.push({ name: "savedFilename", value: $("#lastSavedFilename").val() });
+                return arr;
+            },
+            success: function (response) {
+                if (response != null && response.success) {
+                    waitForElement("#filedownloadurl_" + response.fileUniqueKey, 0, function () {
+                        $("#filename_" + response.fileUniqueKey).hide()
+                        $("#filedownloadurl_" + response.fileUniqueKey).show()
+                        $("a#filedownloadurl_" + response.fileUniqueKey).attr('href', response.downloadURL);
+
+                        console.log("success");
+                        //Callback function
+                        if ($.isFunction(window.callbackAddAttachFile)) {
+                            callbackAddAttachFile();
+                        }
+                    });
+
+                } else {
+                }
+            },
+            error: function (error) {
+                //alert("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
+                //displayErrorPopup("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
+            }
+        }).on('fileuploadsubmit', function (e, data) {
+
+        }).on('fileuploaddone', function (e, data) {
+
+        }).on('fileuploadfail', function (e, data) {
+            $("#fileerror_" + data.files[0].uploadID).text("- error");
+            //Set error flag
+            $("#error_" + data.files[0].uploadID).val(true);
+        }).on('fileuploadalways', function (e, data) {
+            waitForElement("#filecon_" + data.files[0].uploadID, 0, function () {
+                $("#filecon_" + data.files[0].uploadID).hide()
+                $("#delfile_" + data.files[0].uploadID).show()
+            });
+            console.log("alway");
+
+        }).on('fileuploadprogress', function (e, data) {
+            var progress = parseInt(data.loaded / data.total * 100, 10);
+
+            $("#filecon_" + data.files[0].uploadID).show()
+
+            $('#fileprogress_' + data.files[0].uploadID).css(
+                'width',
+                progress + '%'
+            );
+        });*@
+
+    });
+</script>

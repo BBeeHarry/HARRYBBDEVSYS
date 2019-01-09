@@ -1,0 +1,164 @@
+﻿@model BBDEVSYS.ViewModels.Authentication.AuthenticationViewModel
+
+@{
+    ViewBag.Title = BBDEVSYS.Content.text.ResourceText.TitleLogin;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    @* background-image: url('@Url.Content("~/Content/css/themes/base/images/Logo-TRUE.svg.png")');
+        background-color:#262324;*@
+    <style>
+        body {
+            background-position: center center;
+            background-size: cover;
+            height: 200px;
+        }
+    </style>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>
+        @if (!string.IsNullOrWhiteSpace(ViewBag.Title))
+        {
+            @ViewBag.Title@:
+        }
+    </title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/css/icheck/blue.min.css" rel="stylesheet">
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/jquery")
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+    <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body style="background-color:#252323">
+
+    @using (Html.BeginForm("Login", "Authentication", FormMethod.Post, new { enctype = "multipart/form-data", id = "loginForm", @class = "form-horizontal" }))
+    {
+        <div class="container">
+            <div class="row">
+                <div class="col-xs-12 col-md-4 col-md-offset-7">
+                    <div class="login-box">
+                        <div class="col-xs-12" style="display: flex;align-items: center;justify-content: center;">
+                            <div style="margin-top:50px;">
+                                <img src="~/Content/css/themes/base/images/true-logo.png" class="img-responsive" style="width:150px; height:150px" />
+                            </div>
+                        </div>
+                        <h3 class="box-title" style="color:#fff">@BBDEVSYS.Content.text.ResourceText.TitleLogin</h3>
+                        <form class="login-form">
+                            <div class="form-group">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="input-group ">
+                                        @Html.TextBoxFor(m => m.Username, new { @class = "form-control", @placeholder = BBDEVSYS.Content.text.ResourceText.Username, })
+                                        <div class="input-group-addon">
+                                            <i class="glyphicon glyphicon-user"></i>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Username, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-xs-12 col-md-12">
+                                    <div class="input-group">
+                                        @Html.PasswordFor(m => m.Password, new { @class = "form-control", @placeholder = BBDEVSYS.Content.text.ResourceText.Password, })
+                                        <div class="input-group-addon">
+                                            <i class="glyphicon glyphicon-lock"></i>
+                                        </div>
+                                    </div>
+                                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group ">
+                                <div class="col-xs-12 col-md-12">
+                                    <button type="button" class="btn btn-block btn-success  " id="loginButton" data-loading-text="<i class='fa fa-refresh fa-spin'></i> @BBDEVSYS.Content.text.ResourceText.Authenticating">
+                                        <span class="fa fa-sign-in"></span>
+                                        <span>@BBDEVSYS.Content.text.ResourceText.ButtonLogin</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+            <div>
+                <div id="messagePopup">
+                    @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+                </div>
+            </div>
+
+    }
+    <script>
+        window.onload = function () {
+            document.getElementById("Username").focus();
+        };
+
+        $(document).ready(function () {
+
+            //Display unauthorize message
+            var returnUrl = '@Request.QueryString["ReturnUrl"]';
+            if (returnUrl) {
+                $('#unAuthorizeDiv').show();
+            }
+
+            $("#Username, #Password").keyup(function (event) {
+                if (event.keyCode == 13) {
+                    $("#loginButton").click();
+                }
+            });
+
+            $("#loginButton").click(function () {
+                var message = "";
+                var form = $('#loginForm');
+                $.validator.unobtrusive.parse(form);
+                var validator = form.validate();
+
+                var decodeUrl = '@HttpUtility.UrlDecode(Request.QueryString["ReturnUrl"])';
+                decodeUrl = stringReplace(decodeUrl, "&amp;", "&");
+
+                if (form.valid()) {
+                    blockUI();
+                    //var loginButton = $('#loginButton');
+                    var $this = $(this);
+                    $this.button("loading");
+                    $('#Username').prop({ 'readonly': 'readonly' });
+                    $('#Password').prop({ 'readonly': 'readonly' });
+
+                    $.post(form.attr("action"), form.serialize(), function (response) {
+                        if (response != null && response.success) {
+
+                            if (decodeUrl) {
+                                redirectTo(decodeUrl);
+                            }
+                            else {
+                                redirectTo('@Url.Action("List", "Invoice", new { Area = "Invoice" })');
+                            }
+                        } else {
+                            displayModelStateError(form, response.errorList);
+
+                            $('#Username').removeAttr('readonly');
+                            $('#Password').removeAttr('readonly');
+                            $this.button('reset');
+                        }
+
+                        unblockUI();
+
+                    });
+                }
+            });
+        });
+
+
+    </script>
+
+    <script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
+    @Scripts.Render("~/Bundles/js")
+    @Html.Partial("Javascript/AppJavaScript")
+</body>
+</html>

@@ -1,0 +1,577 @@
+﻿@model BBDEVSYS.ViewModels.Invoice.InvoiceViewModel
+@using BBDEVSYS.Services.Shared
+
+@{
+    ViewBag.Title = ViewBag.Title + " " + BBDEVSYS.Content.text.ResourceText.TitleInvoiceList;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"> @BBDEVSYS.Content.text.ResourceText.TitleInvoiceList</h3>
+
+                    @*<div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>*@
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.COMPANY_CODE) :
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @*@Html.DropDownListFor(m => m.CompanyCode, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeFormPeriod(this.value, false)" })*@
+                                @Html.DropDownListFor(m => m.COMPANY_CODE, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeCom(this.value)" })
+                                @Html.ValidationMessageFor(m => m.COMPANY_CODE, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        @*<div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label ">
+                                    @Html.LabelFor(m => m.INV_MONTH) :
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.DropDownListFor(m => m.INV_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.MonthValue), "", new { @class = "form-control", style = "width:100%;" })
+
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.INV_YEAR) :
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.DropDownListFor(m => m.INV_YEAR, new SelectList(Model.YearLst, "Value", "Text", Model.YearValue), "", new { @class = "form-control", style = "width:100%;" })
+                                    @Html.ValidationMessageFor(m => m.INV_YEAR, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                        *@
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label">
+                                @Html.LabelFor(m => m.INV_MONTH_FROM) :
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.DropDownListFor(m => m.INV_MONTH_FROM, new SelectList(Model.MonthLst, "Value", "Text"), new { @class = "form-control", style = "width:100 %; " })
+                                @Html.ValidationMessageFor(m => m.INV_MONTH_FROM, "", new { @class = "text-danger" })
+                                @*@Html.TextBoxFor(m => m.INV_MONTH_FROM, new { @class = "form-control numberonly" })*@
+                            </div>
+                            <label class="col-xs-12 col-md-2 true-control-label">
+                                @Html.LabelFor(m => m.INV_MONTH_TO)
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.DropDownListFor(m => m.INV_MONTH_TO, new SelectList(Model.MonthLst, "Value", "Text"), new { @class = "form-control", style = "width:100 %; " })
+                                @Html.ValidationMessageFor(m => m.INV_MONTH_TO, "", new { @class = "text-danger" })
+
+                                @*@Html.TextBoxFor(m => m.INV_MONTH_TO, new { @class = "form-control numberonly" })*@
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label">
+                                @Html.LabelFor(m => m.INV_YEAR_FROM) :
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.TextBoxFor(m => m.INV_YEAR_FROM, new { @class = "form-control numberonly" ,@placeholder="ปี ค.ศ."})
+                                @Html.ValidationMessageFor(m => m.INV_YEAR_FROM, "", new { @class = "text-danger" })
+                            </div>
+                            <label class="col-xs-12 col-md-2 true-control-label">
+                                @Html.LabelFor(m => m.INV_YEAR_TO)
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.TextBoxFor(m => m.INV_YEAR_TO, new { @class = "form-control numberonly", @placeholder = "ปี ค.ศ." })
+                                @Html.ValidationMessageFor(m => m.INV_YEAR_TO, "", new { @class = "text-danger" })
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.PAYMENT_ITEMS_CODE) :
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @Html.DropDownListFor(m => m.PAYMENT_ITEMS_NAME, new SelectList(Model.PaymentItemList, "Value", "Text"), "", new { @class = "form-control selectedCodeDDL", style = "width:100%;" })
+
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.STATUS) :
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), "", new { @class = "form-control ", style = "width:100%;" })
+
+                            </div>
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmPopup">
+            @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+        </div>
+    </div>
+}
+<div class="row">
+    <div class="col-xs-12 ">
+        <div class="col-xs-12 true-list-toolbar">
+            <div class="col-xs-12 true-list-toolbar-button">
+                <button type="button" class="btn btn-danger" id="searchButton" onclick="onChangeSearch()">
+                    <span class="fa fa-search"></span>
+                    @BBDEVSYS.Content.text.ResourceText.ButtonSearch
+                </button>
+            </div>
+
+        </div>
+
+        <div style="padding: 20px 0px 20px 0px">
+            <button type="button" class="btn btn-danger " style="display:none" id="createButton">
+                @* authManage *@
+                <span class="fa fa-plus"></span>
+                @BBDEVSYS.Content.text.ResourceText.ButtonCreate
+            </button>
+        </div>
+        <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:hidden">
+            <table class="table table-bordered  table-striped true-datatable" id="dataListTable" style="width:1700px"></table>
+        </div>
+        @* <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable "></table>*@
+
+
+    </div>
+</div>
+
+<script>
+    function onChangeCom(comCode) {
+
+        blockUI();
+        var value = comCode;
+        var items = "<option value='" + "" + "'>" + "" + "</option>";
+        $.getJSON("@Url.Action("GetPaymentItem","Invoice",new { area="Invoice"})", { companyCode: value }, function (data) {
+            if (data != null) {
+
+                $.each(data.PaymentItemList, function (index, item) {
+                    items += "<option value='" + item.Value + "'>" + item.Text + "</option>";
+                });
+                $("#PAYMENT_ITEMS_NAME").html(items);
+
+                //if ($("#PAYMENT_ITEMS_NAME").find('option').length < 1 || $("#PAYMENT_ITEMS_NAME option:selected").val() == '') {
+                //    $(".selectedCodeDDL").select2({
+                //        placeholder: '----เลือกรายการค่าใช้จ่าย----'
+                //    });
+                //} else {
+                //    //Remove placeholder
+                //    $(".selectedCodeDDL").select2();
+
+                //}
+                unblockUI();
+            }
+
+        });
+
+    }
+
+
+    function onChangeSearch() {
+      
+        //$("[data-valmsg-for='INV_YEAR']").html("");
+
+        @*if (!year) {
+            $("[data-valmsg-for='INV_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='INV_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }*@
+        var error = false;
+        var code = $('#COMPANY_CODE').val();
+        var monthS = $('#INV_MONTH_FROM').val();
+        var monthE = $('#INV_MONTH_TO').val();
+        var yearS = $("#INV_YEAR_FROM").val();
+        var yearE = $("#INV_YEAR_TO").val();
+      
+        if (!isNaN( yearS) && !isNaN(yearE )) {
+
+            if (parseInt( yearS) > parseInt(yearE)) {
+                $("[data-valmsg-for='INV_YEAR_FROM']").html("@BBDEVSYS.Content.text.ValidatorMessage.lessthanandequal_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR_FROM).Replace("{0}",BBDEVSYS.Content.text.ResourceText.INV_YEAR_TO)");
+                error = true;
+
+                yearS = yearE;
+            }
+
+            if (!isNaN(monthS )&& !isNaN(monthE)) {
+
+                if (parseInt(yearS) == parseInt(yearE)) {
+                    if (parseInt(monthS) > parseInt(monthE)) {
+                        $("[data-valmsg-for='INV_MONTH_FROM']").html("@BBDEVSYS.Content.text.ValidatorMessage.lessthanandequal_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH_FROM).Replace("{0}",BBDEVSYS.Content.text.ResourceText.INV_MONTH_TO)");
+                        error = true;
+
+                        monthS = 1;
+                        monthE = new Date().getMonth() + 1;
+                    }
+
+                }
+                //monthS = 1;
+            }
+
+            //monthS = 1;
+        }
+
+        if (!isNaN(monthS) && isNaN(monthE)) {
+            $("[data-valmsg-for='INV_MONTH_TO']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH_TO)");
+            error = true;
+        }
+        if (isNaN(monthS )&& !isNaN(monthE)) {
+            $("[data-valmsg-for='INV_MONTH_FROM']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH_FROM)");
+            error = true;
+        }
+
+        if (!isNaN(yearS) && isNaN(yearE) ) {
+            $("[data-valmsg-for='INV_YEAR_TO']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR_TO)");
+            error = true;
+        }
+        if (isNaN(yearS) && !isNaN(yearE)) {
+            $("[data-valmsg-for='INV_YEAR_FROM']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR_FROM)");
+            error = true;
+        }
+
+        var pymName = $("#PAYMENT_ITEMS_NAME").val();
+        var status = $("#IS_STATUS").val();
+       
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            blockUI();
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthSValue = monthS;
+                data.monthEValue = monthE;
+                data.yearSValue = yearS;
+                data.yearEValue = yearE;
+                data.pymName = pymName;
+                data.status = status;
+
+                unblockUI();
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+
+            //unblockUI();
+        }
+    }
+
+
+    var $getid;
+    var $getdes_code;
+    var $getmonth;
+    var $getyear;
+    var $getcompany;
+    var $getpaymentItemCode;
+    var flagClose = false;
+    $(document).ready(function () {
+
+       
+
+
+        var columns = [
+            //{ "data": "ITEM", "title": "ลำดับที่", "type": "num", "width": "5%" },
+            //{ "data": "GL_ACCOUNT", "title": "GL Account", "type": "string", "width": "5%" },
+            //{ "data": "COST_CENTER", "title": "Cost Center", "type": "string", "width": "5%" },
+            //{ "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "20%" },
+            //{ "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "10%", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            //{ "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "10%" },
+            //{ "data": "PRO_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "10%" },
+            //{ "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "10%" },
+            //{ "data": "STATUS_NAME", "title": "สถานะ", "type": "string", "width": "5%" },
+
+            //{ "data": null, "defaultContent": getDataTableButton(["display", "edit_inv", "delete", "close"]), "orderable": false, "width": "10%", "className": "true-dt-button-column" },
+            //{ "data": "ID", "type": "num", "hidden": true },
+            //{ "data": "PAYMENT_ITEMS_CODE", "type": "string", "hidden": true },
+            //{ "data": "IS_STATUS", "hidden": true }
+
+             { "data": "ITEM", "title": "ลำดับที่", "type": "num", "width": "100px" },
+             { "data": "COMPANY_NAME", "title": "Company", "type": "string", "width": "200" },
+             { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
+             { "data": "INV_YEAR", "title": "Year", "type": "num", "width": "100px" },
+            { "data": "GL_ACCOUNT", "title": "GL Account", "type": "string", "width": "100px" },
+            { "data": "COST_CENTER", "title": "Cost Center", "type": "string", "width": "100px" },
+            { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
+            { "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "100px", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "100px" },
+            { "data": "PRO_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "150" },
+            { "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "150" },
+            { "data": "STATUS_NAME", "title": "สถานะ", "type": "string", "width": "100px" },
+
+            { "data": null, "defaultContent": getDataTableButton(["display", "edit_inv", "delete"]), "orderable": false, "width": "200px", "className": "true-dt-button-column" },
+            { "data": "ID", "type": "num", "hidden": true },
+            { "data": "PAYMENT_ITEMS_CODE", "type": "string", "hidden": true },
+             { "data": "COMPANY_CODE", "type": "string", "hidden": true },
+             { "data": "INV_MONTH", "type": "num", "hidden": true },
+            { "data": "IS_STATUS", "hidden": true }
+        ];
+        $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+
+            data.companyCode = $('#COMPANY_CODE').val();
+            data.monthSValue = $('#INV_MONTH_FROM').val();
+            data.monthEValue = $('#INV_MONTH_TO').val();
+            data.yearSValue = $("#INV_YEAR_FROM").val();
+            data.yearEValue = $("#INV_YEAR_TO").val();
+            data.pymName = $("#PAYMENT_ITEMS_NAME").val();
+            data.status = $("#IS_STATUS").val();
+        })
+        displayDataTablescroll('dataListTable', '@Url.Action("GetList", "Invoice", new { Area = "Invoice" })', columns);
+
+        //Button action
+        //Display
+        $('#dataListTable tbody').on('click', '.true-dt-button-display', function () {
+            var id = $(this).GetDatatableData()["ID"];
+            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"];
+            var month = $(this).GetDatatableData()["INV_MONTH"];
+            var year = $(this).GetDatatableData()["INV_YEAR"];
+            var company = $(this).GetDatatableData()["COMPANY_CODE"];
+
+            var flagAuth = false;
+            var message = "";
+            if (company == undefined || company == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.COMPANY_CODE) " + "<br />";
+
+            }
+            if (month == undefined || month == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH) " + "<br />";
+            }
+
+            if (year == undefined || year == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR) " + "<br />";
+
+            }
+            if (company != undefined && company != '' && month != undefined && month != '' && year != undefined && year != '') {
+                flagAuth = true;
+            }
+            if (flagAuth) {
+                $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+
+                var url = '@Url.Action("Detail", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormActionDisplay';
+
+                redirectTo(url);
+            }
+            else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+            }
+        });
+
+
+        //Create
+        $('#createButton').click(function () {
+            var recordKey = $('#recordKey').val(0);
+            $('#formState').val('@ConstantVariableService.FormStateCreate');
+
+            var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=0&formState=' + '@ConstantVariableService.FormStateCreate';
+
+            redirectTo(url);
+        });
+
+        //Edit
+        $('#dataListTable tbody').on('click', '.true-dt-button-edit_inv', function () {
+
+
+            var id = $(this).GetDatatableData()["ID"];
+            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"];
+            var status = $(this).GetDatatableData()["IS_STATUS"];
+
+            var month = $(this).GetDatatableData()["INV_MONTH"];
+            var year = $(this).GetDatatableData()["INV_YEAR"];
+            var company = $(this).GetDatatableData()["COMPANY_CODE"];
+            var available = $(this).GetDatatableData()["IS_STATUS"]
+
+            var flagAuth = false;
+            var message = "";
+            if (company == undefined || company == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.COMPANY_CODE) " + "<br />";
+
+            }
+            if (month == undefined || month == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH) " + "<br />";
+            }
+
+            if (year == undefined || year == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR) " + "<br />";
+
+            }
+            if (company != undefined && company != '' && month != undefined && month != '' && year != undefined && year != '') {
+                flagAuth = true;
+            }
+            if (flagAuth) {
+                if (available.toUpperCase() === "3") {
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonEdit' + " ได้", "E");
+                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+                }
+                else {
+                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                    var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormStateEdit';
+
+                    redirectTo(url);
+
+                }
+            }
+            else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+            }
+        });
+
+        //Copy
+        $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
+
+            redirectTo(url);
+        });
+
+        //Delete
+        $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
+            var id = $(this).GetDatatableData()["ID"];
+            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"];
+            var month = $(this).GetDatatableData()["INV_MONTH"];
+            var year = $(this).GetDatatableData()["INV_YEAR"];
+            var company = $(this).GetDatatableData()["COMPANY_CODE"];
+            var available = $(this).GetDatatableData()["IS_STATUS"]
+            if (id != 0) {
+                if (available.toUpperCase() === "3") {
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonDelete' + " ได้", "E");
+                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+                }
+                else {
+                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                    var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormActionDelete';
+                    redirectTo(url);
+                }
+            }
+            else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ไม่มีข้อมูลใบแจ้งหนี้ในรายการนี้", "E");
+                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+            }
+
+        });
+        //Close
+        $('#dataListTable tbody').on('click', '.true-dt-button-close', function () {
+            var id = $(this).GetDatatableData()["ID"];
+            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"]
+            var month = $(this).GetDatatableData()["INV_MONTH"];
+            var year = $(this).GetDatatableData()["INV_YEAR"];
+            var company = $(this).GetDatatableData()["COMPANY_CODE"];
+            var available = $(this).GetDatatableData()["IS_STATUS"]
+            if (id != 0) {
+                if (available.toUpperCase() === "3") {
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonClose' + " ได้", "E");
+                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+                }
+                else {
+                    displayConfirmActionPopup('@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveHeader', '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody', 'default');
+                    $getid = id;
+                    $getmonth = month;
+                    $getyear = year;
+                    $getcompany = company;
+                    $getdes_code = des_code;
+                    flagClose = true;
+
+                    @*//$(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                    var url = '@Url.Action("ManageClose", "Invoice", new { Area = "Invoice" })'
+                    blockUI();
+                    //$this.button("loading");
+                    $.ajax({
+                        url: url,
+                        data: {
+                            "recordKey": id,
+                            "monthValue": month,
+                            "yearValue": year,
+                            "companyCode": company,
+                            "paymentItemCode":des_code
+                        },
+                        cache: false,
+                        success: function (html)
+                        {
+                            //displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", "@BBDEVSYS.Content.text.ResourceText.SuccessfulSave", "S", '@Url.Action("List", "Invoice", new { Area = "Invoice" })');
+                        }
+                    });
+
+                    unblockUI();
+                    //redirectTo(url);*@
+
+                }
+            }
+            else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ไม่มีข้อมูลใบแจ้งหนี้ในรายการนี้", "E");
+                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+            }
+        });
+
+        var allButton = ['display', 'edit_inv', 'delete'];
+        var SpinBtn = ['display'];
+        loadingButton(allButton, SpinBtn);
+
+    });
+    function okActionCallback() {
+        if (flagClose) {
+            //$(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+            var url = '@Url.Action("ManageClose", "Invoice", new { Area = "Invoice" })'
+            blockUI();
+            //$this.button("loading");
+            $.ajax({
+                url: url,
+                data: {
+                    "recordKey": $getid,
+                    "monthValue": $getmonth,
+                    "yearValue": $getyear,
+                    "companyCode": $getcompany,
+                    "paymentItemCode": $getdes_code
+                },
+                cache: false,
+                success: function (html) {
+                    if (html.success) {
+                        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", "@BBDEVSYS.Content.text.ResourceText.SuccessfulSave", "S");
+
+                        //Reload table data
+                        $('#dataListTable').DataTable().ajax.reload();
+                        //detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', '@Url.Action("List", "Accrued", new { Area = "Accrued" })')
+
+                        //window.location.reload(true);
+                    } else {
+                        var message = "";
+                        for (var i = 0; i < html.errorList.length; i++) {
+                            message = message + html.errorList[i].Message + "<br />";
+                        }
+                        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+                        $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+                    }
+                }
+            });
+
+            unblockUI();
+            //redirectTo(url);
+        }
+    }
+
+
+</script>

@@ -1,0 +1,482 @@
+﻿@model BBDEVSYS.ViewModels.AccruedUpload.AccruedUploadViewModel
+@using BBDEVSYS.Services.Shared
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAccruedUpload;
+}
+
+@using (Html.BeginForm("SubmitForm", "AccruedUpload", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    @*<div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">รายละเอียด</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.UploadType)
+                            </label>
+
+                            <div class="col-xs-12 col-md-6 true-radio-div">
+
+                                @Html.RadioButtonFor(m => m.UploadType, "Replace", new { id = "UploadType_Replace", @class = "form-control true-radio-exception" })
+                                @Html.LabelFor(m => m.UploadType, BBDEVSYS.Content.text.ResourceText.Replace, new { @class = "true-option-text", @for = "UploadType_Replace" })
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+
+
+                                @Html.RadioButtonFor(m => m.UploadType, "Add", new { id = "UploadType_Add", @class = "form-control true-radio-exception" })
+                                @Html.LabelFor(m => m.UploadType, BBDEVSYS.Content.text.ResourceText.Add, new { @class = "true-option-text", @for = "UploadType_Add" })
+
+                            </div>
+                        </div>
+                        <div class="form-group ">
+
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.AccruedUploadStockType)
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @Html.DropDownListFor(m => m.AccruedUploadStockType, new SelectList(Model.AccruedUploadStockTypeValueHelp, "ValueKey", "ValueText"), "", new { @class = "form-control input-sm ", style = "width:100%;", @onchange = "onChangeGetMatType(this.value)" })
+                                @Html.ValidationMessageFor(m => m.AccruedUploadStockType, "", new { @class = "text-danger" })
+
+                            </div>
+                        </div>
+                        <div class="form-group ">
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.WarehouseCode)
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @Html.DropDownListFor(m => m.WarehouseCode, new SelectList(Model.WarehouseCodeValueHelp, "Code", "Name"), "", new { @class = "form-control input-sm whCodeDDL true-multipleselect ", style = "width:100%;" ,@onchange = "onChangeCritiria()" })
+                                @Html.ValidationMessageFor(m => m.WarehouseCode, "", new { @class = "text-danger" })
+
+
+                            </div>
+                        </div>
+                      
+
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
+                                @BBDEVSYS.Content.text.ResourceText.File
+                            </label>
+                            <div class="col-xs-12 col-md-9">
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload">
+                                </span>
+                                <div>
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <table class="no-footer" id="attachmentTable">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-3 true-control-label">
+                                @Html.LabelFor(m => m.UploadRemark)
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @Html.TextAreaFor(m => m.UploadRemark, new { @class = "form-control", rows = 3 })
+                                @Html.ValidationMessageFor(m => m.UploadRemark, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12" style="padding-top: 20px">
+                            <div>
+
+                                <table id="uploadItemTable" class="table table-striped table-hover no-footer dtr-inline true-table-detail-item table-fix-column" style="display: block; overflow-x: auto; table-layout: fixed; width: 100%">
+                                    <thead id="uploadItemHeader">
+                                        <tr>
+                                            <th style="min-width:200px; text-align:left;" class="fixedColumn colStatus">@BBDEVSYS.Content.text.ResourceText.Status</th>
+                                            <th style="min-width:190px;" class="fixedColumn ">@BBDEVSYS.Content.text.ResourceText.ConsumableCode</th>
+                                            <th style="min-width:300px;" class="fixedColumn ">@BBDEVSYS.Content.text.ResourceText.ConsumableNameTH</th>
+                                            <th style="min-width:790px;" class="checkHeaderHeight colStatusNext">@BBDEVSYS.Content.text.ResourceText.Amount</th>
+                                            <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.PricePerUnit</th>
+                                            <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.PickUpDate</th>
+                                            <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.BudgetCostCenter</th>
+                                            <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.PickUpOrg</th>
+                                        </tr>
+
+                                    </thead>
+                                    <tbody id="uploadItemBody">
+                                        @if (Model.AccruedUploadItemList.Count == 0)
+                                        {
+                                            <tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>
+                                        }
+                                        else
+                                        {
+                                            Html.RenderPartial("~/Views/AccruedUpload/AccruedUploadItems.cshtml", Model.AccruedUploadItemList);
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>*@
+
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <button type="button" class="btn btn-warning authDisplay" id="infoBackButton" onclick="actionButtonBack();">
+                <span class="fa fa-chevron-circle-left"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
+            </button>
+            <button type="button" class="btn btn-info authManage" id="verifyButton" onclick="actionButton('@ConstantVariableService.FormActionValidate');">
+                <span class="glyphicon glyphicon-check"></span>
+                <span id="verifyButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonValidate</span>
+            </button>
+            <button type="button" class="btn btn-instagram authManage" id="uploadButton" onclick="actionButton('@ConstantVariableService.FormActionCreate');">
+                <span class="fa fa-upload"></span>
+                <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
+            </button>
+
+        </div>
+    </div>
+
+    <div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmPopup">
+            @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+        </div>
+    </div>
+    <div>
+        <div id="confirmBackPopup">
+            @Html.Partial("~/Views/Shared/ConfirmBackPopup.cshtml")
+        </div>
+    </div>
+    @Html.Partial("Javascript/AttachmentJavaScript")
+
+    @Html.HiddenFor(m => m.ID)
+    @Html.HiddenFor(m => m.FormState)
+    @Html.HiddenFor(m => m.FormAction)
+
+    @Html.HiddenFor(m => m.CREATE_BY)
+    @Html.HiddenFor(m => m.CREATE_DATE)
+    @Html.HiddenFor(m => m.MODIFIED_BY)
+    @Html.HiddenFor(m => m.MODIFIED_DATE)
+
+    @Html.HiddenFor(m => m.UploadStatus)
+   // @Html.HiddenFor(m => m.UploadDate)
+    @Html.HiddenFor(m => m.UPLOAD_BY)
+    @Html.HiddenFor(m => m.UserSuperAdmin)
+
+   // @Html.HiddenFor(m => m.UploadType , new { id = "Get_UploadType" })
+
+}
+<script type="text/javascript">
+
+    function onChangeCritiria() {
+        deleteAllAttachFile('attachmentTable');
+        setEmpltyUploadTable();
+    }
+
+    function setEmpltyUploadTable() {
+        $("#uploadItemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');
+    }
+
+    function callbackDeleteAttachFile(button) {
+        //Clear upload item table
+        setEmpltyUploadTable()
+    }
+
+    function callbackDeleteAllAttachFile(tableID) {
+        //Clear upload item table
+        setEmpltyUploadTable()
+    }
+    function callbackAddAttachFile() {
+        var fileName = $('#lastSavedFilename').val();
+        //var uploadType = $('input[name=UploadType]:checked').val();
+        //var warehousrCode = $('#WarehouseCode').val();
+        //var matStockType = $('#AccruedUploadStockType').val();
+        var row = $('#uploadItemBody').children('tr:first');
+
+        LoadingRow(row, 'on', true)
+
+        $.ajax({
+            url: '@Url.Action("ImportExcel", "AccruedUploadStockUpload", new { Area = "AccruedUpload" })',
+            data: {
+                "fileName": fileName,
+                //"uploadType": uploadType,
+                //"warehouseCode": warehousrCode,
+                //"matStockType": matStockType
+
+            },
+            cache: false,
+            success: function (response) {
+                if (response.success) {
+                    //console.log(response.html);
+                    $("#uploadItemBody").html(response.html);
+                }
+                else {
+                    //setEmpltyUploadTable();
+                    //Remove uploaded file
+                    var message = '';
+                    for (var i = 0; i < response.errorList.length; i++) {
+                        message = message + response.errorList[i].Message + "<br />";
+                        console.log(message)
+                    }
+
+                    deleteAllAttachFile('attachmentTable');
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
+
+                    row = $('#uploadItemBody').children('tr:first');
+                    LoadingRow(row, 'off', true)
+                    setEmpltyUploadTable();
+                }
+            }
+        }).done(function (result) {
+
+        });
+    }
+    function actionButton(formAction) {
+        $('#FormAction').val(formAction);
+        var headerMessage = "default";
+        var bodyMessage = "default";
+
+        if (formAction == '@ConstantVariableService.FormActionValidate') {
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmValidateHeader';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmValidateBody';
+        }
+        else if (formAction == '@ConstantVariableService.FormActionCreate') {
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmUploadJobHeader';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmUploadJobBody';
+        }
+
+        detailActionButton('@Model.FormState', formAction, 'detailForm', headerMessage, bodyMessage, 'default');
+    }
+
+    function actionButtonBack() {
+        goBack('@Model.FormState', '@Url.Action("List", "AccruedUpload", new { Area = "Accrued" })');
+    }
+
+    function onChangeGetMatType(val) {
+        blockUI();
+        var data = val;
+        var itemsWh = "<option value='" + "" + "'>" + "" + "</option>";
+
+        $.ajax({
+            url: '@Url.Action("GetWarehouse", "AccruedUpload", new { Area = "Accrued" })',
+            data: {
+                "matType": $('#AccruedUploadStockType').val()
+            },
+            cache: false,
+            success: function (_data) {
+
+                $.each(_data.WarehouseCodeValueHelp, function (index, optiondata) {
+                    itemsWh += "<option value='" + optiondata.Code + "'>" + optiondata.Name + "</option>";
+                });
+                $('#WarehouseCode').html(itemsWh)
+                if ($("#WarehouseCode").find('option').length < 1 || $("#WarehouseCode option:selected").val() == '') {
+                    $(".whCodeDDL").select2({
+                        placeholder:'' @*'@BBDEVSYS.Content.text.ValidatorMessage.cannot_found_matType'*@
+                    });
+                } else {
+                    //Remove placeholder
+                    $(".whCodeDDL").select2();
+
+                }
+                onChangeCritiria();
+
+                unblockUI();
+            }
+        });
+    }
+    function setUploadTypeSuperAdmin() {
+        var autAdmin = $("#UserSuperAdmin").val();
+        if (autAdmin == 'False') {
+            $('input[name=UploadType]').attr("disabled", "disabled")
+            $('#Get_UploadType').removeAttr('disabled')//.val('@BBDEVSYS.Content.text.ResourceText.Add')
+            //$('input[name=UploadType]:checked').val('');
+        }
+    }
+   
+    //Callback function when click ok button on confirmation popup
+    function okActionCallback() {
+        //detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', '@Url.Action("List", "Job", new { Area = "Job" })')
+
+        if (isNoHistory()) {
+            var url = '@Url.Action("List", "AccruedUpload", new { Area = "Accrued" })';
+            @*if ($('#FormState').val().match('^@ConstantVariableService.FormStateWorkflowActivity')) {
+                url = '@Url.Action("Index", "Inbox", new { Area = "Inbox" })'
+            }*@
+
+            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', url)
+        }
+        else {
+            var action = $('#FormAction').val();
+
+            if (action == '@ConstantVariableService.FormActionValidate') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
+            }
+            else if (action == '@ConstantVariableService.FormActionCreate') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+            }
+        }
+    }
+    function RedirectCallbackOkAction() {
+        //Prevent redirect page
+    }
+    $(document).ready(function () {
+        //Set UI from form state (readonly, editable etc.)
+        detailSetFormUI($('#FormState').val())
+
+        //Set Super Admin
+        setUploadTypeSuperAdmin();
+
+        $('input[name=UploadType]').iCheck({
+            checkboxClass: "icheckbox_minimal-blue",
+            radioClass: "iradio_minimal-blue"
+        });
+
+        if ($("#WarehouseCode").find('option').length < 1 || $("#WarehouseCode option:selected").val() == '') {
+            $(".whCodeDDL").select2({
+                placeholder: ''@*'@BBDEVSYS.Content.text.ValidatorMessage.cannot_found_matType'*@
+            });
+        } else {
+            //Remove placeholder
+            $(".whCodeDDL").select2();
+
+        }
+        //Set attachment column visibility
+        setColumnVisibility();
+        //setUploadItemHeader();
+
+
+        @*//SetFormStateDisplay
+        if ($('#FormState').val() == '@ConstantVariableService.FormStateDisplay') {
+            $(".colStatus").hide();
+            var colwidth =parseInt( $(".colStatusNext").css("min-width").replace("px", "") );
+            var padLeft = $(".colStatusNext").css("pading-left")// - 200;
+           
+           
+            //$(".colStatusNext").css({ "min-width": colwidth+"px", "padding-left": padLeft +"px " })
+        }
+        else {
+            $(".colStatus").show();
+            //$(".colStatusNext").css({ "min-width": "790px", "padding-left": "690px " })
+        }*@
+    });
+</script>
+<style>
+    .table-fix-column > thead:first-child > tr:first-child > th:first-child,
+    .table-fix-column > thead:first-child > tr:first-child > th:nth-child(2),
+    .table-fix-column > thead:first-child > tr:first-child > th:nth-child(3) {
+        position: absolute;
+        display: inline-block;
+        background-color: #d2d2d2;
+        border-bottom: 1px solid #afafaf;
+    }
+
+    .table-fix-column > tbody > tr:nth-child(even) > td:nth-child(2),
+    .table-fix-column > tbody > tr:nth-child(even) > td:nth-child(3) {
+        position: absolute;
+        display: inline-block;
+        background-color: #f9f9f9;
+    }
+
+    .table-fix-column > tbody > tr:nth-child(odd) > td:nth-child(2),
+    .table-fix-column > tbody > tr:nth-child(odd) > td:nth-child(3){
+        position: absolute;
+        display: inline-block;
+        background-color: white;
+    }
+
+    .table-fix-column > tbody > tr:nth-child(even) > td:nth-child(4) {
+        position: absolute;
+        display: inline-block;
+        background-color: #f9f9f9;
+        border-right: 1px solid #afafaf;
+    }
+
+    .table-fix-column > tbody > tr:nth-child(odd) > td:nth-child(4) {
+        position: absolute;
+        display: inline-block;
+        background-color: white;
+        border-right: 1px solid #afafaf;
+    }
+
+
+
+    .table-fix-column > thead:first-child > tr:first-child > th:nth-child(2) {
+        left: 210px;
+    }
+
+    .table-fix-column > tbody > tr > td:nth-child(3) {
+        left: 210px !important;
+        z-index: 1;
+    }
+
+    .table-fix-column > thead:first-child > tr:first-child > th:nth-child(3) {
+        left: 390px;
+    }
+
+    .table-fix-column > tbody > tr > td:nth-child(4) {
+        left: 390px !important;
+        z-index: 1;
+    }
+
+    .table-fix-column > thead:first-child > tr:first-child > th:nth-child(4) {
+         padding-left: 690px;
+    }
+
+    .table-fix-column > tbody > tr > td:nth-child(5) {
+         padding-left: 690px !important;
+        z-index: 1;
+    }
+
+</style>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

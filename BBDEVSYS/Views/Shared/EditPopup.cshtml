@@ -1,0 +1,124 @@
+﻿@using BBDEVSYS.Services.Shared
+<div class="modal fade" id="editPopupDiv" role="dialog">
+    <div class="modal-dialog" style="width:80%; margin-left:10%; margin-right:10%;">
+
+        <!-- Modal content-->
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 class="modal-title">
+                    <span class="true-success-text" id="popupHeaderReview">@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader</span>
+                </h4>
+            </div>
+            <div class="modal-body" id="popupBodyReview">
+
+            </div>
+            <div class="modal-footer">
+                <button id="saveEditPopupButton" type="button" class="btn btn-success authManage" onclick="editPopupSaveActionCallback();">
+                    <span class="cust-button-text" id="saveEditPopupButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonSave</span>
+                </button>
+                <button id="closeEditPopupButton" type="button" class="btn btn-default authDisplay" onclick="closePopup('editPopupDiv');">
+                    <span id="closeEditPopupButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonClosePopup</span>
+                </button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div>
+    <div id="ep_confirmPopup">
+        <div class="modal fade" id="ep_confirmDiv" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h5 class="modal-title true-confirm-text">
+                            <i class="glyphicon glyphicon-question-sign"></i>
+                            <span class="true-confirm-text" id="confirmActionHeaderMessage">ยืนยัน</span>
+                        </h5>
+                    </div>
+                    <div class="modal-body true-confirm-text">
+                        <p><span id="ep_confirmActionBodyMessage">คุณยืนยันการกดปุ่มหรือไม่</span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="cancelActionPopupButton" type="button" class="btn btn-default authDisplay" onclick="closePopup('ep_confirmDiv');"><span class="cust-confirm-text">@BBDEVSYS.Content.text.ResourceText.ButtonCancel</span></button>
+                        <button id="okActionPopupButton" type="button" class="btn btn-danger authDisplay" onclick="closePopup('ep_confirmDiv'); epOkActionCallback();"><span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.ButtonConfirm</span></button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div>
+    <div id="ep_messagePopup">
+        <div class="modal fade" id="ep_messagePopupDiv" role="dialog">
+            <div class="modal-dialog">
+
+                <!-- Modal content-->
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <h4 class="modal-title">
+                            <i id="popupIcon" class="glyphicon glyphicon-ban-circle true-icon-error"></i>
+                            <span class="true-error-text" id="popupHeaderMessage">@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader</span>
+                        </h4>
+                    </div>
+                    <div class="modal-body">
+                        <p><span id="ep_popupBodyMessage" class="true-error-text">@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader</span></p>
+                    </div>
+                    <div class="modal-footer">
+                        <button id="closeMessagePopupButton" type="button" class="btn btn-default authDisplay" onclick="closePopup('ep_messagePopupDiv');">
+                            <span class="true-error-text" id="closeMessagePopupButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonClosePopup</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+  
+    function epSetFormUI(formState, parentID) {
+        if (formState == '@ConstantVariableService.FormStateDisplay') {
+            setFormReadonly(parentID);
+        }
+        else if (formState == '@ConstantVariableService.FormStateCreate' || formState == '@ConstantVariableService.FormStateEdit' || formState == '@ConstantVariableService.FormStateCopy' ||
+                 formState == '@ConstantVariableService.FormStateManage') {
+            setFormManageData();
+
+            //Change text of save button
+            $('#saveEditPopupButton').show();
+            $('#saveEditPopupButton').removeClass('btn-danger').addClass('btn-instagram');
+            $('#saveEditPopupButton span.glyphicon').removeClass('glyphicon-trash').addClass('glyphicon-save');
+            $('#saveEditPopupButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonSave');
+        }
+        else if (formState == '@ConstantVariableService.FormStateDelete') {
+            setFormReadonly(parentID);
+
+            //Change text of save button
+            $('#saveEditPopupButton').show();
+            $('#saveEditPopupButton').removeClass('btn-instagram').addClass('btn-danger');
+            $('#saveEditPopupButton span.glyphicon').removeClass('glyphicon-save').addClass('glyphicon-trash');
+            $('#saveEditPopupButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonDelete');
+        }
+    }
+
+
+    $(document).ready(function () {
+        $("#editPopupDiv").on('shown.bs.modal', function (event) {
+            //Clear event handler
+            $('#ep_messagePopupDiv').off('click', '.btn, .close');
+        });
+
+
+    });
+
+</script>

@@ -1,0 +1,110 @@
+﻿@model BBDEVSYS.ViewModels.Invoice.InvoiceViewModel
+@{
+    ViewBag.Title = "Home";
+}
+<style>
+    .true-datatable-dashboard {
+    border-top: 3px solid rgba(239, 88, 88, 1);
+    border-right: 1px solid #afafaf;
+    border-left: 1px solid #afafaf;
+    border-bottom: 1px solid #afafaf;
+    border-radius: 3px;
+    width: 100%;
+}
+</style>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:hidden">
+                    <table class="table   true-datatable-dashboard " id="dataListTable" style="width:2800px"></table>
+                </div>
+
+            </div>
+        </div>
+        @*<div class="box-body">
+        <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:hidden">
+            <table class="table table-bordered table-striped true-datatable" id="dataListTable" style="width:2500px"></table>
+
+
+        </div>
+
+    </div>*@
+    </div>
+</div>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+
+        function setNameColume() {
+            var nameColumn = []
+            var getMonth = new Date().getMonth() + 1;
+
+            //Date.prototype.getMonthNameShort = function (lang) {
+            //    lang = lang && (lang in Date.locale) ? lang : 'en';
+            //    return Date.locale[lang].month_names_short[this.getMonth()];
+            //};
+
+
+            //Date.locale = {
+            //    en: {
+            //        month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            //        month_names_short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            //    }
+            //};
+            var month_names_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+            nameColumn.push({ "data": "FEE", "title": "รายการ", "type": "num", "width": "250px" });
+
+
+            for (var i = 1; i <= getMonth; i++) {
+                nameColumn.push({ "data": month_names_short[i - 1], "title": "Month" + i, "type": "string", "width": "200" });
+            }
+            nameColumn.push({ "data": "CHARGE", "hidden": true });
+            return nameColumn;
+
+        }
+        var columns = setNameColume();
+        //var colums = [
+        //      { "data": "Roles", "title": "ลำดับที่", "type": "num", "width": "100px" },
+        //      { "data": "COMPANY_NAME", "title": "Company", "type": "string", "width": "200" },
+        //      { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
+        //      { "data": "INV_YEAR", "title": "Year", "type": "num", "width": "100px" },
+        //      { "data": "GL_ACCOUNT", "title": "GL Account", "type": "string", "width": "100px" },
+        //      { "data": "COST_CENTER", "title": "Cost Center", "type": "string", "width": "100px" },
+        //      { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
+        //      { "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "100px", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+        //      { "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "100px" },
+        //      { "data": "PRO_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "150" },
+        //      { "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "150" }
+        //];
+        displayDataTablescroll('dataListTable', '@Url.Action("GetList","Home")', columns);
+
+       
+        //$('#dataListTable tbody').filter(function () {
+           
+        //    console.log($(this).text())
+        //    return $(this).text()== '1';
+        //}).css('background-color', '#f1f442');
+
+        //$('#dataListTable tr').each(function () {
+        //    console.log($(this).parent('tbody').css('background-color', '#e8789d'))
+        //});
+        $('#dataListTable tr ').each(function () {
+            console.log($(this).closest('tbody').css('background-color', '#e8789d'));
+        });
+       
+    });
+
+</script>
+<style>
+    .datatable-inv {
+       background-color:#f1f444;
+    }
+</style>
+
+
+

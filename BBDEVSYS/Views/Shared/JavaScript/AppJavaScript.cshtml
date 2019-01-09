@@ -1,0 +1,1377 @@
+﻿@using BBDEVSYS.Services.Shared
+
+<script type="text/javascript">
+    /*******************************************************/
+    /* Global variable
+    /*******************************************************/
+    //Datatable language
+    var global_datatableLanguage = {
+        "decimal": "",
+        "emptyTable": "No data available in table",
+        "info": "แสดงข้อมูล _START_ ถึง _END_ จากทั้งหมด _TOTAL_ บรรทัด",
+        "infoEmpty": "ไม่พบข้อมูล",
+        "infoFiltered": "(filtered from _MAX_ total entries)",
+        "infoPostFix": "",
+        "thousands": ",",
+        "lengthMenu": "Show _MENU_ entries",
+        "loadingRecords": "<i class='fa fa-refresh fa-spin'></i>  Loading...",
+        "processing": "Processing...",
+        "search": "Search:",
+        "zeroRecords": "@BBDEVSYS.Content.text.ResourceText.ZeroRecords",
+        "paginate": {
+            "first": "หน้าแรก",
+            "last": "หน้าสุดท้าย",
+            "next": "ถัดไป",
+            "previous": "ก่อนหน้า"
+        },
+        "aria": {
+            "sortAscending": ": activate to sort column ascending",
+            "sortDescending": ": activate to sort column descending"
+        }
+    };
+
+    @*//Form state
+    var global_formStateDisplay = '@ConstantVariableService.FormStateDisplay';
+    var global_formStateCreate = '@ConstantVariableService.FormStateCreate';
+    var global_formStateEdit = '@ConstantVariableService.FormStateEdit';
+    var global_formStateCopy = '@ConstantVariableService.FormStateCopy';
+    var global_formStateDelete = '@ConstantVariableService.FormStateDelete';
+    var global_formStateEvaluate = '@ConstantVariableService.FormStateEvaluate';
+    var global_formStateWorkflowActivity = '@ConstantVariableService.FormStateWorkflowActivity';
+
+    //Form action
+    var global_formActionCreate = '@ConstantVariableService.FormActionCreate';
+    var global_formActionEdit = '@ConstantVariableService.FormActionEdit';
+    var global_formActionCopy = '@ConstantVariableService.FormActionCopy';
+    var global_formActionDelete = '@ConstantVariableService.FormActionDelete';
+    var global_formActionEvaluate = '@ConstantVariableService.FormActionEvaluate';
+    var global_formActionFinishEva = '@ConstantVariableService.FormActionFinishEva';
+    var global_formActionSendEva = '@ConstantVariableService.FormActionSendEva';
+    var global_formActionSendRequest = '@ConstantVariableService.FormActionSendRequest';*@
+
+
+    /*******************************************************/
+    /* Global function
+    /*******************************************************/
+
+    //Popup function
+    function displayMessagePopup(headerMessage, bodyMessage, messageType, popupPrefixID) {
+
+
+        var popupID = "messagePopupDiv";
+        var popupMessageID = "popupBodyMessage"
+
+        if (popupPrefixID) {
+            if (popupPrefixID.toUpperCase() != 'DEFAULT') {
+                popupID = popupPrefixID + popupID;
+                popupMessageID = popupPrefixID + popupMessageID;
+            }
+        }
+
+        $('#' + popupID).parent().find('#popupHeaderMessage').text(headerMessage);
+
+        var popupBodyMessage = document.getElementById(popupMessageID);
+        popupBodyMessage.innerHTML = bodyMessage;
+
+        $('#' + popupID).parent().find('#popupIcon').removeClass();
+        $('#' + popupID).parent().find('#popupHeaderMessage').removeClass();
+        $('#' + popupID).parent().find('#' + popupMessageID).removeClass();
+        $('#' + popupID).parent().find('#closeMessagePopupButtonText').removeClass();
+
+        if (messageType == "E") {
+            $('#' + popupID).parent().find('#popupIcon').addClass('glyphicon glyphicon-ban-circle true-icon-error');
+            $('#' + popupID).parent().find('#popupHeaderMessage').addClass('true-error-text');
+            $('#' + popupID).parent().find('#' + popupMessageID).addClass('true-error-text');
+            $('#' + popupID).parent().find('#closeMessagePopupButtonText').addClass('true-error-text');
+        }
+        else if (messageType == "S") {
+            $('#' + popupID).parent().find('#popupIcon').addClass('glyphicon glyphicon-info-sign true-icon-success');
+            $('#' + popupID).parent().find('#popupHeaderMessage').addClass('true-success-text');
+            $('#' + popupID).parent().find('#' + popupMessageID).addClass('true-success-text');
+            $('#' + popupID).parent().find('#closeMessagePopupButtonText').addClass('true-success-text');
+        }
+        else {
+            $('#' + popupID).parent().find('#popupIcon').addClass('glyphicon glyphicon-info-sign true-icon-information');
+            $('#' + popupID).parent().find('#popupHeaderMessage').addClass('true-information-text');
+            $('#' + popupID).parent().find('#' + popupMessageID).addClass('true-information-text');
+            $('#' + popupID).parent().find('#closeMessagePopupButtonText').addClass('true-information-text');
+        }
+
+
+        $('#' + popupID).modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function displayConfirmActionPopup(headerMessage, bodyMessage, popupPrefixID) {
+
+        var popupID = 'confirmDiv';
+        var popupMessageID = 'confirmActionBodyMessage';
+
+        if (popupPrefixID) {
+            if (popupPrefixID.toUpperCase() != 'DEFAULT') {
+                popupID = popupPrefixID + popupID;
+                popupMessageID = popupPrefixID + popupMessageID;
+            }
+        }
+
+        $('#' + popupID).parent().find('#confirmActionHeaderMessage').text(headerMessage);
+
+        var popupBodyMessage = document.getElementById(popupMessageID);
+        popupBodyMessage.innerHTML = bodyMessage;
+
+        //$('#confirmDiv').parent().find('#confirmActionBodyMessage').text(bodyMessage);
+
+        $('#' + popupID).modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function displayConfirmBackPopup(formState, backUrl, headerMessage, bodyMessage, popupPrefixID) {
+
+        var popupID = 'confirmBackDiv';
+        var popupMessageID = 'confirmBackBodyMessage';
+
+        if (popupPrefixID) {
+            if (popupPrefixID.toUpperCase() != 'DEFAULT') {
+                popupID = popupPrefixID + popupID;
+                popupMessageID = popupPrefixID + popupMessageID;
+            }
+        }
+
+        if (headerMessage) {
+            $('#' + popupID).parent().find('#confirmBackHeaderMessage').text(headerMessage);
+        }
+
+        if (bodyMessage) {
+            var popupBodyMessage = document.getElementById(popupMessageID);
+            popupBodyMessage.innerHTML = bodyMessage;
+        }
+
+        $('#backPopupFormState').val(formState);
+        $('#backPopupBackUrl').val(backUrl);
+
+        $('#' + popupID).modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function displayModelStateError(form, errorList, popupPrefixID) {
+        var popupMessage = "";
+        var validator = form.validate();
+        var focusElement = "";
+
+        var validateError = [];
+        for (var i = 0; i < errorList.length; i++) {
+            var error = errorList[i];
+            var fieldKey = error.Key;
+            var message = error.Message;
+
+            popupMessage = popupMessage + message + "<br />"
+
+            if (fieldKey != "" && fieldKey != null) {
+                //Check element is existing
+                if ($('#' + fieldKey).length) {
+                    validateError[fieldKey] = message;
+
+                    focusElement = fieldKey;
+                }
+            }
+        }
+
+        validator.showErrors(validateError);
+
+        //Set focus on error span
+        $('#' + focusElement + '-error').attr('tabindex', function (index, attr) {
+            return 0;
+        });
+        $('#' + focusElement + '-error').focus();
+
+        $('#' + focusElement + '-error').removeAttr('tabindex');
+
+
+        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", popupMessage, "E", popupPrefixID);
+    }
+
+    function displayEditPopup(headerMessage, bodyContent, formState) {
+
+        $("#popupBodyReview").html(bodyContent);
+
+        $('#editPopupDiv').parent().find('#popupHeaderReview').text(headerMessage);
+
+        $('#editPopupDiv').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+
+    function displayReviewPopup(headerMessage, bodyMessage, messageType) {
+        var popupBodyMessage = document.getElementById("popupBodyReview");
+        popupBodyMessage.innerHTML = bodyMessage;
+
+        //Create BodyMessage For Bronser Printer
+        if ($('#PrintSection').length > 0) $('#PrintSection').remove();
+        $('body').prepend('<div id="PrintSection" class="printSection">' + bodyMessage + '</div>')
+
+        $('#reviewPopupDiv').parent().find('#popupHeaderReview').text(headerMessage);
+
+        $('#reviewPopupDiv').parent().find('#popupIcon').removeClass();
+        $('#reviewPopupDiv').parent().find('#popupHeaderReview').removeClass();
+        $('#reviewPopupDiv').parent().find('#popupBodyReview').removeClass();
+        $('#reviewPopupDiv').parent().find('#closeMessagePopupButtonText').removeClass();
+
+        if (messageType == "E") {
+            $('#reviewPopupDiv').parent().find('#popupIcon').addClass('glyphicon glyphicon-ban-circle true-icon-error');
+            $('#reviewPopupDiv').parent().find('#popupHeaderReview').addClass('true-error-text');
+            $('#reviewPopupDiv').parent().find('#popupBodyReview').addClass('true-error-text');
+            $('#reviewPopupDiv').parent().find('#closeReviewPopupButtonText').addClass('true-error-text');
+        }
+        else if (messageType == "S") {
+            $('#reviewPopupDiv').parent().find('#popupIcon').addClass('glyphicon glyphicon-info-sign true-icon-success');
+            $('#reviewPopupDiv').parent().find('#popupHeaderReview').addClass('true-success-text');
+            $('#reviewPopupDiv').parent().find('#popupBodyReview').addClass('true-success-text');
+            $('#reviewPopupDiv').parent().find('#closeReviewPopupButtonText').addClass('true-success-text');
+        }
+        else {
+            $('#reviewPopupDiv').parent().find('#popupIcon').addClass('glyphicon glyphicon-info-sign true-icon-information');
+            $('#reviewPopupDiv').parent().find('#popupHeaderReview').addClass('true-confirm-text');
+            $('#reviewPopupDiv').parent().find('#popupBodyReview').addClass('true-confirm-text');
+            $('#reviewPopupDiv').parent().find('#closeReviewPopupButtonText').addClass('true-confirm-text');
+        }
+
+        $('#reviewPopupDiv').modal({
+            backdrop: 'static',
+            keyboard: false
+        });
+    }
+    //End popup function
+
+    //Block / Unblock UI
+    function blockUI() {
+
+        $.blockUI({
+            centerX: false,
+            centerY: false,
+            //message: '<img src="@Url.Content("~/Content/img/loading-bar.gif")" height="30px" width="200px" />',
+            message: '<img src="@Url.Content("~/Content/img/ring.svg")" " height="200px" width="200px" />',
+            css: { width: '0%', border: '0px solid #FFFFFF', cursor: 'wait', backgroundColor: '#FFFFFF' },
+            overlayCSS: { cursor: 'wait' },
+            baseZ: 100000000,
+        });
+
+        $('.blockUI.blockMsg').center();
+    }
+
+    $.fn.center = function () {
+        var imageWidth = 100;
+        this.css("position", "absolute");
+        this.css("top", ($(window).height() - this.height()) / 2 + $(window).scrollTop() + "px");
+        this.css("left", (($(window).width() - this.width()) / 2 + $(window).scrollLeft()) - imageWidth + "px");
+        return this;
+    }
+
+    function unblockUI() {
+        $.unblockUI();
+    }
+    //End Block / Unblock UI
+
+    //Detail item function
+    function deleteItemRow(btndel) {
+        if (typeof (btndel) == "object") {
+            var tr = $(btndel).closest("tr");
+            $(btndel).closest("tr").addClass("skipMoveItem");
+            $(btndel).closest("tr").css("display", "none");
+
+            tr.find('.detail-item-delete-flag').val("true");
+
+            //$(btndel).closest("tr").remove();
+        } else {
+            return false;
+        }
+    }
+
+    function moveItemRowUp(button) {
+        var skip = false;
+        var cntLoop = 0;
+        var row = $(button).parents("tr:first");
+        var prevRow = row.prev();
+
+        skip = checkSkipItemRow(prevRow);
+
+        while (skip && cntLoop < 50) {
+            prevRow = prevRow.prev();
+
+            skip = checkSkipItemRow(prevRow);
+
+            cntLoop++;
+        }
+
+        row.insertBefore(prevRow);
+
+        return prevRow;
+    }
+
+    function moveItemRowDown(button) {
+        var skip = false;
+        var cntLoop = 0;
+        var row = $(button).parents("tr:first");
+        var nextRow = row.next();
+
+        skip = checkSkipItemRow(nextRow);
+
+        while (skip && cntLoop < 50) {
+            nextRow = nextRow.next();
+
+            skip = checkSkipItemRow(nextRow);
+
+            cntLoop++;
+        }
+
+        row.insertAfter(nextRow);
+
+        return nextRow;
+    }
+
+    function checkSkipItemRow(row) {
+        var skip = false;
+        var nodeName = row.prop('nodeName');
+
+        //Check node is TR
+        if (nodeName != "TR" && nodeName != null) {
+            skip = true;
+        }
+
+        //Check class name
+        if (row.prop('classList') != null) {
+            for (var i = 0; i < row.prop('classList').length; i++) {
+                if (row.prop('classList')[i] == "skipMoveItem") {
+                    skip = true;
+                }
+            }
+        }
+
+        return skip;
+    }
+
+    //End detail item function
+
+    //Dtatable TextBox
+    function getDatatableTextbox(id, datatype) {
+        var txt = '';
+
+        txt = '<input type="text" class="form-control  true-dt-textbox-edit"  id=' + id + '/>';
+        if (datatype) {
+
+            txt = '<input type="text" class="form-control  decimal2digit true-dt-textbox-edit"  value="0"  id=' + id+ '/>';
+        }
+        return txt;
+    }
+    //Datatable function
+    function getDataTableButton(action) {
+        var button = "<div class='btn-group' style='text-align: center;'>";
+
+        for (var i = 0; i < action.length; i++) {
+
+            switch (action[i].toLowerCase()) {
+                case "edit":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-edit authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonEdit"><span class="glyphicon glyphicon-edit"></span>@BBDEVSYS.Content.text.ResourceText.ButtonEdit</a>';
+                    break;
+                case "delete":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-delete authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonDelete"><span class="glyphicon glyphicon-trash"></span>@BBDEVSYS.Content.text.ResourceText.ButtonDelete</a>';
+                    break;
+                case "copy":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-copy authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonCopy"><span class="fa fa-copy"></span>@BBDEVSYS.Content.text.ResourceText.ButtonCopy</a>';
+                    break;
+                case "evaluate":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-evaluate authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonEvaluate"><span class="fa fa-list-ol"></span>@BBDEVSYS.Content.text.ResourceText.ButtonEvaluate</a>';
+                    break;
+                case "display":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-display authDisplay" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonDisplay"><span class="fa fa-file"></span>@BBDEVSYS.Content.text.ResourceText.ButtonDisplay</a>';
+                    break;
+                case "opentask":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-task authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonTask"><span class="fa fa-folder-open-o"></span>@BBDEVSYS.Content.text.ResourceText.ButtonTask</a>';
+                    break;
+                case "request":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-request authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonRequest"><span class="ti-marker-alt" style="font-size: 20px; display: block;" ></span>@BBDEVSYS.Content.text.ResourceText.ButtonRequest</a>';
+                    break;
+                case "manage":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-manage authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonManage"><span class="ti-layout-grid3" style="font-size: 20px; display: block;" ></span>@BBDEVSYS.Content.text.ResourceText.ButtonManage</a>';
+                    break;
+                case "evaresultscore":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-evaresultscore authDisplay" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonEvaResultScore"><span class="glyphicon glyphicon-list-alt" style="font-size: 20px; display: block;" ></span>@BBDEVSYS.Content.text.ResourceText.ButtonEvaResultScore</a>';
+                    break;
+                case "respondent":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-respondent authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonRespondent"><span class="fa fa-list-ol"></span>@BBDEVSYS.Content.text.ResourceText.ButtonRespondent</a>';
+                    break;
+                case "download":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-download authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonDownload"><span class="glyphicon glyphicon-save"></span>@BBDEVSYS.Content.text.ResourceText.ButtonDownload</a>';
+                    break;
+                case "close":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-close authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonClose"><span class="fa fa-check"></span>@BBDEVSYS.Content.text.ResourceText.ButtonClose</a>';
+                    break;
+                case "branch":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-branch authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonBranch"><span class="fa fa-share-alt"></span>@BBDEVSYS.Content.text.ResourceText.ButtonBranch</a>';
+                    break;
+                case "print":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-print authDisplay" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonPrint"><span class="fa fa-print"></span>@BBDEVSYS.Content.text.ResourceText.ButtonPrint</a>';
+                    break;
+                case "cancel":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-cancel authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonCancel"><span class="fa fa-remove"></span>@BBDEVSYS.Content.text.ResourceText.ButtonCancel</a>';
+                    break;
+                case "deduct":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-deduct authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonDeduct"><span class="glyphicon glyphicon-edit"></span>@BBDEVSYS.Content.text.ResourceText.ButtonDeduct</a>';
+                    break;
+                case "history":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-history authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonHistory"><span class="fa fa-file"></span>@BBDEVSYS.Content.text.ResourceText.ButtonHistory</a>';
+                    break;
+                case "statement":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-statement authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonStatement"><span class="fa fa-money"></span>@BBDEVSYS.Content.text.ResourceText.ButtonStatement</a>';
+                    break;
+                case "undo":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-undo authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonUndo"><span class="fa fa-undo"></span>@BBDEVSYS.Content.text.ResourceText.ButtonUndo</a>';
+                    break;
+                case "receive":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-receive authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.Receive"><span class="fa fa-get-pocket"></span>@BBDEVSYS.Content.text.ResourceText.Receive</a>';
+                    break;
+                case "display_sl":
+                    button = button + '<button type="button" class="true-table-detail-icon-button true-dt-button-display_sl" title="แสดง" ><i style="vertical-align:middle; padding: 0 5px;" class="fa fa-file-text-o"></i></button>';
+                    break;
+                case "edit_sl":
+                    button = button + '<button type="button" class="true-table-detail-icon-button true-dt-button-edit_sl" title="แก้ไข" ><i style="vertical-align:middle; padding: 0 5px;" class="glyphicon fa fa-pencil"></i></button>';
+                    break;
+                case "down_sl":
+                    button = button + '<button type="button" class="true-table-detail-icon-button true-dt-button-down_sl" title="นำเข้า" ><i style="vertical-align:middle; padding: 0 5px;" class="fa fa-arrow-down"></i></button>';
+                    break;
+                case "up_sl":
+                    button = button + '<button type="button" class="true-table-detail-icon-button true-dt-button-up_sl" title="นำออก" ><i style="vertical-align:middle; padding: 0 5px;" class="fa fa-arrow-up"></i></button>';
+                    break;
+                case "approve_sl":
+                    button = button + '<button type="button" class="true-table-detail-icon-button true-dt-button-approve_sl" title="อนุมัติ" ><i style="vertical-align:middle; padding: 0 5px;" class="fa fa-check"></i></button>';
+                    break;
+                case "reject_sl":
+                    button = button + '<button type="button" class="true-table-detail-icon-button true-dt-button-reject_sl" title="ไม่อนุมัติ" ><i style="vertical-align:middle; padding: 0 5px;" class="fa fa-close"></i></button>';
+                    break;
+                case "edit_inv":
+                    button = button + '<a href="#" class="btn btn-app true-dt-button-edit_inv authManage" data-toggle="tooltip" title="@BBDEVSYS.Content.text.ResourceText.ButtonEditInvoice"><span class="glyphicon glyphicon-edit"></span>@BBDEVSYS.Content.text.ResourceText.ButtonEditInvoice</a>';
+                    break;
+            }
+        }
+        button = button + "</div>";
+
+        return button;
+    }
+
+    function editDataTable(tableID, ajaxUrl, columns, displayOnly) {
+
+        if (!displayOnly) {
+            displayOnly = '@ViewBag.DisplayOnly';
+        }
+
+        var xhr = new window.XMLHttpRequest();
+        $('#' + tableID).DataTable({
+            "ajax": {
+                url: ajaxUrl,
+                async: true
+            },
+            "responsive": true,
+            "columns": columns,
+            //"autoWidth": false,
+            "language": global_datatableLanguage,
+            "aaSorting": [],
+            "fnDrawCallback": function (oSettings) { listSetFormUI(displayOnly) }
+        });
+
+        //Set Disable Popup Error to Console
+        $.fn.dataTable.ext.errMode = 'none';
+        $('#' + tableID).on('error.dt', function (e, settings, techNote, message) {
+            console.log('An error has been reported by DataTables: ', message);
+        });
+
+
+        //Set Sorting and Filter
+        $('#' + tableID).TableSortingAndFilter(columns, { "tools": "none" });
+
+        //Abort Ajax
+        $('a').click(function () {
+            var all_settings = $('#' + tableID).DataTable().settings();
+            for (var i = 0, settings; (settings = all_settings[i]) ; ++i) {
+                if (settings.jqXHR) {
+                    settings.jqXHR.abort();
+                }
+            }
+        });
+    }
+    function displayDataTable(tableID, ajaxUrl, columns, displayOnly) {
+
+        if (!displayOnly) {
+            displayOnly = '@ViewBag.DisplayOnly';
+        }
+
+        var xhr = new window.XMLHttpRequest();
+        $('#' + tableID).DataTable({
+            "ajax": {
+                url: ajaxUrl,
+                async: true
+            },
+            "responsive": true,
+            "columns": columns,
+            "autoWidth": false,
+            "language": global_datatableLanguage,
+            "aaSorting": [],
+            "fnDrawCallback": function (oSettings) { listSetFormUI(displayOnly) }
+        });
+
+        //Set Disable Popup Error to Console
+        $.fn.dataTable.ext.errMode = 'none';
+        $('#' + tableID).on('error.dt', function (e, settings, techNote, message) {
+            console.log('An error has been reported by DataTables: ', message);
+        });
+
+
+        //Set Sorting and Filter
+        $('#' + tableID).TableSortingAndFilter(columns, { "tools": "none" });
+
+        //Abort Ajax
+        $('a').click(function () {
+            var all_settings = $('#' + tableID).DataTable().settings();
+            for (var i = 0, settings; (settings = all_settings[i]) ; ++i) {
+                if (settings.jqXHR) {
+                    settings.jqXHR.abort();
+                }
+            }
+        });
+    }
+
+    function displayDataTablescroll(tableID, ajaxUrl, columns, displayOnly) {
+
+        if (!displayOnly) {
+            displayOnly = '@ViewBag.DisplayOnly';
+        }
+
+        var xhr = new window.XMLHttpRequest();
+        $('#' + tableID).DataTable({
+            "ajax": {
+                url: ajaxUrl,
+                async: true
+            },
+            //"responsive": true,
+            "columns": columns,
+            //"autoWidth": false,
+            "language": global_datatableLanguage,
+            "aaSorting": [],
+            "fnDrawCallback": function (oSettings) { listSetFormUI(displayOnly) }
+        });
+
+        //Set Disable Popup Error to Console
+        $.fn.dataTable.ext.errMode = 'none';
+        $('#' + tableID).on('error.dt', function (e, settings, techNote, message) {
+            console.log('An error has been reported by DataTables: ', message);
+        });
+
+
+        //Set Sorting and Filter
+        $('#' + tableID).TableSortingAndFilter(columns, { "tools": "none" });
+
+        //Abort Ajax
+        $('a').click(function () {
+            var all_settings = $('#' + tableID).DataTable().settings();
+            for (var i = 0, settings; (settings = all_settings[i]) ; ++i) {
+                if (settings.jqXHR) {
+                    settings.jqXHR.abort();
+                }
+            }
+        });
+    }
+    //End datatable function
+
+    function displayDataTableByJSON(tableID, jsonData, columns, displayOnly) {
+
+        if (!displayOnly) {
+            displayOnly = '@ViewBag.DisplayOnly';
+        }
+
+        var xhr = new window.XMLHttpRequest();
+        var table = $('#' + tableID).DataTable({
+            "data": jsonData,
+            "responsive": true,
+            "columns": columns,
+            "autoWidth": false,
+            "language": global_datatableLanguage,
+            "aaSorting": [],
+            "fnDrawCallback": function (oSettings) { }
+        });
+
+        //Set Disable Popup Error to Console
+        $.fn.dataTable.ext.errMode = 'none';
+        $('#' + tableID).on('error.dt', function (e, settings, techNote, message) {
+            console.log('An error has been reported by DataTables: ', message);
+        });
+
+
+        //Set Sorting and Filter
+        $('#' + tableID).TableNoSortingAndFilter(columns, { "tools": "none" });
+
+        //Abort Ajax
+        $('a').click(function () {
+            var all_settings = $('#' + tableID).DataTable().settings();
+            for (var i = 0, settings; (settings = all_settings[i]) ; ++i) {
+                if (settings.jqXHR) {
+                    settings.jqXHR.abort();
+                }
+            }
+        });
+
+        return table;
+    }
+    //End datatable function
+
+    function displayDataTableNofilterByJSON(tableID, jsonData, columns, displayOnly) {
+
+        if (!displayOnly) {
+            displayOnly = '@ViewBag.DisplayOnly';
+        }
+
+        var xhr = new window.XMLHttpRequest();
+        var table = $('#' + tableID).DataTable({
+            "data": jsonData,
+            "responsive": true,
+            "columns": columns,
+            "autoWidth": false,
+            "language": global_datatableLanguage,
+            "aaSorting": [],
+            "fnDrawCallback": function (oSettings) { }
+        });
+
+        //Set Disable Popup Error to Console
+        $.fn.dataTable.ext.errMode = 'none';
+        $('#' + tableID).on('error.dt', function (e, settings, techNote, message) {
+            console.log('An error has been reported by DataTables: ', message);
+        });
+
+        //Set No Sorting and Filter
+        $('#' + tableID).TableNoSortingAndFilter(columns, { "tools": "none" });
+
+        //Abort Ajax
+        $('a').click(function () {
+            var all_settings = $('#' + tableID).DataTable().settings();
+            for (var i = 0, settings; (settings = all_settings[i]) ; ++i) {
+                if (settings.jqXHR) {
+                    settings.jqXHR.abort();
+                }
+            }
+        });
+
+        return table;
+    }
+    //End datatable function
+
+
+    function setFormReadonly(parentID) {
+
+        if (parentID) {
+            //$('*:not(button, div, input[type="hidden"], option, table, thead, tbody, tr, td, a)', 'form', '#' + parentID).prop({ 'disabled': 'disabled', 'readonly': 'readonly' });
+            $('#' + parentID + ' *:not(button, div, input[type="hidden"], option, table, thead, tbody, tr, td, a)').prop({ 'disabled': 'disabled', 'readonly': 'readonly' });
+
+            //Hide button that can modify form data
+            $('.authManage', '#' + parentID).hide();
+        }
+        else {
+            $('*:not(button, div, input[type="hidden"], option, table, thead, tbody, tr, td, a)', 'form').prop({ 'disabled': 'disabled', 'readonly': 'readonly' });
+
+            //Hide button that can modify form data
+            $('.authManage').hide();
+        }
+
+
+
+        $('input:not([type="checkbox"], [type="radio"]), .select2-selection, textarea').each(function () {
+            $(this).attr('style', 'background-color : #ffffff');
+        });
+
+        //$('.select2-selection').each(function () {
+        //    $(this).attr('style', 'background-color : #ffffff');
+        //});
+    }
+
+    function setFormManageData() {
+        $('.authManage').show();
+    }
+
+    //Set delete button UI
+    function setFormDeleteButton() {
+
+        //Change text of save button
+        $('#saveButton').show();
+        $('#saveButton').removeClass('btn-instagram').addClass('btn-danger');
+        $('#saveButton span.glyphicon').removeClass('glyphicon-save').addClass('glyphicon-trash');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonDelete');
+    }
+
+    //Set undo button UI
+    function setFormUndoButton() {
+
+        //Change text of save button
+        $('#saveButton').show();
+        $('#saveButton').removeClass('btn-instagram').addClass('btn-danger');
+        $('#saveButton span.glyphicon').removeClass('glyphicon-save').addClass('fa fa-undo');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonUndo');
+    }
+
+    //Set receive button UI
+    function setFormReceiveButton() {
+
+        //Change text of save button
+        $('#saveButton').show();
+        $('#saveButton span.glyphicon').removeClass('glyphicon-save').addClass('fa fa-get-pocket');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonReceive');
+    }
+
+    //Set closed button UI
+    function setFormCloseButton() {
+
+        //Change text of save button
+
+        $('#saveButton').show();
+        $('#processFillSales').show();
+        //$('#saveButton').removeClass('btn-instagram').addClass('btn-danger');
+        $('#saveButton span.glyphicon').removeClass('glyphicon glyphicon-save').addClass('fa fa-check');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonClose');
+    }
+    //Set cancel button UI
+    function setFormCancelButton() {
+
+        //Change text of cancel button
+
+        $('#saveButton').show();
+        //$('#saveButton').removeClass('btn-instagram').addClass('btn-danger');
+        $('#saveButton span.glyphicon').removeClass('glyphicon-save').addClass('glyphicon-folder-close');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonCancel');
+    }
+    //Set decuct button UI
+    function setFormDeductButton() {
+
+        //Change text of deduct button
+
+        $('#saveButton').show();
+        //$('#saveButton').removeClass('btn-instagram').addClass('btn-danger');
+        $('#saveButton span.glyphicon').removeClass('glyphicon-save').addClass('glyphicon-edit');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonDeduct');
+    }
+    //Set Acknowledge button UI
+    function setFormAcKnowledgeButton() {
+
+        //Change text of deduct button
+
+        $('#saveButton').show();
+        //$('#saveButton').removeClass('btn-instagram').addClass('btn-danger');
+        $('#saveButton span.glyphicon').removeClass('glyphicon-save').addClass('glyphicon-info-sign');
+        $('#saveButtonText').text('@BBDEVSYS.Content.text.ResourceText.ButtonAcknowledge');
+    }
+    function setFormRequest() {
+        $('.authRequest').show();
+        $('.authRequest').removeAttr('disabled readonly');
+
+        $('.authWorkflowActivity').hide();
+    }
+
+    function setFormWorkflowAction(formState) {
+
+        //$('*:not(button, div, #WorkflowActivityActionDiv *, input[type="hidden"], option)', 'form').prop({ 'disabled': 'disabled', 'readonly': 'readonly' });
+        $('*:not(button, div, .' + formState + '_VISIBLE *, .' + formState + '_EDIT *, input[type="hidden"], option, table, thead, tbody, tr, td, a)', 'form').prop({ 'disabled': 'disabled', 'readonly': 'readonly' });
+
+        //Set control visibility
+        $('.' + formState + '_VISIBLE').show();
+        //Set control editable
+        $('.' + formState + '_EDIT').removeAttr('disabled readonly');
+
+        ////Workflow activity box
+        //$('#WorkflowActivityActionDiv, .' + formState).show();
+        //$('#WorkflowActivityActionDiv, .' + formState).removeAttr('disabled readonly');
+
+
+        $('.select2-selection, textarea, input').each(function () {
+            $(this).attr('style', 'background-color : #ffffff');
+        });
+
+    }
+
+    function setFormDivisionAction(formState) {
+
+        //Set control visibility
+        $('.' + formState + '_VISIBLE').show();
+        //Set control editable
+        $('.' + formState + '_EDIT').removeAttr('disabled readonly');
+
+    }
+
+    //List page action
+    function listSetFormUI(displayOnly) {
+
+        if (displayOnly.toUpperCase() === 'TRUE') {
+            $('.authManage').hide();
+        }
+        else {
+            $('.authManage').show();
+        }
+    }
+    // Form detail action Authen UserType
+    function detailSetUserFormUI(userType, formState, parentID, tabID) {
+        if (formState == '@ConstantVariableService.FormStateEdit') {
+            @*if (userType == '@ConstantVariableService.UserTypeEmployee') {
+                $('.authUserManage').hide();
+            }
+            else if (userType == '@ConstantVariableService.UserTypeAgent') {
+                if (tabID) {
+                    detailSetFormUI('@ConstantVariableService.FormStateDisplay')
+                }
+                $('.authUserManage').show();
+            }
+            else if (userType == '@ConstantVariableService.UserTypeExternalAudit') {
+                $('.authUserManage').hide();
+            }*@
+        }
+        else {
+            detailSetFormUI(formState)
+            $('.authUserManage').addClass('authManage').removeClass('authUserManage');
+        }
+    }
+
+    //Form detail action
+    function detailSetFormUI(formState, parentID) {
+        if (formState == '@ConstantVariableService.FormStateDisplay') {
+            setFormReadonly(parentID);
+        }
+        else if (formState == '@ConstantVariableService.FormStateCreate' || formState == '@ConstantVariableService.FormStateEdit' || formState == '@ConstantVariableService.FormStateCopy' ||
+                 formState == '@ConstantVariableService.FormStateManage') {
+            setFormManageData();
+        }
+        else if (formState == '@ConstantVariableService.FormStateRequest') {
+            setFormReadonly(parentID);
+            setFormRequest();
+        }
+        else if (formState == '@ConstantVariableService.FormStateDelete') {
+            setFormReadonly(parentID);
+            setFormDeleteButton();
+        }
+        else if (formState == '@ConstantVariableService.FormStateWorkflowActivity' || formState.match('^@ConstantVariableService.FormStateWorkflowActivity')) {
+            setFormWorkflowAction(formState);
+        }
+        else if (formState == '@ConstantVariableService.FormStateClosed') {
+            setFormReadonly(parentID);
+            setFormCloseButton();
+        }
+        else if (formState == '@ConstantVariableService.FormStateCanceled') {
+            setFormReadonly(parentID);
+            setFormCancelButton();
+        }
+        else if (formState == '@ConstantVariableService.FormStateDeduct') {
+            setFormReadonly(parentID);
+            setFormDeductButton();
+        }
+        else if (formState == '@ConstantVariableService.FormStateAcknowledge') {
+            setFormReadonly(parentID);
+            setFormAcKnowledgeButton();
+        }
+        else if (formState == '@ConstantVariableService.FormStateDivisionApprover' ||
+                 formState == '@ConstantVariableService.FormStateDivisionReviewer') {
+            setFormDivisionAction(formState);
+        }
+        else if (formState == '@ConstantVariableService.FormStateUndo') {
+            setFormReadonly(parentID);
+            setFormUndoButton();
+        }
+        else if (formState == '@ConstantVariableService.FormStateReceive') {
+            setFormReadonly(parentID);
+            setFormReceiveButton();
+        }
+    }
+
+    function redirectTo(url) {
+        window.location.href = url;
+    }
+
+    function goBack(formState, backUrl, headerMessage, bodyMessage, popupPrefixID) {
+
+        if (formState == '@ConstantVariableService.FormStateDisplay' || formState == '@ConstantVariableService.FormStateDelete' || formState == '@ConstantVariableService.FormStateClosed') {
+            confirmGoBack(formState, backUrl);
+        }
+        else {
+            displayConfirmBackPopup(formState, backUrl);
+        }
+
+    }
+
+    function confirmGoBack(formState, backUrl) {
+        if (isNoHistory()) {
+            redirectTo(backUrl);
+        }
+        else {
+            window.history.back();
+        }
+    }
+
+    function isFromLoginPage() {
+        var referrer = document.referrer;
+
+        if (!referrer) {
+            return true;
+        }
+        else if (referrer.indexOf("/Authentication/Authentication") >= 0) { //Form login page
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    function isNoHistory() {
+        var referrer = document.referrer;
+
+        if (!referrer) {
+            return true;
+        }
+        else if (referrer.indexOf("/Authentication/Authentication") >= 0) { //Form login page
+            return true;
+        }
+        else {
+            return false;
+        }
+    }
+
+    @*function detailSaveButton(formState, formID) {
+        if (formState == '@ConstantVariableService.FormStateDelete') {
+            displayConfirmActionPopup('@BBDEVSYS.Content.text.ResourceText.PopupConfirmDeleteHeader', '@BBDEVSYS.Content.text.ResourceText.PopupConfirmDeleteBody');
+        }
+        else {
+            var message = "";
+            var form = $('#' + formID);
+            $.validator.unobtrusive.parse(form);
+            var validator = form.validate();
+
+            if (form.valid()) {
+                displayConfirmActionPopup('@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveHeader', '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody');
+            } else {
+                for (var i = 0; i < validator.errorList.length; i++) {
+                    message = message + validator.errorList[i].message + "<br />";
+                }
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+            }
+        }
+    }*@
+
+    function detailActionButton(formState, formAction, formID, headerMessage, bodyMessage, popupPrefixID) {
+
+        if (headerMessage.toUpperCase() === 'DEFAULT') {
+            if (formAction == '@ConstantVariableService.FormActionDelete') {
+                headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmDeleteHeader';
+            }
+            else {
+                headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveHeader';
+            }
+        }
+        if (bodyMessage.toUpperCase() === 'DEFAULT') {
+            if (formAction == '@ConstantVariableService.FormActionDelete') {
+                bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmDeleteBody';
+            }
+            else {
+                bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody';
+            }
+        }
+
+        if (formAction == '@ConstantVariableService.FormActionDelete') {
+            displayConfirmActionPopup(headerMessage, bodyMessage, popupPrefixID);
+        }
+        else {
+            var message = "";
+            var form = $('#' + formID);
+            $.validator.unobtrusive.parse(form);
+            var validator = form.validate();
+
+            if (form.valid()) {
+                displayConfirmActionPopup(headerMessage, bodyMessage, popupPrefixID);
+            } else {
+                for (var i = 0; i < validator.errorList.length; i++) {
+                    message = message + validator.errorList[i].message + "<br />";
+                }
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", popupPrefixID);
+
+                ////Set focus on first error element
+                //var totalErrors = validator.numberOfInvalids();
+                //if (totalErrors) {
+                //    validator.errorList[0].element.focus();
+                //}
+
+                //Set focus on error span
+                var totalErrors = validator.numberOfInvalids();
+                if (totalErrors) {
+                    var focusElement = validator.errorList[0].element.name;
+                    $('#' + focusElement + '-error').attr('tabindex', function (index, attr) {
+                        return 0;
+                    });
+                    $('#' + focusElement + '-error').focus();
+
+                    $('#' + focusElement + '-error').removeAttr('tabindex');
+                }
+
+            }
+        }
+    }
+
+    function detailOkActionPopupButton(formState, formAction, formID, successURL, popupPrefixID) {
+
+        var confirmPopupID = "confirmDiv";
+        var messagePopupID = "messagePopupDiv"
+
+        if (popupPrefixID) {
+            if (popupPrefixID.toUpperCase() != 'DEFAULT') {
+                confirmPopupID = popupPrefixID + confirmPopupID;
+                messagePopupID = popupPrefixID + messagePopupID;
+            }
+        }
+
+        $('#' + confirmPopupID).modal('hide');
+
+        var form = $('#' + formID);
+
+        blockUI();
+
+        $.post(form.attr("action"), form.serialize(), function (response) {
+
+            if (response != null && response.success) {
+
+                if (response.responseText) {
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", response.responseText, "S", popupPrefixID);
+                }
+                else {
+                    if (formAction == '@ConstantVariableService.FormActionDelete') {
+                        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", "@BBDEVSYS.Content.text.ResourceText.SuccessfulDelete", "S", popupPrefixID);
+                    }
+                    else {
+                        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", "@BBDEVSYS.Content.text.ResourceText.SuccessfulSave", "S", popupPrefixID);
+                    }
+                }
+
+                //Clear action handler
+                $('#' + messagePopupID).off('click', '.btn, .close');
+
+                $('#' + messagePopupID).on('click', '.btn, .close', function () {
+                    if (successURL) {
+                        if (successURL.toUpperCase() === "GOBACK") {
+                            goBack('@ConstantVariableService.FormStateDisplay', successURL);
+                        }
+                            //else if (successURL.toUpperCase() === "REDIRECTCALLBACK") { //End with Callback
+                        else if (successURL.match('^RedirectCallback')) {
+
+                            window[successURL]();
+
+                            //var callBackFunction = successURL.slice(successURL.indexOf('REDIRECTCALLBACK_') + 'REDIRECTCALLBACK_'.length);
+
+                            //detailOkActionRedirectCallback();
+                            //if (callBackFunction) {
+                            //    window[callBackFunction]();
+                            //}
+                        }
+                        else {
+                            redirectTo(successURL);
+                        }
+                    }
+                });
+
+                //redirectTo(successURL);
+            } else {
+                displayModelStateError(form, response.errorList, popupPrefixID);
+            }
+
+            unblockUI();
+        });
+    }
+
+    function detailErrorMessagePopupButton(message, successURL) {
+        $('#confirmDiv').modal('hide');
+
+        blockUI();
+
+        displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+        $('#messagePopupDiv').on('click', '.btn, .close', function () {
+            unblockUI();
+            redirectTo(successURL);
+        });
+
+    }
+
+    function closePopup(popupID) {
+        //console.log(popupID);
+        $('#' + popupID).modal('hide');
+    }
+    //End form detail action
+
+    function logout() {
+        redirectTo('@Url.Action("Logout", "Authentication", new { Area = "Authentication" })');
+    }
+
+    function stringReplace(str, find, replace) {
+        return str.replace(new RegExp(find, 'g'), replace);
+    }
+
+    function ModifyCollectionItemName(itemBodyID) {
+        $('#' + itemBodyID).find('select, textarea, input').each(function () {
+            var oldName = $(this).attr('name');
+            var newName = oldName.replace('item.', '');
+
+            $(this).attr('name', newName);
+        });
+    }
+
+    //Display loading row in table
+    function LoadingRow(row, flag, replace) {
+        if (flag == 'on') {
+
+            var copyRow = row.clone()
+            copyRow.find('td').html('');
+            copyRow.addClass('loadingRow');
+            copyRow.find('td').first().html('<i class="fa fa-refresh fa-spin"></i>  Loading...');
+            //var htmlRow = '<tr class="loadingRow"><td></td></tr>';
+
+            if (replace) {
+                row.replaceWith(copyRow);
+            }
+            else {
+                row.after(copyRow);
+            }
+
+        } else {
+            row.parent().find('.loadingRow').last().remove();
+        }
+    }
+
+    function manageItemPopup(formState, formAction, formID, popupPrefixID, itemBodyID, popupID, itemIndex) {
+
+        var form = $('#' + formID);
+        var postForm = false;
+
+        if (formAction == '@ConstantVariableService.FormActionDelete') {
+            postForm = true;
+        }
+        else {
+            var message = "";
+            $.validator.unobtrusive.parse(form);
+            var validator = form.validate();
+
+            if (form.valid()) {
+                postForm = true;
+            } else {
+                for (var i = 0; i < validator.errorList.length; i++) {
+                    message = message + validator.errorList[i].message + "<br />";
+                }
+                unblockUI();
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", popupPrefixID);
+
+                //Set focus on error span
+                var totalErrors = validator.numberOfInvalids();
+                if (totalErrors) {
+                    var focusElement = validator.errorList[0].element.name;
+                    $('#' + focusElement + '-error').attr('tabindex', function (index, attr) {
+                        return 0;
+                    });
+                    $('#' + focusElement + '-error').focus();
+
+                    $('#' + focusElement + '-error').removeAttr('tabindex');
+                }
+
+            }
+        }
+
+        if (postForm) {
+            $.post(form.attr("action"), form.serialize(), function (response) {
+
+                if (response != null && response.success) {
+
+                    if (formAction == '@ConstantVariableService.FormActionCreate' || formAction == '@ConstantVariableService.FormActionCopy') {
+                        $("#" + itemBodyID).append(response.html);
+
+                    }
+                    else if (formAction == '@ConstantVariableService.FormActionEdit') {
+
+                        var indexElem = $('#' + itemBodyID + ' input[value = "' + itemIndex + '"]')
+                        var tr = indexElem.closest("tr");
+
+                        tr.replaceWith(response.html);
+                    }
+
+                    //Callback function
+                    if ($.isFunction(window.callbackManageItemPopup)) {
+                        callbackManageItemPopup(response);
+                    }
+
+                    unblockUI();
+                    $("#" + popupID).modal('hide');
+
+                    console.log("end post form");
+
+                } else {
+                    unblockUI();
+                    displayModelStateError(form, response.errorList, popupPrefixID);
+                }
+            });
+        }
+    }
+
+    function isValidDate(dateString) {
+        var regEx = /^\d{2}\/\d{2}\/\d{4}$/;
+        if (!dateString.match(regEx))
+            return false;  // Invalid format
+        else
+            return true;
+        //var d = new Date(dateString);
+        //if (!d.getTime()) return "bbb"; // Invalid date (or this could be epoch)
+        //return d.toISOString().slice(0, 10) === dateString;
+    }
+
+    function setFixedColumnHeight(row, fixColumn, bodyOffset) {
+        var fixColumnHeight = fixColumn.height();
+        var rowHeight = row.height();
+
+        if (fixColumnHeight < rowHeight) {
+            rowHeight = rowHeight - bodyOffset;
+            fixColumn.height(rowHeight);
+
+            console.log("<" + rowHeight);
+        }
+        else {
+            fixColumnHeight = fixColumnHeight + bodyOffset;
+            row.height(fixColumnHeight);
+
+            console.log(">=" + fixColumnHeight);
+        }
+
+    }
+
+    $(document).ready(function () {
+
+        //For set layout height
+        $('html').height('100%');
+        $('body').height('100%');
+        $('.wrapper').height('100%');
+        $('.content-wrapper').css("min-height", $(window).height() + "px");
+
+        $(window).resize(function () {
+            //console.log("resize");
+            $('.content-wrapper').css("min-height", $(window).height() + "px");
+        });
+        //End for set layout height
+
+
+        //For set active sidebar menu
+        // for sidebar menu entirely but not cover treeview
+        $('ul.sidebar-menu a').filter(function () {
+            var controller = '@ViewContext.RouteData.Values["Controller"].ToString()';
+
+            var menuItemID = 'MENU_' + controller;
+
+            return this.id == menuItemID;
+        }).parent().addClass('active');
+
+        // for treeview
+        $('ul.treeview-menu a').filter(function () {
+            var controller = '@ViewContext.RouteData.Values["Controller"].ToString()';
+
+            var menuItemID = 'MENU_' + controller;
+
+            return this.id == menuItemID;
+        }).parents('li').addClass('active');
+        //}).closest('.treeview').addClass('active');
+        //End for set active sidebar menu
+
+    });
+
+    function loadingButton(allButton, SpinBtn) {
+        if (SpinBtn === undefined)
+            SpinBtn = allButton;
+        $(SpinBtn).each(function (index, value) {
+            if (value == 'opentask') {
+                $('#dataListTable tbody').on('click', '.true-dt-button-task', function () {
+                    //change all other icon back to normal
+                    $(allButton).each(function (index, value) {
+                        $('body').find('.true-dt-button-' + value).find('span').attr('class', getClassButton(value));
+                    });
+                    //change icon to spin button
+                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                });
+            } else {
+                $('#dataListTable tbody').on('click', '.true-dt-button-' + value, function () {
+                    //change icon back to normal
+                    $(allButton).each(function (index, value) {
+                        $('body').find('.true-dt-button-' + value).find('span').attr('class', getClassButton(value));
+                    });
+                    //change icon to spin button
+                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                });
+            }
+        });
+    }
+
+    function getClassButton(thisBtn) {
+        switch (thisBtn) {
+            case "edit":
+                return 'glyphicon glyphicon-edit';
+                break;
+            case "delete":
+                return 'glyphicon glyphicon-trash';
+                break;
+            case "copy":
+                return 'fa fa-copy';
+                break;
+            case "evaluate":
+                return 'fa fa-list-ol';
+                break;
+            case "display":
+                return 'fa fa-file';
+                break;
+            case "opentask":
+                return 'fa fa-folder-open-o';
+                break;
+            case "request":
+                return 'ti-marker-alt';
+                break;
+            case "manage":
+                return 'ti-layout-grid3';
+                break;
+            case "evaresultscore":
+                return 'glyphicon glyphicon-list-alt';
+                break;
+            case "respondent":
+                return 'fa fa-list-ol';
+                break;
+            case "download":
+                return 'glyphicon glyphicon-save';
+                break;
+            case "close":
+                return 'fa fa-check';
+                break;
+            case "branch":
+                return 'fa fa-share-alt';
+                break;
+            case "print":
+                return 'fa fa-print';
+                break;
+            case "cancel":
+                return 'fa fa-remove';
+                break;
+            case "deduct":
+                return 'glyphicon glyphicon-edit';
+                break;
+            case "history":
+                return 'fa fa-file';
+                break;
+            case "statement":
+                return 'fa fa-money';
+                break;
+            case "edit_inv":
+                return 'glyphicon glyphicon-edit';
+                break;
+        }
+    }
+</script>

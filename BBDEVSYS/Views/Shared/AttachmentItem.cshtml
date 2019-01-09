@@ -1,0 +1,55 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+
+@model BBDEVSYS.ViewModels.Shared.AttachmentViewModel
+
+<tr>
+    @using (Html.BeginCollectionItem("AttachmentList"))
+    {
+        <td style="vertical-align:middle; display: none" class="attachFileNameCol">
+            <a id="filedownloadurl_@Model.FileUniqueKey" href="@Model.DownloadURL">@Model.FileName</a>
+            <span id="filename_@Model.FileUniqueKey" style="display: none">@Model.FileName </span>
+            <div id="filecon_@Model.FileUniqueKey" class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="display: none;">
+                <div id="fileprogress_@Model.FileUniqueKey" class="progress-bar progress-bar-success" style="width:0%;"></div>
+            </div>
+            <span id="fileerror_@Model.FileUniqueKey" class="true-error-text"></span>
+        </td>
+
+        <td class="attachDocumentDateCol" style="display: none">
+            @Html.TextBoxFor(m => m.DocumentDate, "{0:dd/MM/yyyy}", new { @class = "form-control pull-right datepicker-th" })
+        </td>
+
+        <td class="attachDocumentTypeCol" style="display: none">            
+            @Html.DropDownListFor(m => m.DocumentType, new SelectList(Model.DocumentTypeValueHelp, "ValueKey", "ValueText"), "", new { @class = "form-control", style = "width:100%;" })
+        </td>
+
+        <td style="text-align:right; vertical-align:middle; display: none" class="attachFileSizeMBCol">@Model.FileSizeMB.ToString("0.00")</td>
+
+        <td class="attachRemarkCol" style="display: none">
+            @Html.TextBoxFor(m => m.Remark, new { @class = "form-control" })
+        </td>
+
+        <td style="text-align: center; vertical-align:middle" class="true-table-column-fit-content">
+            <button id="delfile_@Model.FileUniqueKey" type="button" class="true-table-detail-icon-button authManage" onclick="deleteAttachFile(this, '@Model.FileUniqueKey')" title="ลบ" style="display:none">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-trash"></i>
+            </button>
+        </td>
+
+        @Html.HiddenFor(m => m.ID, new { id = "id_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.FileName, new { id = "filename_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.FileSize, new { id = "filesize_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.FileSizeMB, new { id = "filesizemb_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.MimeType, new { id = "mimetype_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.AttachDate, new { id = "attachdate_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.DownloadURL, new { id = "downloadurl_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.SavedFileName, new { id = "savedfilename_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.FileExtension, new { id = "fileextension_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.FileUniqueKey, new { id = "fileUniqueKey" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.ErrorFlag, new { id = "errorflag_" + Model.FileUniqueKey })
+        @Html.HiddenFor(m => m.DeleteFlag, new { id = "deleteflag_" + Model.FileUniqueKey })
+
+    }
+
+</tr>
+<script src="~/Content/js/input.initialization.js"></script>
+
+

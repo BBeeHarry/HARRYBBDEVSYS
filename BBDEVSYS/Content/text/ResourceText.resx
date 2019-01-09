@@ -1,0 +1,996 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="EndPaymentDate" xml:space="preserve">
+    <value>End Payment Date</value>
+  </data>
+  <data name="StartPaymentDate" xml:space="preserve">
+    <value>Start Payment Date</value>
+  </data>
+  <data name="TitlePaymentPostingTimeliness" xml:space="preserve">
+    <value>Payment Posting Timeliness</value>
+  </data>
+  <data name="ZeroRecords" xml:space="preserve">
+    <value>ไม่พบข้อมูล</value>
+  </data>
+  <data name="TitlePrefixCopy" xml:space="preserve">
+    <value>คัดลอก</value>
+  </data>
+  <data name="TitlePrefixCreate" xml:space="preserve">
+    <value>สร้าง</value>
+  </data>
+  <data name="TitlePrefixDelete" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="TitlePrefixDisplay" xml:space="preserve">
+    <value>รายละเอียด</value>
+  </data>
+  <data name="TitlePrefixEdit" xml:space="preserve">
+    <value>แก้ไข</value>
+  </data>
+  <data name="TitlePrefixList" xml:space="preserve">
+    <value>รายการ</value>
+  </data>
+  <data name="CompanyCode" xml:space="preserve">
+    <value>บริษัท</value>
+  </data>
+  <data name="Months" xml:space="preserve">
+    <value>เดือน</value>
+  </data>
+  <data name="Years" xml:space="preserve">
+    <value>ปี</value>
+  </data>
+  <data name="TitleInvoiceList" xml:space="preserve">
+    <value>ใบแจ้งหนี้</value>
+  </data>
+  <data name="DeletePhoto" xml:space="preserve">
+    <value>ลบรูป</value>
+  </data>
+  <data name="UploadPhoto" xml:space="preserve">
+    <value>อัพโหลดรูป</value>
+  </data>
+  <data name="BoxDetail" xml:space="preserve">
+    <value>รายละเอียด</value>
+  </data>
+  <data name="TitleAccruedList" xml:space="preserve">
+    <value>Accrued</value>
+  </data>
+  <data name="CostCenter" xml:space="preserve">
+    <value>Cost Center</value>
+  </data>
+  <data name="GLAccount" xml:space="preserve">
+    <value>GL Account</value>
+  </data>
+  <data name="ACCRUED_ITEM_NO" xml:space="preserve">
+    <value>ACCRUED_ITEM_NO</value>
+  </data>
+  <data name="ACCRUED_MONTH" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="ACCRUED_NO" xml:space="preserve">
+    <value>ACCRUED_NO</value>
+  </data>
+  <data name="ACCRUED_YEAR" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="ACTUAL_AMOUNT" xml:space="preserve">
+    <value>Actual Amount</value>
+  </data>
+  <data name="AMOUNT" xml:space="preserve">
+    <value>Amount</value>
+  </data>
+  <data name="CCT_CODE" xml:space="preserve">
+    <value>CCT_CODE</value>
+  </data>
+  <data name="COMPANY_CODE" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="CONDITION_PYM" xml:space="preserve">
+    <value>Condition Payment</value>
+  </data>
+  <data name="CURRENCY" xml:space="preserve">
+    <value>Currency</value>
+  </data>
+  <data name="PAYMENT_ITEMS_CODE" xml:space="preserve">
+    <value>Description Code</value>
+  </data>
+  <data name="PAYMENT_ITEMS_FEE_ITEM" xml:space="preserve">
+    <value>Payment Item</value>
+  </data>
+  <data name="EDITION" xml:space="preserve">
+    <value>Edition</value>
+  </data>
+  <data name="INCLUDE_VAT_AMOUNT" xml:space="preserve">
+    <value>Amount (Include VAT)</value>
+  </data>
+  <data name="INV_AMOUNT" xml:space="preserve">
+    <value>Invoice Amount</value>
+  </data>
+  <data name="INV_APPROVED_BY" xml:space="preserve">
+    <value>Approved by</value>
+  </data>
+  <data name="INV_APPROVED_DATE" xml:space="preserve">
+    <value>Approved Date</value>
+  </data>
+  <data name="INV_DUE_DATE" xml:space="preserve">
+    <value>Inv. Due Date</value>
+  </data>
+  <data name="INV_ITEM_NO" xml:space="preserve">
+    <value>Item No.</value>
+  </data>
+  <data name="INV_MONTH" xml:space="preserve">
+    <value>Month</value>
+  </data>
+  <data name="INV_NO" xml:space="preserve">
+    <value>Invoice No.</value>
+  </data>
+  <data name="INV_REC_BY" xml:space="preserve">
+    <value>Receive by</value>
+  </data>
+  <data name="INV_REC_DATE" xml:space="preserve">
+    <value>Document Date</value>
+  </data>
+  <data name="INV_YEAR" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="NET_AMOUNT" xml:space="preserve">
+    <value>Net Amount</value>
+  </data>
+  <data name="NET_CHARGE_AMOUNT" xml:space="preserve">
+    <value>Net Charge Amount(Wht)</value>
+  </data>
+  <data name="PERIOD_ACCRUED" xml:space="preserve">
+    <value>Period of</value>
+  </data>
+  <data name="PERIOD_MONTH" xml:space="preserve">
+    <value>Period Month</value>
+  </data>
+  <data name="PERIOD_YEAR" xml:space="preserve">
+    <value>Period Year</value>
+  </data>
+  <data name="PRO_NO" xml:space="preserve">
+    <value>PRO No.</value>
+  </data>
+  <data name="RATE_AMT" xml:space="preserve">
+    <value>Rate Amount</value>
+  </data>
+  <data name="RATE_TRANS" xml:space="preserve">
+    <value>Rate Transaction</value>
+  </data>
+  <data name="REMARK" xml:space="preserve">
+    <value>Remark</value>
+  </data>
+  <data name="SEQUENCE" xml:space="preserve">
+    <value>Item No.</value>
+  </data>
+  <data name="STATUS" xml:space="preserve">
+    <value>Status</value>
+  </data>
+  <data name="SUM_AMT" xml:space="preserve">
+    <value>Sum Amount</value>
+  </data>
+  <data name="TOTAL_CHARGE_AMOUNT" xml:space="preserve">
+    <value>TOTAL_CHARGE_AMOUNT</value>
+  </data>
+  <data name="TRANSACTION" xml:space="preserve">
+    <value>Transaction</value>
+  </data>
+  <data name="VAT" xml:space="preserve">
+    <value>VAT</value>
+  </data>
+  <data name="WHT" xml:space="preserve">
+    <value>WHT</value>
+  </data>
+  <data name="ButtonAcknowledge" xml:space="preserve">
+    <value>รับทราบ</value>
+  </data>
+  <data name="ButtonAddAttachment" xml:space="preserve">
+    <value>เพิ่มเอกสาร</value>
+  </data>
+  <data name="ButtonAddItem" xml:space="preserve">
+    <value>เพิ่ม</value>
+  </data>
+  <data name="ButtonAgentConfirmData" xml:space="preserve">
+    <value>ยืนยันข้อมูล</value>
+  </data>
+  <data name="ButtonAgentEvent" xml:space="preserve">
+    <value>บันทึกเหตุการณ์</value>
+  </data>
+  <data name="ButtonApprove" xml:space="preserve">
+    <value>อนุมัติ</value>
+  </data>
+  <data name="ButtonBack" xml:space="preserve">
+    <value>ย้อนกลับ</value>
+  </data>
+  <data name="ButtonBackToInbox" xml:space="preserve">
+    <value>กลับสู่หน้า Inbox</value>
+  </data>
+  <data name="ButtonBranch" xml:space="preserve">
+    <value>สาขา</value>
+  </data>
+  <data name="ButtonCancel" xml:space="preserve">
+    <value>ยกเลิก</value>
+  </data>
+  <data name="ButtonCancelRequest" xml:space="preserve">
+    <value>ยกเลิกคำขอ</value>
+  </data>
+  <data name="ButtonCancelSAPDoc" xml:space="preserve">
+    <value>ยกเลิกเอกสาร SAP</value>
+  </data>
+  <data name="ButtonCheckAmount" xml:space="preserve">
+    <value>ตรวจสอบเงิน</value>
+  </data>
+  <data name="ButtonClose" xml:space="preserve">
+    <value>ปิด</value>
+  </data>
+  <data name="ButtonClosePopup" xml:space="preserve">
+    <value>ปิดหน้าต่าง</value>
+  </data>
+  <data name="ButtonComplete" xml:space="preserve">
+    <value>เสร็จสิ้น</value>
+  </data>
+  <data name="ButtonCompleteMenu03" xml:space="preserve">
+    <value>ส่งข้อมูล</value>
+  </data>
+  <data name="ButtonConfirm" xml:space="preserve">
+    <value>ยืนยัน</value>
+  </data>
+  <data name="ButtonCopy" xml:space="preserve">
+    <value>คัดลอก</value>
+  </data>
+  <data name="ButtonCreate" xml:space="preserve">
+    <value>สร้างใหม่</value>
+  </data>
+  <data name="ButtonCreateBudgetPlan" xml:space="preserve">
+    <value>สร้างแผนงาน</value>
+  </data>
+  <data name="ButtonCreateBudgetPlanActivity" xml:space="preserve">
+    <value>สร้างใหม่</value>
+  </data>
+  <data name="ButtonCreateBudgetSubPlan" xml:space="preserve">
+    <value>สร้างแผนงานย่อย</value>
+  </data>
+  <data name="ButtonCreateSAPDoc" xml:space="preserve">
+    <value>สร้างเอกสาร SAP</value>
+  </data>
+  <data name="ButtonDeduct" xml:space="preserve">
+    <value>เบิก</value>
+  </data>
+  <data name="ButtonDefineProduct" xml:space="preserve">
+    <value>กำหนดผลิตภัณฑ์</value>
+  </data>
+  <data name="ButtonDelegate" xml:space="preserve">
+    <value>ผู้ทำหน้าที่แทน</value>
+  </data>
+  <data name="ButtonDelete" xml:space="preserve">
+    <value>ลบ</value>
+  </data>
+  <data name="ButtonDisplay" xml:space="preserve">
+    <value>แสดง</value>
+  </data>
+  <data name="ButtonDownload" xml:space="preserve">
+    <value>ดาวน์โหลด</value>
+  </data>
+  <data name="ButtonDropdownBudgetPlanActivity" xml:space="preserve">
+    <value>เลือกกลุ่ม</value>
+  </data>
+  <data name="ButtonEdit" xml:space="preserve">
+    <value>แก้ไข</value>
+  </data>
+  <data name="ButtonEmail" xml:space="preserve">
+    <value>ส่งอีเมล</value>
+  </data>
+  <data name="ButtonEvaluate" xml:space="preserve">
+    <value>ประเมิน</value>
+  </data>
+  <data name="ButtonEvaResultScore" xml:space="preserve">
+    <value>ผลการประเมิน</value>
+  </data>
+  <data name="ButtonFillSales" xml:space="preserve">
+    <value>ระบุยอดขาย</value>
+  </data>
+  <data name="ButtonForm" xml:space="preserve">
+    <value>ดูแบบฟอร์ม</value>
+  </data>
+  <data name="ButtonHistory" xml:space="preserve">
+    <value>ประวัติ</value>
+  </data>
+  <data name="ButtonLogin" xml:space="preserve">
+    <value>เข้าสู่ระบบ</value>
+  </data>
+  <data name="ButtonLogout" xml:space="preserve">
+    <value>ออกจากระบบ</value>
+  </data>
+  <data name="ButtonManage" xml:space="preserve">
+    <value>จัดการ</value>
+  </data>
+  <data name="ButtonOK" xml:space="preserve">
+    <value>ตกลง</value>
+  </data>
+  <data name="ButtonOpen" xml:space="preserve">
+    <value>เปิด</value>
+  </data>
+  <data name="ButtonPeriod" xml:space="preserve">
+    <value>ช่วงเวลาประเมิน</value>
+  </data>
+  <data name="ButtonPeriodCreate" xml:space="preserve">
+    <value>สร้าง</value>
+  </data>
+  <data name="ButtonPrint" xml:space="preserve">
+    <value>Export to Excel</value>
+  </data>
+  <data name="ButtonPrintMemo" xml:space="preserve">
+    <value>พิมพ์บันทึก</value>
+  </data>
+  <data name="ButtonProcess" xml:space="preserve">
+    <value>ประมวลผลข้อมูล</value>
+  </data>
+  <data name="ButtonReceive" xml:space="preserve">
+    <value>รับเอกสาร</value>
+  </data>
+  <data name="ButtonReject" xml:space="preserve">
+    <value>ไม่อนุมัติ</value>
+  </data>
+  <data name="ButtonReportDisplay" xml:space="preserve">
+    <value>แสดงรายงาน</value>
+  </data>
+  <data name="ButtonRequest" xml:space="preserve">
+    <value>ส่งอนุมัติ</value>
+  </data>
+  <data name="ButtonResendRequest" xml:space="preserve">
+    <value>ส่งอนุมัติ</value>
+  </data>
+  <data name="ButtonRespondent" xml:space="preserve">
+    <value>กรอกข้อมูล</value>
+  </data>
+  <data name="ButtonSAPSendData" xml:space="preserve">
+    <value>ส่งข้อมูล</value>
+  </data>
+  <data name="ButtonSAPTest" xml:space="preserve">
+    <value>ทดสอบ</value>
+  </data>
+  <data name="ButtonSave" xml:space="preserve">
+    <value>บันทึก</value>
+  </data>
+  <data name="ButtonSearch" xml:space="preserve">
+    <value>ค้นหา</value>
+  </data>
+  <data name="ButtonSelectBranch" xml:space="preserve">
+    <value>เลือกสาขา</value>
+  </data>
+  <data name="ButtonSelectPR" xml:space="preserve">
+    <value>เลือกใบจัดซื้อ</value>
+  </data>
+  <data name="ButtonSelectPRQPRAToSAP" xml:space="preserve">
+    <value>เลือกใบขออนุมัติสั่งจ่าย</value>
+  </data>
+  <data name="ButtonSendEva" xml:space="preserve">
+    <value>ส่งผลการประเมิน</value>
+  </data>
+  <data name="ButtonStatement" xml:space="preserve">
+    <value>การใช้งบ</value>
+  </data>
+  <data name="ButtonTask" xml:space="preserve">
+    <value>เรียกดู</value>
+  </data>
+  <data name="ButtonUndo" xml:space="preserve">
+    <value>เรียกคืน</value>
+  </data>
+  <data name="ButtonUpload" xml:space="preserve">
+    <value>Upload ข้อมูล</value>
+  </data>
+  <data name="ButtonValidate" xml:space="preserve">
+    <value>ตรวจสอบ</value>
+  </data>
+  <data name="Receive" xml:space="preserve">
+    <value>รับ</value>
+  </data>
+  <data name="Charge" xml:space="preserve">
+    <value>Charge</value>
+  </data>
+  <data name="BoxData" xml:space="preserve">
+    <value>ข้อมูล</value>
+  </data>
+  <data name="Empty" xml:space="preserve">
+    <value>ไม่มีข้อมูล</value>
+  </data>
+  <data name="Bring" xml:space="preserve">
+    <value>ยอด (ยกไป)</value>
+  </data>
+  <data name="BrowseFile" xml:space="preserve">
+    <value>เลือกไฟล์</value>
+  </data>
+  <data name="File" xml:space="preserve">
+    <value>ไฟล์</value>
+  </data>
+  <data name="FileName" xml:space="preserve">
+    <value>ชื่อไฟล์</value>
+  </data>
+  <data name="SuccessfulApprove" xml:space="preserve">
+    <value>อนุมัติคำขอเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulCancelRequest" xml:space="preserve">
+    <value>ยกเลิกคำขอเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulDelete" xml:space="preserve">
+    <value>ลบข้อมูลเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulEdit" xml:space="preserve">
+    <value>แก้ไขข้อมูลเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulMaterialDeduction" xml:space="preserve">
+    <value>ตัดสต๊อกวัสดุเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulProceed" xml:space="preserve">
+    <value>ดำเนินการเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulPRQPRAToSAPSave" xml:space="preserve">
+    <value>Interface ใบสั่งจ่ายไปยังระบบ SAP เสร็จสิ้น</value>
+  </data>
+  <data name="SuccessfulPRToSAPCancel" xml:space="preserve">
+    <value>ยกเลิกใบขออนุมัติจัดซื้อเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulPRToSAPSave" xml:space="preserve">
+    <value>Interface ใบขออนุมัติจัดซื้อไปยังระบบ SAP เสร็จสิ้น</value>
+  </data>
+  <data name="SuccessfulReject" xml:space="preserve">
+    <value>ปฏิเสธคำขอเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulResendRequest" xml:space="preserve">
+    <value>ส่งคำขอเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulSave" xml:space="preserve">
+    <value>บันทึกข้อมูลเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulSendRequest" xml:space="preserve">
+    <value>ส่งคำขอเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulTestPRoSAPCancel" xml:space="preserve">
+    <value>ยกเลิกใบขออนุมัติจัดซื้อเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulTestPRoSAPSave" xml:space="preserve">
+    <value>ผ่านการทดสอบ</value>
+  </data>
+  <data name="SuccessfulTestPRQPRAToSAPSave" xml:space="preserve">
+    <value>ผ่านการทดสอบ</value>
+  </data>
+  <data name="SuccessfulUpload" xml:space="preserve">
+    <value>Upload ข้อมูลเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulUploadValidate" xml:space="preserve">
+    <value>ข้อมูลถูกต้องสามารถ Upload ข้อมูลได้</value>
+  </data>
+  <data name="SuccessfulValid" xml:space="preserve">
+    <value>ตรวจสอบข้อมูลเรียบร้อย</value>
+  </data>
+  <data name="SuccessfulVerify" xml:space="preserve">
+    <value>ผ่านการตรวจสอบ</value>
+  </data>
+  <data name="SuccessfulVerify1" xml:space="preserve">
+    <value>ผ่านการตรวจสอบ</value>
+  </data>
+  <data name="Summary" xml:space="preserve">
+    <value>สรุป</value>
+  </data>
+  <data name="TitleInvoiceUpload" xml:space="preserve">
+    <value>อัพโหลด ใบแจ้งหนี้</value>
+  </data>
+  <data name="UploadBy" xml:space="preserve">
+    <value>Upload ข้อมูลโดย</value>
+  </data>
+  <data name="UploadDate" xml:space="preserve">
+    <value>วันที่ Upload ข้อมูล</value>
+  </data>
+  <data name="UploadPhoto1" xml:space="preserve">
+    <value>อัพโหลดรูป</value>
+  </data>
+  <data name="UploadType" xml:space="preserve">
+    <value>การจัดการ</value>
+  </data>
+  <data name="UrgentCase" xml:space="preserve">
+    <value>กรณี</value>
+  </data>
+  <data name="Usage" xml:space="preserve">
+    <value>การใช้งาน</value>
+  </data>
+  <data name="Use" xml:space="preserve">
+    <value>ใช้</value>
+  </data>
+  <data name="UserLastModifies" xml:space="preserve">
+    <value>ผู้แก้ไข</value>
+  </data>
+  <data name="PopupCloseProposalBody" xml:space="preserve">
+    <value>ยืนยันการปิดข้อตกลงทางการค้าหรือไม่?</value>
+  </data>
+  <data name="PopupCloseProposalHeader" xml:space="preserve">
+    <value>ยืนยันการปิดข้อตกลงทางการค้า</value>
+  </data>
+  <data name="PopupConfirmAcKnowLedgeBody" xml:space="preserve">
+    <value>ยืนยันการรับทราบข้อมูลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmAcKnowLedgeHeader" xml:space="preserve">
+    <value>ยืนยันการรับทราบ</value>
+  </data>
+  <data name="PopupConfirmAgentDataBody" xml:space="preserve">
+    <value>ยืนยันข้อมูล {0} หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmAgentDataHeader" xml:space="preserve">
+    <value>ยืนยันข้อมูล</value>
+  </data>
+  <data name="PopupConfirmAgentEventBody" xml:space="preserve">
+    <value>ยืนยันการสร้างเหตุการณ์ของตัวแทนจำหน่ายหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmAgentEventHeader" xml:space="preserve">
+    <value>ยืนยันการสร้างเหตุการณ์ของตัวแทนจำหน่าย</value>
+  </data>
+  <data name="PopupConfirmApproveBody" xml:space="preserve">
+    <value>ยืนยันการอนุมัติหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmApproveHeader" xml:space="preserve">
+    <value>ยืนยันการอนุมัติ</value>
+  </data>
+  <data name="PopupConfirmBackBody" xml:space="preserve">
+    <value>ข้อมูลที่ทำการเปลี่ยนแปลงจะไม่ถูกบันทึก ยืนยันการย้อนกลับหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmBackHeader" xml:space="preserve">
+    <value>ยืนยันการย้อนกลับ</value>
+  </data>
+  <data name="PopupConfirmCancelJobBody" xml:space="preserve">
+    <value>ยืนยันการยกเลิกใบขออนุมัติ Job หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmCancelJobHeader" xml:space="preserve">
+    <value>ยืนยันการยกเลิกใบขออนุมัติ Job</value>
+  </data>
+  <data name="PopupConfirmCancelPRBody" xml:space="preserve">
+    <value>ยืนยันการยกเลิกใบขออนุมัติจัดซื้อหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmCancelPRHeader" xml:space="preserve">
+    <value>ยืนยันการยกเลืกใบขออนุมัติจัดซื้อ</value>
+  </data>
+  <data name="PopupConfirmConfirmToSAPBody" xml:space="preserve">
+    <value>ยืนยันการส่งข้อมูลไปยัง SAP หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmConfirmToSAPHeader" xml:space="preserve">
+    <value>ยืนยันการส่งข้อมูล</value>
+  </data>
+  <data name="PopupConfirmDeductBody" xml:space="preserve">
+    <value>ยืนยันการเบิกข้อมูลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmDeductHeader" xml:space="preserve">
+    <value>ยืนยันการเบิก</value>
+  </data>
+  <data name="PopupConfirmDeleteBody" xml:space="preserve">
+    <value>ยืนยันการลบข้อมูลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmDeleteHeader" xml:space="preserve">
+    <value>ยืนยันการลบข้อมูล</value>
+  </data>
+  <data name="PopupConfirmFinishEvaBody" xml:space="preserve">
+    <value>ยืนยันเสร็จสิ้นการประเมินหรือไม่? หลังจากยืนยันจะไม่สามารถแก้ไขผลการประเมินได้อีก</value>
+  </data>
+  <data name="PopupConfirmFinishEvaHeader" xml:space="preserve">
+    <value>ยืนยันเสร็จสิ้นการประเมิน</value>
+  </data>
+  <data name="PopupConfirmFinishQuestionBody" xml:space="preserve">
+    <value>ยืนยันเสร็จสิ้นการกรอกแบบสอบถามหรือไม่? หลังจากยืนยันจะไม่สามารถแก้ไขแบบสอบถามได้อีก</value>
+  </data>
+  <data name="PopupConfirmFinishQuestionHeader" xml:space="preserve">
+    <value>ยืนยันเสร็จสิ้นการกรอกแบบสอบถาม</value>
+  </data>
+  <data name="PopupConfirmPeriodChangeBody" xml:space="preserve">
+    <value>มีการเปลี่ยนแปลงราคาสินค้าในช่วงเวลาที่เลือกใหม่ ยืนยันการเปลี่ยนนี้หรือไม่</value>
+  </data>
+  <data name="PopupConfirmPrintMemoBody" xml:space="preserve">
+    <value>ต้องการพิมพ์บันทึกหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmPrintMemoHeader" xml:space="preserve">
+    <value>ยืนยันการพิมพ์บันทึก</value>
+  </data>
+  <data name="PopupConfirmProposalBody" xml:space="preserve">
+    <value>ยืนยันการส่งข้อตกลงทางการค้าหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmProposalHeader" xml:space="preserve">
+    <value>ยืนยันข้อตกลงทางการค้า</value>
+  </data>
+  <data name="PopupConfirmReceiveBody" xml:space="preserve">
+    <value>ยืนยันการรับเอกสารหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmReceiveHeader" xml:space="preserve">
+    <value>ยืนยันการรับเอกสาร</value>
+  </data>
+  <data name="PopupConfirmRejectBody" xml:space="preserve">
+    <value>ยืนยันการปฏิเสธหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmRejectHeader" xml:space="preserve">
+    <value>ยืนยันการปฏิเสธ</value>
+  </data>
+  <data name="PopupConfirmSaveBody" xml:space="preserve">
+    <value>ยืนยันการบันทึกข้อมูลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSaveHeader" xml:space="preserve">
+    <value>ยืนยันการบันทึกข้อมูล</value>
+  </data>
+  <data name="PopupConfirmSendBudgetIntTransferBody" xml:space="preserve">
+    <value>ยืนยันการส่งผลการโอนงบประมาณภายในหรือไม่ ?</value>
+  </data>
+  <data name="PopupConfirmSendBudgetIntTransferHeader" xml:space="preserve">
+    <value>ยืนยันการส่งผลการโอนงบประมาณภายใน</value>
+  </data>
+  <data name="PopupConfirmSendEmailBody" xml:space="preserve">
+    <value>ยืนยันการส่งอีเมลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendEmailHeader" xml:space="preserve">
+    <value>ยืนยันการส่งอีเมล</value>
+  </data>
+  <data name="PopupConfirmSendEvaBody" xml:space="preserve">
+    <value>ยืนยันส่งผลการประเมินหรือไม่? หลังจากยืนยันจะไม่สามารถแก้ไขผลการประเมินได้อีก</value>
+  </data>
+  <data name="PopupConfirmSendEvaHeader" xml:space="preserve">
+    <value>ยืนยันส่งผลการประเมิน</value>
+  </data>
+  <data name="PopupConfirmSendFormCASummaryBody" xml:space="preserve">
+    <value>ยืนยันส่งผลการประเมิน CA หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendFormCASummaryHeader" xml:space="preserve">
+    <value>ยืนยันการส่งผลการประเมิน CA</value>
+  </data>
+  <data name="PopupConfirmSendIOUBody" xml:space="preserve">
+    <value>ยืนยันส่งใบขออนุมัติ IOU หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendIOUHeader" xml:space="preserve">
+    <value>ยืนยันการส่งอนุมัติ</value>
+  </data>
+  <data name="PopupConfirmSendJobBody" xml:space="preserve">
+    <value>ยืนยันส่งใบขออนุมัติ Job หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendJobHeader" xml:space="preserve">
+    <value>ยืนยันส่งใบขออนุมัติ Job</value>
+  </data>
+  <data name="PopupConfirmSendMaterialRequestBody" xml:space="preserve">
+    <value>ยืนยันส่งใบขออนุมัติ ขอเบิกวัสดุ หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendPRAGroupBody" xml:space="preserve">
+    <value>ยืนยันการส่งใบปะหน้าคำขออนุมัติจ่ายชดเชยคืนตัวแทน?</value>
+  </data>
+  <data name="PopupConfirmSendPRAGroupHeader" xml:space="preserve">
+    <value>ยืนยันการส่งใบปะหน้าคำขออนุมัติจ่ายชดเชยคืนตัวแทน</value>
+  </data>
+  <data name="PopupConfirmSendPRBody" xml:space="preserve">
+    <value>ยืนยันการส่งใบขออนุมัติจัดซื้อหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendPRHeader" xml:space="preserve">
+    <value>ยืนยันการส่งใบขออนุมัติจัดซื้อ</value>
+  </data>
+  <data name="PopupConfirmSendTradeBody" xml:space="preserve">
+    <value>ยืนยันส่งใบขออนุมัติ Trade หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmSendTradeHeader" xml:space="preserve">
+    <value>ยืนยันส่งใบขออนุมัติ Trade</value>
+  </data>
+  <data name="PopupConfirmTestToSAPBody" xml:space="preserve">
+    <value>ยืนยันการทดสอบส่งข้อมูลไปยัง SAP หรือไม่?</value>
+  </data>
+  <data name="PopupConfirmTestToSAPHeader" xml:space="preserve">
+    <value>ยืนยันการทดสอบส่งข้อมูล</value>
+  </data>
+  <data name="PopupConfirmUndoBody" xml:space="preserve">
+    <value>ยืนยันการเรียกคืนหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmUndoHeader" xml:space="preserve">
+    <value>ยืนยันการเรียกคืน</value>
+  </data>
+  <data name="PopupConfirmUploadJobBody" xml:space="preserve">
+    <value>ยืนยันการ Upload ข้อมูลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmUploadJobHeader" xml:space="preserve">
+    <value>ยืนยันการ Upload ข้อมูล</value>
+  </data>
+  <data name="PopupConfirmValidateBody" xml:space="preserve">
+    <value>ยืนยันการตรวจสอบข้อมูลหรือไม่?</value>
+  </data>
+  <data name="PopupConfirmValidateHeader" xml:space="preserve">
+    <value>ยืนยันการตรวจสอบข้อมูล</value>
+  </data>
+  <data name="PopupDefineProduct" xml:space="preserve">
+    <value>กำหนดสินค้า</value>
+  </data>
+  <data name="PopupErrorHeader" xml:space="preserve">
+    <value>มีข้อผิดพลาด</value>
+  </data>
+  <data name="PopupInfoHeader" xml:space="preserve">
+    <value>Information</value>
+  </data>
+  <data name="PopupPleaseReProcessProposalBody" xml:space="preserve">
+    <value>ยอดขายที่เกิดขึ้นจริงมีการเปลี่ยน กรุณาประมวลผลข้อมูลข้อตกลงทางการค้าใหม่</value>
+  </data>
+  <data name="PopupPleaseReProcessProposalHeader" xml:space="preserve">
+    <value>แจ้งเตือน</value>
+  </data>
+  <data name="PopupPR" xml:space="preserve">
+    <value>เลือกรายการใบจัดซื้อ</value>
+  </data>
+  <data name="PopupPRQPRA" xml:space="preserve">
+    <value>เลือกรายการใบสั่งจ่าย</value>
+  </data>
+  <data name="PopupSAPCommitBody" xml:space="preserve">
+    <value>ยืนยันการส่งข้อมูลไปยัง SAP หรือไม่?</value>
+  </data>
+  <data name="PopupSAPCommitHeader" xml:space="preserve">
+    <value>ยืนยันการส่งข้อมูลไปยัง SAP</value>
+  </data>
+  <data name="PopupSuccessHeader" xml:space="preserve">
+    <value>สำเร็จ</value>
+  </data>
+  <data name="PopupSuccessPRQPRAToSAPHeader" xml:space="preserve">
+    <value>Interface ใบสั่งจ่ายไปยังระบบ SAP</value>
+  </data>
+  <data name="PopupSuccessTestPRQPRAToSAPHeader" xml:space="preserve">
+    <value>ทดสอบ Interface ใบสั่งจ่ายไปยังระบบ SAP</value>
+  </data>
+  <data name="PopupWarningProductConfigHeader" xml:space="preserve">
+    <value>โปรดตรวจสอบข้อมูลอีกครั้ง</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="SuccessfulCloseInvoice" xml:space="preserve">
+    <value>ทำการจ่ายเรียบร้อย</value>
+  </data>
+  <data name="TitleAccruedUpload" xml:space="preserve">
+    <value>อัพโหลด Accrued</value>
+  </data>
+  <data name="CHANNELS" xml:space="preserve">
+    <value>Channels</value>
+  </data>
+  <data name="FEE_TYPE" xml:space="preserve">
+    <value>Fee Type</value>
+  </data>
+  <data name="FEE" xml:space="preserve">
+    <value>Fee</value>
+  </data>
+  <data name="FUND" xml:space="preserve">
+    <value>Fund</value>
+  </data>
+  <data name="PRO_REC_DATE" xml:space="preserve">
+    <value>PRO Create Date</value>
+  </data>
+  <data name="DISCOUNT" xml:space="preserve">
+    <value>Discount</value>
+  </data>
+  <data name="PRO_DUE_DATE" xml:space="preserve">
+    <value>PRO Due Date</value>
+  </data>
+  <data name="PODueDate" xml:space="preserve">
+    <value>PO Due Date</value>
+  </data>
+  <data name="BUSINESS_UNIT" xml:space="preserve">
+    <value>Business Unit</value>
+  </data>
+  <data name="Supplier" xml:space="preserve">
+    <value>Supplier / Starff</value>
+  </data>
+  <data name="TitlePaymentItemList" xml:space="preserve">
+    <value>Price Catalog</value>
+  </data>
+  <data name="ButtonEditInvoice" xml:space="preserve">
+    <value>ทำจ่าย</value>
+  </data>
+  <data name="PAYMENT_ITEMS_NAME" xml:space="preserve">
+    <value>Description Name</value>
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value>Password</value>
+  </data>
+  <data name="Username" xml:space="preserve">
+    <value>Username</value>
+  </data>
+  <data name="TitleLogin" xml:space="preserve">
+    <value>เข้าสู่ระบบ</value>
+  </data>
+  <data name="Authenticating" xml:space="preserve">
+    <value>กำลังตรวจสอบ</value>
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value>ข้อความ</value>
+  </data>
+  <data name="TitleValueHelpSetting" xml:space="preserve">
+    <value>ข้อมูลทั่วไป</value>
+  </data>
+  <data name="Type" xml:space="preserve">
+    <value>ประเภท</value>
+  </data>
+  <data name="ACEDesc" xml:space="preserve">
+    <value>คำอธิบาย</value>
+  </data>
+  <data name="ACRName" xml:space="preserve">
+    <value>ชื่อสิทธิ์</value>
+  </data>
+  <data name="AssignUserRole" xml:space="preserve">
+    <value>กำหนดสิทธิ์</value>
+  </data>
+  <data name="AssignUserRoleLicense" xml:space="preserve">
+    <value>กำหนดรายเซ็นต์</value>
+  </data>
+  <data name="EvaMenu" xml:space="preserve">
+    <value>เมนู</value>
+  </data>
+  <data name="List" xml:space="preserve">
+    <value>รายการ</value>
+  </data>
+  <data name="MenuAppCompositeRole" xml:space="preserve">
+    <value>จัดการสิทธิ์การใช้งานระบบ</value>
+  </data>
+  <data name="MenuAssignUserRole" xml:space="preserve">
+    <value>กำหนดสิทธิ์ผู้ใช้งาน</value>
+  </data>
+  <data name="MenuAuthorization" xml:space="preserve">
+    <value>กำหนดสิทธิ์การใช้งาน</value>
+  </data>
+  <data name="MenuCenterSetting" xml:space="preserve">
+    <value>ข้อมูลส่วนกลาง</value>
+  </data>
+  <data name="RoleDisplay" xml:space="preserve">
+    <value>แสดงข้อมูล</value>
+  </data>
+  <data name="RoleManage" xml:space="preserve">
+    <value>จัดการข้อมูล</value>
+  </data>
+  <data name="TitleAppCompositeRole" xml:space="preserve">
+    <value>จัดการสิทธิ์การใช้งานระบบ</value>
+  </data>
+  <data name="TitleAssignUserRole" xml:space="preserve">
+    <value>กำหนดสิทธิ์ให้ผู้ใช้งาน</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>รหัส</value>
+  </data>
+  <data name="FirstnameEN" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="FirstnameTH" xml:space="preserve">
+    <value>ชื่อ</value>
+  </data>
+  <data name="TitleAccruedSummaryReportList" xml:space="preserve">
+    <value>รายงาน Accrued Summary</value>
+  </data>
+  <data name="MenuCAEvaAndQuestionaire" xml:space="preserve">
+    <value>ประเมินตัวแทน/แบบสอบถาม</value>
+  </data>
+  <data name="INV_MONTH_FROM" xml:space="preserve">
+    <value>Month From</value>
+  </data>
+  <data name="INV_MONTH_TO" xml:space="preserve">
+    <value>Month To</value>
+  </data>
+  <data name="INV_YEAR_FROM" xml:space="preserve">
+    <value>Year From</value>
+  </data>
+  <data name="INV_YEAR_TO" xml:space="preserve">
+    <value>Yaer To</value>
+  </data>
+  <data name="Dashboard" xml:space="preserve">
+    <value>Dashboard</value>
+  </data>
+  <data name="ButtonBrowse" xml:space="preserve">
+    <value>เรียกดู</value>
+  </data>
+  <data name="DURATION" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+</root>

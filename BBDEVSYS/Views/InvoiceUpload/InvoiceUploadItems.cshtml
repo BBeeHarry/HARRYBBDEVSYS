@@ -1,0 +1,128 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@model List<BBDEVSYS.ViewModels.InvoiceUpload.InvoiceUploadItemViewModel>
+
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            @using (Html.BeginCollectionItem("InvoiceUploadItemList"))
+            {
+                <td style="width:200px;" class="colStatus">@Html.Raw(item.Message)</td>
+                <td style="width:100px;">@item.INV_MONTH</td>
+                <td style="width:100px;">@item.INV_YEAR</td>
+                <td>@item.CHANNELS</td>
+                <td>@item.FEE</td>
+                <td>@item.SEQUENCE</td>
+                <td>@item.CHARGED</td>
+                <td>@item.TRANSACTIONS</td>
+                <td>@item.RATE_TRANS</td>
+                <td>@item.ACTUAL_AMOUNT</td>
+                <td>@item.RATE_AMT</td>
+                <td>@item.TOTAL_CHARGE_AMOUNT</td>
+                <td>@item.NET_AMOUNT</td>
+                <td>@item.DEDUCT_WHT_AMOUNT</td>
+                <td>@item.CURRENCY</td>
+                <td>@item.INCLUDE_VAT_AMOUNT</td>
+                <td>@item.GL_ACCOUNT</td>
+                <td>@item.CCT_CODE</td>
+                <td>@item.FUND_CODE</td>
+                <td>@item.COMPANY_CODE</td>
+                <td>@item.INV_NO</td>
+                <td>@item.PRO_NO</td>
+                <td>@item.PRO_REC_DATE</td>
+                <td>@item.INV_REC_BY</td>
+                <td>@item.INV_REC_DATE</td>
+                <td>@item.INV_APPROVED_BY</td>
+                <td>@item.INV_APPROVED_DATE</td>
+                <td>@item.INV_DUE_DATE</td>
+                <td>@item.CONDITION_PYM</td>
+                <td>@item.VAT</td>
+                <td>@item.WHT</td>
+                <td>@item.REMARK</td>
+                <td>@item.DISCOUNT</td>
+
+
+
+
+
+                @Html.HiddenFor(m => item.ID)
+                @Html.HiddenFor(m => item.ErrorFlag)
+               //@Html.HiddenFor(m => item.Message) @*Message contain html code, cannot send value to backend*@
+
+                @Html.HiddenFor(m => item.INV_MONTH)
+                @Html.HiddenFor(m => item.INV_YEAR)
+                @Html.HiddenFor(m => item.CHANNELS)
+                @Html.HiddenFor(m => item.FEE)
+                @Html.HiddenFor(m => item.SEQUENCE)
+                @Html.HiddenFor(m => item.TRANSACTIONS)
+                @Html.HiddenFor(m => item.RATE_AMT)
+                @Html.HiddenFor(m => item.RATE_TRANS)
+                @Html.HiddenFor(m => item.ACTUAL_AMOUNT)
+                @Html.HiddenFor(m => item.TOTAL_CHARGE_AMOUNT)
+                @Html.HiddenFor(m => item.NET_AMOUNT)
+                @Html.HiddenFor(m => item.DEDUCT_WHT_AMOUNT)
+                @Html.HiddenFor(m => item.CURRENCY)
+                @Html.HiddenFor(m => item.INCLUDE_VAT_AMOUNT)
+                @Html.HiddenFor(m => item.GL_ACCOUNT)
+                @Html.HiddenFor(m => item.CCT_CODE)
+                @Html.HiddenFor(m => item.FUND_CODE)
+                @Html.HiddenFor(m => item.COMPANY_CODE)
+                @Html.HiddenFor(m => item.INV_NO)
+                @Html.HiddenFor(m => item.PRO_NO)
+                @Html.HiddenFor(m => item.PRO_REC_DATE)
+                @Html.HiddenFor(m => item.INV_REC_BY)
+                @Html.HiddenFor(m => item.INV_REC_DATE)
+                @Html.HiddenFor(m => item.INV_APPROVED_BY)
+
+                @Html.HiddenFor(m => item.INV_DUE_DATE)
+                @Html.HiddenFor(m => item.INV_APPROVED_DATE)
+                @Html.HiddenFor(m => item.CONDITION_PYM)
+                @Html.HiddenFor(m => item.VAT)
+                @Html.HiddenFor(m => item.WHT)
+                @Html.HiddenFor(m => item.REMARK)
+                @Html.HiddenFor(m => item.DISCOUNT)
+                @Html.HiddenFor(m => item.IS_STATUS)
+
+
+            }
+        </tr>
+
+    }
+}
+
+
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        //Set height of fixed column to equals another column
+        var bodyOffset = 17; //padding top + bottom + border in pixel
+        var headerOffset = 17; //padding top + bottom + border in pixel
+        var $table = $('#uploadItemTable');
+        var tableClone = $table.clone();
+        tableClone.find('tr').each(function (i, elem) {
+
+            if (i != 0) {
+                var row = $table.find('tr:eq(' + i + ')');
+
+
+                var fixColumn = row.find('td:nth-child(2)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(3)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(4)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+            }
+
+        });
+        //Change item name for sending to controller
+        ModifyCollectionItemName('uploadItemBody');
+
+    });
+</script>

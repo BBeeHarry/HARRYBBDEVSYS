@@ -1,0 +1,58 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+
+@model BBDEVSYS.ViewModels.Authorization.AssignUserRoleItemViewModel
+
+<tr>
+    @using (Html.BeginCollectionItem("AssignUserRoleItemList"))
+    {
+
+        <td class="col-md-9">
+            @Html.DropDownListFor(m => m.CompositeRoleID, new SelectList(Model.CompositeRoleList, "ID", "Name"), "", new { @class = "form-control input-sm col-md-2 CompositeRoleID", style = "width:100%;" }) 
+        </td>
+        <td class="col-md-2">
+            @*@Html.TextBoxFor(m => m.StatusText, new { @class = "form-control StatusText", @readonly = "readonly" })*@
+            <text>@Model.StatusText</text>
+        </td>
+        <td style="text-align:right;" class="true-table-column-fit-content col-md-1">
+
+            <button type="button" class="true-table-detail-icon-button authManage" onclick="deleteItemRow(this)" title="ลบ">
+                <i style="vertical-align:middle" class="glyphicon glyphicon-trash"></i>
+            </button>
+        </td>
+        @Html.HiddenFor(m => m.DeleteFlag, new { @class = "detail-item-delete-flag" })
+        @Html.HiddenFor(m => m.ID)
+        @Html.HiddenFor(m => m.CompositeRoleID, new { @class = "CompositeRoleID" })
+    }
+
+</tr>
+<script src="~/Content/js/input.initialization.js"></script>
+
+<script>
+   
+    $(document).ready(function () {
+        $('.CompositeRoleID').change(function () {
+            var getid = $(this).closest('tr').find('text').attr('data-id', $(this).closest('tr').find('input[name="AssignUserRoleItemList.index"]').attr('value'));
+            var id = $(this).closest('tr').find('text').attr('data-id');
+            var value = $(this).val();
+            if (value != 0) {
+                $.getJSON("@Url.Action("GetValueHelpStatus", "AssignUserRole", new { Area = "Authorization" })", { roleID: value }, function (data) {
+                    $("[data-id=" + id+"]").text(data.StatusText);
+                });
+            }
+
+        });
+
+         @*$('.CompositeRoleID').change(function () {
+             var id = $(this).closest('tr').find('input[type="text"]').attr('id');
+             var value =  $(this).val();
+             if (value != 0) {
+                 $.getJSON("@Url.Action("GetValueHelpStatus", "AssignUserRole", new { Area = "Authorization" })", { roleID: value }, function (data) {
+                     $("#" + id).val(data.StatusText);
+                 });
+             }
+
+         });*@
+        
+    });
+
+</script>

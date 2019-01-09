@@ -1,0 +1,221 @@
+﻿@using System.Web.Optimization
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>@ViewBag.Title</title>
+    <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+    <link href="~/Content/css/font-awesome.min.css" rel="stylesheet">
+    <link href="~/Content/css/icheck/red.min.css" rel="stylesheet">
+    <link href="~/Content/css/icheck/green.min.css" rel="stylesheet" />
+    <link href="~/Content/css/icheck/blue.min.css" rel="stylesheet" />
+    <link href="~/Content/css/icheck/orange.min.css" rel="stylesheet" />
+    @Styles.Render("~/bundles/css")
+    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/js")*@
+
+    <!--[if lt IE 9]>
+    <script src="~/assets/js/html5shiv.min.js"></script>
+    <script src="~/assets/js/respond.min.js"></script>
+    <![endif]-->
+</head>
+<!-- ADD THE CLASS fixed TO GET A FIXED HEADER AND SIDEBAR LAYOUT -->
+<!-- the fixed layout is not compatible with sidebar-mini -->
+<body class="hold-transition skin-red fixed sidebar-mini">
+    <script type="text/javascript">
+        //function Splash() {
+        //    var splash = window.pleaseWait({
+        //        logo: "/Content/css/themes/base/images/true-logo.png",
+        //        backgroundColor: '#282626',
+        //        loadingHtml: "<h1 class='loading-message'>Revenue Receiving Management System by MIS</h1>" +
+        //        '<div class="sk-folding-cube"><div class="sk-cube1 sk-cube" ></div><div class="sk-cube2 sk-cube"></div><div class="sk-cube4 sk-cube"></div><div class="sk-cube3 sk-cube"></div></div>'
+        //    });
+
+        //    return splash;
+        //}
+
+        //waiter = Splash();
+        $(document)
+            .ready(function () {
+                //setTimeout(function () {
+                //    waiter.finish();
+                //}, 2000);
+            });
+    </script>
+    <!-- Site wrapper -->
+    <div class="wrapper">
+       
+        <header class="main-header">
+            @* BEGIN Logo *@
+            <a href="@Url.Action("Index", "Home")" class="logo">
+                <!-- mini logo for sidebar mini 50x50 pixels -->
+                <span class="logo-mini"><b>MIS</b></span>
+                <!-- logo for regular state and mobile devices -->
+                <span class="logo-lg"><b>RRM</b>MIS</span>
+            </a>
+            @* END Logo *@
+            @* BEGIN Header *@
+            <nav class="navbar navbar-static-top" role="navigation">
+                <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                </a>
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        @Html.Partial("Profile")
+                    </ul>
+                </div>
+                <!--
+                <div class="navbar-custom-menu">
+                    <ul class="nav navbar-nav">
+                        @* BEGIN User Account Menu *@
+                        <li class="dropdown user user-menu">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                @*<img src="~/Content/img/user.jpg" class="user-image" alt="User Image">*@
+
+                                <span class="hidden-xs">
+                                    Welcome
+                                    @*@{
+                                        var userInfo = (User)Session["USERINFO"];
+                                        if (userInfo != null)
+                                        {
+                                            @userInfo.DisplayNameTH
+                                        }
+                                    }*@
+                                    @*---- @User.Identity.Name;*@
+
+                                   
+                                </span>
+
+                            </a>
+                        </li>
+                        @* END User Account Menu *@
+                    </ul>
+
+                    <a href="#" class="btn btn-app true-app-sign-out" style="float: right; background-color: transparent; border-color: transparent; margin: auto !important; padding: 0px !important; height: 50px !important;" title="@BBDEVSYS.Content.text.ResourceText.ButtonLogout" onclick="logout();">
+                        <span class="fa fa-sign-out" style="display: table;height: 100%;width: 100%;"></span>
+                        <style>
+                            .true-app-sign-out .fa-sign-out:before {
+                                display: table-cell;
+                                vertical-align: middle;
+                            }
+                        </style>
+                    </a>
+
+                </div> -->
+            </nav>
+        </header>
+
+        <!-- =============================================== -->
+        <aside class="main-sidebar">
+            @Html.Partial("Menus")
+        </aside>
+        <!-- =============================================== -->
+        <!-- Content Wrapper. Contains page content -->
+        <div class="content-wrapper">
+            <!-- Content Header (Page header) -->
+            <section class="content-header">
+                <h1>
+                    @ViewBag.Title
+                    <small>@ViewBag.Subtitle</small>
+                </h1>
+            </section>
+            <!-- Main content -->
+            <section class="content">
+                @RenderBody()
+            </section>
+            <!-- /.content -->
+        </div>
+        <!-- /.content-wrapper -->
+        <footer class="main-footer">
+            <div class="pull-right hidden-xs">
+                <b>Version</b> @ViewContext.Controller.GetType().Assembly.GetName().Version
+            </div>
+            <strong>Copyright &copy; @DateTime.Now.Year <a href="">Revenue Receiving Management</a>.</strong>
+        </footer>
+    </div>
+
+
+    <!-- ./wrapper -->
+    @*<link href="~/Content/bootstrap.min.css" rel="stylesheet" />
+        <link href="~/Content/font-awesome.min.css" rel="stylesheet" />
+        <link href="~/Content/AdminLTE.min.css" rel="stylesheet" />
+        <link href="~/Content/skins/skin-red.min.css" rel="stylesheet" />
+        <link href="~/Content/plugins/iCheck/flat/red.css" rel="stylesheet" />*@
+    @*<script src="~/Content/js/bootstrap.min.js"></script>
+        <script src="~/Content/js/jquery.validate.min.js"></script>
+        <script src="~/Content/plugins/slimScroll/jquery.slimscroll.min.js"></script>
+        <script src="~/Content/plugins/fastclick/fastclick.min.js"></script>
+        <script src="~/Content/js/app.min.js"></script>
+        <script src="~/Content/js/demo.js"></script>
+        <script src="~/Content/js/AdminLTE.js"></script>
+        <script src="~/Content/plugins/iCheck/icheck.min.js"></script>*@
+
+    @*<script>
+        $(document).ready(function () {
+            $('input[type="radio"]')
+                .iCheck({
+                    checkboxClass: 'icheckbox_flat-blue',
+                    radioClass: 'iradio_flat-blue',
+                    increaseArea: '20%' // optional
+                });
+
+            $('input[type="checkbox"]:not(.bootstrap-switch)')
+                .iCheck({
+                    checkboxClass: 'icheckbox_flat-blue',
+                    radioClass: 'iradio_flat-blue',
+                    increaseArea: '20%' // optional
+                });
+        })
+    </script>*@
+    @RenderSection("scripts", required: false)
+    @{
+        if (ViewBag.Erro != null)
+        {
+            foreach (var m in (List<string>)ViewBag.Erro)
+            {
+                <script>
+                    MsgErro('@m');
+                </script>
+            }
+        }
+
+        if (ViewBag.Ok != null)
+        {
+            foreach (var m in (List<string>)ViewBag.Ok)
+            {
+                <script>
+                    MsgOk('@m');
+                </script>
+            }
+        }
+
+        if (ViewBag.Info != null)
+        {
+            foreach (var m in (List<string>)ViewBag.Info)
+            {
+                <script>
+                    MsgInfo('@m');
+                </script>
+            }
+        }
+
+        if (ViewBag.Alerta != null)
+        {
+            foreach (var m in (List<string>)ViewBag.Alerta)
+            {
+                <script>
+                    MsgAlerta('@m');
+                </script>
+            }
+        }
+
+    }
+    <script src="@RouteJs.RouteJsHandler.HandlerUrl"></script>
+   
+    @*@Styles.Render("~/bundles/css")*@
+    @Scripts.Render("~/bundles/js")
+    @*@Scripts.Render("~/bundles/jquery")*@
+    @Html.Partial("Javascript/AppJavaScript")
+</body>
+</html>

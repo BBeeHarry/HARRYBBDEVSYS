@@ -1,0 +1,196 @@
+﻿@model BBDEVSYS.ViewModels.Authorization.AssignUserRoleViewModel
+@using BBDEVSYS.Services.Shared
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAssignUserRole;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", id = "searchForm", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.TitleAssignUserRole</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable"></table>
+                        @*<div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.AssignUserType)
+                            </label>
+                            <div class="col-xs-12 col-md-5">
+                                @Html.DropDownListFor(m => m.AssignUserType, new SelectList(Model.AssignUserTypeList, "ValueKey", "ValueText"), new { @class = "form-control", style = "width:100%;" })
+                                @Html.ValidationMessageFor(m => m.AssignUserType, "", new { @class = "text-danger" })
+                            </div>
+                        </div>*@
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+@*<div class="row">
+    <div class="col-xs-12 ">
+        <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable"></table>
+    </div>
+</div>*@
+
+<div>
+    <div id="messagePopup">
+        @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+    </div>
+</div>
+
+
+<script type="text/javascript">
+
+    @*function assignUserRoleResult(userRole) {
+        $("[data-valmsg-for='AssignUserType']").html("");
+        var error = false;
+
+        if (!userRole) {
+            $("[data-valmsg-for='AssignUserType']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.Type)");
+            error = true;
+        }
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.assignUserType = userRole;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+        }
+    }*@
+    $(document).ready(function () {
+        ////$("#AssignUserType").val('EMPLOYEE');
+        //$("#AssignUserType").change(function () {
+        //    var userRole = this.value;
+        //    assignUserRoleResult(userRole);
+        //    fnSetShowHide(4);
+        //});
+
+        var columns = [
+            { "data": "AssignUserCode", "title": "Code", "type": "string", "width": "15%" },
+            { "data": "ID", "type": "num", "hidden": true },
+            { "data": "AssignAvailableReason", "type": "string", "hidden": true },
+            { "data": "AssignUserName", "title": "FirstnameTH", "type": "string", "width": "18%" },
+            //{ "data": "OrgName", "title": "BelongToOrg", "type": "string", "width": "15%" },
+            { "data": "UserName", "title": "Username", "type": "string", "width": "25%" },
+            { "data": "AssignUserRoleIcon", "title": "@BBDEVSYS.Content.text.ResourceText.AssignUserRole", "type": "string", "width": "10%", "className": "true-dt-column-align-center" },
+            { "data": null, "defaultContent": getDataTableButton(["display", "edit"]), "orderable": false, "width": "10%", "className": "true-dt-button-column" }
+
+
+        ];
+        ////Set parameter value
+        //if ($('#AssignUserType').val() == '') {
+        //    $('#AssignUserType').val('EMPLOYEE');
+        //}
+        //var AssignUserTypeText = $('#AssignUserType').val();
+
+        //$('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+        //    data.assignUserType = AssignUserTypeText
+        //})
+        displayDataTable('dataListTable', '@Url.Action("GetList", "AssignUserRole", new { Area = "Authorization" })', columns);
+        //Button action
+        //Display
+        $('#dataListTable tbody').on('click', '.true-dt-button-display', function () {
+
+            $('body').find('.true-dt-button-display').find('span').attr('class', 'fa fa-file');
+            $('body').find('.true-dt-button-edit').find('span').attr('class', 'glyphicon glyphicon-edit');
+
+            var id = $(this).GetDatatableData()["ID"];
+            var assignUserRoleCode = $(this).GetDatatableData()["AssignUserCode"];
+            var assignAvailableReason = $(this).GetDatatableData()["AssignAvailableReason"];
+            if (assignUserRoleCode != '') {
+                $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+
+               // var assignUserType = $('#AssignUserType').val();
+                var url = '@Url.Action("Detail", "AssignUserRole", new { Area = "Authorization" })?recordKey=' + id + '&assignUserRoleCode=' + assignUserRoleCode;//+ '&assignUserType=' + assignUserType;
+
+                redirectTo(url);
+            } else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", assignAvailableReason, "E");
+                $('body').find('.true-dt-button-display').find('span').attr('class', 'fa fa-file');
+            }
+        });
+
+        //Create
+        $('#createButton').click(function () {
+            var recordKey = $('#recordKey').val(0);
+            $('#formState').val('@ConstantVariableService.FormStateCreate');
+
+            var url = '@Url.Action("Manage", "AssignUserRole", new { Area = "Authorization" })?recordKey=0&formState=' + '@ConstantVariableService.FormStateCreate';
+
+            redirectTo(url);
+        });
+
+        //Edit
+        $('#dataListTable tbody').on('click', '.true-dt-button-edit', function () {
+
+            $('body').find('.true-dt-button-display').find('span').attr('class', 'fa fa-file');
+            $('body').find('.true-dt-button-edit').find('span').attr('class', 'glyphicon glyphicon-edit');
+
+            var id = $(this).GetDatatableData()["ID"];
+            var assignUserRoleCode = $(this).GetDatatableData()["AssignUserCode"];
+            //var assignUserType = $('#AssignUserType').val();
+            var assignAvailableReason = $(this).GetDatatableData()["AssignAvailableReason"];
+            if (assignUserRoleCode != '') {
+                $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+
+                var url = '@Url.Action("Manage", "AssignUserRole", new { Area = "Authorization" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateEdit' + '&assignUserRoleCode=' + assignUserRoleCode;//+ '&assignUserType=' + assignUserType;
+
+                redirectTo(url);
+            }
+            else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", assignAvailableReason, "E");
+                $('body').find('.true-dt-button-edit').find('span').attr('class', 'glyphicon glyphicon-edit');
+            }
+        });
+
+        //Copy
+        $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "AssignUserRole", new { Area = "Authorization" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
+
+            redirectTo(url);
+        });
+
+        //Delete
+        $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "AssignUserRole", new { Area = "Authorization" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateDelete';
+
+            redirectTo(url);
+        });
+
+        //$("#AssignUserType").trigger('change');
+
+        //var allButton = ['display', 'edit'];
+        //var SpinBtn = ['display', 'edit'];
+        //loadingButton(allButton);
+    });
+
+    function fnSetShowHide(iCol) {
+        /* Get the DataTables object again - this is not a recreation, just a get of the object */
+        var oTable = $('#dataListTable').dataTable();
+        var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
+        //var user = $("#AssignUserType").val() == 'EXTERNALAUDIT' ? 'EXTERNALAUDIT' : "";
+        oTable.fnSetColumnVis(iCol,(bVis ) ? false : true);// (bVis && user != '') ? false : true);
+        $('#dataListTable').DataTable().ajax.reload();
+    }
+</script>

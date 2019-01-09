@@ -1,0 +1,501 @@
+﻿
+@model BBDEVSYS.ViewModels.AccruedReport.AccruedDetailReportViewModel
+@using BBDEVSYS.Services.Shared
+
+@{
+    ViewBag.Title = ViewBag.Title + " " + BBDEVSYS.Content.text.ResourceText.TitleAccruedSummaryReportList;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"> @BBDEVSYS.Content.text.ResourceText.TitleAccruedSummaryReportList</h3>
+
+                    @*<div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                        </div>*@
+                </div>
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.BUSINESS_UNIT) :
+                                </label>
+                                <div class="col-xs-12 col-md-6">
+                                    @Html.DropDownListFor(m => m.BUSINESS_UNIT, new SelectList(Model.BusinessUnitLst, "Value", "Text", "All"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeCritiria(this.value)" })
+                                    
+                                </div>
+                            </div>
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.COMPANY_CODE) :
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @*@Html.DropDownListFor(m => m.CompanyCode, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeFormPeriod(this.value, false)" })*@
+                                @Html.DropDownListFor(m => m.COMPANY_CODE, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeComCode(this.value)" })
+                                @Html.ValidationMessageFor(m => m.COMPANY_CODE, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.MonthValue) :
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @*@Html.DropDownListFor(model => model.SelectedMonth, (IEnumerable<SelectListItem>)ViewBag.Months, "Month")*@
+
+                                @*@Html.DropDownListFor(m => m.START_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.MonthValue), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeMonthCode(this.value)" })*@
+                                @Html.TextBoxFor(m=>m.START_MONTH, new { @class = "form-control numberonly", maxlength = 2 })
+                                @Html.ValidationMessageFor(m => m.START_MONTH, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.TextBoxFor(m => m.END_MONTH, new { @class = "form-control numberonly", maxlength = 2 })
+                                @Html.ValidationMessageFor(m => m.END_MONTH, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.YearValue) :
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @*@Html.DropDownListFor(m => m.INV_YEAR, new SelectList(Model.YearLst, "Value", "Text", Model.YearValue), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeYearCode(this.value)" })*@
+                                @Html.TextBoxFor(m => m.START_YEAR, new { @class = "form-control numberonly " , maxlength = 4})
+                                @Html.ValidationMessageFor(m => m.START_YEAR, "", new { @class = "text-danger" })
+                            </div>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.TextBoxFor(m => m.END_YEAR, new { @class = "form-control numberonly", maxlength = 4 })
+                                @Html.ValidationMessageFor(m => m.END_YEAR, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.CHANNELSValue) :
+                            </label>
+                            <div class="col-xs-12 col-md-6">
+                                @Html.DropDownListFor(m => m.CHANNELSValue, new SelectList(Model.channelsList, "Value", "Text","All"), "", new { @class = "form-control", style = "width:100%;" })
+
+
+                            </div>
+
+                        </div>
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.FEE_TYPE) :
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.DropDownListFor(m => m.FEE_TYPE, new SelectList(Model.feeTypeLst, "Value", "Text",1), "", new { @class = "form-control", style = "width:100%;"})
+                               
+                               
+                            </div>
+                           
+                        </div>
+
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+   
+    <div class="row ">
+        <div class="col-xs-12">
+
+            <button type="button" class="btn btn-danger authDisplay" id="searchButton" onclick="searchResult()">
+                <span class="fa fa-search"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonSearch</span>
+            </button>
+        </div>
+    </div>
+
+    <div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmPopup">
+            @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+        </div>
+    </div>
+}
+
+
+
+<div class="row">
+    <div class="col-xs-12 ">
+
+       @* <table id="dataListTable" class="table table-striped table-hover cell-border  table-responsive dtr-inline true-datatable table-fix-column" style="display: block; overflow-x: auto; table-layout: fixed; width: 100%"></table>*@
+
+            <div class="row">
+                <div class="col-xs-12">
+
+                    <button type="button" class="btn btn-success authDisplay" id="reportButton" onclick="getActionButton();">
+                        <span class="fa fa-file-excel-o"></span>
+                        <span>@BBDEVSYS.Content.text.ResourceText.ButtonReportDisplay</span>
+                    </button>
+
+                </div>
+            </div>
+         
+</div>
+</div>
+<script>
+
+    function searchResult() {
+
+        //var requestFor = $('#SearchRequestFor').val();
+        //var documentNo = $('#DocumentNo').val();
+        //var job = $('#JobDocNo').val();
+        //var iouDateFrom = $convertDate($('#StartIOUDate').val());
+        //var iouDateTo = $convertDate($('#EndIOUDate').val());
+        //var paymentDateFrom = $convertDate($('#StartPaymentDate').val());
+        //var paymentDateTo = $convertDate($('#EndPaymentDate').val());
+        //var returnDate = $convertDate($('#ReturnDate').val());
+        var code = $('#COMPANY_CODE').val();
+        var monthS = $('#START_MONTH').val();
+        var yearS = $('#START_YEAR').val();
+        var monthE = $('#END_MONTH').val();
+        var yearE = $('#END_YEAR').val();
+        var chnn = $('#CHANNELSValue').val();
+        var fee = $('#FEE_TYPE').val();
+        var bu = $('#BUSINESS_UNIT').val();
+        var error = false;
+        var message = "";
+        var messageError = "";
+        var messageList = [];
+        //if (iouDateFrom != '' && iouDateTo == '') {
+        //    error = true;
+        //    messageError = "โปรดกรอกข้อมูลวันที่สิ้นสุด";
+        //    messageList.push(messageError);
+        //}
+        //if (iouDateTo != '' && iouDateFrom == '') {
+        //    error = true;
+        //    messageError = "โปรดกรอกข้อมูลวันที่เริ่มต้น";
+        //    messageList.push(messageError);
+        //}
+        //if (paymentDateFrom != '' && paymentDateTo == '') {
+        //    error = true;
+        //    messageError = "โปรดกรอกข้อมูลวันที่เบิกสิ้นสุด";
+        //    messageList.push(messageError);
+        //}
+        //if (paymentDateTo != '' && paymentDateFrom == '') {
+        //    error = true;
+        //    messageError = "โปรดกรอกข้อมูลวันที่เบิกเริ่มต้น";
+        //    messageList.push(messageError);
+
+
+        //}
+        //if (paymentDateFrom != '' && paymentDateTo != '') {
+        //    var old_date_obj = new Date(Date.parse(paymentDateFrom));
+        //    var new_date_obj = new Date(Date.parse(paymentDateTo));
+
+        //    if (old_date_obj > new_date_obj) {
+        //        error = true;
+        //        messageError = "วันที่เบิกเริ่มต้น ต้องน้อยกว่าวันที่เบิกสิ้นสุด";
+        //        messageList.push(messageError);
+
+        //    }
+        //}
+        //if (iouDateFrom != '' && iouDateTo != '') {
+        //    var old_date_obj = new Date(Date.parse(iouDateFrom));
+        //    var new_date_obj = new Date(Date.parse(iouDateTo));
+
+        //    if (old_date_obj > new_date_obj) {
+        //        error = true;
+        //        messageError = "วันที่เริ่มต้น ต้องน้อยกว่าวันที่สิ้นสุด";
+        //        messageList.push(messageError);
+        //    }
+        //}
+
+        if (!error) {
+            blockUI();
+            //Clear table data
+            $('#dataListTable').DataTable().clear().draw();
+            //if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+
+                data.companyCode = code;
+                data.monthS = monthS;
+                data.yearS = yearS;
+                data.monthE = monthE;
+                data.yearE = yearE;
+                data.chnn = chnn;
+                data.fee = fee;
+
+            })
+
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+            // }
+        }
+        else {
+            for (var i = 0; i < messageList.length; i++) {
+                message = message + messageList[i] + "<br />";
+            }
+            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+        }
+        unblockUI();
+
+    }
+    function getActionButton() {
+        blockUI();
+        console.log( $('form').attr("id") );
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+        if (form.valid()) {
+            var url = '@Url.Action("SubmitForm", "AccruedSummaryReport", new { Area = "Accrued" })?' + form.serialize();
+            $.ajax({
+                contentType: 'json',
+                data: form.serialize(),
+                //url: url,
+                success: function (response) {
+                    //unblockUI();
+                }
+            }).done(function (result) {
+                window.open(url);
+                unblockUI();
+            });
+            return false;
+        @*$.post(form.attr("action"), form.serialize(), function (response) {
+
+            if (response != null && response.success) {
+                    
+            }
+        });*@
+
+        } else {
+
+            for (var i = 0; i < validator.errorList.length; i++) {
+                message = message + validator.errorList[i].message + "<br />";
+                unblockUI();
+            }
+        }
+    }
+
+    @*function onChangeYearCode(year) {
+        $("[data-valmsg-for='INV_YEAR']").html("");
+        var error = false;
+        var code = $('#COMPANY_CODE').val();
+        var monthS = $('#INV_MONTH').val();
+        if (!year) {
+            $("[data-valmsg-for='INV_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='INV_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }
+
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthValue = month;
+                data.yearValue = year;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+        }
+    }
+    function onChangeMonthCode(month) {
+        $("[data-valmsg-for='INV_MONTH']").html("");
+        var error = false;
+
+        var code = $('#COMPANY_CODE').val();
+        var year = $('#INV_YEAR').val();
+        if (!year) {
+            $("[data-valmsg-for='INV_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='INV_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }
+
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthValue = month;
+                data.yearValue = year;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+        }
+    }*@
+
+    function onChangeCritiria(comCode)
+    {
+        blockUI();
+        var items = "<option value='" + "" + "'>" + "" + "</option>";
+
+        $.ajax({
+            url: '@Url.Action("GetCompany", "AccruedSummaryReport", new { Area = "Accrued" })',
+            data: {
+                "bu": $('#BUSINESS_UNIT').val()
+            },
+            cache: false,
+            success: function (_data) {
+
+                $.each(_data.BusinessUnitLst, function (index, optiondata) {
+                    items += "<option value='" + optiondata.Value + "'>" + optiondata.Text + "</option>";
+                });
+                $('#COMPANY_CODE').html(items)
+                @*if ($("#WarehouseCode").find('option').length < 1 || $("#WarehouseCode option:selected").val() == '') {
+                    $(".whCodeDDL").select2({
+                        placeholder: '@BBDEVSYS.Content.text.ValidatorMessage.cannot_found_matType'
+                    });
+                } else {
+                    //Remove placeholder
+                    $(".whCodeDDL").select2();
+
+                }*@
+                onChangeComCode('ALL')
+
+                unblockUI();
+            }
+        });
+    }
+
+    function onChangeComCode(code) {
+        $("[data-valmsg-for='COMPANY_CODE']").html("");
+        var error = false;
+        var monthS = $('#START_MONTH').val();
+        var yearS = $('#START_YEAR').val();
+        var monthE = $('#END_MONTH').val();
+        var yearE = $('#END_YEAR').val();
+        var bu = $('#BUSINESS_UNIT').val();
+
+        var chnn = $('#CHANNELSValue').val();
+        var fee = $("#FEE_TYPE").val();
+        if (!code) {
+            $("[data-valmsg-for='COMPANY_CODE']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.COMPANY_CODE)");
+            error = true;
+        }
+        @*var year = $('#INV_YEAR').val();
+        if (!year) {
+            $("[data-valmsg-for='INV_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='INV_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }*@
+
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthS = monthS;
+                data.yearS = yearS;
+                data.monthE = monthE;
+                data.yearE = yearE;
+                data.chnn = chnn;
+                data.fee = fee;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+        }
+    }
+    var $getid;
+    var $getdes_code;
+    var $getmonth;
+    var $getyear;
+    var $getcompany;
+    var $getpaymentItemCode;
+    var flagClose = false;
+    $(document).ready(function () {
+
+       
+        var columns = [
+            { "data": "CHANNELS", "title": "Channels", "type": "string", "width": "400px" },
+            { "data": "FEE", "title": "Fee", "type": "string", "width": "500px" },
+            { "data": "CHARGE", "title": "Charge", "type": "string", "width": "400px" },
+            //{ "data": "PAYMENT_ITEMS_Name", "title": "Description", "type": "string", "width": "20%" },
+              { "data": "Jan18", "title": "Jan18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+            , { "data": "Feb18", "title": "Feb18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+            , { "data": "Mar18", "title": "Mar18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+            , { "data": "Apr18", "title": "Apr18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+            , { "data": "May18", "title": "May18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+            , { "data": "Jun18", "title": "Jun18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right"}
+            , { "data": "Jul18", "title": "Jul18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+            , { "data": "Aug18", "title": "Aug18", "type": "currency", "width": "200px" , "className": "true-dt-column-align-right" }
+
+            //{ "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "10%", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            //{ "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "10%" },
+            //{ "data": "INV_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "10%" },
+            //{ "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "10%" },
+            //{ "data": "IMG_Status", "title": "สถานะ", "type": "string", "width": "5%" },
+            
+            //{ "data": null, "defaultContent": getDataTableButton(["display", "edit", "delete", "close"]), "orderable": false, "width": "10%", "className": "true-dt-button-column" },
+            //{ "data": "ID", "type": "num", "hidden": true },
+            //{ "data": "PAYMENT_ITEMS_CODE", "type": "string", "hidden": true },
+            //{ "data": "IS_STATUS", "hidden": true }
+        ];
+        $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+            data.companyCode = $("#COMPANY_CODE").val();
+            data.monthS = $('#START_MONTH').val();
+            data.yearS = $('#START_YEAR').val();
+            data.monthE = $('#END_MONTH').val();
+            data.yearE = $('#END_YEAR').val();
+            data.chnn = $('#CHANNELSValue').val();
+            data.fee = $('#FEE_TYPE').val();
+            data.bu = $('#BUSINESS_UNIT').val();
+        })
+        displayDataTable('dataListTable', '@Url.Action("GetList", "AccruedSummaryReport", new { Area = "Accrued" })', columns);
+
+      
+
+
+      
+        //var allButton = ['display', 'edit', 'delete', 'close'];
+        //var SpinBtn = ['display'];
+        //loadingButton(allButton, SpinBtn);
+
+    });
+ 
+
+
+</script>

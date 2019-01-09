@@ -1,0 +1,24 @@
+﻿@model List<BBDEVSYS.ViewModels.InvoiceUpload.InvoiceUploadItemViewModel>
+
+
+<tr>
+    @*<th style="width:300px; vertical-align: top; text-align: left" class="fixedColumn">@BBDEVSYS.Content.text.ResourceText.STATUS</th>
+    <th style="min-width:100px; vertical-align: top; text-align: left" class="fixedColumn">@BBDEVSYS.Content.text.ResourceText.ShopCode</th>
+    <th style="min-width:200px; vertical-align: top; text-align: left" class="fixedColumn">@BBDEVSYS.Content.text.ResourceText.Shop</th>
+    <th style="min-width:800px; vertical-align: top; text-align: left" class="checkHeaderHeight">@BBDEVSYS.Content.text.ResourceText.JobDescription</th>
+    <th style="min-width:200px; vertical-align: top; text-align: left">@BBDEVSYS.Content.text.ResourceText.JobShopProposal</th>*@
+    <th style="min-width:200px; text-align:left;" class="fixedColumn colStatus">@BBDEVSYS.Content.text.ResourceText.STATUS</th>
+    <th style="min-width:190px;" class="fixedColumn ">@BBDEVSYS.Content.text.ResourceText.CHANNELS</th>
+    <th style="min-width:300px;" class="fixedColumn ">@BBDEVSYS.Content.text.ResourceText.FEE</th>
+    <th style="min-width:790px;" class="checkHeaderHeight colStatusNext">@BBDEVSYS.Content.text.ResourceText.Charge</th>
+    @*<th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.PricePerUnit</th>
+        <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.PickUpDate</th>
+        <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.BudgetCostCenter</th>
+        <th style="min-width:150px;">@BBDEVSYS.Content.text.ResourceText.PickUpOrg</th>*@
+
+    @foreach (var item in Model)
+    {
+        <th style="min-width:200px; vertical-align: top; text-align: center">@Html.Raw(item.ColumnName)</th>
+
+    }
+</tr>

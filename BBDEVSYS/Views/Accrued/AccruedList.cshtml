@@ -1,0 +1,321 @@
+﻿@model BBDEVSYS.ViewModels.Accrued.AccruedViewModel
+@using BBDEVSYS.Services.Shared
+
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAccruedList;
+    //Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-xs-12 ">
+
+            <div class="true-list-toolbar col-xs-12">
+                <div class="col-xs-12 true-list-toolbar-button">
+                    <button type="button" class="btn btn-danger " id="createButton">
+                        <span class="fa fa-plus"></span>
+                        @BBDEVSYS.Content.text.ResourceText.ButtonCreate
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+        <div class="row">
+            <div class="col-xs-12">
+                <div class="box box-success">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"> @BBDEVSYS.Content.text.ResourceText.ButtonSearch</h3>
+
+                        @*<div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>*@
+
+                    </div>
+                    <div class="box-body">
+                        <div class="col-md-12">
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.COMPANY_CODE) :
+                                </label>
+                                <div class="col-xs-12 col-md-6">
+                                    @*@Html.DropDownListFor(m => m.CompanyCode, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeFormPeriod(this.value, false)" })*@
+                                    @Html.DropDownListFor(m => m.COMPANY_CODE, new SelectList(Model.CompanyLst, "Value", "Text"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeComCode(this.value)" })
+                                    @Html.ValidationMessageFor(m => m.COMPANY_CODE, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.PERIOD_MONTH) :
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @*@Html.DropDownListFor(model => model.SelectedMonth, (IEnumerable<SelectListItem>)ViewBag.Months, "Month")*@
+
+                                    @Html.DropDownListFor(m => m.PERIOD_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.PERIOD_MONTH), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeMonthCode(this.value)" })
+                                    @Html.ValidationMessageFor(m => m.PERIOD_MONTH, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.PERIOD_YEAR) :
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.DropDownListFor(m => m.PERIOD_YEAR, new SelectList(Model.YearLst, "Value", "Text", Model.PERIOD_YEAR), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeYearCode(this.value)" })
+                                    @Html.ValidationMessageFor(m => m.PERIOD_YEAR, "", new { @class = "text-danger" })
+                                </div>
+                            </div>
+
+                            <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable"></table>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @*<div class="row">
+                <div class="col-xs-12 ">
+
+                    <div class="true-list-toolbar col-xs-12">
+                        <div class="col-xs-12 true-list-toolbar-button">
+                            <button type="button" class="btn btn-danger " id="createButton">
+                                <span class="fa fa-plus"></span>
+                                @BBDEVSYS.Content.text.ResourceText.ButtonCreate
+                            </button>
+                        </div>
+                    </div>
+                    <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable" ></table>
+            </div>
+            </div>*@
+}
+<div>
+    <div id="messagePopup">
+        @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+    </div>
+</div>
+
+<div>
+    <div id="confirmPopup">
+        @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+    </div>
+</div>
+
+<div>
+    <div id="confirmBackPopup">
+        @Html.Partial("~/Views/Shared/ConfirmBackPopup.cshtml")
+    </div>
+</div>
+
+@Html.HiddenFor(m => m.ID)
+@Html.HiddenFor(m => m.FormState)
+@Html.HiddenFor(m => m.FormAction)
+<script>
+    function onChangeYearCode(year) {
+        $("[data-valmsg-for='PERIOD_YEAR']").html("");
+        var error = false;
+        var code = $('#COMPANY_CODE').val();
+        var month = $('#PERIOD_MONTH').val();
+        if (!year) {
+            $("[data-valmsg-for='PERIOD_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='PERIOD_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }
+        //checkableCreate(month, year);
+
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthValue = month;
+                data.yearValue = year;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+        }
+    }
+    function onChangeMonthCode(month) {
+        $("[data-valmsg-for='PERIOD_MONTH']").html("");
+        var error = false;
+
+        var code = $('#COMPANY_CODE').val();
+        var year = $('#PERIOD_YEAR').val();
+        if (!year) {
+            $("[data-valmsg-for='PERIOD_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='PERIOD_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }
+        //checkableCreate(month, year);
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthValue = month;
+                data.yearValue = year;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+        }
+    }
+
+    function onChangeComCode(code) {
+        $("[data-valmsg-for='COMPANY_CODE']").html("");
+        var error = false;
+        var month = $('#PERIOD_MONTH').val();
+        var year = $('#PERIOD_YEAR').val();
+        if (!code) {
+            $("[data-valmsg-for='COMPANY_CODE']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.COMPANY_CODE)");
+            error = true;
+        }
+        var year = $('#PERIOD_YEAR').val();
+        if (!year) {
+            $("[data-valmsg-for='PERIOD_YEAR']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR)");
+            error = true;
+            year = 0;
+        }
+        if (!month) {
+            $("[data-valmsg-for='PERIOD_MONTH']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH)");
+            error = true;
+            month = 0;
+        }
+
+
+        //Clear table data
+        $('#dataListTable').DataTable().clear().draw();
+        if (!error) {
+            //Set parameter value
+            $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+                //For set table to display loding message when reload table
+                $(this).dataTable().api().clear();
+                settings.iDraw = 0;
+                $(this).dataTable().api().draw();
+                data.companyCode = code;
+                data.monthValue = month;
+                data.yearValue = year;
+            })
+            //Reload table data
+            $('#dataListTable').DataTable().ajax.reload();
+            $('span.true-datatable-span-header').css('position', 'static');
+        }
+    }
+
+    //function checkableCreate(month, year) {
+    //    var currDate = new Date();
+
+    //    var currMonth = currDate.getMonth()+1;
+    //    var currYaer = currDate.getFullYear();
+    //    var chkMonth = parseInt(month);
+    //    var chkYaer = parseInt(year);
+    //    var diff = ((chkYaer - currYaer) * 12) + chkMonth - currMonth;
+    //    console.log(diff)
+    //    if (diff < 1) {
+    //        $("#createButton").hide();
+    //    }
+    //    else {
+    //        $("#createButton").show();
+    //    }
+
+    //}
+    $(document).ready(function () {
+
+        var columns = [
+            { "data": "ItemNo", "title": "ลำดับ", "type": "num", "width": "5%" },
+            //{ "data": "ACCRUED_NO", "title": "Accrued No.", "type": "string", "width": "10%" },
+            { "data": "PERIOD_MONTH_NAME", "title": "Accrued Month", "type": "num", "width": "15%" },
+            { "data": "PERIOD_YEAR", "title": "Accrued Year", "type": "string", "width": "10%" },
+            { "data": "COMPANY_CODE_NAME", "title": "Company", "type": "string", "width": "20%" },
+            { "data": "TOTAL_AMT", "title": "Total Amount", "type": "currency", "width": "10%", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { "data": "CREATE_BY_NAME", "title": "Creator", "type": "string", "width": "15%" },
+            { "data": "CREATE_DATE", "title": "Create Date", "type": "date-dd-mmm-yyyy", "width": "10%" },
+            { "data": null, "defaultContent": getDataTableButton(["display", "edit", "print"]), "orderable": false, "width": "15%", "className": "true-dt-button-column" },
+            { "data": "ACCRUED_ID", "type": "num", "hidden": true }
+        ];
+        $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
+            data.companyCode = $("#COMPANY_CODE").val();
+            data.monthValue = $('#PERIOD_MONTH').val();
+            data.yearValue = $('#PERIOD_YEAR').val();
+        });
+        displayDataTable('dataListTable', '@Url.Action("GetList", "Accrued", new { Area = "Accrued" })', columns);
+
+        //Button action
+        //Display
+        $('#dataListTable tbody').on('click', '.true-dt-button-display', function () {
+            var id = $(this).GetDatatableData()["ACCRUED_ID"];
+
+            var url = '@Url.Action("Detail", "Accrued", new { Area = "Accrued" })?recordKey=' + id;
+
+            redirectTo(url);
+        });
+
+
+        //Create
+        $('#createButton').click(function () {
+            var recordKey = $('#recordKey').val(0);
+            $('#formState').val('@ConstantVariableService.FormStateCreate');
+
+            var url = '@Url.Action("Manage", "Accrued", new { Area = "Accrued" })?recordKey=0&formState=' + '@ConstantVariableService.FormStateCreate';
+
+            redirectTo(url);
+        });
+
+        //Edit
+        $('#dataListTable tbody').on('click', '.true-dt-button-edit', function () {
+            var id = $(this).GetDatatableData()["ACCRUED_ID"];
+
+            var url = '@Url.Action("Manage", "Accrued", new { Area = "Accrued" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateEdit';
+
+            redirectTo(url);
+        });
+
+        //Copy
+        $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
+            var id = $(this).GetDatatableData()["ACCRUED_ID"];
+
+            var url = '@Url.Action("Manage", "Accrued", new { Area = "Accrued" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
+
+            redirectTo(url);
+        });
+
+        //Delete
+        $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
+            var id = $(this).GetDatatableData()["ACCRUED_ID"];
+
+            var url = '@Url.Action("Manage", "Accrued", new { Area = "Accrued" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateDelete';
+
+            redirectTo(url);
+        });
+        //Print
+        $('#dataListTable tbody').on('click', '.true-dt-button-print', function () {
+            var id = $(this).GetDatatableData()["ACCRUED_ID"];
+            console.log(id)
+            var url = '@Url.Action("SubmitReportForm", "Accrued", new { Area = "Accrued" })?recordKey=' + id;
+            window.open(url);
+        });
+        var SpinBtn = ['display', 'edit'];
+        loadingButton(SpinBtn);
+    });
+
+
+</script>
