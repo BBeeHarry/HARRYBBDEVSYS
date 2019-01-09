@@ -876,9 +876,9 @@ namespace BBDEVSYS.Services.Invoice
                         {
                             if (!string.IsNullOrEmpty(formData.PRO_NO))
                             {
-                                entfeeInv.IS_STATUS = "2";
+                                entfeeInv.IS_STATUS = "2"; 
                             }
-                            if (formData.INV_APPROVED_DATE!=null)
+                            if (formData.INV_APPROVED_DATE!=null) 
                             {
                                 entfeeInv.IS_STATUS = "3";
                             }
