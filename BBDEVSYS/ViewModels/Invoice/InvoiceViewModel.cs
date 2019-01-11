@@ -184,22 +184,23 @@ namespace BBDEVSYS.ViewModels.Invoice
             ValidatorOptions.ResourceProviderType = typeof(ValidatorMessage);
             InvoiceViewModel model = new InvoiceViewModel();
 
-            RuleFor(m => m.COMPANY_CODE).NotEmpty();
-            RuleFor(m => m.INV_MONTH).NotEmpty();
+            RuleFor(m => m.COMPANY_CODE).NotEmpty(); 
+            RuleFor(m => m.INV_MONTH).NotEmpty(); 
             RuleFor(m => m.INV_YEAR).NotEmpty();
 
-            RuleFor(m => m.INV_NO).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
+            RuleFor(m => m.INV_NO).NotEmpty().When(m => !m.IS_STATUS.EndsWith("4"));
+            //RuleFor(m => m.INV_NO).Must(m => (model.UPLOAD_TYPE ?? false ) == false|| !model.IS_STATUS.Equals(4) ).NotEmpty();
 
             //---waitning test UPload Invoice
             // RuleFor(m => m.PRO_NO).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
-            RuleFor(m => m.IS_STATUS).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
+            RuleFor(m => m.IS_STATUS).Must(m => (model.UPLOAD_TYPE ?? false) == false ).NotEmpty();
 
-            RuleFor(m => m.VAT).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
-            RuleFor(m => m.WHT).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
+            RuleFor(m => m.VAT).Must(m => (model.UPLOAD_TYPE ?? false) == false ).NotEmpty();
+            RuleFor(m => m.WHT).Must(m => (model.UPLOAD_TYPE ?? false) == false ).NotEmpty();
 
 
-            RuleFor(m => m.INV_REC_DATE).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
-            RuleFor(m => m.INV_DUE_DATE).Must(m => (model.UPLOAD_TYPE ?? false) == false).NotEmpty();
+            RuleFor(m => m.INV_REC_DATE).Must(m => (model.UPLOAD_TYPE ?? false) == false ).NotEmpty();
+            RuleFor(m => m.INV_DUE_DATE).Must(m => (model.UPLOAD_TYPE ?? false) == false ).NotEmpty();
 
             //Check List 
            

@@ -101,8 +101,8 @@
                                 @Html.LabelFor(m => m.STATUS) :
                             </label>
                             <div class="col-xs-12 col-md-3">
-                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), "", new { @class = "form-control ", style = "width:100%;" })
-
+                               @* @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), "", new { @class = "form-control ", style = "width:100%;" })*@
+                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), htmlAttributes: new { @multiple = "multiple", @class = "form-control" })
                             </div>
                         </div>
 
@@ -252,6 +252,7 @@
 
         var pymName = $("#PAYMENT_ITEMS_NAME").val();
         var status = $("#IS_STATUS").val();
+
        
         //Clear table data
         $('#dataListTable').DataTable().clear().draw();
@@ -269,7 +270,7 @@
                 data.yearSValue = yearS;
                 data.yearEValue = yearE;
                 data.pymName = pymName;
-                data.status = status;
+                data.status =JSON.stringify(status);
 
                 unblockUI();
             })
@@ -337,7 +338,7 @@
             data.yearSValue = $("#INV_YEAR_FROM").val();
             data.yearEValue = $("#INV_YEAR_TO").val();
             data.pymName = $("#PAYMENT_ITEMS_NAME").val();
-            data.status = $("#IS_STATUS").val();
+            data.status = JSON.stringify( $("#IS_STATUS").val() );
         })
         displayDataTablescroll('dataListTable', '@Url.Action("GetList", "Invoice", new { Area = "Invoice" })', columns);
 

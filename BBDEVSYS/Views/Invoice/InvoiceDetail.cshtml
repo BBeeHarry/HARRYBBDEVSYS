@@ -287,19 +287,19 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-12">
+            <div class="col-xs-12 ">
 
-            <button type="button" class="btn btn-warning authDisplay" id="backButton" onclick="goBack('@Model.FormState', '@Url.Action("List", "Invoice", new { Area = "Invoice" })')">
-                <span class="fa fa-chevron-circle-left"></span>
-                <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
-            </button>
+                <button type="button" class="btn btn-warning authDisplay" id="backButton" onclick="goBack('@Model.FormState', '@Url.Action("List", "Invoice", new { Area = "Invoice" })')">
+                    <span class="fa fa-chevron-circle-left"></span>
+                    <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
+                </button>
 
-            <button type="button" class="btn btn-danger authManage" id="saveButton" onclick="detailActionButton('@Model.FormState', '@Model.FormAction', 'detailForm', 'default', 'default', 'default', 'default', 'default');">
-                <span class="glyphicon glyphicon-save"></span>
-                <span id="saveButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonSave</span>
-            </button>
-        </div>
-    </div>
+                <button type="button" class="btn btn-danger authManage" id="saveButton" onclick="detailActionButton('@Model.FormState', '@Model.FormAction', 'detailForm', 'default', 'default', 'default', 'default', 'default');">
+                    <span class="glyphicon glyphicon-save"></span>
+                    <span id="saveButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonSave</span>
+                </button>
+            </div>
+</div>
 
     <div>
         <div id="messagePopup">

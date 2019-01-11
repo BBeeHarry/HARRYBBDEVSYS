@@ -781,8 +781,7 @@ namespace BBDEVSYS.Services.Accrued
                     // --Payment Items Get Description
                     var payment_items = (from m in context.PAYMENT_ITEMS
                                          where m.IS_ACTIVE == true &&
-                                         m.COMPANY_CODE == companyCode &&
-                                         m.PAYMENT_ITEMS_NAME == "TMN-Pay Bill"
+                                         m.COMPANY_CODE == companyCode 
                                          orderby m.GROUP_SEQ_CHANNELS
                                          select m).ToList();
                     // --Invoice Get Invoice List
@@ -1031,91 +1030,100 @@ namespace BBDEVSYS.Services.Accrued
 
                                 if (item_chrge.IS_STATUS != "3")
                                 {
-
-                                    model.PERIOD_ACCRUED = string.Concat(item_chrge.INV_MONTH.ToString().PadLeft(2, '0'), " / ", item_chrge.INV_YEAR);
-                                    model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
-                                    model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
-
-                                    model.SEQUENCE = sequence;
-                                    model.CHANNELS = item.CHANNELS;
-                                    model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
-                                    model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
-
-                                    model.CURRENCY = "THB";
-                                    model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
-                                    model.CCT_CODE = item.CCT_CODE;
-                                    model.GL_ACCOUNT = item.GL_ACCOUNT;
-                                    model.COST_CENTER = item.COST_CENTER;
-                                    model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
-
-
-                                    model.ACCRUED_MONTH = _monthc;
-                                    model.ACCRUED_YEAR = _yearc;
-                                    model.COMPANY_CODE = companyCode;
-                                    model.INV_NO = item_chrge.INV_NO;
-                                    model.PRO_NO = item_chrge.PRO_NO;
-
-
-                                    model.TRANSACTIONS = arrMonthTrxn[_monthc - 1];
-                                    model.AMOUNT = arrMonthAMT[_monthc - 1];
-                                    model.INV_AMOUNT = arrMonthCharge[_monthc - 1];
-
-                                    if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
+                                    if (item_chrge.IS_STATUS == "4")
                                     {
-                                        model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
-                                        model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
-
-                                        model.ISPLAN = true;
+                                        _monthc++;
+                                        continue;
                                     }
                                     else
                                     {
-                                        model.REMARK = "Invoice " + item_chrge.INV_MONTH.ToString().PadLeft(2, '0') + "/ " + item_chrge.INV_YEAR;
-                                        model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
+                                        #region case not complete
+                                        model.PERIOD_ACCRUED = string.Concat(item_chrge.INV_MONTH.ToString().PadLeft(2, '0'), " / ", item_chrge.INV_YEAR);
+                                        model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
+                                        model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
 
-                                        model.ISPLAN = false;
+                                        model.SEQUENCE = sequence;
+                                        model.CHANNELS = item.CHANNELS;
+                                        model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                        model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
 
-                                    }
-                                    if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        model.CREATE_BY = userInfo.UserCode;
-                                        model.CREATE_DATE = DateTime.Now;
-                                    }
-                                    else
-                                    {
-                                        model.MODIFIED_BY = userInfo.UserCode;
-                                        //model.MODIFIED_DATE = DateTime.Now;
-                                    }
-                                    model.MODIFIED_DATE = DateTime.Now;
-                                    #region sub accrued
-                                    var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
-                                    var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
-                                    foreach (var sub in dataAccruedSub)
-                                    {
-                                        var entAccruedItemSub = new AccruedDetailSubViewModel();
-                                        MVMMappingService.MoveData(sub, entAccruedItemSub);
-                                        entAccruedItemSub.ID = 0;
-                                        //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
-                                        entAccruedItemSub.ACCRUED_MONTH = _monthc;
-                                        entAccruedItemSub.ACCRUED_YEAR = _yearc;
-                                        entAccruedItemSub.CREATE_BY = model.CREATE_BY;
-                                        entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
-                                        entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
-                                        entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
-                                        entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
-                                        entAccruedItemSub.PRO_NO = model.PRO_NO;
-                                        entAccruedItemSub.REMARK = model.REMARK;
-                                        entAccruedItemSubLst.Add(entAccruedItemSub);
-                                    }
-                                    model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
-                                    #endregion
-                                    //Get Json Model AccruedDetail
-                                    var jsonSerialiser = new JavaScriptSerializer();
-                                    string AccruedJSON = jsonSerialiser.Serialize(model);
-                                    model.AccruedJSON = AccruedJSON;
+                                        model.CURRENCY = "THB";
+                                        model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                        model.CCT_CODE = item.CCT_CODE;
+                                        model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                        model.COST_CENTER = item.COST_CENTER;
+                                        model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
 
-                                    model.EDITION = 0;
-                                    accruedItemList.Add(model);
-                                    sequence++;
+
+                                        model.ACCRUED_MONTH = _monthc;
+                                        model.ACCRUED_YEAR = _yearc;
+                                        model.COMPANY_CODE = companyCode;
+                                        model.INV_NO = item_chrge.INV_NO;
+                                        model.PRO_NO = item_chrge.PRO_NO;
+
+
+                                        model.TRANSACTIONS = arrMonthTrxn[_monthc - 1];
+                                        model.AMOUNT = arrMonthAMT[_monthc - 1];
+                                        model.INV_AMOUNT = arrMonthCharge[_monthc - 1];
+
+                                        if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
+                                        {
+                                            model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
+                                            model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
+
+                                            model.ISPLAN = true;
+                                        }
+                                        else
+                                        {
+                                            model.REMARK = "Invoice " + item_chrge.INV_MONTH.ToString().PadLeft(2, '0') + "/ " + item_chrge.INV_YEAR;
+                                            model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
+
+                                            model.ISPLAN = false;
+
+                                        }
+                                        if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            model.CREATE_BY = userInfo.UserCode;
+                                            model.CREATE_DATE = DateTime.Now;
+                                        }
+                                        else
+                                        {
+                                            model.MODIFIED_BY = userInfo.UserCode;
+                                            //model.MODIFIED_DATE = DateTime.Now;
+                                        }
+                                        model.MODIFIED_DATE = DateTime.Now;
+                                        #region sub accrued
+                                        var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
+                                        var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                        foreach (var sub in dataAccruedSub)
+                                        {
+                                            var entAccruedItemSub = new AccruedDetailSubViewModel();
+                                            MVMMappingService.MoveData(sub, entAccruedItemSub);
+                                            entAccruedItemSub.ID = 0;
+                                            //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
+                                            entAccruedItemSub.ACCRUED_MONTH = _monthc;
+                                            entAccruedItemSub.ACCRUED_YEAR = _yearc;
+                                            entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                            entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                            entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                            entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                            entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                            entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                            entAccruedItemSub.REMARK = model.REMARK;
+                                            entAccruedItemSubLst.Add(entAccruedItemSub);
+                                        }
+                                        model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
+                                        #endregion
+                                        //Get Json Model AccruedDetail
+                                        var jsonSerialiser = new JavaScriptSerializer();
+                                        string AccruedJSON = jsonSerialiser.Serialize(model);
+                                        model.AccruedJSON = AccruedJSON;
+
+                                        model.EDITION = 0;
+                                        accruedItemList.Add(model);
+                                        sequence++;
+                                        #endregion
+                                    }
                                 }//charge
                             }
                             else

@@ -13,6 +13,8 @@ using BBDEVSYS.Models.Entities;
 using BBDEVSYS.Content.text;
 using System.Transactions;
 using BBDEVSYS.ViewModels.Shared;
+using System.Web.Script.Serialization;
+using System.Collections;
 
 namespace BBDEVSYS.Services.Invoice
 {
@@ -39,7 +41,24 @@ namespace BBDEVSYS.Services.Invoice
             try
             {
                 string dataList = "";
-                List<InvoiceViewModel> paymentitemsList = GetPaymentItemsList(companyCode, monthS, monthE, yearS, yearE, pymName, status);
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                List<string> statusList = js.Deserialize<List<string>>(status);
+                List<InvoiceViewModel> paymentitemsList = new List<InvoiceViewModel>();
+                List<InvoiceViewModel> data = new List<InvoiceViewModel>();
+                if (statusList.Any())
+                {
+                    int dataCount = 0;
+                    foreach (var item in statusList)
+                    {
+                        data = GetPaymentItemsList(companyCode, monthS, monthE, yearS, yearE, pymName, item, dataCount);
+                        paymentitemsList.AddRange(data);
+                        dataCount = paymentitemsList.Count();
+                    }
+                }
+                else
+                {
+                    paymentitemsList = GetPaymentItemsList(companyCode, monthS, monthE, yearS, yearE, pymName, string.Empty,0);
+                }
 
                 dataList = DatatablesService.ConvertObjectListToDatatables<InvoiceViewModel>(paymentitemsList);
 
@@ -52,7 +71,7 @@ namespace BBDEVSYS.Services.Invoice
             }
         }
 
-        private List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status)
+        private List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status ,int seq_item)
         {
             List<InvoiceViewModel> getInvList = new List<InvoiceViewModel>();
             try
@@ -61,8 +80,10 @@ namespace BBDEVSYS.Services.Invoice
                 {
                     //User Type
                     User user = UserService.GetSessionUserInfo();
+                    //JavaScriptSerializer js = new JavaScriptSerializer();
+                    //List<string> statusList = js.Deserialize<List<string>>(status);
 
-                    var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true  orderby data.GROUP_SEQ_CHANNELS, data.ID select data).ToList();
+                    var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true orderby data.GROUP_SEQ_CHANNELS, data.ID select data).ToList();
                     var getFeeInvList = (from data in context.FEE_INVOICE select data).ToList();
                     var entUser = (from m in context.USERS select m).ToList();
                     var entCompany = (from m in context.COMPANies where m.IsPaymentFee == true orderby m.Bussiness_Unit select m).ToList();
@@ -79,16 +100,18 @@ namespace BBDEVSYS.Services.Invoice
                         getPaymentItemList = getPaymentItemList.Where(m => m.PAYMENT_ITEMS_NAME == pymName).ToList();
                         getFeeInvList = getFeeInvList.Where(m => getPaymentItemList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
                     }
+
                     if (!string.IsNullOrEmpty(status) && status != "0")
                     {
-
                         getFeeInvList = getFeeInvList.Where(m => m.IS_STATUS == status).ToList();
-                        getPaymentItemList = getPaymentItemList.Where(m => getFeeInvList.GroupBy(g => g.PAYMENT_ITEMS_CODE).Any(o => m.PAYMENT_ITEMS_CODE == o.Key)).ToList();
-                        entCompany = entCompany.Where(m=> getFeeInvList.GroupBy(g=>g.COMPANY_CODE).Any(o=>m.BAN_COMPANY==o.Key )).ToList();
-                    }
-                  
 
-                    int seq = 1;
+                        getPaymentItemList = getPaymentItemList.Where(m => getFeeInvList.GroupBy(g => g.PAYMENT_ITEMS_CODE).Any(o => m.PAYMENT_ITEMS_CODE == o.Key)).ToList();
+                        entCompany = entCompany.Where(m => getFeeInvList.GroupBy(g => g.COMPANY_CODE).Any(o => m.BAN_COMPANY == o.Key)).ToList();
+                    }
+
+
+
+                    int seq =seq_item + 1;
 
                     var get_month = (yearE * 12 + monthE) - (yearS * 12 + monthS);
 
@@ -98,29 +121,33 @@ namespace BBDEVSYS.Services.Invoice
                         int countyear = yearS;
                         for (int i = 0; i <= get_month; i++)
                         {
-                           
+
                             if (countmonth > 12)
                             {
                                 countyear = yearS + 1;
                                 countmonth = 1;
                             }
                             var getFeeInvDataList = (from m in getFeeInvList
-                                             where m.INV_MONTH == countmonth && m.INV_YEAR == countyear
-                                             select m).ToList();
+                                                     where m.INV_MONTH == countmonth && m.INV_YEAR == countyear
+                                                     select m).ToList();
+
 
                             if (getFeeInvDataList.Count > 0)
                             {
 
                                 var getFeeInvItem = !string.IsNullOrEmpty(companyCode) ? getFeeInvDataList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.COMPANY_CODE == item.COMPANY_CODE).FirstOrDefault()
-                               : getFeeInvDataList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).FirstOrDefault();
+                          : getFeeInvDataList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).FirstOrDefault();
+
+
                                 if (getFeeInvItem != null)
                                 {
-                                    if (status=="0"&& getFeeInvItem.IS_STATUS!="0")
+
+                                    if (status == "0" && getFeeInvItem.IS_STATUS != "0")
                                     {
                                         countmonth++;
                                         continue;
                                     }
-                                   
+
                                     var getUserName = entUser.Where(m => m.USERID == getFeeInvItem.INV_REC_BY).FirstOrDefault();
                                     var getCompany = entCompany.Where(m => m.BAN_COMPANY == getFeeInvItem.COMPANY_CODE).FirstOrDefault();
 
@@ -163,6 +190,10 @@ namespace BBDEVSYS.Services.Invoice
                                     else if (invModel.IS_STATUS == "3")
                                     {
                                         invModel.STATUS_NAME = "<span class='label label-success'>" + invModel.STATUS + "</span>";
+                                    }
+                                    else if (invModel.IS_STATUS == "4")
+                                    {
+                                        invModel.STATUS_NAME = "<span class='label label-danger'>" + invModel.STATUS + "</span>";
                                     }
 
                                     getInvList.Add(invModel);
@@ -227,12 +258,24 @@ namespace BBDEVSYS.Services.Invoice
                                         mCount = 12;
                                         yCount = countyear - 1;
                                     }
+                                   
                                     var nongetFeeInvDataList = (from m in getFeeInvList
                                                                 where m.INV_MONTH == mCount && m.INV_YEAR == yCount
                                                                 select m).ToList();
+
+                                    
                                     if (nongetFeeInvDataList.Any())
                                     {
-                                        break;
+                                        countmonth++;
+                                        continue;
+                                    }
+                                    var ofYeargetFeeInvDataList = (from m in getFeeInvList
+                                                                   where m.INV_YEAR == yCount
+                                                                   select m).ToList();
+                                    if (ofYeargetFeeInvDataList.Any())
+                                    {
+                                        countmonth++;
+                                        continue;
                                     }
                                 }
                                 if (string.IsNullOrEmpty(status) || status == "0")
@@ -288,6 +331,8 @@ namespace BBDEVSYS.Services.Invoice
 
 
 
+
+
                 }
             }
             catch (Exception ex)
@@ -313,7 +358,7 @@ namespace BBDEVSYS.Services.Invoice
                     }
                     else
                     {
-                        var pymItems = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE == true  orderby m.GROUP_SEQ_CHANNELS select m).ToList();
+                        var pymItems = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE == true orderby m.GROUP_SEQ_CHANNELS select m).ToList();
                         var getpymItemList = pymItems.Select(m => m.PAYMENT_ITEMS_NAME).Distinct().Select(m => new SelectListItem { Value = m, Text = m }).ToList();
 
                         model.PaymentItemList = getpymItemList;
@@ -368,7 +413,7 @@ namespace BBDEVSYS.Services.Invoice
             try
             {
                 string dataList = "";
-              
+
 
                 return dataList;
             }
@@ -507,7 +552,7 @@ namespace BBDEVSYS.Services.Invoice
 
                     invModel.FormAction = ConstantVariableService.FormActionCreate;
                     invModel.FormState = ConstantVariableService.FormStateCreate;
-                    invModel.INV_APPROVED_BY = ConstantVariableService.APPROVERID; 
+                    invModel.INV_APPROVED_BY = ConstantVariableService.APPROVERID;
                     //--Get Data Invoice
                     if (getFeeInvList != null)
                     {
@@ -547,7 +592,7 @@ namespace BBDEVSYS.Services.Invoice
                     }
 
                     var getCompany = (from data in context.COMPANies where data.IsPaymentFee == true && data.BAN_COMPANY == companyCode select data).FirstOrDefault();
-                    var getPaymentItems = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true &&  data.PAYMENT_ITEMS_CODE == paymentItemCode && data.COMPANY_CODE == companyCode select data).FirstOrDefault();
+                    var getPaymentItems = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true && data.PAYMENT_ITEMS_CODE == paymentItemCode && data.COMPANY_CODE == companyCode select data).FirstOrDefault();
                     var getcttList = (from data in context.COST_CENTER where data.COMPANY_CODE == companyCode select data).ToList();
                     invModel.COMPANY_NAME = getCompany != null ? getCompany.COMPANY_NAME_EN : "";
                     invModel.PAYMENT_ITEMS_NAME = getPaymentItems != null ? getPaymentItems.PAYMENT_ITEMS_NAME : "";
@@ -591,7 +636,7 @@ namespace BBDEVSYS.Services.Invoice
                     var pymList = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE == true && m.COMPANY_CODE == lst.COMPANY_CODE && m.PAYMENT_ITEMS_CODE == lst.PAYMENT_ITEMS_CODE select m).ToList();
                     var pymItemList = (from m in context.PAYMENT_ITEMS_CHAGE
                                        where m.COMPANY_CODE == lst.COMPANY_CODE
-                                       orderby m.SEQUENCE,m.ID
+                                       orderby m.SEQUENCE, m.ID
                                        select m).ToList();
 
                     pymItemList = pymItemList.Where(m => pymList.Any(p => m.PAYMENT_ITEMS_ID == p.ID)).ToList();
@@ -712,13 +757,17 @@ namespace BBDEVSYS.Services.Invoice
                         {
                             entFeeInv.IS_STATUS = formData.IS_STATUS;
                         }
+                        else if (entFeeInv.IS_STATUS == "4")
+                        {
+                            entFeeInv.IS_STATUS = formData.IS_STATUS;
+                        }
                         else
                         {
                             if (!string.IsNullOrEmpty(formData.PRO_NO))
                             {
                                 entFeeInv.IS_STATUS = "2";
                             }
-                            if (formData.INV_APPROVED_DATE!=null)
+                            if (formData.INV_APPROVED_DATE != null)
                             {
                                 entFeeInv.IS_STATUS = "3";
                             }
@@ -872,13 +921,17 @@ namespace BBDEVSYS.Services.Invoice
                         {
                             entfeeInv.IS_STATUS = formData.IS_STATUS;
                         }
+                        else if (entfeeInv.IS_STATUS == "4")
+                        {
+                            entfeeInv.IS_STATUS = formData.IS_STATUS;
+                        }
                         else
                         {
                             if (!string.IsNullOrEmpty(formData.PRO_NO))
                             {
-                                entfeeInv.IS_STATUS = "2"; 
+                                entfeeInv.IS_STATUS = "2";
                             }
-                            if (formData.INV_APPROVED_DATE!=null) 
+                            if (formData.INV_APPROVED_DATE != null)
                             {
                                 entfeeInv.IS_STATUS = "3";
                             }
@@ -888,9 +941,9 @@ namespace BBDEVSYS.Services.Invoice
                                 entfeeInv.IS_STATUS = "0";
                             }
                             //Status Not Accrued Not Create PO No.
-                            if (formData.REMARK == "For Accrued") 
+                            if (formData.REMARK == "For Accrued")
                             {
-                                entfeeInv.IS_STATUS = "1"; 
+                                entfeeInv.IS_STATUS = "1";
                             }
                         }
                     }
@@ -1073,7 +1126,7 @@ namespace BBDEVSYS.Services.Invoice
                     pym_items = (from m in context.PAYMENT_ITEMS
                                  join n in context.PAYMENT_ITEMS_CHAGE
                                  on m.ID equals n.PAYMENT_ITEMS_ID
-                                 where m.IS_ACTIVE == true &&  n.COMPANY_CODE == formData.COMPANY_CODE && m.PAYMENT_ITEMS_CODE == formData.PAYMENT_ITEMS_CODE
+                                 where m.IS_ACTIVE == true && n.COMPANY_CODE == formData.COMPANY_CODE && m.PAYMENT_ITEMS_CODE == formData.PAYMENT_ITEMS_CODE
                                  select n).ToList();
 
                 }
@@ -1084,6 +1137,10 @@ namespace BBDEVSYS.Services.Invoice
                 }
                 else
                 {
+                    if (formData.IS_STATUS == "4")
+                    {
+                        return result;
+                    }
                     //Get item => deleteFlag != true
                     var itemList = formData.InvoiceDetailList.Where(m => m.DeleteFlag != true).ToList();
                     if (itemList == null || !itemList.Any()) //Check list is null or empty
@@ -1213,12 +1270,12 @@ namespace BBDEVSYS.Services.Invoice
 
                                 }
                                 //Chech Status
-                                else if(formData.IS_STATUS == "2")
+                                else if (formData.IS_STATUS == "2")
                                 {
                                     validateCheckPreStatus(formData, result, formData.FormAction);
                                 }
                                 //Chech Status
-                                else if(formData.IS_STATUS == "1")
+                                else if (formData.IS_STATUS == "1")
                                 {
                                     validateCheckPreStatus(formData, result, formData.FormAction);
                                 }
@@ -1226,11 +1283,11 @@ namespace BBDEVSYS.Services.Invoice
                                 //{
                                 //    validateCheckPreStatus(formData, result, formData.FormAction);
                                 //}
-                                else if(formData.INV_APPROVED_BY == null && formData.INV_APPROVED_DATE != null)
+                                else if (formData.INV_APPROVED_BY == null && formData.INV_APPROVED_DATE != null)
                                 {
                                     validateCheckPreStatus(formData, result, formData.FormAction);
                                 }
-                                else if(formData.INV_APPROVED_BY != null && formData.INV_APPROVED_DATE != null)
+                                else if (formData.INV_APPROVED_BY != null && formData.INV_APPROVED_DATE != null)
                                 {
                                     validateCheckPreStatus(formData, result, formData.FormAction);
                                 }
@@ -1271,7 +1328,7 @@ namespace BBDEVSYS.Services.Invoice
                     //{
                     //    chkError = true;
                     //}
-                    if (formData.INV_APPROVED_DATE != null &&  string.IsNullOrEmpty(formData.INV_APPROVED_BY)  )
+                    if (formData.INV_APPROVED_DATE != null && string.IsNullOrEmpty(formData.INV_APPROVED_BY))
                     {
                         chkError = true;
                     }
@@ -1301,7 +1358,7 @@ namespace BBDEVSYS.Services.Invoice
                         result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.notempty_error_in, ResourceText.INV_APPROVED_BY)));
                         result.ErrorFlag = true;
                     }
-                    if (formData.INV_APPROVED_DATE == null && formData.IS_STATUS =="3")
+                    if (formData.INV_APPROVED_DATE == null && formData.IS_STATUS == "3")
                     {
                         result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.notempty_error_in, ResourceText.INV_APPROVED_DATE)));
                         result.ErrorFlag = true;
