@@ -45,7 +45,7 @@
                                     @Html.LabelFor(m => m.PERIOD_MONTH)
                                 </label>
                                 <div class="col-xs-12 col-md-3">
-                                    @Html.TextBoxFor(m => m.PERIOD_MONTH, new { @class = "form-control"})
+                                    @Html.TextBoxFor(m => m.PERIOD_MONTH, new { @class = "form-control numberonly"})
                                     @*@Html.DropDownListFor(m => m.PERIOD_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.PERIOD_MONTH), "", new { @class = "form-control", style = "width:100%;" })*@
                                     @Html.ValidationMessageFor(m => m.PERIOD_MONTH, "", new { @class = "text-danger" })
                                 </div>
@@ -55,7 +55,7 @@
                                     @Html.LabelFor(m => m.PERIOD_YEAR)
                                 </label>
                                 <div class="col-xs-12 col-md-3">
-                                    @Html.TextBoxFor(m => m.PERIOD_YEAR, new { @class = "form-control"  })
+                                    @Html.TextBoxFor(m => m.PERIOD_YEAR, new { @class = "form-control numberonly" })
                                     @*@Html.DropDownListFor(m => m.PERIOD_YEAR, new SelectList(Model.YearLst, "Value", "Text", Model.PERIOD_YEAR), "", new { @class = "form-control", style = "width:100%;" })*@
                                     @Html.ValidationMessageFor(m => m.PERIOD_YEAR, "", new { @class = "text-danger" })
                                 </div>
@@ -443,7 +443,8 @@
                     "compCode": $("#COMPANY_CODE").val(),
                     "month": $("#PERIOD_MONTH").val(),
                     "year": $("#PERIOD_YEAR").val(),
-                    "formState": $('#FormState').val()
+                    "formState": $('#FormState').val(),
+                    "accrued_id": $('#ACCRUED_ID').val()
 
                 },
                 cache: false,

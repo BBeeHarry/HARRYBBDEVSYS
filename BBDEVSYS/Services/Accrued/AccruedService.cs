@@ -58,10 +58,10 @@ namespace BBDEVSYS.Services.Accrued
                                                                           select m).OrderBy(m => m.SEQUENCE).ToList();
 
                     //get Payment Items
-                    var entpymItems = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE==true &&  m.COMPANY_CODE == companyCode select m).ToList();
+                    var entpymItems = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE == true && m.COMPANY_CODE == companyCode select m).ToList();
                     foreach (var item in accruedItemList)
                     {
-                        var getpymItems = entpymItems.Where(m =>   m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).FirstOrDefault();
+                        var getpymItems = entpymItems.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).FirstOrDefault();
                         AccruedDetailViewModel accruedItemViewModel = new AccruedDetailViewModel();
                         MVMMappingService.MoveData(item, accruedItemViewModel);
                         accruedItemViewModel.Supplier = getpymItems == null ? "" : getpymItems.Supplier;
@@ -178,7 +178,7 @@ namespace BBDEVSYS.Services.Accrued
                     accruedList.MODIFIED_DATE = DateTime.Now;
                     accruedList.CREATE_BY = userInfo.UserCode;
                     accruedList.CREATE_DATE = DateTime.Now;
-                    accruedList.APPROVED_BY =ConstantVariableService.APPROVERID;
+                    accruedList.APPROVED_BY = ConstantVariableService.APPROVERID;
                     accruedList.APPROVED_DATE = null;
 
                     //accruedList.REMARK = "";
@@ -302,8 +302,8 @@ namespace BBDEVSYS.Services.Accrued
 
                     #region Accrued Report Detail
 
-                    var  service = new AccruedSummaryReportService();
-                    List<AccruedReportViewModel> _data = service.GetAccruedReportList_Summary(compCode, 1, year, month, year);
+                    //var  service = new AccruedSummaryReportService();
+                    List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(compCode, 1, year, month, year);
 
                     if (_data.Any())
                     {
@@ -339,7 +339,7 @@ namespace BBDEVSYS.Services.Accrued
                 using (var context = new PYMFEEEntities())
                 {
                     var feeList = (from m in context.PAYMENT_ITEMS
-                                   where m.IS_ACTIVE == true 
+                                   where m.IS_ACTIVE == true
                                    orderby m.GROUP_SEQ_CHANNELS
                                    select m).ToList();
 
@@ -388,6 +388,7 @@ namespace BBDEVSYS.Services.Accrued
                     int currentMonth = DateTime.Now.Date.Month;
                     decimal[] arrMonthGrandTrxn = new decimal[12];
                     decimal[] arrMonthGrnadTotal = new decimal[12];
+
                     #region Detail
                     foreach (var item in feeList)
                     {
@@ -468,12 +469,12 @@ namespace BBDEVSYS.Services.Accrued
                                 {
                                     //Invoice
                                     var get_data_inv = data_inv.Where(m => m.INV_MONTH == iTrxn + 1).FirstOrDefault();
-                                    arrMonthTotalTrxn[iTrxn] += (get_data_inv!=null?get_data_inv.TRANSACTIONS ?? 0 :0);
-                                    arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0:0);
+                                    arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iTrxn];
 
                                     model.GetType().GetProperty(monthIndex).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0:0))));
+                                    Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0))));
 
                                 }
                                 //}
@@ -499,12 +500,12 @@ namespace BBDEVSYS.Services.Accrued
                                 {
                                     //Invoice
                                     var get_data_inv = data_inv.Where(m => m.INV_MONTH == iTrxn + 1).FirstOrDefault();
-                                    arrMonthAMT[iTrxn] = (get_data_inv != null ? get_data_inv.ACTUAL_AMOUNT ?? 0:0);
+                                    arrMonthAMT[iTrxn] = (get_data_inv != null ? get_data_inv.ACTUAL_AMOUNT ?? 0 : 0);
 
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iTrxn];
 
                                     model.GetType().GetProperty(monthIndex).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.ACTUAL_AMOUNT ?? 0:0))));
+                                    Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.ACTUAL_AMOUNT ?? 0 : 0))));
 
 
 
@@ -588,7 +589,7 @@ namespace BBDEVSYS.Services.Accrued
                                 {
                                     if (arrMonthCharge.ToList().All(m => m == 0))
                                     { break; }
-                                    
+
                                     if (chrge != 0)
                                     {
                                         //Accrued
@@ -601,13 +602,13 @@ namespace BBDEVSYS.Services.Accrued
                                     {
                                         //Invoice
                                         var get_data_inv = data_inv.Where(m => m.INV_MONTH == iCharge + 1).FirstOrDefault();
-                                        arrMonthCharge[iCharge] = (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0:0);
-                                        arrMonthTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0:0);
+                                        arrMonthCharge[iCharge] = (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                        arrMonthTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
 
                                         string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
 
                                         model.GetType().GetProperty(monthIndex).SetValue(model,
-                                        Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0:0))));
+                                        Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0))));
                                         //if (iCharge > 2)
                                         //{
                                         //    decimal avgAMT = 0;
@@ -671,13 +672,13 @@ namespace BBDEVSYS.Services.Accrued
                                 if (chkAccrList != null)
                                 {
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList.PRO_NO);
+                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList == null ? "" : chkAccrList.PRO_NO);
                                 }
                                 else
                                 {
                                     var chkInvList = feeInvList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList.PRO_NO);
+                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList == null ? "" : chkInvList.PRO_NO);
 
                                 }
 
@@ -697,13 +698,13 @@ namespace BBDEVSYS.Services.Accrued
                                 if (chkAccrList != null)
                                 {
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList.INV_NO);
+                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList == null ? "" : chkAccrList.INV_NO);
                                 }
                                 else
                                 {
                                     var chkInvList = feeInvList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList.INV_NO);
+                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList == null ? "" : chkInvList.INV_NO);
 
                                 }
                             }
@@ -769,7 +770,7 @@ namespace BBDEVSYS.Services.Accrued
             }
             return modelList;
         }
-        public List<AccruedDetailViewModel> InitialAccruedItemsList(string companyCode, int month, int year, string formState)
+        public List<AccruedDetailViewModel> InitialAccruedItemsList(string companyCode, int month, int year, string formState, int accrued_id = 0)
         {
             //AccruedViewModel accruedList = new AccruedViewModel();
             List<AccruedDetailViewModel> accruedItemList = new List<AccruedDetailViewModel>();
@@ -779,28 +780,43 @@ namespace BBDEVSYS.Services.Accrued
                 using (var context = new PYMFEEEntities())
                 {
                     // --Payment Items Get Description
+                    
                     var payment_items = (from m in context.PAYMENT_ITEMS
                                          where m.IS_ACTIVE == true &&
-                                         m.COMPANY_CODE == companyCode 
+                                         m.COMPANY_CODE == companyCode
                                          orderby m.GROUP_SEQ_CHANNELS
                                          select m).ToList();
+                    #region mark inv & acc
+                    //// --Invoice Get Invoice List
+                    //var entFeeInv = (from m in context.FEE_INVOICE
+                    //                 where //m.INV_MONTH <= month && m.INV_YEAR <= year
+                    //                 (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
+                    //                 && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
+                    //                 && m.COMPANY_CODE == companyCode
+                    //                 orderby m.INV_MONTH, m.INV_YEAR
+                    //                 select m).ToList();
+
+                    //// --Invoice Get Accrued List
+                    //var entFeeAcrr = (from m in context.FEE_ACCRUED_PLAN_ITEM
+                    //                  where //m.INV_MONTH <= month && m.INV_YEAR <= year
+                    //                  (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
+                    //                  && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
+                    //                  && m.COMPANY_CODE == companyCode
+                    //                  orderby m.INV_MONTH, m.INV_YEAR
+                    //                  select m).ToList();
                     // --Invoice Get Invoice List
+                    #endregion
                     var entFeeInv = (from m in context.FEE_INVOICE
-                                     where //m.INV_MONTH <= month && m.INV_YEAR <= year
-                                     (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
-                                     && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
-                                     && m.COMPANY_CODE == companyCode
+                                     where m.COMPANY_CODE == companyCode
                                      orderby m.INV_MONTH, m.INV_YEAR
                                      select m).ToList();
 
                     // --Invoice Get Accrued List
                     var entFeeAcrr = (from m in context.FEE_ACCRUED_PLAN_ITEM
-                                     where //m.INV_MONTH <= month && m.INV_YEAR <= year
-                                     (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
-                                     && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
-                                     && m.COMPANY_CODE == companyCode
-                                     orderby m.INV_MONTH, m.INV_YEAR
-                                     select m).ToList();
+                                      where m.COMPANY_CODE == companyCode
+
+                                      orderby m.INV_MONTH, m.INV_YEAR
+                                      select m).ToList();
 
 
                     // --Invoice Get Invoice Item List
@@ -834,7 +850,39 @@ namespace BBDEVSYS.Services.Accrued
                     {
                         var feeInvList = entFeeInv.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
 
-                        var feeAccrList = entFeeAcrr.Where(m=>m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
+                        var feeAccrList = entFeeAcrr.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
+
+                        if (item.DURATION == "M")
+                        {
+                            feeInvList = (from m in feeInvList
+                                          where (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
+                                            && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
+                                          orderby m.INV_MONTH, m.INV_YEAR
+                                          select m).ToList();
+
+                            // --Invoice Get Accrued List
+                            feeAccrList = (from m in feeAccrList
+                                           where (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
+                                              && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
+                                           orderby m.INV_MONTH, m.INV_YEAR
+                                           select m).ToList();
+                        }
+                        else if (item.DURATION == "Y")
+                        {
+                            feeInvList = (from m in feeInvList
+                                          where m.INV_YEAR >= (year - 3) &&
+                                          m.INV_YEAR <= year
+                                          orderby m.INV_MONTH, m.INV_YEAR
+                                          select m).ToList();
+
+                            // --Invoice Get Accrued List
+                            feeAccrList = (from m in feeAccrList
+                                           where m.INV_YEAR >= (year - 3) &&
+                                           m.INV_YEAR <= year
+                                           orderby m.INV_MONTH, m.INV_YEAR
+                                           select m).ToList();
+                        }
+
 
                         var get_entFeeInvItem = (from n in entFeeInvItem
                                                  where feeInvList.Any(f => n.INV_NO == f.INV_NO)//n.INV_NO == item_fee.INV_NO 
@@ -845,14 +893,1308 @@ namespace BBDEVSYS.Services.Accrued
                         var get_entFeeAcrrItem = (from n in entFeeAccruedSubItem
                                                   where feeAccrList.Any(f => n.ACCRUED_ITEM_ID == f.ACCRUED_ITEM_ID)//n.INV_NO == item_fee.INV_NO 
 
+                                                  orderby n.SEQUENCE, n.INV_MONTH, n.INV_YEAR, n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending
+                                                  select n).ToList();
+                        if (item.DURATION == "M")
+                        {
+                            #region Trxn + Amt
+                            var data = (from m in get_entFeeInvItem
+                                        select m).ToList();
+
+                            var data_accr = (from m in get_entFeeAcrrItem
+                                             select m).ToList();
+
+                            var get_pymitem = payment_items.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).FirstOrDefault();
+
+                            decimal[] arrMonthTrxn = new decimal[months];
+                            decimal[] arrMonthAMT = new decimal[months];
+                            decimal[] arrMonthCharge = new decimal[months];
+
+                            #region amt
+                            int _month = 1;
+                            int _year = years;
+
+                            for (int i = 1; i <= months; i++)
+                            {
+                                if (i == 13)
+                                {
+                                    _month = 1;
+                                    _year = _year + 1;
+                                }
+                                var data_assign_inv = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList();
+                                var data_assign_accr = data_accr.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList();
+                                if (data_assign_inv.Any())
+                                {
+                                    arrMonthTrxn[i - 1] = data_assign_inv.Sum(m => (m.TRANSACTIONS ?? 0));
+                                    arrMonthAMT[i - 1] = data_assign_inv.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                                    arrMonthCharge[i - 1] = data_assign_inv.Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
+                                }
+                                else if (data_assign_accr.Any())
+                                {
+                                    arrMonthTrxn[i - 1] = data_assign_accr.Sum(m => (m.TRANSACTIONS ?? 0));
+                                    arrMonthAMT[i - 1] = data_assign_accr.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                                    arrMonthCharge[i - 1] = data_assign_accr.Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
+                                }
+
+                                _month++;
+                            }
+
+                            #region Generate Value Amount on Every Month
+
+                            int iTrxn = 0;
+                            foreach (var arr in arrMonthTrxn.ToArray())
+                            {
+                                if (arrMonthTrxn.ToList().All(m => m == 0))
+                                { break; }
+                                if (arr == 0)
+                                {
+                                    if (iTrxn > 2)
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn - 1;
+                                        int avgIndexS = iTrxn - 3;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthTrxn[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthTrxn[iTrxn] = avgVal;
+                                    }
+                                    else
+                                    {
+
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
+                                        int avgIndexS = 0;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthTrxn[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthTrxn[iTrxn] = avgVal;
+
+                                    }
+                                }
+                                iTrxn++;
+                            }
+                            iTrxn = 0;
+                            foreach (var arr in arrMonthAMT.ToArray())
+                            {
+                                if (arrMonthAMT.ToList().All(m => m == 0))
+                                { break; }
+                                if (arr == 0)
+                                {
+                                    if (iTrxn > 2)
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn - 1;
+                                        int avgIndexS = iTrxn - 3;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthAMT[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthAMT[iTrxn] = avgVal;
+                                    }
+                                    else
+                                    {
+
+
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
+                                        int avgIndexS = 0;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthAMT[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthAMT[iTrxn] = avgVal;
+
+                                    }
+                                }
+                                iTrxn++;
+                            }
+                            iTrxn = 0;
+                            foreach (var arr in arrMonthCharge.ToArray())
+                            {
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                { break; }
+                                if (arr == 0)
+                                {
+                                    if (iTrxn > 2)
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn - 1;
+                                        int avgIndexS = iTrxn - 3;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthCharge[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthCharge[iTrxn] = avgVal;
+                                    }
+                                    else
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
+                                        int avgIndexS = 0;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthCharge[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthCharge[iTrxn] = avgVal;
+
+                                    }
+                                }
+                                iTrxn++;
+                            }
+                            #endregion
+
+
+                            #endregion
+
+                            //Check Data Had in Invoice
+                            var chkitem_chrge = feeInvList.Where(m =>
+                             //m.INV_MONTH >= 1 && m.INV_MONTH <= month && m.INV_YEAR >= 2018 && m.INV_YEAR <= year
+                             (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1 && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
+                            ).ToList();
+                            int _monthc = 1;
+                            int _yearc = years;
+                            for (int i = 1; i <= months; i++)
+                            {
+                                if (i == 13)
+                                {
+                                    _monthc = 1;
+                                    _yearc = _yearc + 1;
+                                }
+                                var item_chrge = feeInvList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_MONTH == _monthc && m.INV_YEAR == _yearc).FirstOrDefault();
+                                var item_acccharge = feeAccrList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.ACCRUED_ID == accrued_id && m.INV_MONTH == _monthc && m.INV_YEAR == _yearc).FirstOrDefault();
+                                var model = new AccruedDetailViewModel();
+
+                                if (item_chrge != null)
+                                {
+
+                                    if (item_chrge.IS_STATUS != "3")
+                                    {
+                                        if (item_chrge.IS_STATUS == "4")
+                                        {
+                                            _monthc++;
+                                            continue;
+                                        }
+                                        else
+                                        {
+                                            #region case not complete
+
+                                            model.ACCRUED_ID = item_acccharge != null ? item_acccharge.ACCRUED_ID : 0;
+                                            model.ACCRUED_ITEM_ID = item_acccharge != null ? item_acccharge.ACCRUED_ITEM_ID : 0;
+                                            model.PERIOD_ACCRUED = string.Concat(item_chrge.INV_MONTH.ToString().PadLeft(2, '0'), " / ", item_chrge.INV_YEAR);
+                                            model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
+                                            model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
+
+                                            model.SEQUENCE = sequence;
+                                            model.CHANNELS = item.CHANNELS;
+                                            model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                            model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
+
+                                            model.CURRENCY = "THB";
+                                            model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                            model.CCT_CODE = item.CCT_CODE;
+                                            model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                            model.COST_CENTER = item.COST_CENTER;
+                                            model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
+
+
+                                            model.ACCRUED_MONTH = month;// _monthc;
+                                            model.ACCRUED_YEAR = year;// _yearc;
+                                            model.COMPANY_CODE = companyCode;
+                                            model.INV_NO = item_chrge.INV_NO;
+                                            model.PRO_NO = item_chrge.PRO_NO;
+
+
+                                            model.TRANSACTIONS = arrMonthTrxn[i - 1];
+                                            model.AMOUNT = arrMonthAMT[i - 1];
+                                            model.INV_AMOUNT = arrMonthCharge[i - 1];
+
+                                            if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
+                                            {
+                                                model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
+                                                model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
+
+                                                model.ISPLAN = true;
+                                            }
+                                            else
+                                            {
+                                                model.REMARK = "Invoice " + item_chrge.INV_MONTH.ToString().PadLeft(2, '0') + "/ " + item_chrge.INV_YEAR;
+                                                model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
+
+                                                model.ISPLAN = false;
+
+                                            }
+                                            if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                            {
+                                                model.CREATE_BY = userInfo.UserCode;
+                                                model.CREATE_DATE = DateTime.Now;
+                                            }
+                                            else
+                                            {
+                                                model.MODIFIED_BY = userInfo.UserCode;
+                                                //model.MODIFIED_DATE = DateTime.Now;
+                                            }
+                                            model.MODIFIED_DATE = DateTime.Now;
+                                            #region sub accrued
+                                            //var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO ).ToList();
+                                            //var acdataAccruedSub = data_accr.Where(m =>  m.INV_MONTH == model.INV_MONTH && m.INV_YEAR == model.INV_YEAR).ToList();
+                                            var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
+                                            var acdataAccruedSub = data_accr.Where(m => m.ACCRUED_ITEM_ID == model.ACCRUED_ITEM_ID).ToList();
+
+
+                                            var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                            foreach (var sub in dataAccruedSub)
+                                            {
+                                                var entAccruedItemSub = new AccruedDetailSubViewModel();
+
+                                                var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_ITEM).FirstOrDefault();
+
+                                                MVMMappingService.MoveData(sub, entAccruedItemSub);
+                                                entAccruedItemSub.ID = getaccSub != null ? getaccSub.ID : 0;
+
+                                                //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
+                                                entAccruedItemSub.ACCRUED_MONTH = month;// _monthc;
+                                                entAccruedItemSub.ACCRUED_YEAR = year;// _yearc;
+                                                entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                                entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                                entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                                entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                                entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                                entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                                entAccruedItemSub.REMARK = model.REMARK;
+                                                entAccruedItemSubLst.Add(entAccruedItemSub);
+                                            }
+                                            model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
+                                            #endregion
+                                            //Get Json Model AccruedDetail
+                                            var jsonSerialiser = new JavaScriptSerializer();
+                                            string AccruedJSON = jsonSerialiser.Serialize(model);
+                                            model.AccruedJSON = AccruedJSON;
+
+                                            model.EDITION = 0;
+                                            accruedItemList.Add(model);
+                                            sequence++;
+                                            #endregion
+                                        }
+                                    }//charge
+                                }
+                                else
+                                {
+                                    model.ACCRUED_ID = item_acccharge != null ? item_acccharge.ACCRUED_ID : 0;
+                                    model.ACCRUED_ITEM_ID = item_acccharge != null ? item_acccharge.ACCRUED_ITEM_ID : 0;
+                                    model.PERIOD_ACCRUED = string.Concat(_monthc.ToString().PadLeft(2, '0'), " / ", _yearc);
+                                    model.INV_MONTH = _monthc;
+                                    model.INV_YEAR = _yearc;
+                                    model.SEQUENCE = sequence;
+                                    model.CHANNELS = item.CHANNELS;
+                                    model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                    model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
+
+                                    model.CURRENCY = "THB";
+                                    model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                    model.CCT_CODE = item.CCT_CODE;
+                                    model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                    model.COST_CENTER = item.COST_CENTER;
+                                    model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
+
+
+                                    model.ACCRUED_MONTH = month;// _monthc;
+                                    model.ACCRUED_YEAR = year;// _yearc;
+                                    model.COMPANY_CODE = companyCode;
+
+
+                                    model.TRANSACTIONS = arrMonthTrxn[i - 1];
+                                    model.AMOUNT = arrMonthAMT[i - 1];
+                                    model.INV_AMOUNT = arrMonthCharge[i - 1];
+
+
+                                    model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
+                                    model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
+
+                                    model.ISPLAN = true;
+
+                                    model.EDITION = 0;
+
+                                    if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        model.CREATE_BY = userInfo.UserCode;
+                                        model.CREATE_DATE = DateTime.Now;
+                                    }
+                                    else
+                                    {
+                                        model.MODIFIED_BY = userInfo.UserCode;
+                                        //model.MODIFIED_DATE = DateTime.Now;
+                                    }
+                                    model.MODIFIED_DATE = DateTime.Now;
+                                    #region sub accrued
+                                    int subsequence = 1;
+                                    var dataAccruedSub = payment_items_charge.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).ToList();
+                                    var acdataAccruedSub = data_accr.Where(m => m.ACCRUED_ITEM_ID == model.ACCRUED_ITEM_ID).ToList();
+
+                                    var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                    foreach (var sub in dataAccruedSub)
+                                    {
+                                        var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).FirstOrDefault();
+                                        decimal[] arrMonthTrxnSub = new decimal[months];
+                                        decimal[] arrMonthAMTSub = new decimal[months];
+                                        decimal[] arrMonthChargeSub = new decimal[months];
+
+                                        decimal[] arrMonthTrxn_RateSub = new decimal[months];
+                                        decimal[] arrMonthAMT_RateSub = new decimal[months];
+
+                                        #region amt
+                                        foreach (var dataSub in data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList())
+                                        {
+                                            arrMonthTrxnSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TRANSACTIONS ?? 0);
+                                            arrMonthAMTSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
+                                            arrMonthChargeSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                            arrMonthTrxn_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_TRANS ?? 0);
+                                            arrMonthAMT_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_AMT ?? 0);
+                                        }
+
+                                        int iTrxnSub = 0;
+                                        foreach (var arr in arrMonthTrxnSub.ToArray())
+                                        {
+                                            if (arrMonthTrxnSub.ToList().All(m => m == 0))
+                                            { break; }
+                                            if (arr == 0)
+                                            {
+                                                if (iTrxnSub > 2)
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub - 1;
+                                                    int avgIndexS = iTrxnSub - 3;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthTrxnSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthTrxnSub[iTrxnSub] = avgVal;
+                                                }
+                                                else
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                    int avgIndexS = 0;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthTrxnSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthTrxnSub[iTrxnSub] = avgVal;
+
+                                                }
+                                            }
+                                            iTrxnSub++;
+                                        }
+                                        iTrxnSub = 0;
+                                        foreach (var arr in arrMonthAMTSub.ToArray())
+                                        {
+                                            if (arrMonthAMTSub.ToList().All(m => m == 0))
+                                            { break; }
+                                            if (arr == 0)
+                                            {
+                                                if (iTrxnSub > 2)
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub - 1;
+                                                    int avgIndexS = iTrxnSub - 3;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthAMTSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthAMTSub[iTrxnSub] = avgVal;
+                                                }
+                                                else
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                    int avgIndexS = 0;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthAMTSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthAMTSub[iTrxnSub] = avgVal;
+
+                                                }
+                                            }
+                                            iTrxnSub++;
+                                        }
+
+
+                                        #region avg rate
+
+                                        iTrxnSub = 0;
+                                        foreach (var arr in arrMonthTrxn_RateSub.ToArray())
+                                        {
+                                            if (arrMonthTrxn_RateSub.ToList().All(m => m == 0))
+                                            { break; }
+                                            if (arr == 0)
+                                            {
+                                                if (iTrxnSub > 2)
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub - 1;
+                                                    int avgIndexS = iTrxnSub - 3;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthTrxn_RateSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+                                                }
+                                                else
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                    int avgIndexS = 0;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthTrxn_RateSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+
+                                                }
+                                            }
+                                            iTrxnSub++;
+                                        }
+                                        iTrxnSub = 0;
+                                        foreach (var arr in arrMonthAMT_RateSub.ToArray())
+                                        {
+                                            if (arrMonthAMT_RateSub.ToList().All(m => m == 0))
+                                            { break; }
+                                            if (arr == 0)
+                                            {
+                                                if (iTrxnSub > 2)
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub - 1;
+                                                    int avgIndexS = iTrxnSub - 3;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthAMT_RateSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+                                                }
+                                                else
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                    int avgIndexS = 0;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthAMT_RateSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+
+                                                }
+                                            }
+                                            iTrxnSub++;
+                                        }
+
+                                        #endregion
+
+
+                                        iTrxnSub = 0;
+                                        foreach (var arr in arrMonthChargeSub.ToArray())
+                                        {
+                                            if (arrMonthChargeSub.ToList().All(m => m == 0))
+                                            { break; }
+                                            if (arr == 0)
+                                            {
+                                                if (iTrxnSub > 2)
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub - 1;
+                                                    int avgIndexS = iTrxnSub - 3;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthChargeSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthChargeSub[iTrxnSub] = avgVal;
+                                                }
+                                                else
+                                                {
+                                                    decimal avgVal = 0;
+                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                    int avgIndexS = 0;
+                                                    List<decimal> avgList = new List<decimal>();
+                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                    {
+                                                        avgList.Add(arrMonthChargeSub[a]);
+                                                    }
+                                                    avgVal = avgList.Average();
+                                                    arrMonthChargeSub[iTrxnSub] = avgVal;
+
+                                                }
+                                            }
+                                            iTrxnSub++;
+                                        }
+
+                                        #endregion
+
+
+                                        var entAccruedItemSub = new AccruedDetailSubViewModel();
+                                        MVMMappingService.MoveData(model, entAccruedItemSub);
+                                        entAccruedItemSub.ID = getaccSub != null ? getaccSub.ID : 0;
+                                        entAccruedItemSub.ACCRUED_MONTH = month;// _monthc;
+                                        entAccruedItemSub.ACCRUED_YEAR = year;// _yearc;
+                                        entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                        entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                        entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                        entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                        entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                        entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                        entAccruedItemSub.INV_NO = model.INV_NO;
+                                        entAccruedItemSub.INV_MONTH = _monthc;
+                                        entAccruedItemSub.INV_YEAR = _yearc;
+                                        entAccruedItemSub.SEQUENCE = subsequence;
+                                        entAccruedItemSub.PAYMENT_ITEMS_FEE_ITEM = sub.PAYMENT_ITEMS_FEE_NAME;
+                                        entAccruedItemSub.TRANSACTIONS = arrMonthTrxnSub[i - 1];
+                                        entAccruedItemSub.ACTUAL_AMOUNT = arrMonthAMTSub[i - 1];
+                                        entAccruedItemSub.TOTAL_CHARGE_AMOUNT = arrMonthChargeSub[i - 1];
+                                        entAccruedItemSub.RATE_TRANS = arrMonthTrxn_RateSub[i - 1];
+                                        entAccruedItemSub.RATE_AMT = arrMonthAMT_RateSub[i - 1];
+                                        entAccruedItemSubLst.Add(entAccruedItemSub);
+
+                                        subsequence++;
+                                    }
+                                    model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
+                                    #endregion
+                                    //Get Json Model AccruedDetail
+                                    var jsonSerialiser = new JavaScriptSerializer();
+                                    string AccruedJSON = jsonSerialiser.Serialize(model);
+                                    model.AccruedJSON = AccruedJSON;
+
+
+                                    accruedItemList.Add(model);
+                                    sequence++;
+                                }
+
+                                _monthc++; // keep value month
+
+                            }//end for
+
+                            #endregion
+                        }
+                        else if (item.DURATION == "Y")
+                        {
+                            #region Trxn + Amt Duration of Year
+                            var data = (from m in get_entFeeInvItem
+                                        select m).ToList();
+
+                            var data_accr = (from m in get_entFeeAcrrItem
+                                             select m).ToList();
+
+                            var get_pymitem = payment_items.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).FirstOrDefault();
+
+                            var getmonths = (year - 2018) + 1;
+
+                            decimal[] arrMonthTrxn = new decimal[getmonths];
+                            decimal[] arrMonthAMT = new decimal[getmonths];
+                            decimal[] arrMonthCharge = new decimal[getmonths];
+
+                            int _month = 1;
+                            #region amt
+
+
+                            int yearS = (year - 3) > 2018 ? (year - 3) : 2018;
+
+                            int _year = yearS;
+                            int loop = 0;
+                            for (int i = yearS; i <= year; i++)
+                            {
+                                var data_assign_inv = data.Where(m => m.INV_YEAR == i).ToList();
+                                var data_assign_accr = data_accr.Where(m => m.INV_YEAR == i).ToList();
+                                if (data_assign_inv.Any())
+                                {
+                                    arrMonthTrxn[loop] = data_assign_inv.Sum(m => (m.TRANSACTIONS ?? 0));
+                                    arrMonthAMT[loop] = data_assign_inv.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                                    arrMonthCharge[loop] = data_assign_inv.Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
+                                }
+                                else if (data_assign_accr.Any())
+                                {
+                                    arrMonthTrxn[loop] = data_assign_accr.Sum(m => (m.TRANSACTIONS ?? 0));
+                                    arrMonthAMT[loop] = data_assign_accr.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                                    arrMonthCharge[loop] = data_assign_accr.Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
+                                }
+
+                                loop++;
+                            }
+
+                            #region Generate Value Amount on Every Month
+
+                            int iTrxn = 0;
+                            foreach (var arr in arrMonthTrxn.ToArray())
+                            {
+                                if (arrMonthTrxn.ToList().All(m => m == 0))
+                                { break; }
+                                if (arr == 0)
+                                {
+                                    if (iTrxn > 2)
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn - 1;
+                                        int avgIndexS = iTrxn - 3;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthTrxn[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthTrxn[iTrxn] = avgVal;
+                                    }
+                                    else
+                                    {
+
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
+                                        int avgIndexS = 0;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthTrxn[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthTrxn[iTrxn] = avgVal;
+
+                                    }
+                                }
+                                iTrxn++;
+                            }
+                            iTrxn = 0;
+                            foreach (var arr in arrMonthAMT.ToArray())
+                            {
+                                if (arrMonthAMT.ToList().All(m => m == 0))
+                                { break; }
+                                if (arr == 0)
+                                {
+                                    if (iTrxn > 2)
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn - 1;
+                                        int avgIndexS = iTrxn - 3;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthAMT[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthAMT[iTrxn] = avgVal;
+                                    }
+                                    else
+                                    {
+
+
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
+                                        int avgIndexS = 0;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthAMT[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthAMT[iTrxn] = avgVal;
+
+                                    }
+                                }
+                                iTrxn++;
+                            }
+                            iTrxn = 0;
+                            foreach (var arr in arrMonthCharge.ToArray())
+                            {
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                { break; }
+                                if (arr == 0)
+                                {
+                                    if (iTrxn > 2)
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn - 1;
+                                        int avgIndexS = iTrxn - 3;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthCharge[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthCharge[iTrxn] = avgVal;
+                                    }
+                                    else
+                                    {
+                                        decimal avgVal = 0;
+                                        int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
+                                        int avgIndexS = 0;
+                                        List<decimal> avgList = new List<decimal>();
+                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                        {
+                                            avgList.Add(arrMonthCharge[a]);
+                                        }
+                                        avgVal = avgList.Average();
+                                        arrMonthCharge[iTrxn] = avgVal;
+
+                                    }
+                                }
+                                iTrxn++;
+                            }
+                            #endregion
+
+
+                            #endregion
+
+
+                            int _yearc = getmonths;
+                            int _yearloop = 1;
+                            for (int i = 2018; i <= year; i++)
+                            {
+
+                                var item_chrgeofYear = feeInvList.Where(m => m.INV_YEAR == i).ToList();
+
+                                var model = new AccruedDetailViewModel();
+                                for (int j = 1; j <= 12; j++)
+                                {
+                                    var item_chrge = item_chrgeofYear.Where(m => m.INV_MONTH == j).FirstOrDefault();
+                                    var item_acccharge = feeAccrList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.ACCRUED_ID == accrued_id && m.INV_MONTH == j && m.INV_YEAR == i).FirstOrDefault();
+
+                                    if (item_chrge != null)
+                                    {
+
+                                        if (item_chrge.IS_STATUS != "3")
+                                        {
+                                            if (item_chrge.IS_STATUS == "4")
+                                            {
+                                                _yearc++;
+                                                j++;
+                                                continue;
+                                            }
+                                            else
+                                            {
+                                                #region case not complete
+                                                model.ACCRUED_ID = item_acccharge != null ? item_acccharge.ACCRUED_ID : 0;
+                                                model.ACCRUED_ITEM_ID = item_acccharge != null ? item_acccharge.ACCRUED_ITEM_ID : 0;
+                                                model.PERIOD_ACCRUED = Convert.ToString(item_chrge.INV_YEAR);
+                                                model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
+                                                model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
+
+                                                model.SEQUENCE = sequence;
+                                                model.CHANNELS = item.CHANNELS;
+                                                model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                                model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
+
+                                                model.CURRENCY = "THB";
+                                                model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                                model.CCT_CODE = item.CCT_CODE;
+                                                model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                                model.COST_CENTER = item.COST_CENTER;
+                                                model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
+
+
+                                                model.ACCRUED_MONTH = month;// generate accrued advanced
+                                                model.ACCRUED_YEAR = year;
+                                                model.COMPANY_CODE = companyCode;
+                                                model.INV_NO = item_chrge.INV_NO;
+                                                model.PRO_NO = item_chrge.PRO_NO;
+
+
+                                                model.TRANSACTIONS = arrMonthTrxn[_yearloop - 1];
+                                                model.AMOUNT = arrMonthAMT[_yearloop - 1];
+                                                model.INV_AMOUNT = arrMonthCharge[_yearloop - 1];
+
+                                                if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
+                                                {
+                                                    model.REMARK = "ประมาณการย้อนหลัง 3 ปี";
+                                                    model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 ปี";
+
+                                                    model.ISPLAN = true;
+                                                }
+                                                else
+                                                {
+                                                    model.REMARK = "Invoice " + item_chrge.INV_YEAR;
+                                                    model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
+
+                                                    model.ISPLAN = false;
+
+                                                }
+                                                if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    model.CREATE_BY = userInfo.UserCode;
+                                                    model.CREATE_DATE = DateTime.Now;
+                                                }
+                                                else
+                                                {
+                                                    model.MODIFIED_BY = userInfo.UserCode;
+                                                    //model.MODIFIED_DATE = DateTime.Now;
+                                                }
+                                                model.MODIFIED_DATE = DateTime.Now;
+                                                #region sub accrued
+                                                var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
+                                                var acdataAccruedSub = data_accr.Where(m => m.ACCRUED_ITEM_ID == model.ACCRUED_ITEM_ID).ToList();
+
+                                                var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                                foreach (var sub in dataAccruedSub)
+                                                {
+                                                    var entAccruedItemSub = new AccruedDetailSubViewModel();
+
+                                                    var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_ITEM).FirstOrDefault();
+
+                                                    MVMMappingService.MoveData(sub, entAccruedItemSub);
+                                                    entAccruedItemSub.ID = getaccSub != null ? getaccSub.ID : 0;
+                                                    //MVMMappingService.MoveData(sub, entAccruedItemSub);
+                                                    //entAccruedItemSub.ID = 0;
+                                                    //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
+                                                    entAccruedItemSub.ACCRUED_MONTH = month;
+                                                    entAccruedItemSub.ACCRUED_YEAR = year;
+                                                    entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                                    entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                                    entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                                    entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                                    entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                                    entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                                    entAccruedItemSub.REMARK = model.REMARK;
+                                                    entAccruedItemSubLst.Add(entAccruedItemSub);
+                                                }
+                                                model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
+                                                #endregion
+                                                //Get Json Model AccruedDetail
+                                                var jsonSerialiser = new JavaScriptSerializer();
+                                                string AccruedJSON = jsonSerialiser.Serialize(model);
+                                                model.AccruedJSON = AccruedJSON;
+
+                                                model.EDITION = 0;
+                                                accruedItemList.Add(model);
+                                                sequence++;
+                                                #endregion
+                                            }
+                                        }//charge
+
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        model.ACCRUED_ID = item_acccharge != null ? item_acccharge.ACCRUED_ID : 0;
+                                        model.ACCRUED_ITEM_ID = item_acccharge != null ? item_acccharge.ACCRUED_ITEM_ID : 0;
+                                        model.PERIOD_ACCRUED = Convert.ToString(i);
+                                        model.INV_MONTH = j;
+                                        model.INV_YEAR = i;
+                                        model.SEQUENCE = sequence;
+                                        model.CHANNELS = item.CHANNELS;
+                                        model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                        model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
+
+                                        model.CURRENCY = "THB";
+                                        model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                        model.CCT_CODE = item.CCT_CODE;
+                                        model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                        model.COST_CENTER = item.COST_CENTER;
+                                        model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
+
+
+                                        model.ACCRUED_MONTH = month;
+                                        model.ACCRUED_YEAR = year;
+                                        model.COMPANY_CODE = companyCode;
+
+
+                                        model.TRANSACTIONS = arrMonthTrxn[_yearloop - 1];
+                                        model.AMOUNT = arrMonthAMT[_yearloop - 1];
+                                        model.INV_AMOUNT = arrMonthCharge[_yearloop - 1];
+
+
+                                        model.REMARK = "ประมาณการย้อนหลัง 3 ปี";
+                                        model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 ปี";
+
+                                        model.ISPLAN = true;
+
+                                        model.EDITION = 0;
+
+                                        if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                        {
+                                            model.CREATE_BY = userInfo.UserCode;
+                                            model.CREATE_DATE = DateTime.Now;
+                                        }
+                                        else
+                                        {
+                                            model.MODIFIED_BY = userInfo.UserCode;
+                                            //model.MODIFIED_DATE = DateTime.Now;
+                                        }
+                                        model.MODIFIED_DATE = DateTime.Now;
+                                        #region sub accrued
+                                        int subsequence = 1;
+                                        var dataAccruedSub = payment_items_charge.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).ToList();
+
+                                        var acdataAccruedSub = data_accr.Where(m => m.ACCRUED_ITEM_ID == model.ACCRUED_ITEM_ID).ToList();
+
+                                        var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                        foreach (var sub in dataAccruedSub)
+                                        {
+
+                                            var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).FirstOrDefault();
+
+
+                                            decimal[] arrMonthTrxnSub = new decimal[getmonths];
+                                            decimal[] arrMonthAMTSub = new decimal[getmonths];
+                                            decimal[] arrMonthChargeSub = new decimal[getmonths];
+
+                                            decimal[] arrMonthTrxn_RateSub = new decimal[getmonths];
+                                            decimal[] arrMonthAMT_RateSub = new decimal[getmonths];
+
+                                            #region amt
+                                            foreach (var dataSub in data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList())
+                                            {
+                                                arrMonthTrxnSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TRANSACTIONS ?? 0);
+                                                arrMonthAMTSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
+                                                arrMonthChargeSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                                arrMonthTrxn_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_TRANS ?? 0);
+                                                arrMonthAMT_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_AMT ?? 0);
+                                            }
+
+                                            int iTrxnSub = 0;
+                                            foreach (var arr in arrMonthTrxnSub.ToArray())
+                                            {
+                                                if (arrMonthTrxnSub.ToList().All(m => m == 0))
+                                                { break; }
+                                                if (arr == 0)
+                                                {
+                                                    if (iTrxnSub > 2)
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub - 1;
+                                                        int avgIndexS = iTrxnSub - 3;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthTrxnSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthTrxnSub[iTrxnSub] = avgVal;
+                                                    }
+                                                    else
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                        int avgIndexS = 0;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthTrxnSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthTrxnSub[iTrxnSub] = avgVal;
+
+                                                    }
+                                                }
+                                                iTrxnSub++;
+                                            }
+                                            iTrxnSub = 0;
+                                            foreach (var arr in arrMonthAMTSub.ToArray())
+                                            {
+                                                if (arrMonthAMTSub.ToList().All(m => m == 0))
+                                                { break; }
+                                                if (arr == 0)
+                                                {
+                                                    if (iTrxnSub > 2)
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub - 1;
+                                                        int avgIndexS = iTrxnSub - 3;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthAMTSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthAMTSub[iTrxnSub] = avgVal;
+                                                    }
+                                                    else
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                        int avgIndexS = 0;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthAMTSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthAMTSub[iTrxnSub] = avgVal;
+
+                                                    }
+                                                }
+                                                iTrxnSub++;
+                                            }
+
+
+                                            #region avg rate
+
+                                            iTrxnSub = 0;
+                                            foreach (var arr in arrMonthTrxn_RateSub.ToArray())
+                                            {
+                                                if (arrMonthTrxn_RateSub.ToList().All(m => m == 0))
+                                                { break; }
+                                                if (arr == 0)
+                                                {
+                                                    if (iTrxnSub > 2)
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub - 1;
+                                                        int avgIndexS = iTrxnSub - 3;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthTrxn_RateSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+                                                    }
+                                                    else
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                        int avgIndexS = 0;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthTrxn_RateSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+
+                                                    }
+                                                }
+                                                iTrxnSub++;
+                                            }
+                                            iTrxnSub = 0;
+                                            foreach (var arr in arrMonthAMT_RateSub.ToArray())
+                                            {
+                                                if (arrMonthAMT_RateSub.ToList().All(m => m == 0))
+                                                { break; }
+                                                if (arr == 0)
+                                                {
+                                                    if (iTrxnSub > 2)
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub - 1;
+                                                        int avgIndexS = iTrxnSub - 3;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthAMT_RateSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+                                                    }
+                                                    else
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                        int avgIndexS = 0;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthAMT_RateSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+
+                                                    }
+                                                }
+                                                iTrxnSub++;
+                                            }
+
+                                            #endregion
+
+
+                                            iTrxnSub = 0;
+                                            foreach (var arr in arrMonthChargeSub.ToArray())
+                                            {
+                                                if (arrMonthChargeSub.ToList().All(m => m == 0))
+                                                { break; }
+                                                if (arr == 0)
+                                                {
+                                                    if (iTrxnSub > 2)
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub - 1;
+                                                        int avgIndexS = iTrxnSub - 3;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthChargeSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthChargeSub[iTrxnSub] = avgVal;
+                                                    }
+                                                    else
+                                                    {
+                                                        decimal avgVal = 0;
+                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                        int avgIndexS = 0;
+                                                        List<decimal> avgList = new List<decimal>();
+                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                        {
+                                                            avgList.Add(arrMonthChargeSub[a]);
+                                                        }
+                                                        avgVal = avgList.Average();
+                                                        arrMonthChargeSub[iTrxnSub] = avgVal;
+
+                                                    }
+                                                }
+                                                iTrxnSub++;
+                                            }
+
+                                            #endregion
+
+
+                                            var entAccruedItemSub = new AccruedDetailSubViewModel();
+                                            MVMMappingService.MoveData(model, entAccruedItemSub);
+                                            entAccruedItemSub.ID = getaccSub != null ? getaccSub.ID : 0;
+                                            entAccruedItemSub.ACCRUED_MONTH = month;
+                                            entAccruedItemSub.ACCRUED_YEAR = year;
+                                            entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                            entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                            entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                            entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                            entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                            entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                            entAccruedItemSub.INV_NO = model.INV_NO;
+                                            entAccruedItemSub.INV_MONTH = j;
+                                            entAccruedItemSub.INV_YEAR = i;
+                                            entAccruedItemSub.SEQUENCE = subsequence;
+                                            entAccruedItemSub.PAYMENT_ITEMS_FEE_ITEM = sub.PAYMENT_ITEMS_FEE_NAME;
+                                            entAccruedItemSub.TRANSACTIONS = arrMonthTrxnSub[_yearloop - 1];
+                                            entAccruedItemSub.ACTUAL_AMOUNT = arrMonthAMTSub[_yearloop - 1];
+                                            entAccruedItemSub.TOTAL_CHARGE_AMOUNT = arrMonthChargeSub[_yearloop - 1];
+                                            entAccruedItemSub.RATE_TRANS = arrMonthTrxn_RateSub[_yearloop - 1];
+                                            entAccruedItemSub.RATE_AMT = arrMonthAMT_RateSub[_yearloop - 1];
+                                            entAccruedItemSubLst.Add(entAccruedItemSub);
+
+                                            subsequence++;
+                                        }
+                                        model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
+                                        #endregion
+                                        //Get Json Model AccruedDetail
+                                        var jsonSerialiser = new JavaScriptSerializer();
+                                        string AccruedJSON = jsonSerialiser.Serialize(model);
+                                        model.AccruedJSON = AccruedJSON;
+
+
+                                        accruedItemList.Add(model);
+                                        sequence++;
+
+                                        break;
+                                    }
+
+                                    // _monthc++; // keep value month
+                                }//end for month
+                                _yearloop++;
+                            }//end for year
+
+
+                            #endregion
+                        }
+                    }//fee payment channels
+                    #endregion
+                }
+                //accruedItemList = (from m in accruedItemList orderby m.INV_MONTH,m.INV_YEAR select m).ToList();
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return accruedItemList;
+        }
+
+        public List<AccruedDetailViewModel> InitialAccruedItemsList_OldeComplete_2(string companyCode, int month, int year, string formState)
+        {
+            //AccruedViewModel accruedList = new AccruedViewModel();
+            List<AccruedDetailViewModel> accruedItemList = new List<AccruedDetailViewModel>();
+            User userInfo = UserService.GetSessionUserInfo();
+            try
+            {
+                using (var context = new PYMFEEEntities())
+                {
+                    // --Payment Items Get Description
+                    var payment_items = (from m in context.PAYMENT_ITEMS
+                                         where m.IS_ACTIVE == true &&
+                                         m.COMPANY_CODE == companyCode
+                                         orderby m.GROUP_SEQ_CHANNELS
+                                         select m).ToList();
+                    // --Invoice Get Invoice List
+                    var entFeeInv = (from m in context.FEE_INVOICE
+                                     where //m.INV_MONTH <= month && m.INV_YEAR <= year
+                                     (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1
+                                     && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
+                                     && m.COMPANY_CODE == companyCode
+                                     orderby m.INV_MONTH, m.INV_YEAR
+                                     select m).ToList();
+
+
+                    // --Invoice Get Invoice Item List
+                    var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM where m.COMPANY_CODE == companyCode select m).ToList();
+
+                    //var payment_items = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE==true  select m).ToList();
+                    var payment_items_charge = (from m in context.PAYMENT_ITEMS_CHAGE where m.COMPANY_CODE == companyCode select m).ToList();
+
+                    //Payment Items Charge List
+                    if (payment_items.Any())
+                    {
+                        payment_items_charge = payment_items_charge.Where(m => payment_items.Any(i => m.PAYMENT_ITEMS_ID == i.ID)).ToList();
+                    }
+
+
+
+                    var culture = CultureInfo.GetCultureInfo("en-US");
+                    var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                    var qtyMonth = (year * 12 + month) - (2018 * 12 + 1);
+
+                    int currentMonth = DateTime.Now.Date.Month;
+                    int months = qtyMonth + 1;
+                    int years = 2018;
+
+                    #region Detail
+                    int sequence = 1;
+                    foreach (var item in payment_items)//feeList)
+                    {
+                        var feeInvList = entFeeInv.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
+
+                        var get_entFeeInvItem = (from n in entFeeInvItem
+                                                 where feeInvList.Any(f => n.INV_NO == f.INV_NO)//n.INV_NO == item_fee.INV_NO 
+
                                                  orderby n.SEQUENCE, n.INV_MONTH, n.INV_YEAR, n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending
                                                  select n).ToList();
 
                         #region Trxn + Amt
                         var data = (from m in get_entFeeInvItem
-                                    select m).ToList();
-
-                        var data_accr = (from m in get_entFeeAcrrItem
                                     select m).ToList();
 
                         var get_pymitem = payment_items.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).FirstOrDefault();
@@ -871,20 +2213,9 @@ namespace BBDEVSYS.Services.Accrued
                                 _month = 1;
                                 _year = _year + 1;
                             }
-                            var data_assign_inv = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList();
-                            var data_assign_accr = data_accr.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList();
-                            if (data_assign_inv.Any())
-                            {
-                                arrMonthTrxn[i - 1] = data_assign_inv.Sum(m => (m.TRANSACTIONS ?? 0));
-                                arrMonthAMT[i - 1] = data_assign_inv.Sum(m => (m.TRANSACTIONS ?? 0));
-                                arrMonthCharge[i - 1] = data_assign_inv.Sum(m => (m.TRANSACTIONS ?? 0));
-                            }
-                            else if (data_assign_accr.Any())
-                            {
-                                arrMonthTrxn[i - 1] = data_assign_accr.Sum(m => (m.TRANSACTIONS ?? 0));
-                                arrMonthAMT[i - 1] = data_assign_accr.Sum(m => (m.TRANSACTIONS ?? 0));
-                                arrMonthCharge[i - 1] = data_assign_accr.Sum(m => (m.TRANSACTIONS ?? 0));
-                            }
+                            arrMonthTrxn[i - 1] = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList().Sum(m => (m.TRANSACTIONS ?? 0));
+                            arrMonthAMT[i - 1] = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList().Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                            arrMonthCharge[i - 1] = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList().Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
 
                             _month++;
                         }
@@ -1030,100 +2361,91 @@ namespace BBDEVSYS.Services.Accrued
 
                                 if (item_chrge.IS_STATUS != "3")
                                 {
-                                    if (item_chrge.IS_STATUS == "4")
+
+                                    model.PERIOD_ACCRUED = string.Concat(item_chrge.INV_MONTH.ToString().PadLeft(2, '0'), " / ", item_chrge.INV_YEAR);
+                                    model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
+                                    model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
+
+                                    model.SEQUENCE = sequence;
+                                    model.CHANNELS = item.CHANNELS;
+                                    model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                    model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
+
+                                    model.CURRENCY = "THB";
+                                    model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                    model.CCT_CODE = item.CCT_CODE;
+                                    model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                    model.COST_CENTER = item.COST_CENTER;
+                                    model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
+
+
+                                    model.ACCRUED_MONTH = month;// _monthc;
+                                    model.ACCRUED_YEAR = year;// _yearc;
+                                    model.COMPANY_CODE = companyCode;
+                                    model.INV_NO = item_chrge.INV_NO;
+                                    model.PRO_NO = item_chrge.PRO_NO;
+
+
+                                    model.TRANSACTIONS = arrMonthTrxn[_monthc - 1];
+                                    model.AMOUNT = arrMonthAMT[_monthc - 1];
+                                    model.INV_AMOUNT = arrMonthCharge[_monthc - 1];
+
+                                    if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
                                     {
-                                        _monthc++;
-                                        continue;
+                                        model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
+                                        model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
+
+                                        model.ISPLAN = true;
                                     }
                                     else
                                     {
-                                        #region case not complete
-                                        model.PERIOD_ACCRUED = string.Concat(item_chrge.INV_MONTH.ToString().PadLeft(2, '0'), " / ", item_chrge.INV_YEAR);
-                                        model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
-                                        model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
+                                        model.REMARK = "Invoice " + item_chrge.INV_MONTH.ToString().PadLeft(2, '0') + "/ " + item_chrge.INV_YEAR;
+                                        model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
 
-                                        model.SEQUENCE = sequence;
-                                        model.CHANNELS = item.CHANNELS;
-                                        model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
-                                        model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
+                                        model.ISPLAN = false;
 
-                                        model.CURRENCY = "THB";
-                                        model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
-                                        model.CCT_CODE = item.CCT_CODE;
-                                        model.GL_ACCOUNT = item.GL_ACCOUNT;
-                                        model.COST_CENTER = item.COST_CENTER;
-                                        model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
-
-
-                                        model.ACCRUED_MONTH = _monthc;
-                                        model.ACCRUED_YEAR = _yearc;
-                                        model.COMPANY_CODE = companyCode;
-                                        model.INV_NO = item_chrge.INV_NO;
-                                        model.PRO_NO = item_chrge.PRO_NO;
-
-
-                                        model.TRANSACTIONS = arrMonthTrxn[_monthc - 1];
-                                        model.AMOUNT = arrMonthAMT[_monthc - 1];
-                                        model.INV_AMOUNT = arrMonthCharge[_monthc - 1];
-
-                                        if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
-                                        {
-                                            model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
-                                            model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
-
-                                            model.ISPLAN = true;
-                                        }
-                                        else
-                                        {
-                                            model.REMARK = "Invoice " + item_chrge.INV_MONTH.ToString().PadLeft(2, '0') + "/ " + item_chrge.INV_YEAR;
-                                            model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
-
-                                            model.ISPLAN = false;
-
-                                        }
-                                        if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            model.CREATE_BY = userInfo.UserCode;
-                                            model.CREATE_DATE = DateTime.Now;
-                                        }
-                                        else
-                                        {
-                                            model.MODIFIED_BY = userInfo.UserCode;
-                                            //model.MODIFIED_DATE = DateTime.Now;
-                                        }
-                                        model.MODIFIED_DATE = DateTime.Now;
-                                        #region sub accrued
-                                        var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
-                                        var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
-                                        foreach (var sub in dataAccruedSub)
-                                        {
-                                            var entAccruedItemSub = new AccruedDetailSubViewModel();
-                                            MVMMappingService.MoveData(sub, entAccruedItemSub);
-                                            entAccruedItemSub.ID = 0;
-                                            //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
-                                            entAccruedItemSub.ACCRUED_MONTH = _monthc;
-                                            entAccruedItemSub.ACCRUED_YEAR = _yearc;
-                                            entAccruedItemSub.CREATE_BY = model.CREATE_BY;
-                                            entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
-                                            entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
-                                            entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
-                                            entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
-                                            entAccruedItemSub.PRO_NO = model.PRO_NO;
-                                            entAccruedItemSub.REMARK = model.REMARK;
-                                            entAccruedItemSubLst.Add(entAccruedItemSub);
-                                        }
-                                        model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
-                                        #endregion
-                                        //Get Json Model AccruedDetail
-                                        var jsonSerialiser = new JavaScriptSerializer();
-                                        string AccruedJSON = jsonSerialiser.Serialize(model);
-                                        model.AccruedJSON = AccruedJSON;
-
-                                        model.EDITION = 0;
-                                        accruedItemList.Add(model);
-                                        sequence++;
-                                        #endregion
                                     }
+                                    if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                    {
+                                        model.CREATE_BY = userInfo.UserCode;
+                                        model.CREATE_DATE = DateTime.Now;
+                                    }
+                                    else
+                                    {
+                                        model.MODIFIED_BY = userInfo.UserCode;
+                                        //model.MODIFIED_DATE = DateTime.Now;
+                                    }
+                                    model.MODIFIED_DATE = DateTime.Now;
+                                    #region sub accrued
+                                    var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
+                                    var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                    foreach (var sub in dataAccruedSub)
+                                    {
+                                        var entAccruedItemSub = new AccruedDetailSubViewModel();
+                                        MVMMappingService.MoveData(sub, entAccruedItemSub);
+                                        entAccruedItemSub.ID = 0;
+                                        //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
+                                        entAccruedItemSub.ACCRUED_MONTH = month;// _monthc;
+                                        entAccruedItemSub.ACCRUED_YEAR = year;// _yearc;
+                                        entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                        entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                        entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                        entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                        entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                        entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                        entAccruedItemSub.REMARK = model.REMARK;
+                                        entAccruedItemSubLst.Add(entAccruedItemSub);
+                                    }
+                                    model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
+                                    #endregion
+                                    //Get Json Model AccruedDetail
+                                    var jsonSerialiser = new JavaScriptSerializer();
+                                    string AccruedJSON = jsonSerialiser.Serialize(model);
+                                    model.AccruedJSON = AccruedJSON;
+
+                                    model.EDITION = 0;
+                                    accruedItemList.Add(model);
+                                    sequence++;
                                 }//charge
                             }
                             else
@@ -1144,8 +2466,8 @@ namespace BBDEVSYS.Services.Accrued
                                 model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
 
 
-                                model.ACCRUED_MONTH = _monthc;
-                                model.ACCRUED_YEAR = _yearc;
+                                model.ACCRUED_MONTH = month;// _monthc;
+                                model.ACCRUED_YEAR = year;// _yearc;
                                 model.COMPANY_CODE = companyCode;
 
 
@@ -1397,8 +2719,8 @@ namespace BBDEVSYS.Services.Accrued
                                     var entAccruedItemSub = new AccruedDetailSubViewModel();
                                     MVMMappingService.MoveData(model, entAccruedItemSub);
                                     entAccruedItemSub.ID = 0;
-                                    entAccruedItemSub.ACCRUED_MONTH = _monthc;
-                                    entAccruedItemSub.ACCRUED_YEAR = _yearc;
+                                    entAccruedItemSub.ACCRUED_MONTH = month;// _monthc;
+                                    entAccruedItemSub.ACCRUED_YEAR = year;// _yearc;
                                     entAccruedItemSub.CREATE_BY = model.CREATE_BY;
                                     entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
                                     entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
@@ -1449,643 +2771,6 @@ namespace BBDEVSYS.Services.Accrued
             return accruedItemList;
         }
 
-        public List<AccruedDetailViewModel> InitialAccruedItemsList_OldeComplete_2(string companyCode, int month, int year, string formState)
-        {
-            //AccruedViewModel accruedList = new AccruedViewModel();
-            List<AccruedDetailViewModel> accruedItemList = new List<AccruedDetailViewModel>();
-            User userInfo = UserService.GetSessionUserInfo();
-            try
-            {
-                using (var context = new PYMFEEEntities())
-                {
-                    // --Payment Items Get Description
-                    var payment_items = (from m in context.PAYMENT_ITEMS
-                                         where m.IS_ACTIVE == true && 
-                                         m.COMPANY_CODE == companyCode 
-                                         orderby m.GROUP_SEQ_CHANNELS
-                                         select m).ToList();
-                    // --Invoice Get Invoice List
-                    var entFeeInv = (from m in context.FEE_INVOICE
-                                     where //m.INV_MONTH <= month && m.INV_YEAR <= year
-                                     (m.INV_YEAR *12)+ m.INV_MONTH>= (2018 *12)+1 
-                                     && (m.INV_YEAR * 12) + m.INV_MONTH <= (year*12)+month
-                                     && m.COMPANY_CODE == companyCode
-                                     orderby m.INV_MONTH, m.INV_YEAR
-                                     select m).ToList();
-
-                    
-                    // --Invoice Get Invoice Item List
-                    var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM where m.COMPANY_CODE == companyCode select m).ToList();
-
-                    //var payment_items = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE==true  select m).ToList();
-                    var payment_items_charge = (from m in context.PAYMENT_ITEMS_CHAGE where m.COMPANY_CODE == companyCode select m).ToList();
-
-                    //Payment Items Charge List
-                    if (payment_items.Any())
-                    {
-                        payment_items_charge = payment_items_charge.Where(m => payment_items.Any(i => m.PAYMENT_ITEMS_ID == i.ID)).ToList();
-                    }
-
-
-
-                    var culture = CultureInfo.GetCultureInfo("en-US");
-                    var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
-                    var qtyMonth = (year * 12 + month) - (2018 * 12 + 1);
-
-                    int currentMonth = DateTime.Now.Date.Month;
-                    int months = qtyMonth + 1;
-                    int years = 2018;
-
-                    #region Detail
-                    int sequence = 1;
-                    foreach (var item in payment_items)//feeList)
-                    {
-                        var feeInvList = entFeeInv.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
-
-                        var get_entFeeInvItem = (from n in entFeeInvItem
-                                                 where feeInvList.Any(f => n.INV_NO == f.INV_NO)//n.INV_NO == item_fee.INV_NO 
-
-                                                 orderby n.SEQUENCE, n.INV_MONTH, n.INV_YEAR, n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending
-                                                 select n).ToList();
-
-                        #region Trxn + Amt
-                        var data = (from m in get_entFeeInvItem
-                                    select m).ToList();
-
-                        var get_pymitem = payment_items.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).FirstOrDefault();
-
-                        decimal[] arrMonthTrxn = new decimal[months];
-                        decimal[] arrMonthAMT = new decimal[months];
-                        decimal[] arrMonthCharge = new decimal[months];
-
-                        #region amt
-                        int _month = 1;
-                        int _year = years;
-                        for (int i = 1; i <= months; i++)
-                        {
-                            if (i==13)
-                            {
-                                _month = 1;
-                                _year = _year + 1;
-                            }
-                            arrMonthTrxn[i - 1] = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year ).ToList().Sum(m => (m.TRANSACTIONS ?? 0));
-                            arrMonthAMT[i - 1] = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList().Sum(m => (m.ACTUAL_AMOUNT ?? 0));
-                            arrMonthCharge[i - 1] = data.Where(m => m.INV_MONTH == _month && m.INV_YEAR == _year).ToList().Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
-
-                            _month++;
-                        }
-                        int iTrxn = 0;
-                        foreach (var arr in arrMonthTrxn.ToArray())
-                        {
-                            if (arrMonthTrxn.ToList().All(m => m == 0))
-                            { break; }
-                            if (arr == 0)
-                            {
-                                if (iTrxn > 2)
-                                {
-                                    decimal avgVal = 0;
-                                    int avgIndexE = iTrxn - 1;
-                                    int avgIndexS = iTrxn - 3;
-                                    List<decimal> avgList = new List<decimal>();
-                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                    {
-                                        avgList.Add(arrMonthTrxn[a]);
-                                    }
-                                    avgVal = avgList.Average();
-                                    arrMonthTrxn[iTrxn] = avgVal;
-                                }
-                                else
-                                {
-
-                                    decimal avgVal = 0;
-                                    int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
-                                    int avgIndexS = 0;
-                                    List<decimal> avgList = new List<decimal>();
-                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                    {
-                                        avgList.Add(arrMonthTrxn[a]);
-                                    }
-                                    avgVal = avgList.Average();
-                                    arrMonthTrxn[iTrxn] = avgVal;
-
-                                }
-                            }
-                            iTrxn++;
-                        }
-                        iTrxn = 0;
-                        foreach (var arr in arrMonthAMT.ToArray())
-                        {
-                            if (arrMonthAMT.ToList().All(m => m == 0))
-                            { break; }
-                            if (arr == 0)
-                            {
-                                if (iTrxn > 2)
-                                {
-                                    decimal avgVal = 0;
-                                    int avgIndexE = iTrxn - 1;
-                                    int avgIndexS = iTrxn - 3;
-                                    List<decimal> avgList = new List<decimal>();
-                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                    {
-                                        avgList.Add(arrMonthAMT[a]);
-                                    }
-                                    avgVal = avgList.Average();
-                                    arrMonthAMT[iTrxn] = avgVal;
-                                }
-                                else
-                                {
-
-
-                                    decimal avgVal = 0;
-                                    int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
-                                    int avgIndexS = 0;
-                                    List<decimal> avgList = new List<decimal>();
-                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                    {
-                                        avgList.Add(arrMonthAMT[a]);
-                                    }
-                                    avgVal = avgList.Average();
-                                    arrMonthAMT[iTrxn] = avgVal;
-
-                                }
-                            }
-                            iTrxn++;
-                        }
-                        iTrxn = 0;
-                        foreach (var arr in arrMonthCharge.ToArray())
-                        {
-                            if (arrMonthCharge.ToList().All(m => m == 0))
-                            { break; }
-                            if (arr == 0)
-                            {
-                                if (iTrxn > 2)
-                                {
-                                    decimal avgVal = 0;
-                                    int avgIndexE = iTrxn - 1;
-                                    int avgIndexS = iTrxn - 3;
-                                    List<decimal> avgList = new List<decimal>();
-                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                    {
-                                        avgList.Add(arrMonthCharge[a]);
-                                    }
-                                    avgVal = avgList.Average();
-                                    arrMonthCharge[iTrxn] = avgVal;
-                                }
-                                else
-                                {
-                                    decimal avgVal = 0;
-                                    int avgIndexE = iTrxn == 0 ? iTrxn : iTrxn - 1;
-                                    int avgIndexS = 0;
-                                    List<decimal> avgList = new List<decimal>();
-                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                    {
-                                        avgList.Add(arrMonthCharge[a]);
-                                    }
-                                    avgVal = avgList.Average();
-                                    arrMonthCharge[iTrxn] = avgVal;
-
-                                }
-                            }
-                            iTrxn++;
-                        }
-
-                        #endregion
-
-                        //Check Data Had in Invoice
-                        var chkitem_chrge = feeInvList.Where(m =>
-                         //m.INV_MONTH >= 1 && m.INV_MONTH <= month && m.INV_YEAR >= 2018 && m.INV_YEAR <= year
-                         (m.INV_YEAR * 12) + m.INV_MONTH >= (2018 * 12) + 1 && (m.INV_YEAR * 12) + m.INV_MONTH <= (year * 12) + month
-                        ).ToList();
-                        //if (chkitem_chrge.Any()) // Check list Ignore case not had never offer invoice
-                        //{ 
-                        int _monthc = 1;
-                        int _yearc = years;
-                        for (int i = 1; i <= months; i++)
-                        {
-                            if (i == 13)
-                            {
-                                _monthc = 1;
-                                _yearc = _yearc + 1;
-                            }
-                                var item_chrge = feeInvList.Where(m => m.INV_MONTH == _monthc && m.INV_YEAR == _yearc).FirstOrDefault();
-
-                                var model = new AccruedDetailViewModel();
-
-                                if (item_chrge != null)
-                                {
-
-                                    if (item_chrge.IS_STATUS != "3")
-                                    {
-
-                                        model.PERIOD_ACCRUED = string.Concat(item_chrge.INV_MONTH.ToString().PadLeft(2, '0'), " / ", item_chrge.INV_YEAR);
-                                        model.INV_MONTH = (item_chrge.INV_MONTH ?? 0);
-                                        model.INV_YEAR = (item_chrge.INV_YEAR ?? 0);
-
-                                        model.SEQUENCE = sequence;
-                                        model.CHANNELS = item.CHANNELS;
-                                        model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
-                                        model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
-
-                                        model.CURRENCY = "THB";
-                                        model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
-                                        model.CCT_CODE = item.CCT_CODE;
-                                        model.GL_ACCOUNT = item.GL_ACCOUNT;
-                                        model.COST_CENTER = item.COST_CENTER;
-                                        model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
-
-
-                                        model.ACCRUED_MONTH = _monthc;
-                                        model.ACCRUED_YEAR = _yearc;
-                                        model.COMPANY_CODE = companyCode;
-                                        model.INV_NO = item_chrge.INV_NO;
-                                        model.PRO_NO = item_chrge.PRO_NO;
-
-
-                                        model.TRANSACTIONS = arrMonthTrxn[_monthc - 1];
-                                        model.AMOUNT = arrMonthAMT[_monthc - 1];
-                                        model.INV_AMOUNT = arrMonthCharge[_monthc - 1];
-
-                                        if (get_entFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0)) == 0 && get_entFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) == 0)
-                                        {
-                                            model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
-                                            model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
-
-                                            model.ISPLAN = true;
-                                        }
-                                        else
-                                        {
-                                            model.REMARK = "Invoice " + item_chrge.INV_MONTH.ToString().PadLeft(2, '0') + "/ " + item_chrge.INV_YEAR;
-                                            model.REMARK_INVOICE = "Inv No. " + item_chrge.INV_NO;
-
-                                            model.ISPLAN = false;
-
-                                        }
-                                        if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
-                                        {
-                                            model.CREATE_BY = userInfo.UserCode;
-                                            model.CREATE_DATE = DateTime.Now;
-                                        }
-                                        else
-                                        {
-                                            model.MODIFIED_BY = userInfo.UserCode;
-                                            //model.MODIFIED_DATE = DateTime.Now;
-                                        }
-                                        model.MODIFIED_DATE = DateTime.Now;
-                                        #region sub accrued
-                                        var dataAccruedSub = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.INV_NO == model.INV_NO).ToList();
-                                        var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
-                                        foreach (var sub in dataAccruedSub)
-                                        {
-                                            var entAccruedItemSub = new AccruedDetailSubViewModel();
-                                            MVMMappingService.MoveData(sub, entAccruedItemSub);
-                                            entAccruedItemSub.ID = 0;
-                                            //entAccruedItemSub.CCT_CODE = sub.COST_CENTER;
-                                            entAccruedItemSub.ACCRUED_MONTH = _monthc;
-                                            entAccruedItemSub.ACCRUED_YEAR = _yearc;
-                                            entAccruedItemSub.CREATE_BY = model.CREATE_BY;
-                                            entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
-                                            entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
-                                            entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
-                                            entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
-                                            entAccruedItemSub.PRO_NO = model.PRO_NO;
-                                            entAccruedItemSub.REMARK = model.REMARK;
-                                            entAccruedItemSubLst.Add(entAccruedItemSub);
-                                        }
-                                        model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
-                                        #endregion
-                                        //Get Json Model AccruedDetail
-                                        var jsonSerialiser = new JavaScriptSerializer();
-                                        string AccruedJSON = jsonSerialiser.Serialize(model);
-                                        model.AccruedJSON = AccruedJSON;
-
-                                        model.EDITION = 0;
-                                        accruedItemList.Add(model);
-                                        sequence++;
-                                    }//charge
-                                }
-                                else
-                                {
-                                    model.PERIOD_ACCRUED = string.Concat(_monthc.ToString().PadLeft(2, '0'), " / ", _yearc);
-                                    model.INV_MONTH =_monthc;
-                                    model.INV_YEAR = _yearc;
-                                    model.SEQUENCE = sequence;
-                                    model.CHANNELS = item.CHANNELS;
-                                    model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
-                                    model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
-
-                                    model.CURRENCY = "THB";
-                                    model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
-                                    model.CCT_CODE = item.CCT_CODE;
-                                    model.GL_ACCOUNT = item.GL_ACCOUNT;
-                                    model.COST_CENTER = item.COST_CENTER;
-                                    model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
-
-
-                                    model.ACCRUED_MONTH = _monthc;
-                                    model.ACCRUED_YEAR = _yearc;
-                                    model.COMPANY_CODE = companyCode;
-
-
-                                    model.TRANSACTIONS = arrMonthTrxn[_monthc - 1];
-                                    model.AMOUNT = arrMonthAMT[_monthc - 1];
-                                    model.INV_AMOUNT = arrMonthCharge[_monthc - 1];
-
-
-                                    model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
-                                    model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
-
-                                    model.ISPLAN = true;
-
-                                    model.EDITION = 0;
-
-                                    if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
-                                    {
-                                        model.CREATE_BY = userInfo.UserCode;
-                                        model.CREATE_DATE = DateTime.Now;
-                                    }
-                                    else
-                                    {
-                                        model.MODIFIED_BY = userInfo.UserCode;
-                                        //model.MODIFIED_DATE = DateTime.Now;
-                                    }
-                                    model.MODIFIED_DATE = DateTime.Now;
-                                    #region sub accrued
-                                    int subsequence = 1;
-                                    var dataAccruedSub = payment_items_charge.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).ToList();
-                                    var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
-                                    foreach (var sub in dataAccruedSub)
-                                    {
-
-                                        decimal[] arrMonthTrxnSub = new decimal[months];
-                                        decimal[] arrMonthAMTSub = new decimal[months];
-                                        decimal[] arrMonthChargeSub = new decimal[months];
-
-                                        decimal[] arrMonthTrxn_RateSub = new decimal[months];
-                                        decimal[] arrMonthAMT_RateSub = new decimal[months];
-
-                                        #region amt
-                                        foreach (var dataSub in data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList())
-                                        {
-                                            arrMonthTrxnSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TRANSACTIONS ?? 0);
-                                            arrMonthAMTSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
-                                            arrMonthChargeSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                            arrMonthTrxn_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_TRANS ?? 0);
-                                            arrMonthAMT_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_AMT ?? 0);
-                                        }
-
-                                        int iTrxnSub = 0;
-                                        foreach (var arr in arrMonthTrxnSub.ToArray())
-                                        {
-                                            if (arrMonthTrxnSub.ToList().All(m => m == 0))
-                                            { break; }
-                                            if (arr == 0)
-                                            {
-                                                if (iTrxnSub > 2)
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub - 1;
-                                                    int avgIndexS = iTrxnSub - 3;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthTrxnSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthTrxnSub[iTrxnSub] = avgVal;
-                                                }
-                                                else
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                    int avgIndexS = 0;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthTrxnSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthTrxnSub[iTrxnSub] = avgVal;
-
-                                                }
-                                            }
-                                            iTrxnSub++;
-                                        }
-                                        iTrxnSub = 0;
-                                        foreach (var arr in arrMonthAMTSub.ToArray())
-                                        {
-                                            if (arrMonthAMTSub.ToList().All(m => m == 0))
-                                            { break; }
-                                            if (arr == 0)
-                                            {
-                                                if (iTrxnSub > 2)
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub - 1;
-                                                    int avgIndexS = iTrxnSub - 3;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthAMTSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthAMTSub[iTrxnSub] = avgVal;
-                                                }
-                                                else
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                    int avgIndexS = 0;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthAMTSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthAMTSub[iTrxnSub] = avgVal;
-
-                                                }
-                                            }
-                                            iTrxnSub++;
-                                        }
-
-
-                                        #region avg rate
-
-                                        iTrxnSub = 0;
-                                        foreach (var arr in arrMonthTrxn_RateSub.ToArray())
-                                        {
-                                            if (arrMonthTrxn_RateSub.ToList().All(m => m == 0))
-                                            { break; }
-                                            if (arr == 0)
-                                            {
-                                                if (iTrxnSub > 2)
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub - 1;
-                                                    int avgIndexS = iTrxnSub - 3;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthTrxn_RateSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
-                                                }
-                                                else
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                    int avgIndexS = 0;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthTrxn_RateSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
-
-                                                }
-                                            }
-                                            iTrxnSub++;
-                                        }
-                                        iTrxnSub = 0;
-                                        foreach (var arr in arrMonthAMT_RateSub.ToArray())
-                                        {
-                                            if (arrMonthAMT_RateSub.ToList().All(m => m == 0))
-                                            { break; }
-                                            if (arr == 0)
-                                            {
-                                                if (iTrxnSub > 2)
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub - 1;
-                                                    int avgIndexS = iTrxnSub - 3;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthAMT_RateSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthAMT_RateSub[iTrxnSub] = avgVal;
-                                                }
-                                                else
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                    int avgIndexS = 0;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthAMT_RateSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthAMT_RateSub[iTrxnSub] = avgVal;
-
-                                                }
-                                            }
-                                            iTrxnSub++;
-                                        }
-
-                                        #endregion
-
-
-                                        iTrxnSub = 0;
-                                        foreach (var arr in arrMonthChargeSub.ToArray())
-                                        {
-                                            if (arrMonthChargeSub.ToList().All(m => m == 0))
-                                            { break; }
-                                            if (arr == 0)
-                                            {
-                                                if (iTrxnSub > 2)
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub - 1;
-                                                    int avgIndexS = iTrxnSub - 3;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthChargeSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthChargeSub[iTrxnSub] = avgVal;
-                                                }
-                                                else
-                                                {
-                                                    decimal avgVal = 0;
-                                                    int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                    int avgIndexS = 0;
-                                                    List<decimal> avgList = new List<decimal>();
-                                                    for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                    {
-                                                        avgList.Add(arrMonthChargeSub[a]);
-                                                    }
-                                                    avgVal = avgList.Average();
-                                                    arrMonthChargeSub[iTrxnSub] = avgVal;
-
-                                                }
-                                            }
-                                            iTrxnSub++;
-                                        }
-
-                                        #endregion
-
-
-                                        var entAccruedItemSub = new AccruedDetailSubViewModel();
-                                        MVMMappingService.MoveData(model, entAccruedItemSub);
-                                        entAccruedItemSub.ID = 0;
-                                        entAccruedItemSub.ACCRUED_MONTH = _monthc;
-                                        entAccruedItemSub.ACCRUED_YEAR = _yearc;
-                                        entAccruedItemSub.CREATE_BY = model.CREATE_BY;
-                                        entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
-                                        entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
-                                        entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
-                                        entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
-                                        entAccruedItemSub.PRO_NO = model.PRO_NO;
-                                        entAccruedItemSub.INV_NO = model.INV_NO;
-                                        entAccruedItemSub.INV_MONTH = _monthc;
-                                        entAccruedItemSub.INV_YEAR = _yearc;
-                                        entAccruedItemSub.SEQUENCE = subsequence;
-                                        entAccruedItemSub.PAYMENT_ITEMS_FEE_ITEM = sub.PAYMENT_ITEMS_FEE_NAME;
-                                        entAccruedItemSub.TRANSACTIONS = arrMonthTrxnSub[_monthc - 1];
-                                        entAccruedItemSub.ACTUAL_AMOUNT = arrMonthAMTSub[_monthc - 1];
-                                        entAccruedItemSub.TOTAL_CHARGE_AMOUNT = arrMonthChargeSub[_monthc - 1];
-                                        entAccruedItemSub.RATE_TRANS = arrMonthTrxn_RateSub[_monthc - 1];
-                                        entAccruedItemSub.RATE_AMT = arrMonthAMT_RateSub[_monthc - 1];
-                                        entAccruedItemSubLst.Add(entAccruedItemSub);
-
-                                        subsequence++;
-                                    }
-                                    model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
-                                    #endregion
-                                    //Get Json Model AccruedDetail
-                                    var jsonSerialiser = new JavaScriptSerializer();
-                                    string AccruedJSON = jsonSerialiser.Serialize(model);
-                                    model.AccruedJSON = AccruedJSON;
-
-
-                                    accruedItemList.Add(model);
-                                    sequence++;
-                                }
-
-                            _monthc++; // keep value month
-
-                            }//end for
-                        //}//end  if (chkitem_chrge.Any())
-
-                        #endregion
-                    }//fee payment channels
-                    #endregion
-                }
-                //accruedItemList = (from m in accruedItemList orderby m.INV_MONTH,m.INV_YEAR select m).ToList();
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return accruedItemList;
-        }
-
 
         public List<AccruedDetailViewModel> InitialAccruedItemsList_OldComplete(string companyCode, int month, int year, string formState)
         {
@@ -2098,7 +2783,7 @@ namespace BBDEVSYS.Services.Accrued
                 {
                     // --Payment Items Get Description
                     var payment_items = (from m in context.PAYMENT_ITEMS
-                                         where m.IS_ACTIVE == true && 
+                                         where m.IS_ACTIVE == true &&
                                          m.COMPANY_CODE == companyCode
                                          orderby m.GROUP_SEQ_CHANNELS
                                          select m).ToList();
@@ -2868,7 +3553,7 @@ namespace BBDEVSYS.Services.Accrued
             {
                 using (var context = new PYMFEEEntities())
                 {
-                    var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true &&  data.COMPANY_CODE == companyCode orderby data.ID select data).ToList();
+                    var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true && data.COMPANY_CODE == companyCode orderby data.ID select data).ToList();
                     //var getcttList = (from data in context.COST_CENTER where data.COMPANY_CODE == companyCode select data).ToList();
 
                     var getFeeInvList = (from data in context.FEE_INVOICE where data.COMPANY_CODE == companyCode && data.INV_MONTH == month && data.INV_YEAR == year select data).ToList();
@@ -2890,7 +3575,7 @@ namespace BBDEVSYS.Services.Accrued
                         accruedList.CREATE_DATE = DateTime.Now;
                         accruedList.ID = 0;
                         //accruedList.REMARK = "";
-                        accruedList.APPROVED_BY =   ConstantVariableService.APPROVERID;
+                        accruedList.APPROVED_BY = ConstantVariableService.APPROVERID;
                         accruedList.APPROVED_DATE = null;
                         accruedList.TOTAL_AMT = 0;
 
@@ -2983,7 +3668,7 @@ namespace BBDEVSYS.Services.Accrued
             {
                 using (var context = new PYMFEEEntities())
                 {
-                    var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true &&  data.COMPANY_CODE == companyCode orderby data.ID select data).ToList();
+                    var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true && data.COMPANY_CODE == companyCode orderby data.ID select data).ToList();
                     var getcttList = (from data in context.COST_CENTER where data.COMPANY_CODE == companyCode select data).ToList();
 
                     var getFeeInvList = (from data in context.FEE_INVOICE where data.COMPANY_CODE == companyCode && data.INV_MONTH == month && data.INV_YEAR == year select data).ToList();
@@ -3135,12 +3820,12 @@ namespace BBDEVSYS.Services.Accrued
             try
             {
 
-                model.PERIOD_MONTH = DateTime.Today.Month;
-                model.PERIOD_YEAR = DateTime.Today.Year;
+                model.PERIOD_MONTH = DateTime.Today.AddMonths(1).Month;
+                model.PERIOD_YEAR = DateTime.Today.Month == 12 ? DateTime.Today.AddYears(1).Year : DateTime.Today.Year;
                 model.COMPANY_CODE = "";
                 model.CREATE_BY = user.UserCode;
                 model.CREATE_DATE = DateTime.Now;
-                model.APPROVED_BY =  ConstantVariableService.APPROVERID;
+                model.APPROVED_BY = ConstantVariableService.APPROVERID;
                 model.APPROVED_DATE = DateTime.Now;
                 model.UPLOAD_TYPE = false;
                 model.MODIFIED_BY = user.UserCode;
@@ -3528,9 +4213,9 @@ namespace BBDEVSYS.Services.Accrued
                             }
 
                         }
-                        if (formData.TOTAL_AMT ==0 || itemList.All(m=>m.INV_AMOUNT ==0))
+                        if (formData.TOTAL_AMT == 0 || itemList.All(m => m.INV_AMOUNT == 0))
                         {
-                            result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_found, "จำนวนเงินค่าใช้จ่าย" )));
+                            result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_found, "จำนวนเงินค่าใช้จ่าย")));
 
                             result.ErrorFlag = true;
                         }

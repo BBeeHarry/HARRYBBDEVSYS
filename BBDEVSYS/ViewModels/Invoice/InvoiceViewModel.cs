@@ -188,7 +188,8 @@ namespace BBDEVSYS.ViewModels.Invoice
             RuleFor(m => m.INV_MONTH).NotEmpty(); 
             RuleFor(m => m.INV_YEAR).NotEmpty();
 
-            RuleFor(m => m.INV_NO).NotEmpty().When(m => !m.IS_STATUS.EndsWith("4"));
+            RuleFor(m => m.INV_NO).NotEmpty();//.When(m => !m.IS_STATUS.Equals("4"));
+            //RuleFor(m => m.INV_NO).NotEmpty().When(m => !m.IS_STATUS.EndsWith("4"));
             //RuleFor(m => m.INV_NO).Must(m => (model.UPLOAD_TYPE ?? false ) == false|| !model.IS_STATUS.Equals(4) ).NotEmpty();
 
             //---waitning test UPload Invoice

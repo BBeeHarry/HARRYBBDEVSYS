@@ -102,7 +102,7 @@
                             </label>
                             <div class="col-xs-12 col-md-3">
                                @* @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), "", new { @class = "form-control ", style = "width:100%;" })*@
-                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), htmlAttributes: new { @multiple = "multiple", @class = "form-control" })
+                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), htmlAttributes: new { @multiple = "multiple", @class = "form-control  " })
                             </div>
                         </div>
 
@@ -291,7 +291,9 @@
     var flagClose = false;
     $(document).ready(function () {
 
-       
+        //$('#IS_STATUS').multiselect({
+        //    includeSelectAllOption: true
+        //});
 
 
         var columns = [

@@ -244,8 +244,27 @@
 <script type="text/javascript">
 
     //Callback function when click ok button on confirmation popup
-    function okActionCallback() {
+    @*function okActionCallback() {
         detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', '@Url.Action("List", "PaymentItems", new { Area = "CenterSetting" })')
+    }*@
+    function okActionCallback() {
+
+        if (isNoHistory()) {
+            var url = '@Url.Action("List", "PaymentItems", new { Area = "CenterSetting" })';
+
+
+            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', url)
+        }
+        else {
+            var action = $('#FormAction').val();
+            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+            @*if (action == '@ConstantVariableService.FormActionValidate') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
+            }
+        else if (action == '@ConstantVariableService.FormActionCreate' || action == '@ConstantVariableService.FormActionEdit') {
+            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+        }*@
+        }
     }
     function setEmpltyUploadTable() {
         $("#itemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');

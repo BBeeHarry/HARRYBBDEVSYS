@@ -179,12 +179,12 @@ namespace BBDEVSYS.Controllers.Accrued
         // }
         #endregion
         //[HttpGet]
-        public ActionResult InitialAccruedItemsList(string compCode, int month, int year, string formState)
+        public ActionResult InitialAccruedItemsList(string compCode, int month, int year, string formState,int accrued_id)
         {
             AccruedService service = new AccruedService();
 
             List<AccruedDetailViewModel> accruedItemViewModel = new List<AccruedDetailViewModel>();
-            var result = service.InitialAccruedItemsList(compCode, month, year,formState);
+            var result = service.InitialAccruedItemsList(compCode, month, year,formState,accrued_id);
 
             if (result != null)
             {
