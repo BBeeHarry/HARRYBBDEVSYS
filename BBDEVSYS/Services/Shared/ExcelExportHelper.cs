@@ -161,6 +161,7 @@ namespace BBDEVSYS.Services.Shared
                         {
                             int indx = 3;
                             int cMonth = monthStart;
+
                             int x = 0;
                             while (x < 12)
                             {
