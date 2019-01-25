@@ -81,6 +81,13 @@ namespace BBDEVSYS.Services.Shared
                 //columnsToTake = columns;
                 #endregion
 
+                var culture = CultureInfo.GetCultureInfo("en-US");
+                var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                int yearStart = formData.AccruedItemList.Min(m => m.INV_YEAR);
+                int yearEnd = formData.AccruedItemList.Max(m => m.INV_YEAR);
+                int monthStart = formData.AccruedItemList.Where(m => m.INV_YEAR == yearStart).Min(m => m.INV_MONTH);
+                int monthEnd = formData.AccruedItemList.Where(m => m.INV_YEAR == yearEnd).Max(m => m.INV_MONTH);
+
                 using (ExcelPackage package = new ExcelPackage())
                 {
                     DataTable dataTable = new DataTable();
@@ -95,9 +102,9 @@ namespace BBDEVSYS.Services.Shared
                         }
                         else
                         {
-                            var culture = CultureInfo.GetCultureInfo("en-US");
-                            var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
-                            var month =(formData.PERIOD_YEAR * 12 + formData.PERIOD_MONTH) - (formData.PERIOD_YEAR * 12 + 1);
+
+
+                            var month = (yearEnd * 12 + monthEnd) - (yearStart * 12 + monthStart);
                             List<string> colNames = new List<string>();
                             List<string> addcolNames = new List<string>();
                             colNames.Add("CHANNELS");
@@ -105,25 +112,44 @@ namespace BBDEVSYS.Services.Shared
                             colNames.Add("CHARGE");
                             addcolNames.AddRange(colNames);
                             //1 == Start Month
-                            for (int i = 1 - 1; i <= month; i++)
+                            int i = 0;
+                            int getmonth = 0;
+                            int getyear = 0;
+                            getmonth = monthStart - 1;
+                            getyear = yearStart;
+                            while (i <= month)
                             {
-                                if (i > 13)
-                                {
-                                    i = 0;
-                                }
-                                int rowmonth = i + 1;
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i];
-                                addcolNames.Add(monthIndex);
 
+                                if (getmonth == 12)
+                                {
+                                    ++getyear;
+                                    getmonth = 0;
+                                }
+                                int rowmonth = getmonth + 1;
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth];// + Convert.ToString(getyear).Substring(2, 2);
+                                addcolNames.Add(monthIndex);
+                                i++;
+                                getmonth++;
                             }
+                            //for (int i = monthStart-1; i <= month; i++)
+                            //{
+                            //    if (i > 13)
+                            //    {
+                            //        i = 0;
+                            //    }
+                            //    int rowmonth = i + 1;
+                            //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i];
+                            //    addcolNames.Add(monthIndex);
+
+                            //}
                             string[] columns = dataSet.Tables[data].Columns.Cast<DataColumn>()
                               .Where(x => addcolNames.Any(m => x.ColumnName == m))
-                                               .Select(x => //x.ColumnName
-                                               (colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(2018).Substring(2, 2) : x.ColumnName)
+                                               .Select(x => // x.ColumnName
+                                               (colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(yearStart).Substring(2, 2) : x.ColumnName)
                                                )
                                                .ToArray();
-
                             columnsToTake = columns;
+
                         }
                         #endregion
 
@@ -131,6 +157,24 @@ namespace BBDEVSYS.Services.Shared
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
 
+                        if (data == 1)
+                        {
+                            int indx = 3;
+                            int cMonth = monthStart;
+                            int x = 0;
+                            while (x < 12)
+                            {
+                                if (cMonth>12)
+                                {
+                                    cMonth = 1;
+
+                                }
+                                dataTable.Columns[dateTimeInfo.AbbreviatedMonthNames[cMonth - 1]].SetOrdinal(indx);
+                                x++;
+                                cMonth++;
+                                indx++;
+                            }
+                        }
 
                         int colIndex = 0;
                         //rename column names 
@@ -231,7 +275,7 @@ namespace BBDEVSYS.Services.Shared
                                 r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                 r.Style.Font.Bold = true;
                                 r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#dd6a8b"));
+                                r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#ed6383"));
 
                                 //border
                                 r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -252,10 +296,10 @@ namespace BBDEVSYS.Services.Shared
                             // format header - bold, red on white  
                             using (ExcelRange r = workSheet.Cells[startRowFrom, 1, startRowFrom, dataTable.Columns.Count])
                             {
-                                r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                r.Style.Font.Color.SetColor(System.Drawing.Color.Black);
                                 r.Style.Font.Bold = true;
                                 r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#e62e00"));
+                                r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#5ae8d2"));
 
                                 //border
                                 r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -289,10 +333,10 @@ namespace BBDEVSYS.Services.Shared
                                     using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                     {
 
-                                        r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Black);
                                         r.Style.Font.Bold = true;
                                         r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#ed5c68"));
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
                                     }
 
                                 }
@@ -301,10 +345,10 @@ namespace BBDEVSYS.Services.Shared
                                     using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                     {
 
-                                        r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Black);
                                         r.Style.Font.Bold = true;
                                         r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#c11f3c"));
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
                                     }
 
                                 }
@@ -316,7 +360,7 @@ namespace BBDEVSYS.Services.Shared
                                         r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                         r.Style.Font.Bold = false;
                                         r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
                                     }
 
                                 }
@@ -328,7 +372,7 @@ namespace BBDEVSYS.Services.Shared
                                         r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                         r.Style.Font.Bold = false;
                                         r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
                                     }
 
                                 }

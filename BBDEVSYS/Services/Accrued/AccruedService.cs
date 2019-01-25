@@ -262,12 +262,12 @@ namespace BBDEVSYS.Services.Accrued
         {
             byte[] filecontent = null;
             string compCode;
-            int month;
-            int year;
             try
             {
                 DataSet ds = new DataSet();
                 AccruedViewModel formData = new AccruedViewModel();
+
+                int yearStart, yearEnd, monthStart, monthEnd;
                 using (var context = new PYMFEEEntities())
                 {
 
@@ -276,8 +276,10 @@ namespace BBDEVSYS.Services.Accrued
 
                     formData = GetDetail(id);
                     compCode = formData.COMPANY_CODE;
-                    month = formData.PERIOD_MONTH;
-                    year = formData.PERIOD_YEAR;
+                    yearStart = formData.AccruedItemList.Min(m => m.INV_YEAR);
+                    yearEnd = formData.AccruedItemList.Max(m => m.INV_YEAR);
+                    monthStart = formData.AccruedItemList.Where(m => m.INV_YEAR == yearStart).Min(m => m.INV_MONTH);
+                    monthEnd = formData.AccruedItemList.Where(m => m.INV_YEAR == yearEnd).Max(m => m.INV_MONTH);
 
                     #region mapping data report summary
                     List<AccruedSummaryReportViewModel> modelSummaryReportList = new List<AccruedSummaryReportViewModel>();
@@ -303,7 +305,7 @@ namespace BBDEVSYS.Services.Accrued
                     #region Accrued Report Detail
 
                     //var  service = new AccruedSummaryReportService();
-                    List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(compCode, 1, year, month, year);
+                    List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(compCode, monthStart, yearStart, monthEnd, yearEnd);
 
                     if (_data.Any())
                     {
@@ -320,7 +322,7 @@ namespace BBDEVSYS.Services.Accrued
                 {
                     // filecontent = ExcelExportHelper.AccruedExportExcel(ds, "  Accrued Expense " + Convert.ToString(formData.PERIOD_YEAR).Substring(2, 2), false, formData);
 
-                    filecontent = ExcelExportHelper.AccruedExportExcel(ds, "  Accrued Expense " + Convert.ToString(year).Substring(2, 2), false, formData);
+                    filecontent = ExcelExportHelper.AccruedExportExcel(ds, "  Accrued Expense " + Convert.ToString(yearEnd).Substring(2, 2), false, formData);
                 }
             }
             catch (Exception ex)
@@ -347,12 +349,20 @@ namespace BBDEVSYS.Services.Accrued
                                        orderby m.SEQUENCE
                                        select m).ToList();
 
+                    //var entFeeInv = (from m in context.FEE_INVOICE
+                    //                 where m.INV_MONTH >= monthS && m.INV_MONTH <= monthE && m.INV_YEAR >= yearS && m.INV_YEAR <= yearE
+                    //                 orderby m.INV_MONTH, m.INV_YEAR
+                    //                 select m).ToList();
+                    //var entFeeAccr = (from m in context.FEE_ACCRUED_PLAN_ITEM
+                    //                  where m.INV_MONTH >= monthS && m.INV_MONTH <= monthE && m.INV_YEAR >= yearS && m.INV_YEAR <= yearE
+                    //                  orderby m.ACCRUED_MONTH, m.ACCRUED_YEAR
+                    //                  select m).ToList();
                     var entFeeInv = (from m in context.FEE_INVOICE
-                                     where m.INV_MONTH >= monthS && m.INV_MONTH <= monthE && m.INV_YEAR >= yearS && m.INV_YEAR <= yearE
+                                     where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
                                      orderby m.INV_MONTH, m.INV_YEAR
                                      select m).ToList();
                     var entFeeAccr = (from m in context.FEE_ACCRUED_PLAN_ITEM
-                                      where m.ACCRUED_MONTH >= monthS && m.ACCRUED_MONTH <= monthE && m.ACCRUED_YEAR >= yearS && m.ACCRUED_YEAR <= yearE
+                                      where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
                                       orderby m.ACCRUED_MONTH, m.ACCRUED_YEAR
                                       select m).ToList();
 
@@ -665,22 +675,22 @@ namespace BBDEVSYS.Services.Accrued
                             modelTotalList = new List<AccruedReportViewModel>();
 
 
-                            for (int i = 1; i <= monthE; i++)
+                            for (int i = 1; i <= 12; i++)
                             {
 
-                                var chkAccrList = feeAccrList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
-                                if (chkAccrList != null)
-                                {
-                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList == null ? "" : chkAccrList.PRO_NO);
-                                }
-                                else
-                                {
-                                    var chkInvList = feeInvList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
-                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList == null ? "" : chkInvList.PRO_NO);
+                                //var chkAccrList = feeAccrList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
+                                //if (chkAccrList != null)
+                                //{
+                                //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
+                                //    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList == null ? "" : chkAccrList.PRO_NO);
+                                //}
+                                //else
+                                //{
+                                var chkInvList = feeInvList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
+                                modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList == null ? "" : chkInvList.PRO_NO);
 
-                                }
+                                //}
 
                             }
                             modelTotalList.Add(modelTotal);
@@ -692,21 +702,21 @@ namespace BBDEVSYS.Services.Accrued
                             modelTotal = new AccruedReportViewModel();
                             modelTotal.CHARGE = "Inv No.";
                             modelTotalList = new List<AccruedReportViewModel>();
-                            for (int i = 1; i <= monthE; i++)
+                            for (int i = 1; i <= 12; i++)
                             {
-                                var chkAccrList = feeAccrList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
-                                if (chkAccrList != null)
-                                {
-                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList == null ? "" : chkAccrList.INV_NO);
-                                }
-                                else
-                                {
-                                    var chkInvList = feeInvList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
-                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
-                                    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList == null ? "" : chkInvList.INV_NO);
+                                //var chkAccrList = feeAccrList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
+                                //if (chkAccrList != null)
+                                //{
+                                //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
+                                //    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkAccrList == null ? "" : chkAccrList.INV_NO);
+                                //}
+                                //else
+                                //{
+                                var chkInvList = feeInvList.Where(m => m.INV_MONTH == (i)).FirstOrDefault();
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i - 1];
+                                modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal, chkInvList == null ? "" : chkInvList.INV_NO);
 
-                                }
+                                //}
                             }
                             modelTotalList.Add(modelTotal);
 
@@ -780,7 +790,7 @@ namespace BBDEVSYS.Services.Accrued
                 using (var context = new PYMFEEEntities())
                 {
                     // --Payment Items Get Description
-                    
+
                     var payment_items = (from m in context.PAYMENT_ITEMS
                                          where m.IS_ACTIVE == true &&
                                          m.COMPANY_CODE == companyCode
