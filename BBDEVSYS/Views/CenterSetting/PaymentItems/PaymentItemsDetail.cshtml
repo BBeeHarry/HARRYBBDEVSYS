@@ -187,7 +187,7 @@
                 <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
             </button>
 
-            <button type="button" class="btn btn-danger authManage" id="saveButton" onclick="detailActionButton('@Model.FormState', '@Model.FormAction', 'detailForm', 'default', 'default', 'default', 'default', 'default');">
+            <button type="button" class="btn btn-danger authManage" id="saveButton" onclick="detailActionButton('@Model.FormState', '@Model.FormAction', 'detailForm', 'default', 'default', 'default', 'default');">
                 <span class="glyphicon glyphicon-save"></span>
                 <span id="saveButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonSave</span>
             </button>
@@ -248,8 +248,8 @@
         detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', '@Url.Action("List", "PaymentItems", new { Area = "CenterSetting" })')
     }*@
     function okActionCallback() {
-
-        if (isNoHistory()) {
+        detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+        @*if (isNoHistory()) {
             var url = '@Url.Action("List", "PaymentItems", new { Area = "CenterSetting" })';
 
 
@@ -258,13 +258,8 @@
         else {
             var action = $('#FormAction').val();
             detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
-            @*if (action == '@ConstantVariableService.FormActionValidate') {
-                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
-            }
-        else if (action == '@ConstantVariableService.FormActionCreate' || action == '@ConstantVariableService.FormActionEdit') {
-            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+          
         }*@
-        }
     }
     function setEmpltyUploadTable() {
         $("#itemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');

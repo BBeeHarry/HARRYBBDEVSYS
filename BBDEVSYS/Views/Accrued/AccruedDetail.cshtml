@@ -49,8 +49,6 @@
                                     @*@Html.DropDownListFor(m => m.PERIOD_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.PERIOD_MONTH), "", new { @class = "form-control", style = "width:100%;" })*@
                                     @Html.ValidationMessageFor(m => m.PERIOD_MONTH, "", new { @class = "text-danger" })
                                 </div>
-                            </div>
-                            <div class="form-group">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                     @Html.LabelFor(m => m.PERIOD_YEAR)
                                 </label>
@@ -60,6 +58,7 @@
                                     @Html.ValidationMessageFor(m => m.PERIOD_YEAR, "", new { @class = "text-danger" })
                                 </div>
                             </div>
+                          
                             <div class="form-group">
                                 <label class="col-xs-12 col-md-2 true-control-label">
                                     @Html.LabelFor(m => m.TOTAL_AMT)
@@ -127,8 +126,8 @@
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12">
-                            <div class="table-responsive">
-                                <table class="table table-striped  table-bordered   " style="width:1900px">
+                            <div class="table-responsive" style="height:400px;" >
+                                <table class="table table-striped  table-bordered  " style="width:1900px">
 
                                     @*<table class="table table-striped table-striped table-bordered table-hover dataTable no-footer dtr-inline true-table-detail-itemtable-fix-column " style="display: block; overflow-x: auto; overflow-y: auto; table-layout: fixed; width:100%; word-wrap:break-word; ">*@
                                     @*<table id="itemTable" class="table table-striped table-bordered table-hover paginate_button  table-responsive dtr-inline true-datatable   table-fix-column " style="display: block; overflow-x: auto; table-layout: fixed; width:100%; word-wrap:break-word; ">*@
