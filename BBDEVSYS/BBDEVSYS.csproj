@@ -577,6 +577,7 @@
     <Compile Include="Services\Shared\AuthorizeService.cs" />
     <Compile Include="Services\Shared\BulkSqlManageService.cs" />
     <Compile Include="Services\Shared\DatatablesService.cs" />
+    <Compile Include="Services\Shared\DynamicEntity.cs" />
     <Compile Include="Services\Shared\EmailService.cs" />
     <Compile Include="Services\Shared\ExcelExportHelper.cs" />
     <Compile Include="Services\Shared\ExcelService.cs" />

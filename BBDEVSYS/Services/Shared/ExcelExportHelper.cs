@@ -126,7 +126,7 @@ namespace BBDEVSYS.Services.Shared
                                     getmonth = 0;
                                 }
                                 int rowmonth = getmonth + 1;
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth];// + Convert.ToString(getyear).Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth] + Convert.ToString(getyear).Substring(2, 2);
                                 addcolNames.Add(monthIndex);
                                 i++;
                                 getmonth++;
@@ -144,8 +144,8 @@ namespace BBDEVSYS.Services.Shared
                             //}
                             string[] columns = dataSet.Tables[data].Columns.Cast<DataColumn>()
                               .Where(x => addcolNames.Any(m => x.ColumnName == m))
-                                               .Select(x => // x.ColumnName
-                                               (colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(yearStart).Substring(2, 2) : x.ColumnName)
+                                               .Select(x => x.ColumnName
+                                               //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(yearStart).Substring(2, 2) : x.ColumnName)
                                                )
                                                .ToArray();
                             columnsToTake = columns;
@@ -157,41 +157,44 @@ namespace BBDEVSYS.Services.Shared
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
 
-                        if (data == 1)
-                        {
-                            int indx = 3;
-                            int cMonth = monthStart;
+                        //if (data == 1)
+                        //{
+                        //    int indx = 3;
+                        //    int cMonth = monthStart;
 
-                            int x = 0;
-                            while (x < 12)
-                            {
-                                if (cMonth>12)
-                                {
-                                    cMonth = 1;
+                        //    int x = 0;
+                        //    while (x < 12)
+                        //    {
+                        //        if (cMonth>12)
+                        //        {
+                        //            cMonth = 1;
 
-                                }
-                                dataTable.Columns[dateTimeInfo.AbbreviatedMonthNames[cMonth - 1]].SetOrdinal(indx);
-                                x++;
-                                cMonth++;
-                                indx++;
-                            }
-                        }
+                        //        }
+                        //        dataTable.Columns[dateTimeInfo.AbbreviatedMonthNames[cMonth - 1]].SetOrdinal(indx);
+                        //        x++;
+                        //        cMonth++;
+                        //        indx++;
+                        //    }
+                        //}
 
-                        int colIndex = 0;
-                        //rename column names 
-                        foreach (DataColumn item in dataTable.Columns)
-                        {
-                            var valcolumnsToTake = columnsToTake.Where(m => m.Contains(item.ToString())).FirstOrDefault();
 
-                            if (valcolumnsToTake != null)
-                            {
-                                dataTable.Columns[item.ToString()].ColumnName = valcolumnsToTake.ToString();
-                                dataTable.AcceptChanges();
-                            }
-                            colIndex++;
-                            if (columnsToTake.Length == colIndex && colIndex != 0) break;
-                        }
+                        #region mark rename column names 
 
+                        //int colIndex = 0;
+                        ////rename column names 
+                        //foreach (DataColumn item in dataTable.Columns)
+                        //{
+                        //    var valcolumnsToTake = columnsToTake.Where(m => m.Contains(item.ToString())).FirstOrDefault();
+
+                        //    if (valcolumnsToTake != null)
+                        //    {
+                        //        dataTable.Columns[item.ToString()].ColumnName = valcolumnsToTake.ToString();
+                        //        dataTable.AcceptChanges();
+                        //    }
+                        //    colIndex++;
+                        //    if (columnsToTake.Length == colIndex && colIndex != 0) break;
+                        //}
+                        #endregion
                         ExcelWorksheet workSheet = null;
 
                         //workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", heading + " " + dataSet.Tables[data].TableName));
@@ -228,13 +231,31 @@ namespace BBDEVSYS.Services.Shared
                             int rowIgnore = 0;
                             foreach (var cell in workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
                             {
+                               
+                               
+
+
                                 if (cell.Value == "Inv No." || cell.Value == "PO No.")
                                 {
                                     rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
                                 }
                                 if (!cell.Address.Contains("C"))
                                 {
-                                    if (rowIgnore != Convert.ToInt32(cell.Address.Substring(1)))
+                                    string letters = string.Empty;
+                                    string numbers = string.Empty;
+
+                                    foreach (char c in cell.Address)
+                                    {
+                                        if (Char.IsLetter(c))
+                                        {
+                                            letters += c;
+                                        }
+                                        if (Char.IsNumber(c))
+                                        {
+                                            numbers += c;
+                                        }
+                                    }
+                                    if (rowIgnore != Convert.ToInt32(numbers))
                                     {
                                         cell.Value = Convert.ToDecimal(cell.Value);
                                     }
