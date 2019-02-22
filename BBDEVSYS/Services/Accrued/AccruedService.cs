@@ -1638,6 +1638,7 @@ namespace BBDEVSYS.Services.Accrued
                     var payment_items = (from m in context.PAYMENT_ITEMS
                                          where m.IS_ACTIVE == true &&
                                          m.COMPANY_CODE == companyCode
+                                         && m.PAYMENT_ITEMS_CODE == "TITMN-CreditCardv20180801"
                                          orderby m.GROUP_SEQ_CHANNELS
                                          select m).ToList();
                     #region mark inv & acc
@@ -2110,6 +2111,7 @@ namespace BBDEVSYS.Services.Accrued
                                         //model.MODIFIED_DATE = DateTime.Now;
                                     }
                                     model.MODIFIED_DATE = DateTime.Now;
+
                                     #region sub accrued
                                     int subsequence = 1;
                                     var dataAccruedSub = payment_items_charge.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).ToList();
@@ -2125,6 +2127,8 @@ namespace BBDEVSYS.Services.Accrued
 
                                         decimal[] arrMonthTrxn_RateSub = new decimal[months];
                                         decimal[] arrMonthAMT_RateSub = new decimal[months];
+
+
                                         #region amt
                                         var dataSubList = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList();
                                         int _mnth = 1;
@@ -2159,7 +2163,7 @@ namespace BBDEVSYS.Services.Accrued
                                                 if (!get_dataSubList.Any())
                                                 {
                                                     #region sub cal trans & amt & rate & net
-                                                   
+
 
                                                     int iTrxnSub = 0;
 
@@ -2360,8 +2364,8 @@ namespace BBDEVSYS.Services.Accrued
                                                     #endregion
                                                 }
                                                 else
-                                                { 
-                                              
+                                                {
+                                                    #region cal avg 3 month sub tran & amt & rate & net
                                                     int _mnthS = _mnth - 3;
                                                     _mnthS = _mnthS < 0 ? 12 + _mnthS : _mnthS;
                                                     int _mnthE = _mnth - 1;
@@ -2433,8 +2437,8 @@ namespace BBDEVSYS.Services.Accrued
                                                     //    arrMonthTrxn_RateSub[r - 1] = (_dataSub.Average(g => g.RATE_TRANS ?? 0));
                                                     //    arrMonthAMT_RateSub[r - 1] = (_dataSub.Average(g => g.RATE_AMT ?? 0));
                                                     //}
-                                                
 
+                                                    #endregion
                                                 }
                                                 #endregion
                                             }
