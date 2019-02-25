@@ -1185,11 +1185,11 @@ namespace BBDEVSYS.Services.Invoice
 
                                 result.ErrorFlag = true;
                             }
-                            if ((item.TOTAL_CHARGE_AMOUNT ?? 0) == 0)
-                            {
-                                result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_found_data, ResourceText.TOTAL_CHARGE_AMOUNT, line.ToString())));
-                                result.ErrorFlag = true;
-                            }
+                            //if ((item.TOTAL_CHARGE_AMOUNT ?? 0) == 0)
+                            //{
+                            //    result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_found_data, ResourceText.TOTAL_CHARGE_AMOUNT, line.ToString())));
+                            //    result.ErrorFlag = true;
+                            //}
 
                             #region check value transaction & amount
                             if (pym_items != null)
