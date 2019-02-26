@@ -552,21 +552,42 @@ namespace BBDEVSYS.Services.Shared
                 colNames.Add("FEE");
                 colNames.Add("CHARGE");
                 addcolNames.AddRange(colNames);
-                for (int i = formData.START_MONTH - 1; i <= month; i++)
-                {
-                    if (i > 13)
-                    {
-                        i = 0;
-                    }
-                    int rowmonth = i + 1;
-                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i];
-                    addcolNames.Add(monthIndex);
+                //for (int i = formData.START_MONTH - 1; i <= month; i++)
+                //{
+                //    if (i > 13)
+                //    {
+                //        i = 0;
+                //    }
+                //    int rowmonth = i + 1;
+                //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i];
+                //    addcolNames.Add(monthIndex);
 
+                //}
+                addcolNames.AddRange(colNames);
+                //1 == Start Month
+                int b = 0;
+                int getmonth = 0;
+                int getyear = 0;
+                getmonth = formData.START_MONTH - 1;
+                getyear = formData.START_YEAR;
+                while (b <= month)
+                {
+
+                    if (getmonth == 12)
+                    {
+                        ++getyear;
+                        getmonth = 0;
+                    }
+                    int rowmonth = getmonth + 1;
+                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth] + Convert.ToString(getyear).Substring(2, 2);
+                    addcolNames.Add(monthIndex);
+                    b++;
+                    getmonth++;
                 }
                 string[] columns = dataSet.Tables[0].Columns.Cast<DataColumn>()
                   .Where(x => addcolNames.Any(m => x.ColumnName == m))
-                                   .Select(x =>
-                                   (colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
+                                   .Select(x => x.ColumnName
+                                   //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
                                    )
                                    .ToArray();
 
@@ -582,19 +603,37 @@ namespace BBDEVSYS.Services.Shared
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
                         int colIndex = 0;
-                        //rename column names 
-                        foreach (var item in dataTable.Columns)
-                        {
-                            var valcolumnsToTake = columnsToTake.Where(m => m.Contains(item.ToString())).FirstOrDefault();
+                        ////rename column names 
+                        //foreach (var item in dataTable.Columns)
+                        //{
+                        //    var valcolumnsToTake = columnsToTake.Where(m => m.Contains(item.ToString())).FirstOrDefault();
 
-                            if (valcolumnsToTake != null)
-                            {
-                                dataTable.Columns[item.ToString()].ColumnName = valcolumnsToTake.ToString();
-                                dataTable.AcceptChanges();
-                            }
-                            colIndex++;
-                            if (columnsToTake.Length == colIndex && colIndex != 0) break;
-                        }
+                        //    if (valcolumnsToTake != null)
+                        //    {
+                        //        dataTable.Columns[item.ToString()].ColumnName = valcolumnsToTake.ToString();
+                        //        dataTable.AcceptChanges();
+                        //    }
+                        //    colIndex++;
+                        //    if (columnsToTake.Length == colIndex && colIndex != 0) break;
+                        //}
+
+                        #region mark rename column names 
+
+                        //int colIndex = 0;
+                        ////rename column names 
+                        //foreach (DataColumn item in dataTable.Columns)
+                        //{
+                        //    var valcolumnsToTake = columnsToTake.Where(m => m.Contains(item.ToString())).FirstOrDefault();
+
+                        //    if (valcolumnsToTake != null)
+                        //    {
+                        //        dataTable.Columns[item.ToString()].ColumnName = valcolumnsToTake.ToString();
+                        //        dataTable.AcceptChanges();
+                        //    }
+                        //    colIndex++;
+                        //    if (columnsToTake.Length == colIndex && colIndex != 0) break;
+                        //}
+                        #endregion
 
                         ExcelWorksheet workSheet = null;
 
@@ -625,9 +664,30 @@ namespace BBDEVSYS.Services.Shared
                             {
                                 rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
                             }
+                            //if (!cell.Address.Contains("C"))
+                            //{
+                            //    if (rowIgnore != Convert.ToInt32(cell.Address.Substring(1)))
+                            //    {
+                            //        cell.Value = Convert.ToDecimal(cell.Value);
+                            //    }
+                            //}
                             if (!cell.Address.Contains("C"))
                             {
-                                if (rowIgnore != Convert.ToInt32(cell.Address.Substring(1)))
+                                string letters = string.Empty;
+                                string numbers = string.Empty;
+
+                                foreach (char c in cell.Address)
+                                {
+                                    if (Char.IsLetter(c))
+                                    {
+                                        letters += c;
+                                    }
+                                    if (Char.IsNumber(c))
+                                    {
+                                        numbers += c;
+                                    }
+                                }
+                                if (rowIgnore != Convert.ToInt32(numbers))
                                 {
                                     cell.Value = Convert.ToDecimal(cell.Value);
                                 }
@@ -663,7 +723,7 @@ namespace BBDEVSYS.Services.Shared
                             r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                             r.Style.Font.Bold = true;
                             r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                            r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#e62e00"));
+                            r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#5ae8d2"));
 
                             //border
                             r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
@@ -701,7 +761,7 @@ namespace BBDEVSYS.Services.Shared
                                     r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                     r.Style.Font.Bold = true;
                                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#ed5c68"));
+                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
                                 }
 
                             }
@@ -713,7 +773,7 @@ namespace BBDEVSYS.Services.Shared
                                     r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                     r.Style.Font.Bold = true;
                                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#c11f3c"));
+                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
                                 }
 
                             }
@@ -725,7 +785,7 @@ namespace BBDEVSYS.Services.Shared
                                     r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                     r.Style.Font.Bold = false;
                                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
+                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
                                 }
 
                             }
@@ -737,7 +797,7 @@ namespace BBDEVSYS.Services.Shared
                                     r.Style.Font.Color.SetColor(System.Drawing.Color.White);
                                     r.Style.Font.Bold = false;
                                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#305496"));
+                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
                                 }
 
                             }
