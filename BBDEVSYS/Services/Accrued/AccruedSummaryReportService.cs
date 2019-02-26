@@ -398,9 +398,51 @@ namespace BBDEVSYS.Services.Accrued
 
                     if (formData.FEE_TYPE == "1")//All Report
                     {
-                        ds = GetReportList(formData);
+                        // ds = GetReportList(formData);
+
+
+                        #region Accrued & Actual
+
+                        if (string.IsNullOrEmpty(formData.COMPANY_CODE))
+                        {
+
+                            var comBuLst = companyData.ToList();
+                            if (formData.BUSINESS_UNIT != "ALL")
+                            {
+                                comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
+                            }
+
+                            foreach (var item in comBuLst)
+                            {
+                                List<AccruedReportViewModel> _data = GetAccruedandActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                
+                                if (_data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(_data);
+                                    _dt.TableName = item.contraction;
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                            }
+                        }
+                        else
+                        {
+                            List<AccruedReportViewModel> _data = GetAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                           
+                            if (_data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(_data);
+                                _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                        }
+                        //}
+                        #endregion
                     }
-                    if (formData.FEE_TYPE == "2")//Accrued Value
+                    else if (formData.FEE_TYPE == "2")//Accrued Value
                     {
                         #region Accrued
 
@@ -594,7 +636,7 @@ namespace BBDEVSYS.Services.Accrued
                     var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
                     var entFeeAccrItem = (from m in context.FEE_ACCRUED_PLAN_ITEM_SUB select m).ToList();
 
-                    entFeeInv = entFeeInv.Where(m=>m.IS_STATUS != "3").ToList();
+                    entFeeInv = entFeeInv.Where(m => m.IS_STATUS != "3").ToList();
 
                     if (!string.IsNullOrEmpty(companyCode))
                     {
@@ -606,7 +648,7 @@ namespace BBDEVSYS.Services.Accrued
                     }
 
 
-                   
+
 
                     if (chnn != "ALL")
                     {
@@ -614,7 +656,7 @@ namespace BBDEVSYS.Services.Accrued
                         entFeeInv = entFeeInv.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
                         entFeeAccr = entFeeAccr.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
                     }
-                   
+
                     //check list fee in accrued
                     if (entFeeAccr.Any())
                     {
@@ -721,19 +763,18 @@ namespace BBDEVSYS.Services.Accrued
 
                             #region Trxn
                             int iTrxn = 0;
-                            int mnth = monthS;
-                            int yrr = yearS;
-                            int iLoop = 0;
+                            int _mnth = monthS;
+                            int _yrr = yearS;
+                            int _iLoop = 0;
                             foreach (var trx in arrMonthTrxn.ToArray())
                             {
                                 //if (arrMonthTrxn.ToList().All(m => m == 0))
                                 //{ break; }
-                                if (mnth == 13)
+                                if (_mnth == 13)
                                 {
-                                    mnth = 1;
-                                    yrr++;
+                                    _mnth = 1;
+                                    _yrr++;
                                 }
-                                decimal tran = 0;
                                 if (trx != 0)
                                 {
                                     ////Accrued
@@ -744,49 +785,41 @@ namespace BBDEVSYS.Services.Accrued
                                 else
                                 {
                                     //Invoice
-                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (_yrr * 12) + _mnth).FirstOrDefault();
 
                                     arrMonthTrxn[iTrxn] = (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
 
-                                    tran += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
                                 }
-                                arrMonthTotalTrxn[iTrxn] += tran;
-                                arrMonthGrandTrxn[iTrxn] += tran;
                                 //}
-
+                                _mnth++;
                                 iTrxn++;
                             }
 
 
                             #region set value column month transaction
-                             mnth = monthS;
-                             yrr = yearS;
-                             iLoop = 0;
-                            while (iLoop < _diffmonths)
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            while (_iLoop < _diffmonths)
                             {
                                 //if (arrMonthTrxn.ToList().All(m => m == 0))
                                 //{ break; }
-                                if (mnth == 13)
+                                if (_mnth == 13)
                                 {
-                                    mnth = 1;
-                                    yrr++;
+                                    _mnth = 1;
+                                    _yrr++;
                                 }
-                                string yStr = yrr.ToString().Substring(2, 2);
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                                string yStr = _yrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
 
-                                var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                if (getfeeInvList.IS_STATUS == "3")
-                                {
-                                    model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", "0")));
-                                }
-                                else
-                                {
-                                    model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                   Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTrxn[iLoop])));
-                                }
-                                iLoop++;
-                                mnth++;
+
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                               Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTrxn[_iLoop])));
+
+                                _iLoop++;
+                                _mnth++;
                             }
 
                             #endregion
@@ -794,19 +827,19 @@ namespace BBDEVSYS.Services.Accrued
 
 
                             #region amt
-                            mnth = monthS;
-                            yrr = yearS;
-                            iLoop = 0;
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            iTrxn = 0;
                             foreach (var amt in arrMonthAMT.ToArray())
                             {
                                 //if (arrMonthAMT.ToList().All(m => m == 0))
                                 //{ break; }
-                                if (mnth == 13)
+                                if (_mnth == 13)
                                 {
-                                    mnth = 1;
-                                    yrr++;
+                                    _mnth = 1;
+                                    _yrr++;
                                 }
-                                decimal tran = 0;
 
                                 if (amt != 0)
                                 {
@@ -818,8 +851,10 @@ namespace BBDEVSYS.Services.Accrued
                                 else
                                 {
                                     //Invoice
-                                    var get_data_inv = data_inv.Where(m => m.INV_MONTH == iTrxn + 1).FirstOrDefault();
-                                    arrMonthAMT[iTrxn] = (get_data_inv != null ? get_data_inv.ACTUAL_AMOUNT ?? 0 : 0);
+                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (_yrr * 12) + _mnth).FirstOrDefault();
+
+                                    arrMonthAMT[iTrxn] = (get_data_inv != null ? (get_data_inv.ACTUAL_AMOUNT ?? 0) : 0);
+
 
                                     //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iTrxn];
 
@@ -830,40 +865,32 @@ namespace BBDEVSYS.Services.Accrued
 
                                 }
                                 //}
-
+                                _mnth++;
                                 iTrxn++;
 
                             }
                             #region set value column month amount
-                            mnth = monthS;
-                            yrr = yearS;
-                            iLoop = 0;
-                            while (iLoop < _diffmonths)
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            while (_iLoop < _diffmonths)
                             {
                                 if (arrMonthAMT.ToList().All(m => m == 0))
                                 { break; }
-                                if (mnth == 13)
+                                if (_mnth == 13)
                                 {
-                                    mnth = 1;
-                                    yrr++;
+                                    _mnth = 1;
+                                    _yrr++;
                                 }
-                                string yStr = yrr.ToString().Substring(2, 2);
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                                string yStr = _yrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
 
-                                var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                if (getfeeInvList.IS_STATUS == "3")
-                                {
-                                    model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", "0")));
-                                }
-                                else
-                                {
 
-                                    model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", arrMonthAMT[iLoop])));
-                                }
-                                iLoop++;
-                                mnth++;
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                                Convert.ToString(string.Format("{0:#,##0.####}", arrMonthAMT[_iLoop])));
+
+                                _iLoop++;
+                                _mnth++;
                             }
 
                             #endregion
@@ -879,37 +906,31 @@ namespace BBDEVSYS.Services.Accrued
                             }
 
                             #region set value column month total transaction
-                            mnth = monthS;
-                            yrr = yearS;
-                            iLoop = 0;
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
                             if (chkTotalTrx)
                             {
+                                chkTotalTrx = false;
                                 var inclmodelList = new List<AccruedReportViewModel>();
                                 model = new AccruedReportViewModel();
                                 model.CHARGE = "Total Trxn";
 
-                                while (iLoop < _diffmonths)
+                                while (_iLoop < _diffmonths)
                                 {
-                                    if (mnth == 13)
+                                    if (_mnth == 13)
                                     {
-                                        mnth = 1;
-                                        yrr++;
+                                        _mnth = 1;
+                                        _yrr++;
                                     }
-                                    string yStr = yrr.ToString().Substring(2, 2);
-                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
-                                    var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                    if (getfeeInvList.IS_STATUS == "3")
-                                    {
-                                        model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                        Convert.ToString(string.Format("{0:#,##0.####}", "0")));
-                                    }
-                                    else
-                                    {
-                                        model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTotalTrxn[iLoop])));
-                                    }
-                                    iLoop++;
-                                    mnth++;
+                                    string yStr = _yrr.ToString().Substring(2, 2);
+                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+                                    model.GetType().GetProperty((monthIndex)).SetValue(model,
+                                Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTotalTrxn[_iLoop])));
+
+                                    _iLoop++;
+                                    _mnth++;
                                 }
                                 inclmodelList.Add(model);
                                 modelList.AddRange(inclmodelList);
@@ -923,286 +944,282 @@ namespace BBDEVSYS.Services.Accrued
 
                         }//fee
                         #endregion
-                        if (feeAccrList.Any())
+
+
+                        //if (feeAccrList.Any())
+                        //{
+                        #region Charge Trxn + Amt
+                        foreach (var data_charge in group_charge)
                         {
-                            #region Charge Trxn + Amt
-                            foreach (var data_charge in group_charge)
+                            decimal[] arrMonthCharge = new decimal[_diffmonths];
+                            var data = get_entFeeAccrItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+
+
+                            var data_inv = get_entFeeInvItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+
+                            var model = new AccruedReportViewModel();
+                            rowfirst++;
+                            model.CHANNELS = "";
+                            model.FEE = "";
+                            if (data.Where(m => (m.TRANSACTIONS ?? 0) != 0 && (m.RATE_TRANS ?? 0) != 0).FirstOrDefault() != null)
                             {
-                                decimal[] arrMonthCharge = new decimal[_diffmonths];
-                                var data = get_entFeeAccrItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+                                model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME + " Rate Charge (" + Convert.ToString(string.Format("{0:#,##0.####}", data.Where(m => (m.TRANSACTIONS ?? 0) != 0).FirstOrDefault().RATE_TRANS)) + ")";
+
+                            }
+                            else
+                            {
+                                model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME + ((data.Where(m => (m.RATE_AMT ?? 0) != 0).FirstOrDefault() == null) ? ""
+                                    : " Rate Charge (" + Convert.ToString(string.Format("{0:#,##0.####}", data.Where(m => (m.RATE_AMT ?? 0) != 0).FirstOrDefault().RATE_AMT)) + "% )");
+                            }
 
 
-                                var data_inv = get_entFeeInvItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
-
-                                var model = new AccruedReportViewModel();
-                                rowfirst++;
-                                model.CHANNELS = "";
-                                model.FEE = "";
-                                if (data.Where(m => (m.TRANSACTIONS ?? 0) != 0 && (m.RATE_TRANS ?? 0) != 0).FirstOrDefault() != null)
+                            int mS = monthS;
+                            int mE = monthE;
+                            int yS = yearS;
+                            int yE = yearE;
+                            int mth = mS;
+                            int yr = yS;
+                            for (int n = 1; n <= _diffmonths; n++)
+                            {
+                                //mth = n;
+                                if (mth == 13)
                                 {
-                                    model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME + " Rate Charge (" + Convert.ToString(string.Format("{0:#,##0.####}", data.Where(m => (m.TRANSACTIONS ?? 0) != 0).FirstOrDefault().RATE_TRANS)) + ")";
-
+                                    mth = 1;
+                                    yr = yr + 1;
                                 }
-                                else
+                                var item_chrge = data.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yr * 12) + mth).FirstOrDefault();
+                                if (item_chrge != null)
                                 {
-                                    model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME + ((data.Where(m => (m.RATE_AMT ?? 0) != 0).FirstOrDefault() == null) ? ""
-                                        : " Rate Charge (" + Convert.ToString(string.Format("{0:#,##0.####}", data.Where(m => (m.RATE_AMT ?? 0) != 0).FirstOrDefault().RATE_AMT)) + "% )");
+                                    //Chrage
+                                    arrMonthCharge[n - 1] = (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                    //Total
+                                    arrMonthTotal[n - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                    //Grnad Total
+                                    arrMonthGrnadTotal[n - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
                                 }
+                                mth++;
+                            }
 
-
-                                int mS = monthS;
-                                int mE = monthE;
-                                int yS = yearS;
-                                int yE = yearE;
-                                int mth = mS;
-                                int yr = yS;
-                                for (int n = 1; n <= _diffmonths; n++)
-                                {
-                                    //mth = n;
-                                    if (mth == 13)
-                                    {
-                                        mth = 1;
-                                        yr = yr + 1;
-                                    }
-                                    var item_chrge = data.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yr * 12) + mth).FirstOrDefault();
-                                    if (item_chrge != null)
-                                    {
-                                        //Chrage
-                                        arrMonthCharge[n - 1] = (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                        //Total
-                                        arrMonthTotal[n - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                        //Grnad Total
-                                        arrMonthGrnadTotal[n - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
-                                    }
-                                    mth++;
-                                }
-
-                                //foreach (var item_chrge in data)
-                                //{
-
-                                //    //Chrage
-                                //    arrMonthCharge[(item_chrge.INV_MONTH ?? 0) - 1] = (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                //    //Total
-                                //    arrMonthTotal[(item_chrge.INV_MONTH ?? 0) - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                //    //Grnad Total
-                                //    arrMonthGrnadTotal[(item_chrge.INV_MONTH ?? 0) - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                //}//charge
-
-
-                                int iCharge = 0;
-
-                                #region charge
-                                foreach (var chrge in arrMonthCharge.ToArray())
-                                {
-                                    if (arrMonthCharge.ToList().All(m => m == 0))
-                                    { break; }
-
-                                    if (chrge != 0)
-                                    {
-                                        ////Accrued
-                                        //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
-
-                                        //model.GetType().GetProperty(monthIndex).SetValue(model,
-                                        //Convert.ToString(string.Format("{0:#,##0.####}", chrge)));
-                                    }
-                                    else
-                                    {
-                                        //Invoice
-                                        var get_data_inv = data_inv.Where(m => m.INV_MONTH == iCharge + 1).FirstOrDefault();
-                                        arrMonthCharge[iCharge] = (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
-                                        arrMonthTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
-
-                                        //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
-
-                                        //model.GetType().GetProperty(monthIndex).SetValue(model,
-                                        //Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0))));
-
-
-                                    }
-                                    //}
-
-                                    iCharge++;
-
-                                }
-                                #region set value column month charge amount
-                                int chgmnth = monthS;
-                                int chgyrr = yearS;
-                                int chgiLoop = 0;
-                                while (chgiLoop < _diffmonths)
-                                {
-                                    if (arrMonthCharge.ToList().All(m => m == 0))
-                                    { break; }
-                                    if (chgmnth == 13)
-                                    {
-                                        chgmnth = 1;
-                                        chgyrr++;
-                                    }
-                                    string yStr = chgyrr.ToString().Substring(2, 2);
-                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[chgmnth - 1] + yStr;
-                                    var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (chgyrr * 12) + chgmnth).FirstOrDefault();
-                                    if (getfeeInvList.IS_STATUS == "3")
-                                    {
-                                        model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                        Convert.ToString(string.Format("{0:#,##0.####}", "0")));
-                                    }
-                                    else
-                                    {
-                                        model.GetType().GetProperty((monthIndex)).SetValue(model,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", arrMonthCharge[chgiLoop])));
-                                    }
-                                    chgiLoop++;
-                                    chgmnth++;
-                                }
-
-                                #endregion
-
-
-                                #endregion
-                                modelList.Add(model);
-                            }//fee
-                            #endregion
-
-                            #region Total
-                            var modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "Total";
-                            var modelTotalList = new List<AccruedReportViewModel>();
-                            //foreach (var total in arrMonthTotal.ToArray())
+                            //foreach (var item_chrge in data)
                             //{
-                            //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[indexTotal];
 
-                            //    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal,
-                            //    Convert.ToString(string.Format("{0:#,##0.####}", total)));
+                            //    //Chrage
+                            //    arrMonthCharge[(item_chrge.INV_MONTH ?? 0) - 1] = (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
 
-                            //    indexTotal++;
+                            //    //Total
+                            //    arrMonthTotal[(item_chrge.INV_MONTH ?? 0) - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
 
-                            //}
-                            #region set value column month Total 
-                            int mnth = monthS;
-                            int yrr = yearS;
-                            int iLoop = 0;
-                            while (iLoop < _diffmonths)
+                            //    //Grnad Total
+                            //    arrMonthGrnadTotal[(item_chrge.INV_MONTH ?? 0) - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                            //}//charge
+
+
+
+
+                            #region charge
+
+                            mth = mS;
+                            yr = yS;
+                            int iCharge = 0;
+                            foreach (var chrge in arrMonthCharge.ToArray())
                             {
-                                if (mnth == 13)
+                                //if (arrMonthCharge.ToList().All(m => m == 0))
+                                //{ break; }
+                                if (mth == 13)
                                 {
-                                    mnth = 1;
-                                    yrr++;
+                                    mth = 1;
+                                    yr++;
                                 }
-                                string yStr = yrr.ToString().Substring(2, 2);
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
-                                var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                if (getfeeInvList.IS_STATUS == "3")
+                                if (chrge != 0)
                                 {
-                                    modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal,
-                                    Convert.ToString(string.Format("{0:#,##0.####}", "0")));
+                                    ////Accrued
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
+
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", chrge)));
                                 }
                                 else
                                 {
-                                    modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal,
-                                Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTotal[iLoop])));
+                                    //Invoice
+                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yr * 12) + mth).FirstOrDefault();
+                                    arrMonthCharge[iCharge] = (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                    arrMonthTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                    arrMonthGrnadTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
+
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0))));
+
                                 }
-                                iLoop++;
-                                mnth++;
+                                //}
+                                mth++;
+                                iCharge++;
+
+                            }
+                            #region set value column month charge amount
+                            int chgmnth = monthS;
+                            int chgyrr = yearS;
+                            int chgiLoop = 0;
+                            while (chgiLoop < _diffmonths)
+                            {
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                { break; }
+                                if (chgmnth == 13)
+                                {
+                                    chgmnth = 1;
+                                    chgyrr++;
+                                }
+                                string yStr = chgyrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[chgmnth - 1] + yStr;
+
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                            Convert.ToString(string.Format("{0:#,##0.####}", arrMonthCharge[chgiLoop])));
+
+                                chgiLoop++;
+                                chgmnth++;
                             }
 
                             #endregion
 
 
-                            modelTotalList.Add(modelTotal);
-                            modelList.AddRange(modelTotalList);
                             #endregion
+                            modelList.Add(model);
+                        }//fee
+                        #endregion
 
-                            #region PO
-                            modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "PO No.";
-                            modelTotalList = new List<AccruedReportViewModel>();
+                        #region Total
+                        var modelTotal = new AccruedReportViewModel();
+                        modelTotal.CHARGE = "Total";
+                        var modelTotalList = new List<AccruedReportViewModel>();
+                        //foreach (var total in arrMonthTotal.ToArray())
+                        //{
+                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[indexTotal];
 
+                        //    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal,
+                        //    Convert.ToString(string.Format("{0:#,##0.####}", total)));
 
+                        //    indexTotal++;
 
-                            #region set value column month PO 
-                            mnth = monthS;
-                            yrr = yearS;
-                            iLoop = 0;
-                            while (iLoop < _diffmonths)
+                        //}
+                        #region set value column month Total 
+                        int mnth = monthS;
+                        int yrr = yearS;
+                        int iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
                             {
-
-                                if (mnth == 13)
-                                {
-                                    mnth = 1;
-                                    yrr++;
-                                }
-                                var chkAccrList = feeAccrList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                string getPO = string.Empty;
-                                if (chkAccrList != null)
-                                {
-                                    getPO = chkAccrList.PRO_NO;
-                                }
-                                else
-                                {
-                                    var chkInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                    getPO = chkInvList == null ? "" : chkInvList.PRO_NO;
-                                }
-                                string yStr = yrr.ToString().Substring(2, 2);
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
-                                modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal, getPO);
-                                iLoop++;
-                                mnth++;
+                                mnth = 1;
+                                yrr++;
                             }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
 
-                            #endregion
+                            modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal,
+                        Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTotal[iLoop])));
 
-
-                            modelTotalList.Add(modelTotal);
-
-                            modelList.AddRange(modelTotalList);
-                            #endregion
-
-                            #region INV
-                            modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "Inv No.";
-                            modelTotalList = new List<AccruedReportViewModel>();
-
-                            #region set value column month INV No. 
-                            mnth = monthS;
-                            yrr = yearS;
-                            iLoop = 0;
-                            while (iLoop < _diffmonths)
-                            {
-
-                                if (mnth == 13)
-                                {
-                                    mnth = 1;
-                                    yrr++;
-                                }
-                                var chkAccrList = feeAccrList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                string getINVNo = string.Empty;
-                                if (chkAccrList != null)
-                                {
-                                    getINVNo = chkAccrList.INV_NO;
-                                }
-                                else
-                                {
-                                    var chkInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
-                                    getINVNo = chkInvList == null ? "" : chkInvList.INV_NO;
-                                }
-                                string yStr = yrr.ToString().Substring(2, 2);
-                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
-                                modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal, getINVNo);
-                                iLoop++;
-                                mnth++;
-                            }
-
-                            #endregion
-
-                            modelTotalList.Add(modelTotal);
-
-                            modelList.AddRange(modelTotalList);
-                            #endregion
+                            iLoop++;
+                            mnth++;
                         }
+
+                        #endregion
+
+
+                        modelTotalList.Add(modelTotal);
+                        modelList.AddRange(modelTotalList);
+                        #endregion
+
+                        #region PO
+                        modelTotal = new AccruedReportViewModel();
+                        modelTotal.CHARGE = "PO No.";
+                        modelTotalList = new List<AccruedReportViewModel>();
+
+
+
+                        #region set value column month PO 
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            var chkAccrList = feeAccrList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                            string getPO = string.Empty;
+                            if (chkAccrList != null)
+                            {
+                                getPO = chkAccrList.PRO_NO;
+                            }
+                            else
+                            {
+                                var chkInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                                getPO = chkInvList == null ? "" : chkInvList.PRO_NO;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal, getPO);
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+
+                        modelTotalList.Add(modelTotal);
+
+                        modelList.AddRange(modelTotalList);
+                        #endregion
+
+                        #region INV
+                        modelTotal = new AccruedReportViewModel();
+                        modelTotal.CHARGE = "Inv No.";
+                        modelTotalList = new List<AccruedReportViewModel>();
+
+                        #region set value column month INV No. 
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            var chkAccrList = feeAccrList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                            string getINVNo = string.Empty;
+                            if (chkAccrList != null)
+                            {
+                                getINVNo = chkAccrList.INV_NO;
+                            }
+                            else
+                            {
+                                var chkInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                                getINVNo = chkInvList == null ? "" : chkInvList.INV_NO;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal, getINVNo);
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+                        modelTotalList.Add(modelTotal);
+
+                        modelList.AddRange(modelTotalList);
+                        #endregion
+                        //}//end  if (feeAccrList.Any())
 
                     }//fee channels
                     #endregion
@@ -1230,7 +1247,7 @@ namespace BBDEVSYS.Services.Accrued
                         //}
 
                         //----get value invoice accrued <> 3
-                        
+
                         var feeInvList = entFeeInv.ToList();
                         #region set value column month Total Grand Trxn
                         int mnth = monthS;
@@ -1245,7 +1262,729 @@ namespace BBDEVSYS.Services.Accrued
                             }
                             string yStr = yrr.ToString().Substring(2, 2);
                             string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
-                            
+
+
+                            modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
+                        Convert.ToString(string.Format("{0:#,##0.####}", arrMonthGrandTrxn[iLoop])));
+
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+
+                        modelGrandList.Add(modelGrand);
+
+                        modelList.AddRange(modelGrandList);
+
+                        modelGrand = new AccruedReportViewModel();
+                        modelGrand.CHARGE = "Grand Total";
+                        modelGrandList = new List<AccruedReportViewModel>();
+                        iGrand = 0;
+                        //foreach (var grandTotal in arrMonthGrnadTotal.ToArray())
+                        //{
+                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iGrand];
+
+                        //    modelGrand.GetType().GetProperty(monthIndex).SetValue(modelGrand,
+                        //    Convert.ToString(string.Format("{0:#,##0.####}", grandTotal)));
+
+                        //    iGrand++;
+
+                        //}
+                        #region set value column month Total Grand 
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
+                            Convert.ToString(string.Format("{0:#,##0.####}", arrMonthGrnadTotal[iLoop])));
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+                        modelGrandList.Add(modelGrand);
+
+                        modelList.AddRange(modelGrandList);
+                    }
+                    #endregion
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return modelList;
+        }
+
+
+        public List<AccruedReportViewModel> GetAccruedandActualReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
+        {
+            List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
+            try
+            {
+                using (var context = new PYMFEEEntities())
+                {
+                    #region prepare entity
+                    var feeList = (from m in context.PAYMENT_ITEMS
+                                   where m.IS_ACTIVE == true
+                                   orderby m.GROUP_SEQ_CHANNELS
+                                   select m).ToList();
+
+                    var feeItemList = (from m in context.PAYMENT_ITEMS_CHAGE
+                                       orderby m.SEQUENCE
+                                       select m).ToList();
+
+                    var entFeeInv = (from m in context.FEE_INVOICE
+                                     where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
+                                     orderby m.INV_MONTH, m.INV_YEAR
+                                     select m).ToList();
+                    var entFeeAccr = (from m in context.FEE_ACCRUED_PLAN_ITEM
+                                      where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
+                                      orderby m.ACCRUED_MONTH, m.ACCRUED_YEAR
+                                      select m).ToList();
+
+
+                    var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
+                    var entFeeAccrItem = (from m in context.FEE_ACCRUED_PLAN_ITEM_SUB select m).ToList();
+                    
+
+                    if (!string.IsNullOrEmpty(companyCode))
+                    {
+                        feeList = (from m in feeList where m.COMPANY_CODE == companyCode orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        feeItemList = (from m in feeItemList where m.COMPANY_CODE == companyCode && feeList.Any(p => m.PAYMENT_ITEMS_ID == p.ID) orderby m.SEQUENCE select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => m.COMPANY_CODE == companyCode).ToList();
+                        entFeeAccr = entFeeAccr.Where(m => m.COMPANY_CODE == companyCode).ToList();
+
+                    }
+
+
+
+
+                    if (chnn != "ALL")
+                    {
+                        feeList = (from m in feeList where m.CHANNELS == chnn orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+                        entFeeAccr = entFeeAccr.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+                    }
+
+                    //check list fee in accrued
+                    if (entFeeAccr.Any())
+                    {
+                        feeList = feeList.Where(m => entFeeAccr.Any(a => a.PAYMENT_ITEMS_CODE == m.PAYMENT_ITEMS_CODE)).ToList();
+
+                        //get Doc Accrued Max Period
+                        var maxDocAccrued = entFeeAccr.Max(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH);
+                        entFeeAccr = entFeeAccr.Where(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH == maxDocAccrued).ToList();
+                    }
+
+
+                    feeList = feeList.OrderBy(m => m.GROUP_SEQ_CHANNELS).ToList();
+
+                    #endregion
+
+                    var culture = CultureInfo.GetCultureInfo("en-US");
+                    var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                    var get_month = (yearE * 12 + monthE) - (yearS * 12 + monthS);
+                    var _diffmonths = get_month + 1;
+                    int currentMonth = DateTime.Now.Date.Month;
+                    decimal[] arrMonthGrandTrxn = new decimal[_diffmonths];
+                    decimal[] arrMonthGrnadTotal = new decimal[get_month + 1];
+
+                    #region Detail
+                    foreach (var item in feeList)
+                    {
+
+                        decimal[] arrMonthTotalTrxn = new decimal[_diffmonths];
+                        decimal[] arrMonthTotal = new decimal[_diffmonths];
+                        int rowfirst = 0;
+
+                        bool chkTotalTrx = false;
+                        var feeInvList = entFeeInv.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
+
+                        var feeAccrList = entFeeAccr.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE).ToList();
+
+                        var get_entFeeInvItem = (from n in entFeeInvItem
+                                                 where feeInvList.Any(f => n.INV_NO == f.INV_NO)
+                                                 orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                                 select n).ToList();
+
+                        var get_entFeeAccrItem = (from n in entFeeAccrItem
+                                                  where feeAccrList.Any(f => n.ACCRUED_ITEM_ID == f.ACCRUED_ITEM_ID)
+                                                  orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                                  select n).ToList();
+                        //===group data charge list===
+                        var group_charge = (from m in feeItemList where m.PAYMENT_ITEMS_ID == item.ID orderby m.CHARGE_TYPE descending select m).ToList();
+                        var group_Trxncharge = group_charge.Where(m => m.CHARGE_TYPE == "TRXN").ToList();
+
+
+                        #region Trxn + Amt
+
+                        foreach (var data_charge in group_charge)
+                        {
+                            decimal[] arrMonthTrxn = new decimal[_diffmonths];
+                            decimal[] arrMonthAMT = new decimal[_diffmonths];
+
+                            //==accrued sub list==
+                            var data_acc = get_entFeeAccrItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+                            //==invoice sub list==
+                            var data_inv = get_entFeeInvItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+
+                            var model = new AccruedReportViewModel();
+                            rowfirst++;
+                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : "";
+                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : "";
+                            model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME;
+
+
+                            #region value before calculate avg  Transaction and Amount
+                            //===charge ===
+                            int mS = monthS;
+                            int mE = monthE;
+                            int yS = yearS;
+                            int yE = yearE;
+                            int mth = mS;
+                            int yr = yS;
+                            for (int n = 1; n <= _diffmonths; n++)
+                            {
+                                //mth = n;
+                                if (mth == 13)
+                                {
+                                    mth = 1;
+                                    yr = yr + 1;
+                                }
+                                var item_chrge = data_acc.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yr * 12) + mth).FirstOrDefault();
+                                if (item_chrge != null)
+                                {
+                                    if (data_charge.CHARGE_TYPE == "TRXN")
+                                    {
+                                        arrMonthTrxn[n - 1] = (item_chrge.TRANSACTIONS ?? 0);
+                                        arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                        arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                    }
+                                    if (data_charge.CHARGE_TYPE == "MDR")
+                                    {
+                                        chkTotalTrx = false;
+                                        arrMonthAMT[n - 1] = (item_chrge.ACTUAL_AMOUNT ?? 0);
+                                    }
+                                }
+                                mth++;
+                            }
+                            #endregion
+
+                            #region Trxn
+                            int iTrxn = 0;
+                            int _mnth = monthS;
+                            int _yrr = yearS;
+                            int _iLoop = 0;
+                            foreach (var trx in arrMonthTrxn.ToArray())
+                            {
+                                //if (arrMonthTrxn.ToList().All(m => m == 0))
+                                //{ break; }
+                                if (_mnth == 13)
+                                {
+                                    _mnth = 1;
+                                    _yrr++;
+                                }
+                                if (trx != 0)
+                                {
+                                    ////Accrued
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iTrxn];
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", trx)));
+                                }
+                                else
+                                {
+                                    //Invoice
+                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (_yrr * 12) + _mnth).FirstOrDefault();
+
+                                    arrMonthTrxn[iTrxn] = (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+
+                                    arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                }
+                                //}
+                                _mnth++;
+                                iTrxn++;
+                            }
+
+
+                            #region set value column month transaction
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            while (_iLoop < _diffmonths)
+                            {
+                                //if (arrMonthTrxn.ToList().All(m => m == 0))
+                                //{ break; }
+                                if (_mnth == 13)
+                                {
+                                    _mnth = 1;
+                                    _yrr++;
+                                }
+                                string yStr = _yrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                               Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTrxn[_iLoop])));
+
+                                _iLoop++;
+                                _mnth++;
+                            }
+
+                            #endregion
+                            #endregion
+
+
+                            #region amt
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            iTrxn = 0;
+                            foreach (var amt in arrMonthAMT.ToArray())
+                            {
+                                //if (arrMonthAMT.ToList().All(m => m == 0))
+                                //{ break; }
+                                if (_mnth == 13)
+                                {
+                                    _mnth = 1;
+                                    _yrr++;
+                                }
+
+                                if (amt != 0)
+                                {
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iTrxn];
+
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", amt)));
+                                }
+                                else
+                                {
+                                    //Invoice
+                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (_yrr * 12) + _mnth).FirstOrDefault();
+
+                                    arrMonthAMT[iTrxn] = (get_data_inv != null ? (get_data_inv.ACTUAL_AMOUNT ?? 0) : 0);
+
+
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iTrxn];
+
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.ACTUAL_AMOUNT ?? 0 : 0))));
+
+
+
+                                }
+                                //}
+                                _mnth++;
+                                iTrxn++;
+
+                            }
+                            #region set value column month amount
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            while (_iLoop < _diffmonths)
+                            {
+                                if (arrMonthAMT.ToList().All(m => m == 0))
+                                { break; }
+                                if (_mnth == 13)
+                                {
+                                    _mnth = 1;
+                                    _yrr++;
+                                }
+                                string yStr = _yrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                                Convert.ToString(string.Format("{0:#,##0.####}", arrMonthAMT[_iLoop])));
+
+                                _iLoop++;
+                                _mnth++;
+                            }
+
+                            #endregion
+
+
+                            #endregion
+
+                            modelList.Add(model);
+                            #region Total Trxn
+                            if (rowfirst == group_Trxncharge.Count())
+                            {
+                                chkTotalTrx = true;
+                            }
+
+                            #region set value column month total transaction
+                            _mnth = monthS;
+                            _yrr = yearS;
+                            _iLoop = 0;
+                            if (chkTotalTrx)
+                            {
+                                chkTotalTrx = false;
+                                var inclmodelList = new List<AccruedReportViewModel>();
+                                model = new AccruedReportViewModel();
+                                model.CHARGE = "Total Trxn";
+
+                                while (_iLoop < _diffmonths)
+                                {
+                                    if (_mnth == 13)
+                                    {
+                                        _mnth = 1;
+                                        _yrr++;
+                                    }
+                                    string yStr = _yrr.ToString().Substring(2, 2);
+                                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+                                    model.GetType().GetProperty((monthIndex)).SetValue(model,
+                                Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTotalTrxn[_iLoop])));
+
+                                    _iLoop++;
+                                    _mnth++;
+                                }
+                                inclmodelList.Add(model);
+                                modelList.AddRange(inclmodelList);
+                            }
+
+                            #endregion
+
+                            #endregion
+
+
+
+                        }//fee
+                        #endregion
+
+
+                        //if (feeAccrList.Any())
+                        //{
+                        #region Charge Trxn + Amt
+                        foreach (var data_charge in group_charge)
+                        {
+                            decimal[] arrMonthCharge = new decimal[_diffmonths];
+                            var data = get_entFeeAccrItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+
+
+                            var data_inv = get_entFeeInvItem.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == data_charge.PAYMENT_ITEMS_FEE_NAME).ToList();
+
+                            var model = new AccruedReportViewModel();
+                            rowfirst++;
+                            model.CHANNELS = "";
+                            model.FEE = "";
+                            if (data.Where(m => (m.TRANSACTIONS ?? 0) != 0 && (m.RATE_TRANS ?? 0) != 0).FirstOrDefault() != null)
+                            {
+                                model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME + " Rate Charge (" + Convert.ToString(string.Format("{0:#,##0.####}", data.Where(m => (m.TRANSACTIONS ?? 0) != 0).FirstOrDefault().RATE_TRANS)) + ")";
+
+                            }
+                            else
+                            {
+                                model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME + ((data.Where(m => (m.RATE_AMT ?? 0) != 0).FirstOrDefault() == null) ? ""
+                                    : " Rate Charge (" + Convert.ToString(string.Format("{0:#,##0.####}", data.Where(m => (m.RATE_AMT ?? 0) != 0).FirstOrDefault().RATE_AMT)) + "% )");
+                            }
+
+
+                            int mS = monthS;
+                            int mE = monthE;
+                            int yS = yearS;
+                            int yE = yearE;
+                            int mth = mS;
+                            int yr = yS;
+                            for (int n = 1; n <= _diffmonths; n++)
+                            {
+                                //mth = n;
+                                if (mth == 13)
+                                {
+                                    mth = 1;
+                                    yr = yr + 1;
+                                }
+                                var item_chrge = data.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yr * 12) + mth).FirstOrDefault();
+                                if (item_chrge != null)
+                                {
+                                    //Chrage
+                                    arrMonthCharge[n - 1] = (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                    //Total
+                                    arrMonthTotal[n - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                    //Grnad Total
+                                    arrMonthGrnadTotal[n - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+                                }
+                                mth++;
+                            }
+
+                            //foreach (var item_chrge in data)
+                            //{
+
+                            //    //Chrage
+                            //    arrMonthCharge[(item_chrge.INV_MONTH ?? 0) - 1] = (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                            //    //Total
+                            //    arrMonthTotal[(item_chrge.INV_MONTH ?? 0) - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                            //    //Grnad Total
+                            //    arrMonthGrnadTotal[(item_chrge.INV_MONTH ?? 0) - 1] += (item_chrge.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                            //}//charge
+
+
+
+
+                            #region charge
+
+                            mth = mS;
+                            yr = yS;
+                            int iCharge = 0;
+                            foreach (var chrge in arrMonthCharge.ToArray())
+                            {
+                                //if (arrMonthCharge.ToList().All(m => m == 0))
+                                //{ break; }
+                                if (mth == 13)
+                                {
+                                    mth = 1;
+                                    yr++;
+                                }
+                                if (chrge != 0)
+                                {
+                                    ////Accrued
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
+
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", chrge)));
+                                }
+                                else
+                                {
+                                    //Invoice
+                                    var get_data_inv = data_inv.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yr * 12) + mth).FirstOrDefault();
+                                    arrMonthCharge[iCharge] = (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                    arrMonthTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                    arrMonthGrnadTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                    //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
+
+                                    //model.GetType().GetProperty(monthIndex).SetValue(model,
+                                    //Convert.ToString(string.Format("{0:#,##0.####}", (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0))));
+
+                                }
+                                //}
+                                mth++;
+                                iCharge++;
+
+                            }
+                            #region set value column month charge amount
+                            int chgmnth = monthS;
+                            int chgyrr = yearS;
+                            int chgiLoop = 0;
+                            while (chgiLoop < _diffmonths)
+                            {
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                { break; }
+                                if (chgmnth == 13)
+                                {
+                                    chgmnth = 1;
+                                    chgyrr++;
+                                }
+                                string yStr = chgyrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[chgmnth - 1] + yStr;
+
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                            Convert.ToString(string.Format("{0:#,##0.####}", arrMonthCharge[chgiLoop])));
+
+                                chgiLoop++;
+                                chgmnth++;
+                            }
+
+                            #endregion
+
+
+                            #endregion
+                            modelList.Add(model);
+                        }//fee
+                        #endregion
+
+                        #region Total
+                        var modelTotal = new AccruedReportViewModel();
+                        modelTotal.CHARGE = "Total";
+                        var modelTotalList = new List<AccruedReportViewModel>();
+                        //foreach (var total in arrMonthTotal.ToArray())
+                        //{
+                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[indexTotal];
+
+                        //    modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal,
+                        //    Convert.ToString(string.Format("{0:#,##0.####}", total)));
+
+                        //    indexTotal++;
+
+                        //}
+                        #region set value column month Total 
+                        int mnth = monthS;
+                        int yrr = yearS;
+                        int iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            var getfeeInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+
+                            modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal,
+                        Convert.ToString(string.Format("{0:#,##0.####}", arrMonthTotal[iLoop])));
+
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+
+                        modelTotalList.Add(modelTotal);
+                        modelList.AddRange(modelTotalList);
+                        #endregion
+
+                        #region PO
+                        modelTotal = new AccruedReportViewModel();
+                        modelTotal.CHARGE = "PO No.";
+                        modelTotalList = new List<AccruedReportViewModel>();
+
+
+
+                        #region set value column month PO 
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            var chkAccrList = feeAccrList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                            string getPO = string.Empty;
+                            if (chkAccrList != null)
+                            {
+                                getPO = chkAccrList.PRO_NO;
+                            }
+                            else
+                            {
+                                var chkInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                                getPO = chkInvList == null ? "" : chkInvList.PRO_NO;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal, getPO);
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+
+                        modelTotalList.Add(modelTotal);
+
+                        modelList.AddRange(modelTotalList);
+                        #endregion
+
+                        #region INV
+                        modelTotal = new AccruedReportViewModel();
+                        modelTotal.CHARGE = "Inv No.";
+                        modelTotalList = new List<AccruedReportViewModel>();
+
+                        #region set value column month INV No. 
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            var chkAccrList = feeAccrList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                            string getINVNo = string.Empty;
+                            if (chkAccrList != null)
+                            {
+                                getINVNo = chkAccrList.INV_NO;
+                            }
+                            else
+                            {
+                                var chkInvList = feeInvList.Where(m => (m.INV_YEAR * 12) + m.INV_MONTH == (yrr * 12) + mnth).FirstOrDefault();
+                                getINVNo = chkInvList == null ? "" : chkInvList.INV_NO;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                            modelTotal.GetType().GetProperty((monthIndex)).SetValue(modelTotal, getINVNo);
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+                        modelTotalList.Add(modelTotal);
+
+                        modelList.AddRange(modelTotalList);
+                        #endregion
+                        //}//end  if (feeAccrList.Any())
+
+                    }//fee channels
+                    #endregion
+
+                    #region Summary Grand
+                    if (arrMonthGrandTrxn.ToList().All(m => m == 0))
+                    { }
+                    else
+                    {
+
+                        var modelGrand = new AccruedReportViewModel();
+                        modelGrand.CHARGE = "Total All Trxn.";
+                        var modelGrandList = new List<AccruedReportViewModel>();
+                        int iGrand = 0;
+                        //foreach (var grandTrxn in arrMonthGrandTrxn.ToArray())
+                        //{
+                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iGrand];
+
+                        //    modelGrand.GetType().GetProperty(monthIndex).SetValue(modelGrand,
+                        //    Convert.ToString(string.Format("{0:#,##0.####}", grandTrxn)));
+
+
+                        //    iGrand++;
+
+                        //}
+
+                        //----get value invoice accrued <> 3
+
+                        var feeInvList = entFeeInv.ToList();
+                        #region set value column month Total Grand Trxn
+                        int mnth = monthS;
+                        int yrr = yearS;
+                        int iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+
 
                             modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
                         Convert.ToString(string.Format("{0:#,##0.####}", arrMonthGrandTrxn[iLoop])));
@@ -1456,8 +2195,8 @@ namespace BBDEVSYS.Services.Accrued
 
                             foreach (var trx in arrMonthTrxn.ToArray())
                             {
-                                if (arrMonthTrxn.ToList().All(m => m == 0))
-                                { break; }
+                                //if (arrMonthTrxn.ToList().All(m => m == 0))
+                                //{ break; }
 
 
                                 if (trx != 0)

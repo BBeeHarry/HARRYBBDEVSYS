@@ -57,7 +57,7 @@ namespace BBDEVSYS.Services.Invoice
                 }
                 else
                 {
-                    paymentitemsList = GetPaymentItemsList(companyCode, monthS, monthE, yearS, yearE, pymName, string.Empty,0);
+                    paymentitemsList = GetPaymentItemsList(companyCode, monthS, monthE, yearS, yearE, pymName, string.Empty, 0);
                 }
 
                 dataList = DatatablesService.ConvertObjectListToDatatables<InvoiceViewModel>(paymentitemsList);
@@ -71,7 +71,7 @@ namespace BBDEVSYS.Services.Invoice
             }
         }
 
-        private List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status ,int seq_item)
+        private List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status, int seq_item)
         {
             List<InvoiceViewModel> getInvList = new List<InvoiceViewModel>();
             try
@@ -111,7 +111,7 @@ namespace BBDEVSYS.Services.Invoice
 
 
 
-                    int seq =seq_item + 1;
+                    int seq = seq_item + 1;
 
                     var get_month = (yearE * 12 + monthE) - (yearS * 12 + monthS);
 
@@ -258,12 +258,12 @@ namespace BBDEVSYS.Services.Invoice
                                         mCount = 12;
                                         yCount = countyear - 1;
                                     }
-                                   
+
                                     var nongetFeeInvDataList = (from m in getFeeInvList
                                                                 where m.INV_MONTH == mCount && m.INV_YEAR == yCount
                                                                 select m).ToList();
 
-                                    
+
                                     if (nongetFeeInvDataList.Any())
                                     {
                                         countmonth++;
@@ -593,6 +593,11 @@ namespace BBDEVSYS.Services.Invoice
 
                     var getCompany = (from data in context.COMPANies where data.IsPaymentFee == true && data.BAN_COMPANY == companyCode select data).FirstOrDefault();
                     var getPaymentItems = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true && data.PAYMENT_ITEMS_CODE == paymentItemCode && data.COMPANY_CODE == companyCode select data).FirstOrDefault();
+
+                    int paymentitemId = getPaymentItems != null ? getPaymentItems.ID : 0;
+                    var getPaymentItemsCharge = (from data in context.PAYMENT_ITEMS_CHAGE where data.PAYMENT_ITEMS_ID == paymentitemId && data.COMPANY_CODE == companyCode orderby data.SEQUENCE select data).ToList();
+
+
                     var getcttList = (from data in context.COST_CENTER where data.COMPANY_CODE == companyCode select data).ToList();
                     invModel.COMPANY_NAME = getCompany != null ? getCompany.COMPANY_NAME_EN : "";
                     invModel.PAYMENT_ITEMS_NAME = getPaymentItems != null ? getPaymentItems.PAYMENT_ITEMS_NAME : "";
@@ -613,6 +618,39 @@ namespace BBDEVSYS.Services.Invoice
                     invModel.UPLOAD_TYPE = false;
 
                     invModel.INV_REC_BY = user.UserCode;
+
+                    #region generate List Charge Auto
+                    if (string.IsNullOrEmpty(invModel.INV_NO))
+                    {
+                        List<InvoiceDetailViewModel> feeInvItemLst = new List<InvoiceDetailViewModel>();
+
+
+
+
+                        var list = new List<SelectListItem>();
+                        foreach (var item in getPaymentItemsCharge)
+                        {
+                            var chargeLst = new List<string>();
+                            var getFeeInvItem = new InvoiceDetailViewModel();
+                            MVMMappingService.MoveData(item, getFeeInvItem);
+
+                            getFeeInvItem.PAYMENT_ITEMS_FEE_ITEM = item.PAYMENT_ITEMS_FEE_NAME;
+                            //getListChargeItem(getFeeInvItem);
+                            chargeLst.Add(item.PAYMENT_ITEMS_FEE_NAME);
+                            list.AddRange(chargeLst.Select((charge, index) => new SelectListItem
+                            {
+                                Value = charge,//(index + 1).ToString(),
+                                Text = charge
+                            }).ToList());
+
+                            getFeeInvItem.PaymentItemsFeeItemList = list;
+
+                            feeInvItemLst.Add(getFeeInvItem);
+
+                        }
+                        invModel.InvoiceDetailList.AddRange(feeInvItemLst);
+                    }
+                    #endregion
                 }
 
             }

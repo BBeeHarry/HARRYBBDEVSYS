@@ -75,7 +75,7 @@
                                 @Html.LabelFor(m => m.INV_YEAR_FROM) :
                             </label>
                             <div class="col-xs-12 col-md-3">
-                                @Html.TextBoxFor(m => m.INV_YEAR_FROM, new { @class = "form-control numberonly" ,@placeholder="ปี ค.ศ."})
+                                @Html.TextBoxFor(m => m.INV_YEAR_FROM, new { @class = "form-control numberonly", @placeholder = "ปี ค.ศ." })
                                 @Html.ValidationMessageFor(m => m.INV_YEAR_FROM, "", new { @class = "text-danger" })
                             </div>
                             <label class="col-xs-12 col-md-2 true-control-label">
@@ -101,7 +101,7 @@
                                 @Html.LabelFor(m => m.STATUS) :
                             </label>
                             <div class="col-xs-12 col-md-3">
-                               @* @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), "", new { @class = "form-control ", style = "width:100%;" })*@
+                                @* @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), "", new { @class = "form-control ", style = "width:100%;" })*@
                                 @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), htmlAttributes: new { @multiple = "multiple", @class = "form-control  " })
                             </div>
                         </div>
@@ -185,7 +185,7 @@
 
 
     function onChangeSearch() {
-      
+
         //$("[data-valmsg-for='INV_YEAR']").html("");
 
         @*if (!year) {
@@ -204,17 +204,17 @@
         var monthE = $('#INV_MONTH_TO').val();
         var yearS = $("#INV_YEAR_FROM").val();
         var yearE = $("#INV_YEAR_TO").val();
-      
-        if (!isNaN( yearS) && !isNaN(yearE )) {
 
-            if (parseInt( yearS) > parseInt(yearE)) {
+        if (!isNaN(yearS) && !isNaN(yearE)) {
+
+            if (parseInt(yearS) > parseInt(yearE)) {
                 $("[data-valmsg-for='INV_YEAR_FROM']").html("@BBDEVSYS.Content.text.ValidatorMessage.lessthanandequal_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR_FROM).Replace("{0}",BBDEVSYS.Content.text.ResourceText.INV_YEAR_TO)");
                 error = true;
 
                 yearS = yearE;
             }
 
-            if (!isNaN(monthS )&& !isNaN(monthE)) {
+            if (!isNaN(monthS) && !isNaN(monthE)) {
 
                 if (parseInt(yearS) == parseInt(yearE)) {
                     if (parseInt(monthS) > parseInt(monthE)) {
@@ -236,12 +236,12 @@
             $("[data-valmsg-for='INV_MONTH_TO']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH_TO)");
             error = true;
         }
-        if (isNaN(monthS )&& !isNaN(monthE)) {
+        if (isNaN(monthS) && !isNaN(monthE)) {
             $("[data-valmsg-for='INV_MONTH_FROM']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH_FROM)");
             error = true;
         }
 
-        if (!isNaN(yearS) && isNaN(yearE) ) {
+        if (!isNaN(yearS) && isNaN(yearE)) {
             $("[data-valmsg-for='INV_YEAR_TO']").html("@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR_TO)");
             error = true;
         }
@@ -253,7 +253,7 @@
         var pymName = $("#PAYMENT_ITEMS_NAME").val();
         var status = $("#IS_STATUS").val();
 
-       
+
         //Clear table data
         $('#dataListTable').DataTable().clear().draw();
         if (!error) {
@@ -270,7 +270,7 @@
                 data.yearSValue = yearS;
                 data.yearEValue = yearE;
                 data.pymName = pymName;
-                data.status =JSON.stringify(status);
+                data.status = JSON.stringify(status);
 
                 unblockUI();
             })
@@ -313,17 +313,18 @@
             //{ "data": "IS_STATUS", "hidden": true }
 
              { "data": "ITEM", "title": "ลำดับที่", "type": "num", "width": "100px" },
-             { "data": "COMPANY_NAME", "title": "Company", "type": "string", "width": "200" },
-             { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
+             { "data": "STATUS_NAME", "title": "สถานะ", "type": "string", "width": "100px" },
+            
+            { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
+            { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
              { "data": "INV_YEAR", "title": "Year", "type": "num", "width": "100px" },
+            { "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "100px", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+            { "data": "COMPANY_NAME", "title": "Company", "type": "string", "width": "200" },
             { "data": "GL_ACCOUNT", "title": "GL Account", "type": "string", "width": "100px" },
             { "data": "COST_CENTER", "title": "Cost Center", "type": "string", "width": "100px" },
-            { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
-            { "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "100px", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
             { "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "100px" },
             { "data": "PRO_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "150" },
             { "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "150" },
-            { "data": "STATUS_NAME", "title": "สถานะ", "type": "string", "width": "100px" },
 
             { "data": null, "defaultContent": getDataTableButton(["display", "edit_inv", "delete"]), "orderable": false, "width": "200px", "className": "true-dt-button-column" },
             { "data": "ID", "type": "num", "hidden": true },
@@ -340,7 +341,7 @@
             data.yearSValue = $("#INV_YEAR_FROM").val();
             data.yearEValue = $("#INV_YEAR_TO").val();
             data.pymName = $("#PAYMENT_ITEMS_NAME").val();
-            data.status = JSON.stringify( $("#IS_STATUS").val() );
+            data.status = JSON.stringify($("#IS_STATUS").val());
         })
         displayDataTablescroll('dataListTable', '@Url.Action("GetList", "Invoice", new { Area = "Invoice" })', columns);
 

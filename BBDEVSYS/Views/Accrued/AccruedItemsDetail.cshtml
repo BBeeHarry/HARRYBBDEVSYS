@@ -14,8 +14,6 @@
                     </button>
                 </td>
                 <td style="width:50px">@item.SEQUENCE</td>
-                <td style="width:100px">@item.GL_ACCOUNT</td>
-                <td style="width:150px">@item.COST_CENTER_FUND</td>
                 @*<td style="width:100px">@item.FUND_CODE</td>*@
                 @*<td style="width:200px">@item.CHANNELS</td>*@
                 <td style="width:300px">@item.PAYMENT_ITEMS_NAME</td>
@@ -28,9 +26,12 @@
                 @*<td style="width:200px">@Html.TextBoxFor(m => item.TRANSACTIONS, new { @class = "form-control  decimal2digit ", style = "width:200px" })</td>
                     <td style="width:200px">@Html.TextBoxFor(m => item.AMOUNT, new { @class = "form-control  decimal2digit ", style = "width:200px" })</td>
                     <td style="width:200px">@Html.TextBoxFor(m => item.INV_AMOUNT, new { @class = "form-control  decimal2digit ", style = "width:200px" })</td>*@
-                <td  style="width:300px">@item.Supplier</td>
+
                 <td style="width:300px">@item.INV_NO</td>
-                <td  style="width:300px">@item.REMARK</td>
+                <td style="width:300px">@item.REMARK</td>
+                <td style="width:100px">@item.GL_ACCOUNT</td>
+                <td style="width:150px">@item.COST_CENTER_FUND</td>
+                <td  style="width:300px">@item.Supplier</td>
               
 
 
