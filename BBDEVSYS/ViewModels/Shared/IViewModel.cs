@@ -26,6 +26,11 @@ namespace BBDEVSYS.ViewModels.Shared
         public string SubFormAction { get; set; } //State for sub screen (Tab, popup)
 
 
-     
+        //User Authorize
+
+        public string AuthAdmin { get; set; }
+
+
+
     }
 }

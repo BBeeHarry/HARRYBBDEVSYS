@@ -314,7 +314,7 @@
 
              { "data": "ITEM", "title": "ลำดับที่", "type": "num", "width": "100px" },
              { "data": "STATUS_NAME", "title": "สถานะ", "type": "string", "width": "100px" },
-            
+
             { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
             { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
              { "data": "INV_YEAR", "title": "Year", "type": "num", "width": "100px" },
@@ -331,7 +331,8 @@
             { "data": "PAYMENT_ITEMS_CODE", "type": "string", "hidden": true },
              { "data": "COMPANY_CODE", "type": "string", "hidden": true },
              { "data": "INV_MONTH", "type": "num", "hidden": true },
-            { "data": "IS_STATUS", "hidden": true }
+            { "data": "IS_STATUS", "hidden": true },
+            { "data": "AuthAdmin" ,"hidden":true}
         ];
         $('#dataListTable').on('preXhr.dt', function (e, settings, data) {
 
@@ -406,8 +407,8 @@
             var month = $(this).GetDatatableData()["INV_MONTH"];
             var year = $(this).GetDatatableData()["INV_YEAR"];
             var company = $(this).GetDatatableData()["COMPANY_CODE"];
-            var available = $(this).GetDatatableData()["IS_STATUS"]
-
+            var available = $(this).GetDatatableData()["IS_STATUS"];
+            var authAdmin = $(this).GetDatatableData()["AuthAdmin"];
             var flagAuth = false;
             var message = "";
             if (company == undefined || company == '') {
@@ -426,81 +427,81 @@
                 flagAuth = true;
             }
             if (flagAuth) {
-                if (available.toUpperCase() === "3") {
+                if (available.toUpperCase() === "3" && authAdmin != '@ConstantVariableService.AithorizeAdmin' ) {
                     displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonEdit' + " ได้", "E");
-                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
-                }
-                else {
-                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
-                    var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormStateEdit';
-
-                    redirectTo(url);
-
-                }
+                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
             }
             else {
+                $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormStateEdit';
+
+                redirectTo(url);
+
+            }
+        }
+        else {
                 displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+        $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+    }
+    });
+
+    //Copy
+    $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
+        var id = $(this).GetDatatableData()["ID"];
+
+        var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
+
+        redirectTo(url);
+    });
+
+    //Delete
+    $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
+        var id = $(this).GetDatatableData()["ID"];
+        var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"];
+        var month = $(this).GetDatatableData()["INV_MONTH"];
+        var year = $(this).GetDatatableData()["INV_YEAR"];
+        var company = $(this).GetDatatableData()["COMPANY_CODE"];
+        var available = $(this).GetDatatableData()["IS_STATUS"]
+        if (id != 0) {
+            if (available.toUpperCase() === "3") {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonDelete' + " ได้", "E");
                 $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
-            }
-        });
-
-        //Copy
-        $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
-            var id = $(this).GetDatatableData()["ID"];
-
-            var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
-
-            redirectTo(url);
-        });
-
-        //Delete
-        $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
-            var id = $(this).GetDatatableData()["ID"];
-            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"];
-            var month = $(this).GetDatatableData()["INV_MONTH"];
-            var year = $(this).GetDatatableData()["INV_YEAR"];
-            var company = $(this).GetDatatableData()["COMPANY_CODE"];
-            var available = $(this).GetDatatableData()["IS_STATUS"]
-            if (id != 0) {
-                if (available.toUpperCase() === "3") {
-                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonDelete' + " ได้", "E");
-                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
-                }
-                else {
-                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
-                    var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormActionDelete';
-                    redirectTo(url);
-                }
             }
             else {
-                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ไม่มีข้อมูลใบแจ้งหนี้ในรายการนี้", "E");
+                $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormActionDelete';
+                redirectTo(url);
+            }
+        }
+        else {
+            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ไม่มีข้อมูลใบแจ้งหนี้ในรายการนี้", "E");
+            $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+        }
+
+    });
+    //Close
+    $('#dataListTable tbody').on('click', '.true-dt-button-close', function () {
+        var id = $(this).GetDatatableData()["ID"];
+        var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"]
+        var month = $(this).GetDatatableData()["INV_MONTH"];
+        var year = $(this).GetDatatableData()["INV_YEAR"];
+        var company = $(this).GetDatatableData()["COMPANY_CODE"];
+        var available = $(this).GetDatatableData()["IS_STATUS"]
+        if (id != 0) {
+            if (available.toUpperCase() === "3") {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonClose' + " ได้", "E");
                 $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
             }
+            else {
+                displayConfirmActionPopup('@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveHeader', '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody', 'default');
+                $getid = id;
+                $getmonth = month;
+                $getyear = year;
+                $getcompany = company;
+                $getdes_code = des_code;
+                flagClose = true;
 
-        });
-        //Close
-        $('#dataListTable tbody').on('click', '.true-dt-button-close', function () {
-            var id = $(this).GetDatatableData()["ID"];
-            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"]
-            var month = $(this).GetDatatableData()["INV_MONTH"];
-            var year = $(this).GetDatatableData()["INV_YEAR"];
-            var company = $(this).GetDatatableData()["COMPANY_CODE"];
-            var available = $(this).GetDatatableData()["IS_STATUS"]
-            if (id != 0) {
-                if (available.toUpperCase() === "3") {
-                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonClose' + " ได้", "E");
-                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
-                }
-                else {
-                    displayConfirmActionPopup('@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveHeader', '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody', 'default');
-                    $getid = id;
-                    $getmonth = month;
-                    $getyear = year;
-                    $getcompany = company;
-                    $getdes_code = des_code;
-                    flagClose = true;
-
-                    @*//$(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                @*//$(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
                     var url = '@Url.Action("ManageClose", "Invoice", new { Area = "Invoice" })'
                     blockUI();
                     //$this.button("loading");
@@ -523,17 +524,17 @@
                     unblockUI();
                     //redirectTo(url);*@
 
-                }
             }
-            else {
-                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ไม่มีข้อมูลใบแจ้งหนี้ในรายการนี้", "E");
-                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
-            }
-        });
+        }
+        else {
+            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ไม่มีข้อมูลใบแจ้งหนี้ในรายการนี้", "E");
+            $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+        }
+    });
 
-        var allButton = ['display', 'edit_inv', 'delete'];
-        var SpinBtn = ['display'];
-        loadingButton(allButton, SpinBtn);
+    var allButton = ['display', 'edit_inv', 'delete'];
+    var SpinBtn = ['display'];
+    loadingButton(allButton, SpinBtn);
 
     });
     function okActionCallback() {

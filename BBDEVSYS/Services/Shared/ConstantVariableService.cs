@@ -123,6 +123,10 @@ namespace BBDEVSYS.Services.Shared
 
         public const string APPROVERID = "01013131";
 
+        //User Authorize
+
+        public const string AithorizeAdmin = "Administrator";
+
 
     }
 }

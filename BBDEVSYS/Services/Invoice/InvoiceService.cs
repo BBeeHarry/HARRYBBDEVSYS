@@ -40,6 +40,9 @@ namespace BBDEVSYS.Services.Invoice
         {
             try
             {
+
+                //User Type
+                User user = UserService.GetSessionUserInfo();
                 string dataList = "";
                 JavaScriptSerializer js = new JavaScriptSerializer();
                 List<string> statusList = js.Deserialize<List<string>>(status);
@@ -82,6 +85,8 @@ namespace BBDEVSYS.Services.Invoice
                     User user = UserService.GetSessionUserInfo();
                     //JavaScriptSerializer js = new JavaScriptSerializer();
                     //List<string> statusList = js.Deserialize<List<string>>(status);
+
+                   
 
                     var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true orderby data.GROUP_SEQ_CHANNELS, data.ID select data).ToList();
                     var getFeeInvList = (from data in context.FEE_INVOICE select data).ToList();
@@ -152,6 +157,9 @@ namespace BBDEVSYS.Services.Invoice
                                     var getCompany = entCompany.Where(m => m.BAN_COMPANY == getFeeInvItem.COMPANY_CODE).FirstOrDefault();
 
                                     var invModel = new InvoiceViewModel();
+                                    //AuthoAdmin
+                                    invModel.AuthAdmin = user.AuthorizeAdmin;
+
                                     invModel.ITEM = seq;
                                     invModel.GL_ACCOUNT = item.GL_ACCOUNT;
                                     invModel.COST_CENTER = item.COST_CENTER;

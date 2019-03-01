@@ -157,6 +157,9 @@ namespace BBDEVSYS
                         "~/Content/js/plugins/datepicker/jquery-ui-1.8.10.offset.datepicker.min.js",
                         //"~/Content/js/plugins/datepicker/bootstrap-datepicker.js",
                         //"~/Content/js/plugins/datepicker/en-boostrap-datepicker/bootstrap-datepicker.js",
+                        //C:\BbHarryDevSYS\BBDEVSYS-Dev2\BBDEVSYS\Content\js\plugins\chartjs\Chart.js
+                        //Chart
+                        "~/Content/js/plugins/chartjs/Chart.js",
                         "~/Content/js/app.js",
                         "~/Content/js/input.initialization.js",
                         "~/Content/js/plugins/multiselect/multiselect.min.js"

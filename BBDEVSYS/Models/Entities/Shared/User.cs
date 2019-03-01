@@ -16,10 +16,14 @@ namespace BBDEVSYS.Models.Shared
 
         public string ADUser { get; set; }
         public string UserType { get; set; }
-        public string UserCode { get; set; } 
+        public string UserCode { get; set; }
         public string DisplayNameTH { get; set; }
-        public string DisplayNameEN { get; set; }        
-        public string Email { get; set; }        
+        public string DisplayNameEN { get; set; }
+        public string Email { get; set; }
+
+        //User Authorize
+
+        public string AuthorizeAdmin { get; set; }
 
         public List<AppSingleRole> RoleList { get; set; }
 

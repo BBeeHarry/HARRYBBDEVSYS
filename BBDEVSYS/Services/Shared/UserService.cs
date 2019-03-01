@@ -87,6 +87,9 @@ namespace BBDEVSYS.Services.Shared
                         var emp = (from m in context.USERS
                                    where m.USERNAME == username
                                    select m).FirstOrDefault();
+
+                       
+                           
                         if (emp != null)
                         {
                             user.UserType = "";
@@ -94,6 +97,19 @@ namespace BBDEVSYS.Services.Shared
                             user.DisplayNameTH = emp.NAME;
                             user.DisplayNameEN = emp.NAME;
                             user.Email = emp.Email;
+
+                            var userRole = (from r in context.UserRoles
+                                            where r.USERID == user.UserCode
+                                            select r).FirstOrDefault();
+
+                            var compositeRole = (from n in context.AppCompositeRoles
+                                                 select n).ToList();
+
+                            var chkAuthirizeAdmin = compositeRole.Where(c=> c.ID == (userRole==null?0: userRole.CompositeRoleID)  ).FirstOrDefault();
+
+
+                            user.AuthorizeAdmin = (chkAuthirizeAdmin==null?"": chkAuthirizeAdmin.Name);
+
                         }
                     }
 
