@@ -2004,16 +2004,7 @@ namespace BBDEVSYS.Services.Accrued
                         modelGrand.CHARGE = "Grand Total";
                         modelGrandList = new List<AccruedReportViewModel>();
                         iGrand = 0;
-                        //foreach (var grandTotal in arrMonthGrnadTotal.ToArray())
-                        //{
-                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iGrand];
-
-                        //    modelGrand.GetType().GetProperty(monthIndex).SetValue(modelGrand,
-                        //    Convert.ToString(string.Format("{0:#,##0.####}", grandTotal)));
-
-                        //    iGrand++;
-
-                        //}
+                        
                         #region set value column month Total Grand 
                         mnth = monthS;
                         yrr = yearS;

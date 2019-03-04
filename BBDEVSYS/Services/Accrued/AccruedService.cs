@@ -834,6 +834,8 @@ namespace BBDEVSYS.Services.Accrued
                                         var get_data_inv = data_inv.Where(m => m.INV_MONTH == iCharge + 1).FirstOrDefault();
                                         arrMonthCharge[iCharge] = (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
                                         arrMonthTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
+                                        //--add 4 mar 2019 total grand
+                                        arrMonthGrnadTotal[iCharge] += (get_data_inv != null ? get_data_inv.TOTAL_CHARGE_AMOUNT ?? 0 : 0);
 
                                         //string monthIndex = dateTimeInfo.AbbreviatedMonthNames[iCharge];
 

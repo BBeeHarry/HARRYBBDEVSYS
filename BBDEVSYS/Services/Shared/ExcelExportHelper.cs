@@ -758,7 +758,7 @@ namespace BBDEVSYS.Services.Shared
                                 using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                 {
 
-                                    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                    r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
                                     r.Style.Font.Bold = true;
                                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                                     r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
@@ -770,7 +770,7 @@ namespace BBDEVSYS.Services.Shared
                                 using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                 {
 
-                                    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                    r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
                                     r.Style.Font.Bold = true;
                                     r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
                                     r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
