@@ -1,0 +1,312 @@
+﻿@*@model BBDEVSYS.ViewModels.Invoice.InvoiceViewModel*@
+@{
+    ViewBag.Title = "Home";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<style>
+    .true-datatable-dashboard {
+        border-top: 3px solid rgba(239, 88, 88, 1);
+        border-right: 1px solid #afafaf;
+        border-left: 1px solid #afafaf;
+        border-bottom: 1px solid #afafaf;
+        border-radius: 3px;
+        width: 100%;
+    }
+</style>
+<div class="row">
+    <div class="col-xs-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard</h3>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:hidden">
+                    <table class="table   true-datatable-dashboard " id="dataListTable" style="width:2800px"></table>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- BAR CHART -->
+        <div class="box box-success">
+
+            <div id="chartContainer"></div>
+            <div class="box-header with-border">
+                <h3 class="box-title">Bar Chart</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:scroll">
+                    <div class="chart">
+                        <canvas id="barChart" style="height:230px"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- /.box-body -->
+        </div>
+
+
+        <div id="content" class="col-md-8 col-md-offset-1 col-xs-12">
+            <div id="chartContainer"></div>
+        </div>
+
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+    function ChartJSdashboard() {
+        /* ChartJS
+         * -------
+         * Here we will create a few charts using ChartJS
+         */
+        var areaChartData = {
+            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            datasets: [
+              {
+                  label: 'Electronics',
+                  fillColor: 'rgba(210, 214, 222, 1)',
+                  strokeColor: 'rgba(210, 214, 222, 1)',
+                  pointColor: 'rgba(210, 214, 222, 1)',
+                  pointStrokeColor: '#c1c7d1',
+                  pointHighlightFill: '#fff',
+                  pointHighlightStroke: 'rgba(220,220,220,1)',
+                  data: [65, 59, 80, 81, 56, 55, 40]
+              },
+              {
+                  label: 'Digital Goods',
+                  fillColor: 'rgba(60,141,188,0.9)',
+                  strokeColor: 'rgba(60,141,188,0.8)',
+                  pointColor: '#3b8bba',
+                  pointStrokeColor: 'rgba(60,141,188,1)',
+                  pointHighlightFill: '#fff',
+                  pointHighlightStroke: 'rgba(60,141,188,1)',
+                  data: [28, 48, 40, 19, 86, 27, 90]
+              }
+            ]
+        }
+
+
+        //-------------
+        //- BAR CHART -
+        //-------------
+        var barChartCanvas = $('#barChart').get(0).getContext('2d')
+        var barChart = new Chart(barChartCanvas)
+        var barChartData = areaChartData
+        barChartData.datasets[1].fillColor = '#00a65a'
+        barChartData.datasets[1].strokeColor = '#00a65a'
+        barChartData.datasets[1].pointColor = '#00a65a'
+        var barChartOptions = {
+            //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
+            scaleBeginAtZero: true,
+            //Boolean - Whether grid lines are shown across the chart
+            scaleShowGridLines: true,
+            //String - Colour of the grid lines
+            scaleGridLineColor: 'rgba(0,0,0,.05)',
+            //Number - Width of the grid lines
+            scaleGridLineWidth: 1,
+            //Boolean - Whether to show horizontal lines (except X axis)
+            scaleShowHorizontalLines: true,
+            //Boolean - Whether to show vertical lines (except Y axis)
+            scaleShowVerticalLines: true,
+            //Boolean - If there is a stroke on each bar
+            barShowStroke: true,
+            //Number - Pixel width of the bar stroke
+            barStrokeWidth: 2,
+            //Number - Spacing between each of the X value sets
+            barValueSpacing: 5,
+            //Number - Spacing between data sets within X values
+            barDatasetSpacing: 1,
+            //String - A legend template
+            legendTemplate: '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
+            //Boolean - whether to make the chart responsive
+            responsive: true,
+            maintainAspectRatio: true
+        }
+
+        barChartOptions.datasetFill = false
+        barChart.Bar(barChartData, barChartOptions)
+    }
+
+
+
+
+    function dataPointsChartBar() {
+
+        var dataPoints = [];
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            theme: "light2", // "light1", "light2", "dark1", "dark2"
+            title: {
+                text: "Alibaba Group Stock Volume, 2015 - 2016"
+            },
+            subtitles: [{
+                text: "Monthly Average"
+            }],
+            axisX: {
+                interval: 3,
+                intervalType: "month",
+                valueFormatString: "MMM YY"
+            },
+            axisY: {
+                //includeZero: false,
+                title: "Volume",
+                labelFormatter: addSymbols
+            },
+            data: [{
+                xValueFormatString: "MMM YY",
+                dataPoints: dataPoints
+            }]
+        });
+
+        $.get("/home/csv", getDataPointsFromCSV);
+
+        //CSV Format
+        //YYYY-MM-DD,Volume
+        function getDataPointsFromCSV(csv) {
+            var csvLines = points = [];
+            csvLines = csv.split(/[\r?\n|\r|\n]+/);
+            for (var i = 0; i < csvLines.length; i++) {
+                if (csvLines[i].length > 0) {
+                    points = csvLines[i].split(",");
+                    dataPoints.push({
+                        x: new Date(
+                            parseInt(points[0].split("-")[0], 10),
+                            parseInt(points[0].split("-")[1], 10) - 1, //month starts from 0
+                            parseInt(points[0].split("-")[2], 10)
+                        ),
+                        y: parseInt(points[1])
+                    });
+                }
+            }
+            chart.render();
+        }
+
+        function addSymbols(e) {
+            var suffixes = ["", "K", "M", "B"];
+
+            var order = Math.max(Math.floor(Math.log(e.value) / Math.log(1000)), 0);
+            if (order > suffixes.length - 1)
+                order = suffixes.length - 1;
+
+            var suffix = suffixes[order];
+            return CanvasJS.formatNumber(e.value / Math.pow(1000, order)) + suffix;
+        }
+
+    }
+
+    function dataPointsChartBarCol() {
+
+        var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "dark2",//"light2",
+            animationEnabled: true,
+            title: {
+                text: "Column Chart in ASP.Net MVC using CanvasJS"
+            },
+            data: [
+            {
+                type: "column",
+                dataPoints: [
+                    { y: 6, label: "Apple" },
+                    { y: 4, label: "Mango" },
+                    { y: 5, label: "Orange" },
+                    { y: 7, label: "Banana" },
+                    { y: 4, label: "Pineapple" },
+                    { y: 6, label: "Pears" },
+                    { y: 7, label: "Grapes" },
+                    { y: 5, label: "Lychee" },
+                    { y: 4, label: "Jackfruit" }
+                ],
+
+                //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
+                //dataPoints: @Html.Raw(ViewBag.DataPoints),
+            }
+            ]
+        });
+        chart.render();
+    }
+
+    $(document).ready(function () {
+
+        //ChartJSdashboard();
+
+        dataPointsChartBarCol();
+
+        function setNameColume() {
+            var nameColumn = []
+            var getMonth = new Date().getMonth() + 1;
+
+            //Date.prototype.getMonthNameShort = function (lang) {
+            //    lang = lang && (lang in Date.locale) ? lang : 'en';
+            //    return Date.locale[lang].month_names_short[this.getMonth()];
+            //};
+
+
+            //Date.locale = {
+            //    en: {
+            //        month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+            //        month_names_short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            //    }
+            //};
+            var month_names_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+
+            nameColumn.push({ "data": "FEE", "title": "รายการ", "type": "num", "width": "250px" });
+
+
+            for (var i = 1; i <= getMonth; i++) {
+                nameColumn.push({ "data": month_names_short[i - 1], "title": "Month" + i, "type": "string", "width": "200" });
+            }
+            nameColumn.push({ "data": "CHARGE", "hidden": true });
+            return nameColumn;
+
+        }
+        var columns = setNameColume();
+        //var colums = [
+        //      { "data": "Roles", "title": "ลำดับที่", "type": "num", "width": "100px" },
+        //      { "data": "COMPANY_NAME", "title": "Company", "type": "string", "width": "200" },
+        //      { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
+        //      { "data": "INV_YEAR", "title": "Year", "type": "num", "width": "100px" },
+        //      { "data": "GL_ACCOUNT", "title": "GL Account", "type": "string", "width": "100px" },
+        //      { "data": "COST_CENTER", "title": "Cost Center", "type": "string", "width": "100px" },
+        //      { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
+        //      { "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "100px", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
+        //      { "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "100px" },
+        //      { "data": "PRO_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "150" },
+        //      { "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "150" }
+        //];
+        displayDataTablescroll('dataListTable', '@Url.Action("GetList","Home")', columns);
+
+
+        //$('#dataListTable tbody').filter(function () {
+
+        //    console.log($(this).text())
+        //    return $(this).text()== '1';
+        //}).css('background-color', '#f1f442');
+
+        //$('#dataListTable tr').each(function () {
+        //    console.log($(this).parent('tbody').css('background-color', '#e8789d'))
+        //});
+        $('#dataListTable tr ').each(function () {
+            console.log($(this).closest('tbody').css('background-color', '#e8789d'));
+        });
+
+    });
+
+</script>
+<style>
+    .datatable-inv {
+        background-color: #f1f444;
+    }
+</style>
+
+

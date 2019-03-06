@@ -221,6 +221,14 @@
       <HintPath>..\packages\System.ValueTuple.4.5.0\lib\netstandard1.0\System.ValueTuple.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Web.DataVisualization">
+      <HintPath>..\packages\Microsoft.Chart.Controls.4.7.2046\lib\net35\System.Web.DataVisualization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Web.DataVisualization.Design">
+      <HintPath>..\packages\Microsoft.Chart.Controls.4.7.2046\lib\net35\System.Web.DataVisualization.Design.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Web.DynamicData">
       <EmbedInteropTypes>False</EmbedInteropTypes>
       <Private>True</Private>
@@ -251,6 +259,14 @@
     </Reference>
     <Reference Include="System.Web.Http, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.4\lib\net45\System.Web.Http.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization">
+      <HintPath>..\packages\Microsoft.Chart.Controls.4.7.2046\lib\net35\System.Windows.Forms.DataVisualization.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System.Windows.Forms.DataVisualization.Design">
+      <HintPath>..\packages\Microsoft.Chart.Controls.4.7.2046\lib\net35\System.Windows.Forms.DataVisualization.Design.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System.Xml.Linq">
@@ -568,6 +584,7 @@
     <Compile Include="Services\Authorization\AssignUserRoleService.cs" />
     <Compile Include="Services\CenterSetting\PaymentItems\PaymentItemsService.cs" />
     <Compile Include="Services\CenterSetting\ValueHelpSettingService.cs" />
+    <Compile Include="Services\Home\DashboardService.cs" />
     <Compile Include="Services\Home\HomeService.cs" />
     <Compile Include="Services\Invoice\InvoiceService.cs" />
     <Compile Include="Services\Invoice\InvoiceUploadService.cs" />
@@ -576,6 +593,7 @@
     <Compile Include="Services\Shared\AttachmentService.cs" />
     <Compile Include="Services\Shared\AuthorizeService.cs" />
     <Compile Include="Services\Shared\BulkSqlManageService.cs" />
+    <Compile Include="Services\Shared\DataService.cs" />
     <Compile Include="Services\Shared\DatatablesService.cs" />
     <Compile Include="Services\Shared\DynamicEntity.cs" />
     <Compile Include="Services\Shared\EmailService.cs" />
@@ -608,12 +626,14 @@
     <Compile Include="ViewModels\CenterSetting\PaymentItems\PaymentItemsViewModel.cs" />
     <Compile Include="ViewModels\CenterSetting\ValueHelpSettingItemViewModel.cs.cs" />
     <Compile Include="ViewModels\CenterSetting\ValueHelpSettingViewModel.cs" />
+    <Compile Include="ViewModels\Dashboard\DahsboardBarchartViewModel.cs" />
     <Compile Include="ViewModels\Error\ErrorViewModel.cs" />
     <Compile Include="ViewModels\InvoiceUpload\InvoiceUploadItemViewModel.cs" />
     <Compile Include="ViewModels\InvoiceUpload\InvoiceUploadViewModel.cs" />
     <Compile Include="ViewModels\Posting\PaymentPostingViewModel.cs" />
     <Compile Include="ViewModels\Shared\AttachmentPhotoViewModel.cs" />
     <Compile Include="ViewModels\Shared\AttachmentViewModel.cs" />
+    <Compile Include="ViewModels\Shared\DataPoint.cs" />
     <Compile Include="ViewModels\Shared\IViewModel.cs" />
     <Compile Include="ViewModels\Shared\JsonDatatablesViewModel.cs" />
     <Compile Include="ViewModels\Shared\ReturnMessageViewModel.cs" />
@@ -625,6 +645,8 @@
     <Compile Include="ViewModels\Invoice\InvoiceViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\c3.css" />
+    <Content Include="Content\c3.min.css" />
     <Content Include="Content\css\AdminLTE.css" />
     <Content Include="Content\css\bootstrap.css" />
     <Content Include="Content\css\datatables\dataTables.bootstrap.css" />
@@ -742,6 +764,8 @@
     <Content Include="Content\js\input.initialization.js" />
     <Content Include="Content\js\plugins\bootstrap\bootstrap.js" />
     <Content Include="Content\js\plugins\bootstrap\bootstrap.min.js" />
+    <Content Include="Content\js\plugins\chartjs\bckcanvasjs.min.js" />
+    <Content Include="Content\js\plugins\chartjs\canvasjs.min.js" />
     <Content Include="Content\js\plugins\datatables\currency-sorting.js" />
     <Content Include="Content\js\plugins\datatables\dataTables.bootstrap.js" />
     <Content Include="Content\js\plugins\datatables\dataTables.bootstrap.min.js" />
@@ -1664,6 +1688,7 @@
       <Generator>EntityModelCodeGenerator</Generator>
       <LastGenOutput>MIS_PAYMENT_FEE_Model.Designer.cs</LastGenOutput>
     </EntityDeploy>
+    <Content Include="LICENSE.txt" />
     <Content Include="Models\Entities\MIS_PAYMENT_FEE_Model.edmx.diagram">
       <DependentUpon>MIS_PAYMENT_FEE_Model.edmx</DependentUpon>
     </Content>
@@ -1682,6 +1707,10 @@
       <DependentUpon>MIS_PAYMENT_FEE_Model.edmx</DependentUpon>
       <LastGenOutput>MIS_PAYMENT_FEE_Model.cs</LastGenOutput>
     </Content>
+    <Content Include="Scripts\c3.js" />
+    <Content Include="Scripts\c3.min.js" />
+    <Content Include="Scripts\d3.js" />
+    <Content Include="Scripts\d3.min.js" />
     <Content Include="Web.config">
       <SubType>Designer</SubType>
     </Content>
@@ -1762,6 +1791,7 @@
     <Content Include="Views\Authorization\AssignUserRole\AssignUserRoleDetail.cshtml" />
     <Content Include="Views\Authorization\AssignUserRole\AssignUserRoleItem.cshtml" />
     <Content Include="Views\Authorization\AssignUserRole\AssignUserRoleList.cshtml" />
+    <Content Include="Views\Home\bckHome.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />
   </ItemGroup>
   <ItemGroup>

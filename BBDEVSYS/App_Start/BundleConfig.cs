@@ -115,7 +115,8 @@ namespace BBDEVSYS
                         "~/Content/css/jqueryui/*.css",
                         "~/Content/css/app-style.less",
                         "~/Content/css/multiselect/style.css",
-                        "~/Content/css/themify-icons.css"
+                        "~/Content/css/themify-icons.css",
+                        "~/Content/c3.css"
                          ));
 
             //bundles.Add(new StyleBundle("~/Content/"));
@@ -130,6 +131,8 @@ namespace BBDEVSYS
 
             bundles.Add(new ScriptBundle("~/bundles/js").Include(
                        "~/Content/js/plugins/bootstrap/bootstrap.js",
+                         "~/Scripts/c3.js",
+                        "~/Scripts/d3.js",
                         "~/Content/js/plugins/fastclick/fastclick.js",
                         "~/Content/js/plugins/slimscroll/jquery.slimscroll.js",
                         "~/Content/js/plugins/select2/select2.full.js",
@@ -160,9 +163,11 @@ namespace BBDEVSYS
                         //C:\BbHarryDevSYS\BBDEVSYS-Dev2\BBDEVSYS\Content\js\plugins\chartjs\Chart.js
                         //Chart
                         "~/Content/js/plugins/chartjs/Chart.js",
+                        "~/Content/js/plugins/chartjs/canvasjs.min.js",
                         "~/Content/js/app.js",
                         "~/Content/js/input.initialization.js",
                         "~/Content/js/plugins/multiselect/multiselect.min.js"
+                      
                         ));
         }
     }

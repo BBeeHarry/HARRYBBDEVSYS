@@ -137,7 +137,8 @@
                                 redirectTo(decodeUrl);
                             }
                             else {
-                                redirectTo('@Url.Action("List", "Invoice", new { Area = "Invoice" })');
+                                redirectTo('@Url.Action("Index", "Home")');
+                                //redirectTo('@Url.Action("List", "Invoice", new { Area = "Invoice" })');
                             }
                         } else {
                             displayModelStateError(form, response.errorList);

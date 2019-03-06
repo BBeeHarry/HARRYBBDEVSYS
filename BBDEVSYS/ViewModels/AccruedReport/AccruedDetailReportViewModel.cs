@@ -74,9 +74,10 @@ namespace BBDEVSYS.ViewModels.AccruedReport
         public string FEE_TYPE { get; set; }
 
         [Display(Name = "CHANNELS", ResourceType = typeof(ResourceText))]
-        public string CHANNELSValue { get; set; } 
+        public string CHANNELSValue { get; set; }
 
-
+        public int x { get; set; }
+        public int y { get; set; }
 
         public List<SelectListItem> MonthLst { get; set; }
         public List<SelectListItem> YearLst { get; set; }

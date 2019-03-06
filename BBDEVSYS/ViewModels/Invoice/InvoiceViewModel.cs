@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Web;
 using System.Web.Mvc;
 
@@ -137,10 +138,17 @@ namespace BBDEVSYS.ViewModels.Invoice
         public int MonthValue { get; set; }
         [Display(Name = "Years", ResourceType = typeof(ResourceText))]
         public int YearValue { get; set; }
-        
 
-     
 
+
+        #region home 
+
+        public int x { get; set; }
+        public int y { get; set; }
+
+      
+
+        #endregion
 
 
 

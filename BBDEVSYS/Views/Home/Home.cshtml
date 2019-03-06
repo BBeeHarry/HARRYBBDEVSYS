@@ -1,197 +1,760 @@
-﻿@model BBDEVSYS.ViewModels.Invoice.InvoiceViewModel
+﻿@*@model BBDEVSYS.ViewModels.Invoice.InvoiceViewModel*@
 @{
     ViewBag.Title = "Home";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-<style>
-    .true-datatable-dashboard {
-        border-top: 3px solid rgba(239, 88, 88, 1);
-        border-right: 1px solid #afafaf;
-        border-left: 1px solid #afafaf;
-        border-bottom: 1px solid #afafaf;
-        border-radius: 3px;
-        width: 100%;
-    }
-</style>
+<br />
+
 <div class="row">
-    <div class="col-xs-12">
-        <div class="box box-success">
+    <div class="box box-danger col-xs-12">
+        <div class="box-header with-border">
+            <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard Payment Fee</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="chart">
+                <div id="Barchart"> </div>
+            </div>
+        </div>
+
+
+    </div>
+
+</div>
+<div class="row">
+    <div class="box box-danger col-xs-12">
+        <div class="box-header with-border">
+            <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard Payment Fee by  Price Catalog</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="chart">
+                <div id="BarchartChannels" style="max-height: 1000px; position: relative;" class="c3"></div>
+
+            </div>
+            <div class="chart">
+                <div id="BarchartCompany" style="max-height: 1000px; position: relative;" class="c3"></div>
+            </div>
+        </div>
+
+
+    </div>
+
+   
+</div>
+@*<div class="row">
+     <div class="box box-danger col-xs-12">
+        <div class="box-header with-border">
+            <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard Payment Fee by  Company</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+            </div>
+        </div>
+
+        <div class="box-body">
+            <div class="chart">
+                <div id="DonutCompany" style="max-height: 1000px; position: relative;" class="c3"></div>
+            </div>
+        </div>
+
+
+    </div>
+
+
+            <div class="col-xs-12">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard</h3>
+                </div>
+
+                <div class="box-body">
+
+
+                    <div><img src='@Url.Action("BarChartColumn","Home")' alt="Chart" /></div>
+                </div>
+
+            </div>
+
+        </div>
+    <div class="row">
+        <div class="col-xs-12">
             <div class="box-header with-border">
                 <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.Dashboard</h3>
             </div>
             <div class="box-body">
-                <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:hidden">
-                    <table class="table   true-datatable-dashboard " id="dataListTable" style="width:2800px"></table>
-                </div>
+                <div class="row">
+                    <div class="col-xs-12">
+                        <div style="position:relative">
 
-            </div>
-        </div>
-        @*<div class="box-body">
-                <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:hidden">
-                    <table class="table table-bordered table-striped true-datatable" id="dataListTable" style="width:2500px"></table>
+                            <div id="chartContainer"></div>
+                        </div>
 
-
-                </div>
-
-            </div>*@
-
-        <!-- BAR CHART -->
-        <div class="box box-success">
-            <div class="box-header with-border">
-                <h3 class="box-title">Bar Chart</h3>
-                <div class="box-tools pull-right">
-                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                        <i class="fa fa-minus"></i>
-                    </button>
-                    <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-                </div>
-            </div>
-            <div class="box-body">
-                <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:scroll">
-                    <div class="chart">
-                        <canvas id="barChart" style="height:230px"></canvas>
                     </div>
                 </div>
-
             </div>
-            <!-- /.box-body -->
+
         </div>
-    </div>
-</div>
+
+    </div>*@
+@*@{
+        var myChart = new Chart(width: 600, height: 400)
+            .AddTitle("Chart Title")
+            .AddSeries(
+                name: "Employee",
+                xValue: new[] { "Peter", "Andrew", "Julie", "Mary", "Dave" },
+                yValues: new[] { "2", "6", "4", "5", "3" })
+            .Write();
+    }*@
+
 <script type="text/javascript">
-    function ChartJSdashboard() {
-        /* ChartJS
-         * -------
-         * Here we will create a few charts using ChartJS
-         */
-        var areaChartData = {
-            labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July','August','September','October','November','December'],
-            datasets: [
-              {
-                  label: 'Electronics',
-                  fillColor: 'rgba(210, 214, 222, 1)',
-                  strokeColor: 'rgba(210, 214, 222, 1)',
-                  pointColor: 'rgba(210, 214, 222, 1)',
-                  pointStrokeColor: '#c1c7d1',
-                  pointHighlightFill: '#fff',
-                  pointHighlightStroke: 'rgba(220,220,220,1)',
-                  data: [65, 59, 80, 81, 56, 55, 40]
-              },
-              {
-                  label: 'Digital Goods',
-                  fillColor: 'rgba(60,141,188,0.9)',
-                  strokeColor: 'rgba(60,141,188,0.8)',
-                  pointColor: '#3b8bba',
-                  pointStrokeColor: 'rgba(60,141,188,1)',
-                  pointHighlightFill: '#fff',
-                  pointHighlightStroke: 'rgba(60,141,188,1)',
-                  data: [28, 48, 40, 19, 86, 27, 90]
-              }
+    function getBarchart() {
+        var url = '@Url.Action("BarChart", "Home")';
+        $.ajax({
+            type: "GET",
+            url: url,//"~/Home/BarChart",
+            data: {},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                dashboardBarChart(response);
+                //dataPointsChartBarStackCol(response);
+            },
+        });
+    }
+
+    function getBarchartChannels() {
+        var url = '@Url.Action("BarChartChannels", "Home")';
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                dashboardBarChartChannels(response);
+                dashboardBarChartbyChannels(response);
+            },
+        });
+    }
+    function getBarchartCompany() {
+        var url = '@Url.Action("BarChartCompany", "Home")';
+        $.ajax({
+            type: "GET",
+            url: url,
+            data: {},
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                dashboardBarChartCompany(response);
+            },
+        });
+    }
+
+    function dashboardBarChart(jsondata) {
+        var colName = [];
+
+        //jsondata.length
+        for (var i = 0; i < jsondata.length; i++) {
+            colName.push(jsondata[i].MonthNameFee);
+        }
+
+        var chart = c3.generate({
+            bindto: '#Barchart',
+            title: {
+                text: "Payment Fee "
+            },
+            zoom: {
+                enabled: true
+            },
+            size: {
+                height: 500,
+                width: 900
+            },
+            data: {
+                json: jsondata,
+                keys: {
+                    text: ['Actual', 'Accrued'],
+                    value: ['Actual', 'Accrued']
+                },
+                columns: ['Actual', 'Accrued'],
+                //names: {
+                //    MonthFee: 'Total'
+                //},
+                type: 'bar',
+                //groups: [
+                //    ['Actual', 'Accrued', 'MonthFee']
+                //]
+            },
+            axis: {
+                x: {
+                    label: {
+                        text: 'Period Month/Year',
+                        position: 'outer-center',
+                    },
+                    type: 'category',
+                    categories: colName,//['MA', 'ME', 'NY', 'CN', 'TX'],
+                    tick: {
+                        centered: true
+                    }
+                },
+                y: {
+                    label: {
+                        text: 'percentage Amount Excld. VAT (%)',
+                        position: 'outer-middle'
+                    },
+                    max: 100,
+                    min: 0,
+                    padding: {
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            },
+            //legend: {
+            //    show: true
+            //},
+            color: {
+                pattern: ['#d62728', '#f7bcb9', '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+
+                //pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+            },
+        });
+
+        //setTimeout(function () {
+        //    chart.data.colors({
+        //        Actual: d3.rgb('#d62728').darker(1),
+        //        Accrued: d3.rgb('#ff9896').darker(1),
+        //    });
+        //}, 1000);
+
+        //setTimeout(function () {
+        //    chart.data.colors({
+        //        Actual: d3.rgb('#d62728').darker(2),
+        //        Accrued: d3.rgb('#ff9896').darker(2),
+        //    });
+        //}, 2000);
+        setTimeout(function () {
+            chart.transform('line');
+        }, 3000);
+        setTimeout(function () {
+            chart.transform('bar', 'Actual');
+        }, 4000);
+
+        setTimeout(function () {
+            chart.transform('bar', 'Accrued');
+        }, 7000);
+        setTimeout(function () {
+            chart.transform('area');
+        }, 9000);
+        setTimeout(function () {
+            chart.transform('pie');
+        }, 13000);
+        setTimeout(function () {
+            chart.transform('bar');
+        }, 15000);
+
+
+
+    }
+
+    function dashboardBarChartChannels(jsondata) {
+        var colName = [];
+
+        //jsondata.length
+        for (var i = 0; i < jsondata.length; i++) {
+            colName.push(jsondata[i].PriceCatalog);
+        }
+
+        var chart = c3.generate({
+            bindto: '#BarchartChannels',
+            title: {
+                text: "Payment Fee by Channels"
+            },
+            zoom: {
+                enabled: true
+            },
+            //padding: {
+            //    top: 40,
+            //    right: 100,
+            //    bottom: 40,
+            //    left: 100,
+            //},
+            size: {
+                height: 600,
+                width: 900
+            },
+            data: {
+                json: jsondata,
+                keys: {
+                    text: ['Actual', 'Accrued'],
+                    value: ['Actual', 'Accrued']
+                },
+                columns: ['Actual', 'Accrued'],
+                type: 'bar',
+                groups: [
+                    ['Actual', 'Accrued']
+                ],
+                order: 'asc',
+            },
+            axis: {
+
+                rotated: true,
+                x: {
+                    label: {
+                        text: 'Price Catalog',
+                        position: 'outer-center',
+                    },
+                    //label :'Price Catalog',
+                    type: 'category',
+                    categories: colName,
+                    tick: {
+                        // centered:true,
+                        rotate: 25,
+                        multiline: false
+                    },
+                    height: 130
+                },
+                y: {
+                    label: {
+                        text: 'percentage Amount Excld. VAT (%)',
+                        position: 'outer-middle'
+                    },
+                    max: 100,
+                    min: 0,
+                    padding: {
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            },
+            legend: {
+                show: true,
+                position: 'right'
+            },
+            color: {
+                pattern: ['#6782f7', '#d899e8', '#d62728', '#ff9896', '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+
+                //pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+            },
+        });
+
+
+        setTimeout(function () {
+            chart.transform('line');
+        }, 3000);
+        setTimeout(function () {
+            chart.transform('bar', 'Actual');
+        }, 4000);
+
+        setTimeout(function () {
+            chart.transform('bar', 'Accrued');
+        }, 7000);
+        setTimeout(function () {
+            chart.transform('area');
+        }, 9000);
+        setTimeout(function () {
+            chart.transform('pie');
+        }, 13000);
+        setTimeout(function () {
+            chart.transform('bar');
+        }, 15000);
+
+        //setTimeout(function () {
+        //    chart.transform('donut');
+        //}, 20000);
+
+        //setTimeout(function () {
+        //    chart.groups([['Actual', 'Accrued']])
+        //}, 20000);
+
+
+
+
+    }
+
+    function dashboardBarChartbyChannels(jsondata) {
+        var colName = [];
+        var colAct = [];
+        var colAcc = [];
+
+        for (var i = 0; i < jsondata.length; i++) {
+            colName.push(jsondata[i].PriceCatalog);
+            colAct.push(jsondata[i].Actual);
+            colAcc.push(jsondata[i].Accrued);
+        }
+
+        var chart = c3.generate({
+            bindto: '#BarchartCompany',
+            title: {
+                text: "Payment Fee by Company"
+            },
+            size: {
+                height: 680,
+                width: 900
+            },
+            data: {
+                //json: jsondata,
+                //keys: {
+                //x: 'PriceCatalog',
+                //text: ['Actual', 'Accrued'],
+                //value: ['Actual', 'Accrued']
+                //},
+                //columns: ['Actual', 'Accrued'],
+                type: 'bar',
+                onclick: function (d, i) { console.log("onclick", d, i); },
+                onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+                onmouseout: function (d, i) { console.log("onmouseout", d, i); },
+                //groups: [
+                //    colName
+                //],
+                rows: [
+                   colName,
+                   colAct,
+                   colAcc
+                ],
+                order: 'asc',
+            },
+            axis: {
+
+                //rotated: true,
+                x: {
+                    label: {
+                        text: 'Price Catalog',
+                        position: 'outer-center',
+                    },
+                    label: 'Price Catalog',
+                    type: 'category',
+                    categories: ['Actual', 'Accrued'],
+                    tick: {
+                        centered: true,
+                        //rotate: 25,
+                        //multiline: false
+                    },
+                    //height: 130
+                },
+                y: {
+                    label: {
+                        text: 'percentage Amount Excld. VAT (%)',
+                        position: 'outer-middle'
+                    },
+                    max: 100,
+                    min: 0,
+                    padding: {
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            },
+            legend: {
+                show: true,
+                position: 'right'
+            },
+            color: {
+                pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+
+
+                //pattern: ['#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#d62728', '#ff9896', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+            },
+        });
+
+
+        //setTimeout(function () {
+        //    chart.transform('area');
+        //}, 1000);
+        //setTimeout(function () {
+        //    chart.transform('pie');
+        //}, 3000);
+        //setTimeout(function () {
+        //    chart.transform('bar');
+        //}, 5000);
+    }
+
+    function dashboardBarChartCompany(jsondata) {
+        var colName = [];
+        var colAct = [];
+        var colAcc = [];
+        var colCom = [];
+        var colTotal = [];
+
+        for (var i = 0; i < jsondata.length; i++) {
+            colName.push(jsondata[i].PriceCatalog);
+            colAct.push(jsondata[i].Actual);
+            colAcc.push(jsondata[i].Accrued);
+            colCom.push(jsondata[i].Company);
+            colTotal.push(jsondata[i].Total);
+        }
+        console.log(colName)
+        console.log(colAct)
+        var chart = c3.generate({
+            bindto: '#DonutCompany',
+            title: {
+                text: "Payment Fee by Company"
+            },
+
+            data: {
+                //json: jsondata,
+                //keys: {
+                //x: 'PriceCatalog',
+                //text: ['Actual', 'Accrued'],
+                //value: ['Actual', 'Accrued']
+                //},
+                //columns: ['Actual', 'Accrued'],
+                type: 'donut',
+                onclick: function (d, i) { console.log("onclick", d, i); },
+                onmouseover: function (d, i) { console.log("onmouseover", d, i); },
+                onmouseout: function (d, i) { console.log("onmouseout", d, i); },
+                //groups: [
+                //    colName
+                //],
+                rows: [
+                   colName,
+                   colAct
+                ],
+                //order: 'asc',
+            },
+            donut: {
+                title: 'TI',
+            },
+            //axis: {
+            //    //rotated: true,
+            //    x: {
+            //        label: {
+            //            text: 'Price Catalog',
+            //            position: 'outer-center',
+            //        },
+            //        label: 'Price Catalog',
+            //        type: 'category',
+            //        categories: colCom,
+            //        tick: {
+            //            centered: true,
+            //            //rotate: 25,
+            //            //multiline: false
+            //        },
+            //        //height: 130
+            //    },
+            //    y: {
+            //        label: {
+            //            text: 'percentage Amount Excld. VAT (%)',
+            //            position: 'outer-middle'
+            //        },
+            //        max: 100,
+            //        min: 0,
+            //        padding: {
+            //            top: 0,
+            //            bottom: 0
+            //        }
+            //    }
+            //},
+            legend: {
+                show: true,
+                position: 'right'
+            },
+            color: {
+                pattern: ['#6782f7', '#d899e8', '#d62728', '#ff9896', '#1f77b4', '#aec7e8', '#ff7f0e', '#ffbb78', '#2ca02c', '#98df8a', '#9467bd', '#c5b0d5', '#8c564b', '#c49c94', '#e377c2', '#f7b6d2', '#7f7f7f', '#c7c7c7', '#bcbd22', '#dbdb8d', '#17becf', '#9edae5']
+        },
+        });
+    }
+
+
+    columnColors = ['#9a4d6f', '#c76c47', '#f85115', '#d9b099', '#d4ba2f'];
+    function designerChart(jsondata) {
+        var chart = c3.generate({
+            bindto: '#designerChart',
+            data: {
+                columns: [
+                  ['rainfall', 6, 8, 6, 5, 4]
+                ],
+                type: 'bar'
+            },
+            axis: {
+                x: {
+                    label: {
+                        text: 'States',
+                        position: 'outer-center',
+                    },
+                    type: 'category',
+                    categories: ['MA', 'ME', 'NY', 'CN', 'TX'],
+                    tick: {
+                        centered: true
+                    }
+                },
+                y: {
+                    label: {
+                        text: 'Rainfall (inches)',
+                        position: 'outer-middle'
+                    },
+                    max: 10,
+                    min: 0,
+                    padding: {
+                        top: 0,
+                        bottom: 0
+                    }
+                }
+            },
+            legend: {
+                show: false
+            }
+        });
+
+    }
+
+    function setColumnBarColors(colors, chartContainer) {
+
+        $('#' + chartContainer + ' .c3-chart-bars .c3-shape').each(function (index) {
+            this.style.cssText += 'fill: ' + colors[index] + ' !important; stroke: ' + colors[index] + '; !important';
+        });
+
+        $('#' + chartContainer + ' .c3-chart-texts .c3-text').each(function (index) {
+            this.style.cssText += 'fill: ' + colors[index] + ' !important;';
+        });
+    }
+
+
+
+
+
+    function dataPointsChartBarStackCol(jsondata) {
+
+
+        var dataPoints1 = [];
+        var dataPoints2 = [];
+
+        //jsondata.length
+        for (var i = 0; i < 10; i++) {
+            dataPoints1.push({ y: jsondata[i].Actual, label: jsondata[i].MonthNameFee });
+            dataPoints2.push({ y: jsondata[i].Accrued, label: jsondata[i].MonthNameFee });
+        }
+
+        //$.each(jsondata, function (i, res) {
+        //    dataPoints1.push({ label: res.MonthNameFee, y: res.Actual });
+        //    dataPoints2.push({ label: res.MonthNameFee, y: res.Accrued });
+        //});
+        var chart = new CanvasJS.Chart("chartContainer", {
+            animationEnabled: true,
+            title: {
+                text: "Payment Fee"
+            },
+            axisX: {
+                title: "Period Month/Year"
+            },
+            axisY: {
+                title: "percentage Amount"
+            },
+            data: [
+            {
+                type: "stackedColumn100",
+                legendText: "Actual",
+                //showInLegend: "true",
+                indexLabel: "#percent %",
+                indexLabelPlacement: "outside",
+                indexLabelFontColor: "white",
+                dataPoints: dataPoints1,
+                //dataPoints: [
+                //{ y: 40, label: "Cafeteria" },
+                //{ y: 10, label: "Lounge" },
+                //{ y: 72, label: "Games Room" },
+                //{ y: 30, label: "Lecture Hall" },
+                //{ y: 21, label: "Library" },
+                //{ y: 40, label: "Cafeteria" },
+                //{ y: 10, label: "Lounge" },
+                //{ y: 72, label: "Games Room" },
+                //{ y: 30, label: "Lecture Hall" },
+                //{ y: 21, label: "Library" },
+                //{ y: 40, label: "Cafeteria" },
+                //{ y: 10, label: "Lounge" },
+                //{ y: 72, label: "Games Room" },
+                //{ y: 30, label: "Lecture Hall" },
+                //{ y: 21, label: "Library" }
+                //],
+
+                //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
+                //dataPoints: @Html.Raw(ViewBag.DataPoints1),
+            },
+            {
+                type: "stackedColumn100",
+                legendText: "Accrued",
+                //showInLegend: "true",
+                indexLabel: "#percent %",
+                indexLabelPlacement: "outside",
+                indexLabelFontColor: "white",
+                dataPoints: dataPoints1,
+                //dataPoints: [dataPoints1
+                //{ y: 20, label: "Cafeteria" },
+                //{ y: 14, label: "Lounge" },
+                //{ y: 40, label: "Games Room" },
+                //{ y: 43, label: "Lecture Hall" },
+                //{ y: 17, label: "Library" },
+                // { y: 20, label: "Cafeteria" },
+                //{ y: 14, label: "Lounge" },
+                //{ y: 40, label: "Games Room" },
+                //{ y: 43, label: "Lecture Hall" },
+                //{ y: 17, label: "Library" },
+                // { y: 20, label: "Cafeteria" },
+                //{ y: 14, label: "Lounge" },
+                //{ y: 40, label: "Games Room" },
+                //{ y: 43, label: "Lecture Hall" },
+                //{ y: 17, label: "Library" }
+                // ],
+
+                //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
+                //dataPoints: @Html.Raw(ViewBag.DataPoints2),
+            }
             ]
-        }
+        });
+        chart.render();
 
+    }
 
-        //-------------
-        //- BAR CHART -
-        //-------------
-        var barChartCanvas = $('#barChart').get(0).getContext('2d')
-        var barChart = new Chart(barChartCanvas)
-        var barChartData = areaChartData
-        barChartData.datasets[1].fillColor = '#00a65a'
-        barChartData.datasets[1].strokeColor = '#00a65a'
-        barChartData.datasets[1].pointColor = '#00a65a'
-        var barChartOptions = {
-            //Boolean - Whether the scale should start at zero, or an order of magnitude down from the lowest value
-            scaleBeginAtZero: true,
-            //Boolean - Whether grid lines are shown across the chart
-            scaleShowGridLines: true,
-            //String - Colour of the grid lines
-            scaleGridLineColor: 'rgba(0,0,0,.05)',
-            //Number - Width of the grid lines
-            scaleGridLineWidth: 1,
-            //Boolean - Whether to show horizontal lines (except X axis)
-            scaleShowHorizontalLines: true,
-            //Boolean - Whether to show vertical lines (except Y axis)
-            scaleShowVerticalLines: true,
-            //Boolean - If there is a stroke on each bar
-            barShowStroke: true,
-            //Number - Pixel width of the bar stroke
-            barStrokeWidth: 2,
-            //Number - Spacing between each of the X value sets
-            barValueSpacing: 5,
-            //Number - Spacing between data sets within X values
-            barDatasetSpacing: 1,
-            //String - A legend template
-            legendTemplate: '<ul class="<%=name.toLowerCase()%>-legend"><% for (var i=0; i<datasets.length; i++){%><li><span style="background-color:<%=datasets[i].fillColor%>"></span><%if(datasets[i].label){%><%=datasets[i].label%><%}%></li><%}%></ul>',
-            //Boolean - whether to make the chart responsive
-            responsive: true,
-            maintainAspectRatio: true
-        }
+    function dataPointsChartBarCol() {
 
-        barChartOptions.datasetFill = false
-        barChart.Bar(barChartData, barChartOptions)
+        var chart = new CanvasJS.Chart("chartContainer", {
+            theme: "dark2",//"light2",
+            animationEnabled: true,
+            title: {
+                text: "Column Chart in ASP.Net MVC using CanvasJS"
+            },
+            data: [
+            {
+                type: "column",
+                dataPoints: [
+                    { y: 6, label: "Apple" },
+                    { y: 4, label: "Mango" },
+                    { y: 5, label: "Orange" },
+                    { y: 7, label: "Banana" },
+                    { y: 4, label: "Pineapple" },
+                    { y: 6, label: "Pears" },
+                    { y: 7, label: "Grapes" },
+                    { y: 5, label: "Lychee" },
+                    { y: 4, label: "Jackfruit" }
+                ],
+
+                //You can add dynamic data from the controller as shown below. Check the controller and uncomment the line which generates dataPoints.
+                //dataPoints: @Html.Raw(ViewBag.DataPoints),
+            }
+            ]
+        });
+        chart.render();
     }
 
     $(document).ready(function () {
-        ChartJSdashboard();
-        function setNameColume() {
-            var nameColumn = []
-            var getMonth = new Date().getMonth() + 1;
-
-            //Date.prototype.getMonthNameShort = function (lang) {
-            //    lang = lang && (lang in Date.locale) ? lang : 'en';
-            //    return Date.locale[lang].month_names_short[this.getMonth()];
-            //};
+        getBarchart();
+        getBarchartChannels();
+        //getBarchartCompany();
 
 
-            //Date.locale = {
-            //    en: {
-            //        month_names: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
-            //        month_names_short: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
-            //    }
-            //};
-            var month_names_short = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+        //dataPointsChartBarCol();
+        //setColumnBarColors(columnColors, 'designerChart');
 
-            nameColumn.push({ "data": "FEE", "title": "รายการ", "type": "num", "width": "250px" });
-
-
-            for (var i = 1; i <= getMonth; i++) {
-                nameColumn.push({ "data": month_names_short[i - 1], "title": "Month" + i, "type": "string", "width": "200" });
-            }
-            nameColumn.push({ "data": "CHARGE", "hidden": true });
-            return nameColumn;
-
-        }
-        var columns = setNameColume();
-        //var colums = [
-        //      { "data": "Roles", "title": "ลำดับที่", "type": "num", "width": "100px" },
-        //      { "data": "COMPANY_NAME", "title": "Company", "type": "string", "width": "200" },
-        //      { "data": "MONTH_NAME", "title": "Month", "type": "string", "width": "100px" },
-        //      { "data": "INV_YEAR", "title": "Year", "type": "num", "width": "100px" },
-        //      { "data": "GL_ACCOUNT", "title": "GL Account", "type": "string", "width": "100px" },
-        //      { "data": "COST_CENTER", "title": "Cost Center", "type": "string", "width": "100px" },
-        //      { "data": "PAYMENT_ITEMS_NAME", "title": "Description", "type": "string", "width": "200" },
-        //      { "data": "NET_AMOUNT", "title": "Total Charge Amount", "type": "currency", "width": "100px", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
-        //      { "data": "INV_REC_BY_TEXT", "title": "สร้างโดย", "type": "string", "width": "100px" },
-        //      { "data": "PRO_REC_DATE", "title": "วันที่รับเอกสาร", "type": "date-dd-mmm-yyyy", "width": "150" },
-        //      { "data": "INV_APPROVED_DATE", "title": "วันที่อนุมัติ", "type": "date-dd-mmm-yyyy", "width": "150" }
-        //];
-        displayDataTablescroll('dataListTable', '@Url.Action("GetList","Home")', columns);
-
-
-        //$('#dataListTable tbody').filter(function () {
-
-        //    console.log($(this).text())
-        //    return $(this).text()== '1';
-        //}).css('background-color', '#f1f442');
-
-        //$('#dataListTable tr').each(function () {
-        //    console.log($(this).parent('tbody').css('background-color', '#e8789d'))
+        //// Color turns to original when window is resized
+        //// To handle that
+        //$(window).resize(function() {
+        //    setColumnBarColors(columnColors, 'designerChart');
         //});
-        $('#dataListTable tr ').each(function () {
-            console.log($(this).closest('tbody').css('background-color', '#e8789d'));
-        });
-
     });
 
 </script>
