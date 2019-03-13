@@ -411,11 +411,24 @@ namespace BBDEVSYS.Services.Accrued
                             {
                                 comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
                             }
+                            #region  Summary All Report
+                            List<AccruedReportViewModel> data = GetAllAccruedandActualReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                            if (data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(data);
+                                _dt.TableName = "All";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                            #endregion
+
 
                             foreach (var item in comBuLst)
                             {
                                 List<AccruedReportViewModel> _data = GetAccruedandActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-                                
+
                                 if (_data.Any())
                                 {
                                     DataTable _dt = new DataTable();
@@ -428,8 +441,21 @@ namespace BBDEVSYS.Services.Accrued
                         }
                         else
                         {
+                            #region  Summary All Report
+                            List<AccruedReportViewModel> data = GetAllAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                            if (data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(data);
+                                _dt.TableName = "All";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                            #endregion
+
                             List<AccruedReportViewModel> _data = GetAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-                           
+
                             if (_data.Any())
                             {
                                 DataTable _dt = new DataTable();
@@ -454,6 +480,18 @@ namespace BBDEVSYS.Services.Accrued
                             {
                                 comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
                             }
+                            #region  Summary All Report
+                            List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                            if (data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(data);
+                                _dt.TableName = "All";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                            #endregion
 
                             foreach (var item in comBuLst)
                             {
@@ -470,6 +508,19 @@ namespace BBDEVSYS.Services.Accrued
                         }
                         else
                         {
+                            #region  Summary All Report
+                            List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                            if (data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(data);
+                                _dt.TableName = "All";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                            #endregion
+
                             List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                             if (_data.Any())
                             {
@@ -496,7 +547,18 @@ namespace BBDEVSYS.Services.Accrued
                             {
                                 comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
                             }
+                            #region  Summary All Report
+                            List<AccruedReportViewModel> data = GetAllActualReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
+                            if (data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(data);
+                                _dt.TableName = "All";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                            #endregion
                             foreach (var item in comBuLst)
                             {
                                 List<AccruedReportViewModel> _data = GetActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
@@ -512,6 +574,18 @@ namespace BBDEVSYS.Services.Accrued
                         }
                         else
                         {
+                            #region  Summary All Report
+                            List<AccruedReportViewModel> data = GetAllActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                            if (data.Any())
+                            {
+                                DataTable _dt = new DataTable();
+                                _dt = ReportService.ToDataTable(data);
+                                _dt.TableName = "All";
+                                //ds = new DataSet();
+                                ds.Tables.Add(_dt);
+                            }
+                            #endregion
                             List<AccruedReportViewModel> _data = GetActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                             if (_data.Any())
                             {
@@ -606,6 +680,341 @@ namespace BBDEVSYS.Services.Accrued
             }
             return ds;
         }
+        public List<AccruedReportViewModel> GetAllAccruedReportList_Summary(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
+        {
+            List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
+            try
+            {
+                using (var context = new PYMFEEEntities())
+                {
+                    #region prepare entity
+                    var feeList = (from m in context.PAYMENT_ITEMS
+                                   where m.IS_ACTIVE == true
+                                   orderby m.GROUP_SEQ_CHANNELS
+                                   select m).ToList();
+
+                    var feeItemList = (from m in context.PAYMENT_ITEMS_CHAGE
+                                       orderby m.SEQUENCE
+                                       select m).ToList();
+
+                    var entFeeInv = (from m in context.FEE_INVOICE
+                                     where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
+                                     orderby m.INV_MONTH, m.INV_YEAR
+                                     select m).ToList();
+                    var entFeeAccr = (from m in context.FEE_ACCRUED_PLAN_ITEM
+                                      where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
+                                      orderby m.ACCRUED_MONTH, m.ACCRUED_YEAR
+                                      select m).ToList();
+
+
+                    var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
+                    var entFeeAccrItem = (from m in context.FEE_ACCRUED_PLAN_ITEM_SUB select m).ToList();
+
+                    entFeeInv = entFeeInv.Where(m => m.IS_STATUS != "3").ToList();
+
+                    if (!string.IsNullOrEmpty(companyCode))
+                    {
+                        feeList = (from m in feeList where m.COMPANY_CODE == companyCode orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        feeItemList = (from m in feeItemList where m.COMPANY_CODE == companyCode && feeList.Any(p => m.PAYMENT_ITEMS_ID == p.ID) orderby m.SEQUENCE select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => m.COMPANY_CODE == companyCode).ToList();
+                        entFeeAccr = entFeeAccr.Where(m => m.COMPANY_CODE == companyCode).ToList();
+
+                    }
+                    else
+                    {
+                        if (bu != "ALL")
+                        {
+                            var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit select com).ToList();
+                            companyData = companyData.Where(m => m.Bussiness_Unit == bu).ToList();
+
+                            feeList = (from m in feeList where companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY) orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                            entFeeInv = entFeeInv.Where(m => companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY)).ToList();
+                        }
+                    }
+
+
+
+
+                    if (chnn != "ALL")
+                    {
+                        feeList = (from m in feeList where m.CHANNELS == chnn orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+                        entFeeAccr = entFeeAccr.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+                    }
+
+                    //check list fee in accrued
+                    if (entFeeAccr.Any())
+                    {
+                        feeList = feeList.Where(m => entFeeAccr.Any(a => a.PAYMENT_ITEMS_CODE == m.PAYMENT_ITEMS_CODE)).ToList();
+
+                        //get Doc Accrued Max Period
+                        var maxDocAccrued = entFeeAccr.Max(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH);
+                        entFeeAccr = entFeeAccr.Where(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH == maxDocAccrued).ToList();
+                    }
+
+
+                    feeList = feeList.OrderBy(m => m.GROUP_SEQ_CHANNELS).ToList();
+
+                    #endregion
+
+                    var feePriceCatList = feeList.GroupBy(g => new { g.PAYMENT_ITEMS_NAME, g.CHANNELS }).ToList();
+
+                    var culture = CultureInfo.GetCultureInfo("en-US");
+                    var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                    var get_month = (yearE * 12 + monthE) - (yearS * 12 + monthS);
+                    var _diffmonths = get_month + 1;
+                    int currentMonth = DateTime.Now.Date.Month;
+                    decimal[] arrMonthGrandTrxn = new decimal[_diffmonths];
+                    decimal[] arrMonthGrnadTotal = new decimal[get_month + 1];
+
+
+
+                    #region Detail
+                    foreach (var item in feePriceCatList)
+                    {
+                        var allpricecat = feeList.Where(m => m.PAYMENT_ITEMS_NAME == item.Key.PAYMENT_ITEMS_NAME).ToList();
+
+                        decimal[] arrMonthTotalTrxn = new decimal[_diffmonths];
+                        decimal[] arrMonthTotal = new decimal[_diffmonths];
+                        int rowfirst = 0;
+
+                        var feeInvList = entFeeInv.Where(m => allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)).ToList();
+
+                        var feeAccrList = entFeeAccr.Where(m => allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)).ToList();
+
+                        var get_entFeeInvItem = (from n in entFeeInvItem
+                                                 where feeInvList.Any(f => n.INV_NO == f.INV_NO)
+                                                 orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                                 select n).ToList();
+
+                        var get_entFeeAccrItem = (from n in entFeeAccrItem
+                                                  where feeAccrList.Any(f => n.ACCRUED_ITEM_ID == f.ACCRUED_ITEM_ID)
+                                                  orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                                  select n).ToList();
+                        //===group data charge list===
+                        var group_charge = (from m in feeItemList where allpricecat.Any(p => m.PAYMENT_ITEMS_ID == p.ID) orderby m.CHARGE_TYPE descending select m).ToList();
+                        var group_Trxncharge = group_charge.Where(m => m.CHARGE_TYPE == "TRXN").ToList();
+
+
+                        #region Trxn + Amt
+
+                        decimal[] arrMonthTrxn = new decimal[_diffmonths];
+                        decimal[] arrMonthAMT = new decimal[_diffmonths];
+
+
+
+                        var model = new AccruedReportViewModel();
+                        rowfirst++;
+                        model.CHANNELS = rowfirst == 1 ? item.Key.CHANNELS : "";
+                        model.FEE = rowfirst == 1 ? item.Key.PAYMENT_ITEMS_NAME : "";
+
+
+                        int _mnth = monthS;
+                        int _yrr = yearS;
+                        int _iLoop = 0;
+
+
+                        #region set value column month total transaction
+
+                        model.CHARGE = "Trxns Fee";
+                        while (_iLoop < _diffmonths)
+                        {
+                            if (_mnth == 13)
+                            {
+                                _mnth = 1;
+                                _yrr++;
+                            }
+                            string yStr = _yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TRANSACTIONS ?? 0) : item_inv_chrge.Sum(m => m.TRANSACTIONS ?? 0);
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                        Convert.ToString(string.Format("{0:#,##0.####}", sumtrxn)));
+
+                            _iLoop++;
+                            _mnth++;
+                        }
+                        modelList.Add(model);
+
+
+                        #endregion
+
+
+                        #region set value column month amount mdr
+
+                        model = new AccruedReportViewModel();
+
+                        model.CHARGE = "Amount MDR";
+                        while (_iLoop < _diffmonths)
+                        {
+                            if (_mnth == 13)
+                            {
+                                _mnth = 1;
+                                _yrr++;
+                            }
+                            string yStr = _yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                            decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0);
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                        Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
+
+                            _iLoop++;
+                            _mnth++;
+                        }
+                        modelList.Add(model);
+
+
+                        #endregion
+
+
+                        #endregion
+
+                        #region Total
+                        model = new AccruedReportViewModel();
+                        model.CHARGE = "Total";
+                        #region set value column month Total 
+                        int mnth = monthS;
+                        int yrr = yearS;
+                        int iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                            decimal sumamtcharge = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0);
+
+
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                        Convert.ToString(string.Format("{0:#,##0.####}", sumamtcharge)));
+
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+
+
+                        modelList.Add(model);
+                        #endregion
+
+
+                    }//fee channels
+                    #endregion
+
+                    #region Summary Grand
+
+                    var sum_entFeeInvItem = (from n in entFeeInvItem
+                                             where entFeeInv.Any(f => n.INV_NO == f.INV_NO)
+                                             orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                             select n).ToList();
+
+                    var sum_entFeeAccrItem = (from n in entFeeAccrItem
+                                              where entFeeAccr.Any(f => n.ACCRUED_ITEM_ID == f.ACCRUED_ITEM_ID)
+                                              orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                              select n).ToList();
+                    var modelGrand = new AccruedReportViewModel();
+                    modelGrand.CHARGE = "Total All Trxn.";
+                    var modelGrandList = new List<AccruedReportViewModel>();
+
+                    #region set value column month Total Grand Trxn
+                    int grandmnth = monthS;
+                    int grandyrr = yearS;
+                    int grandiLoop = 0;
+                    while (grandiLoop < _diffmonths)
+                    {
+                        if (grandmnth == 13)
+                        {
+                            grandmnth = 1;
+                            grandyrr++;
+                        }
+                        string yStr = grandyrr.ToString().Substring(2, 2);
+                        string monthIndex = dateTimeInfo.AbbreviatedMonthNames[grandmnth - 1] + yStr;
+
+                        var item_acc_chrge = sum_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (grandyrr * 12) + grandmnth).ToList();
+
+                        var item_inv_chrge = sum_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (grandyrr * 12) + grandmnth).ToList();
+                        decimal grandtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TRANSACTIONS ?? 0) : item_inv_chrge.Sum(m => m.TRANSACTIONS ?? 0);
+
+
+
+                        modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
+                    Convert.ToString(string.Format("{0:#,##0.####}", grandtrxn)));
+
+                        grandiLoop++;
+                        grandmnth++;
+                    }
+
+                    #endregion
+
+
+                    modelGrandList.Add(modelGrand);
+
+                    modelList.AddRange(modelGrandList);
+
+                    modelGrand = new AccruedReportViewModel();
+                    modelGrand.CHARGE = "Grand Total";
+                    modelGrandList = new List<AccruedReportViewModel>();
+
+
+                    #region set value column month Total Grand 
+                    grandmnth = monthS;
+                    grandyrr = yearS;
+                    grandiLoop = 0;
+                    while (grandiLoop < _diffmonths)
+                    {
+                        if (grandmnth == 13)
+                        {
+                            grandmnth = 1;
+                            grandyrr++;
+                        }
+                        string yStr = grandyrr.ToString().Substring(2, 2);
+                        string monthIndex = dateTimeInfo.AbbreviatedMonthNames[grandmnth - 1] + yStr;
+                        var item_acc_chrge = sum_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (grandyrr * 12) + grandmnth).ToList();
+
+                        var item_inv_chrge = sum_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (grandyrr * 12) + grandmnth).ToList();
+                        decimal grandamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                        modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
+                        Convert.ToString(string.Format("{0:#,##0.####}", grandamount)));
+                        grandiLoop++;
+                        grandmnth++;
+                    }
+
+                    #endregion
+
+                    modelGrandList.Add(modelGrand);
+
+                    modelList.AddRange(modelGrandList);
+
+                    #endregion
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return modelList;
+        }
+
         public List<AccruedReportViewModel> GetAccruedReportList_Summary(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
         {
             List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
@@ -1328,6 +1737,352 @@ namespace BBDEVSYS.Services.Accrued
             return modelList;
         }
 
+        public List<AccruedReportViewModel> GetAllAccruedandActualReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
+        {
+            List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
+            try
+            {
+                using (var context = new PYMFEEEntities())
+                {
+                    #region prepare entity
+                    var feeList = (from m in context.PAYMENT_ITEMS
+                                   where m.IS_ACTIVE == true
+                                   orderby m.GROUP_SEQ_CHANNELS
+                                   select m).ToList();
+
+                    var feeItemList = (from m in context.PAYMENT_ITEMS_CHAGE
+                                       orderby m.SEQUENCE
+                                       select m).ToList();
+
+                    var entFeeInv = (from m in context.FEE_INVOICE
+                                     where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
+                                     orderby m.INV_MONTH, m.INV_YEAR
+                                     select m).ToList();
+                    var entFeeAccr = (from m in context.FEE_ACCRUED_PLAN_ITEM
+                                      where (m.INV_YEAR * 12 + m.INV_MONTH) >= (yearS * 12 + monthS) && (m.INV_YEAR * 12 + m.INV_MONTH) <= (yearE * 12 + monthE)
+                                      orderby m.ACCRUED_MONTH, m.ACCRUED_YEAR
+                                      select m).ToList();
+
+
+                    var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
+                    var entFeeAccrItem = (from m in context.FEE_ACCRUED_PLAN_ITEM_SUB select m).ToList();
+
+
+                    if (!string.IsNullOrEmpty(companyCode))
+                    {
+                        feeList = (from m in feeList where m.COMPANY_CODE == companyCode orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        feeItemList = (from m in feeItemList where m.COMPANY_CODE == companyCode && feeList.Any(p => m.PAYMENT_ITEMS_ID == p.ID) orderby m.SEQUENCE select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => m.COMPANY_CODE == companyCode).ToList();
+                        entFeeAccr = entFeeAccr.Where(m => m.COMPANY_CODE == companyCode).ToList();
+
+                    }
+                    else
+                    {
+                        if (bu != "ALL")
+                        {
+                            var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit select com).ToList();
+                            companyData = companyData.Where(m => m.Bussiness_Unit == bu).ToList();
+
+                            feeList = (from m in feeList where companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY) orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                            entFeeInv = entFeeInv.Where(m => companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY)).ToList();
+                        }
+                    }
+
+                    if (chnn != "ALL")
+                    {
+                        feeList = (from m in feeList where m.CHANNELS == chnn orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+                        entFeeAccr = entFeeAccr.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+                    }
+
+                    //check list fee in accrued
+                    if (entFeeAccr.Any())
+                    {
+                        feeList = feeList.Where(m => entFeeAccr.Any(a => a.PAYMENT_ITEMS_CODE == m.PAYMENT_ITEMS_CODE)).ToList();
+
+                        //get Doc Accrued Max Period
+                        var maxDocAccrued = entFeeAccr.Max(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH);
+                        entFeeAccr = entFeeAccr.Where(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH == maxDocAccrued).ToList();
+                    }
+
+
+                    feeList = feeList.OrderBy(m => m.GROUP_SEQ_CHANNELS).ToList();
+
+
+                    var feePriceCatList = feeList.GroupBy(g => new { g.PAYMENT_ITEMS_NAME, g.CHANNELS }).ToList();
+
+
+                    #endregion
+
+                    var culture = CultureInfo.GetCultureInfo("en-US");
+                    var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                    var get_month = (yearE * 12 + monthE) - (yearS * 12 + monthS);
+                    var _diffmonths = get_month + 1;
+                    int currentMonth = DateTime.Now.Date.Month;
+                    decimal[] arrMonthGrandTrxn = new decimal[_diffmonths];
+                    decimal[] arrMonthGrnadTotal = new decimal[get_month + 1];
+
+                    #region Detail
+                    foreach (var item in feePriceCatList)
+                    {
+
+                        var allpricecat = feeList.Where(m => m.PAYMENT_ITEMS_NAME == item.Key.PAYMENT_ITEMS_NAME).ToList();
+
+                        decimal[] arrMonthTotalTrxn = new decimal[_diffmonths];
+                        decimal[] arrMonthTotal = new decimal[_diffmonths];
+                        int rowfirst = 0;
+
+                        bool chkTotalTrx = false;
+                        var feeInvList = entFeeInv.Where(m => allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)).ToList();
+
+                        var feeAccrList = entFeeAccr.Where(m => allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)).ToList();
+
+                        var get_entFeeInvItem = (from n in entFeeInvItem
+                                                 where feeInvList.Any(f => n.INV_NO == f.INV_NO)
+                                                 orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                                 select n).ToList();
+
+                        var get_entFeeAccrItem = (from n in entFeeAccrItem
+                                                  where feeAccrList.Any(f => n.ACCRUED_ITEM_ID == f.ACCRUED_ITEM_ID)
+                                                  orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                                  select n).ToList();
+                        //===group data charge list===
+                        var group_charge = (from m in feeItemList where allpricecat.Any(p => m.PAYMENT_ITEMS_ID == p.ID) orderby m.CHARGE_TYPE descending select m).ToList();
+                        var group_Trxncharge = group_charge.Where(m => m.CHARGE_TYPE == "TRXN").ToList();
+
+
+                        #region Trxn + Amt
+
+
+
+                        var model = new AccruedReportViewModel();
+                        rowfirst++;
+                        model.CHANNELS = rowfirst == 1 ? item.Key.CHANNELS : "";
+                        model.FEE = rowfirst == 1 ? item.Key.PAYMENT_ITEMS_NAME : "";
+
+                        #region value before calculate avg  Transaction and Amount
+                        //===charge ===
+                        int mS = monthS;
+                        int mE = monthE;
+                        int yS = yearS;
+                        int yE = yearE;
+                        int mth = mS;
+                        int yr = yS;
+
+                        #endregion
+
+
+
+                        #region set value column month total transaction
+                        int mnth = monthS;
+                        int yrr = yearS;
+                        int iLoop = 0;
+                        model.CHARGE = "Trxn Fee";
+
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TRANSACTIONS ?? 0) : item_inv_chrge.Sum(m => m.TRANSACTIONS ?? 0);
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                            Convert.ToString(string.Format("{0:#,##0.####}", sumtrxn)));
+
+                            iLoop++;
+                            mnth++;
+                        }
+                        modelList.Add(model);
+
+
+                        #endregion
+
+                        #region set value column month amount mdr
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        if (chkTotalTrx)
+                        {
+                            model = new AccruedReportViewModel();
+                            model.CHARGE = "Amount MDR";
+
+                            while (iLoop < _diffmonths)
+                            {
+                                if (mnth == 13)
+                                {
+                                    mnth = 1;
+                                    yrr++;
+                                }
+                                string yStr = yrr.ToString().Substring(2, 2);
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+
+                                var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+
+                                var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                                decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0);
+
+                                model.GetType().GetProperty((monthIndex)).SetValue(model,
+                                Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
+
+                                iLoop++;
+                                mnth++;
+                            }
+                            modelList.Add(model);
+                        }
+
+                        #endregion
+
+
+
+                        #endregion
+
+
+                        #region Total
+
+                        model = new AccruedReportViewModel();
+                        model.CHARGE = "Total";
+
+                        #region set value column month Total 
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                            decimal sumamtcharge = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                        Convert.ToString(string.Format("{0:#,##0.####}", sumamtcharge)));
+
+                            iLoop++;
+                            mnth++;
+                        }
+
+                        #endregion
+                        modelList.Add(model);
+                        #endregion
+
+
+
+                    }//fee channels
+                    #endregion
+
+                    #region Summary Grand
+
+                    var sum_entFeeInvItem = (from n in entFeeInvItem
+                                             where entFeeInv.Any(f => n.INV_NO == f.INV_NO)
+                                             orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                             select n).ToList();
+
+                    var sum_entFeeAccrItem = (from n in entFeeAccrItem
+                                              where entFeeAccr.Any(f => n.ACCRUED_ITEM_ID == f.ACCRUED_ITEM_ID)
+                                              orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                              select n).ToList();
+
+                    var modelGrand = new AccruedReportViewModel();
+                    modelGrand.CHARGE = "Total All Trxn.";
+                    var modelGrandList = new List<AccruedReportViewModel>();
+
+
+
+                    #region set value column month Total Grand Trxn
+                    int _mnth = monthS;
+                    int _yrr = yearS;
+                    int _iLoop = 0;
+                    while (_iLoop < _diffmonths)
+                    {
+                        if (_mnth == 13)
+                        {
+                            _mnth = 1;
+                            _yrr++;
+                        }
+                        string yStr = _yrr.ToString().Substring(2, 2);
+                        string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+                        var item_acc_chrge = sum_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+
+                        var item_inv_chrge = sum_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                        decimal grandtran = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TRANSACTIONS ?? 0) : item_inv_chrge.Sum(m => m.TRANSACTIONS ?? 0);
+
+
+
+                        modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
+                    Convert.ToString(string.Format("{0:#,##0.####}", grandtran)));
+
+                        _iLoop++;
+                        _mnth++;
+                    }
+
+                    #endregion
+
+
+                    modelGrandList.Add(modelGrand);
+
+                    modelList.AddRange(modelGrandList);
+
+                    modelGrand = new AccruedReportViewModel();
+                    modelGrand.CHARGE = "Grand Total";
+                    modelGrandList = new List<AccruedReportViewModel>();
+
+                    #region set value column month Total Grand 
+                    _mnth = monthS;
+                    _yrr = yearS;
+                    _iLoop = 0;
+                    while (_iLoop < _diffmonths)
+                    {
+                        if (_mnth == 13)
+                        {
+                            _mnth = 1;
+                            _yrr++;
+                        }
+                        string yStr = _yrr.ToString().Substring(2, 2);
+                        string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+                        var item_acc_chrge = sum_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+
+                        var item_inv_chrge = sum_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                        decimal grandamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                        modelGrand.GetType().GetProperty((monthIndex)).SetValue(modelGrand,
+                        Convert.ToString(string.Format("{0:#,##0.####}", grandamount)));
+                        _iLoop++;
+                        _mnth++;
+                    }
+
+                    #endregion
+
+                    modelGrandList.Add(modelGrand);
+
+                    modelList.AddRange(modelGrandList);
+
+                    #endregion
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return modelList;
+        }
+
 
         public List<AccruedReportViewModel> GetAccruedandActualReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
         {
@@ -1358,7 +2113,7 @@ namespace BBDEVSYS.Services.Accrued
 
                     var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
                     var entFeeAccrItem = (from m in context.FEE_ACCRUED_PLAN_ITEM_SUB select m).ToList();
-                    
+
 
                     if (!string.IsNullOrEmpty(companyCode))
                     {
@@ -2004,7 +2759,7 @@ namespace BBDEVSYS.Services.Accrued
                         modelGrand.CHARGE = "Grand Total";
                         modelGrandList = new List<AccruedReportViewModel>();
                         iGrand = 0;
-                        
+
                         #region set value column month Total Grand 
                         mnth = monthS;
                         yrr = yearS;
@@ -2754,6 +3509,285 @@ namespace BBDEVSYS.Services.Accrued
         }
 
 
+        public List<AccruedReportViewModel> GetAllActualReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
+        {
+            List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
+            try
+            {
+                using (var context = new PYMFEEEntities())
+                {
+                    var feeList = (from m in context.PAYMENT_ITEMS
+                                   where m.IS_ACTIVE == true
+                                   orderby m.GROUP_SEQ_CHANNELS
+                                   select m).ToList();
+                    var entFeeInv = (from m in context.FEE_INVOICE
+                                     where (m.INV_YEAR * 12) + m.INV_MONTH >= (yearS * 12) + monthS
+                                     && (m.INV_YEAR * 12) + m.INV_MONTH <= (yearE * 12) + monthE
+                                     orderby m.INV_MONTH, m.INV_YEAR
+                                     select m).ToList();
+
+
+                    if (!string.IsNullOrEmpty(companyCode))
+                    {
+                        feeList = (from m in feeList where m.COMPANY_CODE == companyCode orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        entFeeInv = entFeeInv.Where(m => m.COMPANY_CODE == companyCode).ToList();
+
+                    }
+                    else
+                    {
+                        if (bu != "ALL")
+                        {
+                            var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit select com).ToList();
+                            companyData = companyData.Where(m => m.Bussiness_Unit == bu).ToList();
+
+                            feeList = (from m in feeList where companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY) orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                            entFeeInv = entFeeInv.Where(m => companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY)).ToList();
+                        }
+                    }
+                    if (chnn != "ALL")
+                    {
+                        feeList = (from m in feeList where m.CHANNELS == chnn orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+
+                        entFeeInv = entFeeInv.Where(m => feeList.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+
+                    }
+                    feeList = feeList.OrderBy(m => m.GROUP_SEQ_CHANNELS).ToList();
+
+
+
+                    var feePriceCatList = feeList.GroupBy(g => new { g.PAYMENT_ITEMS_NAME, g.CHANNELS }).ToList();
+
+
+                    var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
+                    int rowfirst = 0;
+                    foreach (var item in feePriceCatList)
+                    {
+                        #region Trxn & Actual AMT
+                        rowfirst = 0;
+
+                        var allpricecat = feeList.Where(m => m.PAYMENT_ITEMS_NAME == item.Key.PAYMENT_ITEMS_NAME).ToList();
+
+                        var feeInv = (from m in entFeeInv
+                                      join n in entFeeInvItem on m.INV_NO equals n.INV_NO
+                                      where allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)
+                                      orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                      select new { m, n }).ToList();
+
+
+
+                        rowfirst++;
+                        var model = new AccruedReportViewModel();
+                        model.CHANNELS = rowfirst == 1 ? item.Key.CHANNELS : "";
+                        model.FEE = rowfirst == 1 ? item.Key.PAYMENT_ITEMS_NAME : "";
+
+
+                        //Data Trxn
+                        #region feeInv Trxn
+                        var culture = CultureInfo.GetCultureInfo("en-US");
+                        var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                        var getmonth = (yearE * 12 + monthE) - (yearS * 12 + monthS);
+                        var mnth = getmonth + 1;
+                        int _getmnth = monthS;
+                        int _getyr = yearS;
+                        #region Total Trxn
+
+                        _getmnth = monthS;
+                        _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                            model.CHARGE = "Trxn Fee";
+                            model.GetType().GetProperty(monthIndex).SetValue(model,
+                          Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => m.n.TRANSACTIONS ?? 0)))));
+
+                            _getmnth++;
+                        }//row month
+                        modelList.Add(model);
+
+
+                        //End sum total trxn
+
+                        #endregion
+
+
+                        #region Amount MDR
+
+
+
+
+                        model = new AccruedReportViewModel();
+                        _getmnth = monthS;
+                        _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                            model.CHARGE = "Amount MDR";
+                            model.GetType().GetProperty(monthIndex).SetValue(model,
+                  Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => m.n.ACTUAL_AMOUNT ?? 0)))));
+
+                            _getmnth++;
+                        }//row month
+                        modelList.Add(model);
+
+
+
+                        //End sum total trxn
+
+                        #endregion
+                        #endregion
+
+                        #endregion
+
+                        //End Loop
+
+                        //total charging
+
+                        model = new AccruedReportViewModel();
+
+
+                        model.CHARGE = "Total";
+                        _getmnth = monthS;
+                        _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueInvLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                            if (valueInvLst.Any())
+                            {
+                                model.GetType().GetProperty(monthIndex).SetValue(model,
+                       Convert.ToString(string.Format("{0:#,##0.####}", (valueInvLst.Sum(m => m.n.TOTAL_CHARGE_AMOUNT ?? 0)))));
+
+                            }
+                            else
+                            {
+                                model.GetType().GetProperty(monthIndex).SetValue(model,
+                      Convert.ToString(string.Format("{0:#,##0.####}", 0)));
+                            }
+                            _getmnth++;
+                        }
+                        modelList.Add(model);
+
+                    }
+                    //End Fee List
+                    #region Gran Total
+
+                    var InvLst = (from m in entFeeInv
+                                  join n in entFeeInvItem on m.INV_NO equals n.INV_NO
+                                  orderby n.RATE_TRANS descending, n.TRANSACTIONS descending, n.RATE_AMT descending, n.ACTUAL_AMOUNT descending, n.SEQUENCE
+                                  select new { m, n }).ToList();
+                    if (chnn != "ALL")
+                    {
+                        InvLst = InvLst.Where(v => feeList.Any(m => v.m.PAYMENT_ITEMS_CODE == m.PAYMENT_ITEMS_CODE)).ToList();
+                    }
+                    if (InvLst.Any())
+                    {
+
+                        List<AccruedReportViewModel> granmodelList = new List<AccruedReportViewModel>();
+                        var granmodel = new AccruedReportViewModel();
+                        granmodel.CHARGE = "Total All Trxn";
+                        var culture = CultureInfo.GetCultureInfo("en-US");
+                        var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                        var getmonth = (yearE * 12 + monthE) - (yearS * 12 + monthS);
+                        var mnth = getmonth + 1;
+                        int _getmnth = monthS;
+                        int _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueInvLst = InvLst.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                            if (valueInvLst.Any())
+                            {
+                                granmodel.GetType().GetProperty(monthIndex).SetValue(granmodel,
+                       Convert.ToString(string.Format("{0:#,##0.####}", (valueInvLst.Sum(m => m.n.TRANSACTIONS ?? 0)))));
+
+                            }
+                            else
+                            {
+                                granmodel.GetType().GetProperty(monthIndex).SetValue(granmodel,
+                      Convert.ToString(string.Format("{0:#,##0.####}", 0)));
+                            }
+                            _getmnth++;
+                        }
+
+                        granmodelList.Add(granmodel);
+
+
+                        granmodel = new AccruedReportViewModel();
+                        granmodel.CHARGE = "Grand Total";
+                        _getmnth = monthS;
+                        _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueInvLst = InvLst.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                            if (valueInvLst.Any())
+                            {
+                                granmodel.GetType().GetProperty(monthIndex).SetValue(granmodel,
+                       Convert.ToString(string.Format("{0:#,##0.####}", (valueInvLst.Sum(m => m.n.TOTAL_CHARGE_AMOUNT ?? 0)))));
+
+                            }
+                            else
+                            {
+                                granmodel.GetType().GetProperty(monthIndex).SetValue(granmodel,
+                      Convert.ToString(string.Format("{0:#,##0.####}", 0)));
+                            }
+                            _getmnth++;
+                        }
+
+                        granmodelList.Add(granmodel);
+
+                        modelList.AddRange(granmodelList);
+                    }
+                    #endregion
+
+
+
+                }
+
+
+
+
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return modelList;
+        }
 
         public List<AccruedReportViewModel> GetActualReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
         {
@@ -2779,6 +3813,17 @@ namespace BBDEVSYS.Services.Accrued
                         entFeeInv = entFeeInv.Where(m => m.COMPANY_CODE == companyCode).ToList();
 
                     }
+                    //else
+                    //{
+                    //    if (bu != "ALL")
+                    //    {
+                    //        var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit select com).ToList();
+                    //        companyData = companyData.Where(m => m.Bussiness_Unit == bu).ToList();
+
+                    //        feeList = (from m in feeList where companyData.Any(c=> m.COMPANY_CODE == c.BAN_COMPANY) orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                    //        entFeeInv = entFeeInv.Where(m => companyData.Any(c => m.COMPANY_CODE == c.BAN_COMPANY) ).ToList();
+                    //    }
+                    //}
                     if (chnn != "ALL")
                     {
                         feeList = (from m in feeList where m.CHANNELS == chnn orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
@@ -2799,6 +3844,8 @@ namespace BBDEVSYS.Services.Accrued
                     //                     select m).ToList();
                     //    }
                     //}
+
+
 
 
                     var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
