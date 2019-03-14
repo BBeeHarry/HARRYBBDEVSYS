@@ -86,6 +86,7 @@
                                 @Html.LabelFor(m => m.FEE_TYPE) :
                             </label>
                             <div class="col-xs-12 col-md-3">
+
                                 @Html.DropDownListFor(m => m.FEE_TYPE, new SelectList(Model.feeTypeLst, "Value", "Text", 1), "", new { @class = "form-control", style = "width:100%;" })
 
 
