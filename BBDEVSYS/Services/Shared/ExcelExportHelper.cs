@@ -792,6 +792,7 @@ namespace BBDEVSYS.Services.Shared
                             }
                             if (item["CHARGE"] == "Inv No.")
                             {
+                                // Count Row for Merge Data
                                 rowMergeE = startRowFrom + rowT;
                                 using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                 {
@@ -801,6 +802,21 @@ namespace BBDEVSYS.Services.Shared
                                     r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
                                 }
 
+                            }
+                            if (data == 0)
+                            {//--Merge Row Report All
+                                if (item["CHARGE"] == "Total")
+                                {
+                                    rowMergeE = startRowFrom + rowT;
+                                    //using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    //{
+                                    //    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                    //    r.Style.Font.Bold = false;
+                                    //    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                    //    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                    //}
+
+                                }
                             }
                             if (rowMergeS != 0 && rowMergeE != 0 && rowMergeS <= rowMergeE)
                             {
