@@ -979,6 +979,7 @@ namespace BBDEVSYS.Services.Accrued
                     grandmnth = monthS;
                     grandyrr = yearS;
                     grandiLoop = 0;
+
                     while (grandiLoop < _diffmonths)
                     {
                         if (grandmnth == 13)
