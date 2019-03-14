@@ -1831,8 +1831,7 @@ namespace BBDEVSYS.Services.Accrued
                         decimal[] arrMonthTotalTrxn = new decimal[_diffmonths];
                         decimal[] arrMonthTotal = new decimal[_diffmonths];
                         int rowfirst = 0;
-
-                        bool chkTotalTrx = false;
+                        
                         var feeInvList = entFeeInv.Where(m => allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)).ToList();
 
                         var feeAccrList = entFeeAccr.Where(m => allpricecat.Any(p => m.PAYMENT_ITEMS_CODE == p.PAYMENT_ITEMS_CODE)).ToList();
@@ -1909,8 +1908,7 @@ namespace BBDEVSYS.Services.Accrued
                         mnth = monthS;
                         yrr = yearS;
                         iLoop = 0;
-                        if (chkTotalTrx)
-                        {
+                       
                             model = new AccruedReportViewModel();
                             model.CHARGE = "Amount MDR";
 
@@ -1936,7 +1934,7 @@ namespace BBDEVSYS.Services.Accrued
                                 mnth++;
                             }
                             modelList.Add(model);
-                        }
+                        
 
                         #endregion
 
