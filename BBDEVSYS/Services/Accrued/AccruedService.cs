@@ -881,7 +881,7 @@ namespace BBDEVSYS.Services.Accrued
                             #region Total
                             int indexTotal = 0;
                             var modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "Total";
+                            modelTotal.CHARGE = "Total Fee";
                             var modelTotalList = new List<AccruedReportViewModel>();
                             //foreach (var total in arrMonthTotal.ToArray())
                             //{
@@ -1092,7 +1092,7 @@ namespace BBDEVSYS.Services.Accrued
                         modelList.AddRange(modelGrandList);
 
                         modelGrand = new AccruedReportViewModel();
-                        modelGrand.CHARGE = "Grand Total";
+                        modelGrand.CHARGE = "Grand Total Fee";
                         modelGrandList = new List<AccruedReportViewModel>();
                         iGrand = 0;
                         //foreach (var grandTotal in arrMonthGrnadTotal.ToArray())
@@ -1500,7 +1500,7 @@ namespace BBDEVSYS.Services.Accrued
                             #region Total
                             int indexTotal = 0;
                             var modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "Total";
+                            modelTotal.CHARGE = "Total Fee";
                             var modelTotalList = new List<AccruedReportViewModel>();
                             foreach (var total in arrMonthTotal.ToArray())
                             {

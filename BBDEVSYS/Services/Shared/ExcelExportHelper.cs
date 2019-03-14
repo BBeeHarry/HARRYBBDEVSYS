@@ -362,7 +362,7 @@ namespace BBDEVSYS.Services.Shared
                                     }
 
                                 }
-                                if (item["CHARGE"] == "Total")
+                                if (item["CHARGE"] == "Total Fee")
                                 {
                                     using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                     {
@@ -766,7 +766,7 @@ namespace BBDEVSYS.Services.Shared
                                 }
 
                             }
-                            if (item["CHARGE"] == "Total")
+                            if (item["CHARGE"] == "Total Fee")
                             {
                                 using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                 {
@@ -805,7 +805,7 @@ namespace BBDEVSYS.Services.Shared
                             }
                             if (data == 0)
                             {//--Merge Row Report All
-                                if (item["CHARGE"] == "Total")
+                                if (item["CHARGE"] == "Total Fee")
                                 {
                                     rowMergeE = startRowFrom + rowT;
                                     //using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])

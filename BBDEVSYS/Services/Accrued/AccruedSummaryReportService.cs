@@ -351,7 +351,7 @@ namespace BBDEVSYS.Services.Accrued
                             if (feeInvGroup.Count() == rowfirst)
                             {
                                 AccruedDetailReportViewModel modelTotal = new AccruedDetailReportViewModel();
-                                modelTotal.CHARGE = "Total";
+                                modelTotal.CHARGE = "Total Fee";
                                 modelTotal.Jan = Convert.ToString(sumChageAmt1);
                                 modelTotal.Feb = Convert.ToString(sumChageAmt2);
                                 modelTotal.Mar = Convert.ToString(sumChageAmt3);
@@ -830,7 +830,7 @@ namespace BBDEVSYS.Services.Accrued
                             var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
 
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
-                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TRANSACTIONS ?? 0) : item_inv_chrge.Sum(m => m.TRANSACTIONS ?? 0);
+                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.TRANSACTIONS ?? 0) * (m.RATE_TRANS ?? 0) ) : item_inv_chrge.Sum(m => (m.TRANSACTIONS ?? 0) * (m.RATE_TRANS ?? 0) );
 
                             model.GetType().GetProperty((monthIndex)).SetValue(model,
                         Convert.ToString(string.Format("{0:#,##0.####}", sumtrxn)));
@@ -848,7 +848,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         model = new AccruedReportViewModel();
 
-                        model.CHARGE = "Amount MDR";
+                        model.CHARGE = "Amount (MDR)";
                         while (_iLoop < _diffmonths)
                         {
                             if (_mnth == 13)
@@ -862,7 +862,8 @@ namespace BBDEVSYS.Services.Accrued
                             var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
 
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
-                            decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0);
+                            decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.RATE_AMT ?? 0)==0?(m.ACTUAL_AMOUNT ?? 0 ) : (m.ACTUAL_AMOUNT ?? 0)* ((m.RATE_AMT ?? 0)/100) )
+                                : item_inv_chrge.Sum(m => (m.RATE_AMT ?? 0) == 0 ? (m.ACTUAL_AMOUNT ?? 0) : (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) / 100) );
 
                             model.GetType().GetProperty((monthIndex)).SetValue(model,
                         Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
@@ -880,7 +881,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         #region Total
                         model = new AccruedReportViewModel();
-                        model.CHARGE = "Total";
+                        model.CHARGE = "Total Fee";
                         #region set value column month Total 
                         int mnth = monthS;
                         int yrr = yearS;
@@ -970,7 +971,7 @@ namespace BBDEVSYS.Services.Accrued
                     modelList.AddRange(modelGrandList);
 
                     modelGrand = new AccruedReportViewModel();
-                    modelGrand.CHARGE = "Grand Total";
+                    modelGrand.CHARGE = "Grand Total Fee";
                     modelGrandList = new List<AccruedReportViewModel>();
 
 
@@ -1501,7 +1502,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         #region Total
                         var modelTotal = new AccruedReportViewModel();
-                        modelTotal.CHARGE = "Total";
+                        modelTotal.CHARGE = "Total Fee";
                         var modelTotalList = new List<AccruedReportViewModel>();
                         //foreach (var total in arrMonthTotal.ToArray())
                         //{
@@ -1688,7 +1689,7 @@ namespace BBDEVSYS.Services.Accrued
                         modelList.AddRange(modelGrandList);
 
                         modelGrand = new AccruedReportViewModel();
-                        modelGrand.CHARGE = "Grand Total";
+                        modelGrand.CHARGE = "Grand Total Fee";
                         modelGrandList = new List<AccruedReportViewModel>();
                         iGrand = 0;
                         //foreach (var grandTotal in arrMonthGrnadTotal.ToArray())
@@ -1891,7 +1892,7 @@ namespace BBDEVSYS.Services.Accrued
                             var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
 
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
-                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.TRANSACTIONS ?? 0) : item_inv_chrge.Sum(m => m.TRANSACTIONS ?? 0);
+                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.TRANSACTIONS ?? 0)*(m.RATE_TRANS??0) ) : item_inv_chrge.Sum(m => (m.TRANSACTIONS ?? 0)*(m.RATE_TRANS??0) );
 
                             model.GetType().GetProperty((monthIndex)).SetValue(model,
                             Convert.ToString(string.Format("{0:#,##0.####}", sumtrxn)));
@@ -1910,7 +1911,7 @@ namespace BBDEVSYS.Services.Accrued
                         iLoop = 0;
                        
                             model = new AccruedReportViewModel();
-                            model.CHARGE = "Amount MDR";
+                            model.CHARGE = "Amount (MDR)";
 
                             while (iLoop < _diffmonths)
                             {
@@ -1925,7 +1926,8 @@ namespace BBDEVSYS.Services.Accrued
                                 var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
 
                                 var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
-                                decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0) : item_inv_chrge.Sum(m => m.ACTUAL_AMOUNT ?? 0);
+                                decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.RATE_AMT ?? 0) == 0 ? (m.ACTUAL_AMOUNT ?? 0) : (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) / 100) ) 
+                                : item_inv_chrge.Sum(m => (m.RATE_AMT ?? 0) == 0 ? (m.ACTUAL_AMOUNT ?? 0) : (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) / 100) );
 
                                 model.GetType().GetProperty((monthIndex)).SetValue(model,
                                 Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
@@ -1946,7 +1948,7 @@ namespace BBDEVSYS.Services.Accrued
                         #region Total
 
                         model = new AccruedReportViewModel();
-                        model.CHARGE = "Total";
+                        model.CHARGE = "Total Fee";
 
                         #region set value column month Total 
                         mnth = monthS;
@@ -2036,7 +2038,7 @@ namespace BBDEVSYS.Services.Accrued
                     modelList.AddRange(modelGrandList);
 
                     modelGrand = new AccruedReportViewModel();
-                    modelGrand.CHARGE = "Grand Total";
+                    modelGrand.CHARGE = "Grand Total Fee";
                     modelGrandList = new List<AccruedReportViewModel>();
 
                     #region set value column month Total Grand 
@@ -2567,7 +2569,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         #region Total
                         var modelTotal = new AccruedReportViewModel();
-                        modelTotal.CHARGE = "Total";
+                        modelTotal.CHARGE = "Total Fee";
                         var modelTotalList = new List<AccruedReportViewModel>();
                         //foreach (var total in arrMonthTotal.ToArray())
                         //{
@@ -3246,7 +3248,7 @@ namespace BBDEVSYS.Services.Accrued
                             #region Total
                             int indexTotal = 0;
                             var modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "Total";
+                            modelTotal.CHARGE = "Total Fee";
                             var modelTotalList = new List<AccruedReportViewModel>();
                             //foreach (var total in arrMonthTotal.ToArray())
                             //{
@@ -3457,7 +3459,7 @@ namespace BBDEVSYS.Services.Accrued
                         modelList.AddRange(modelGrandList);
 
                         modelGrand = new AccruedReportViewModel();
-                        modelGrand.CHARGE = "Grand Total";
+                        modelGrand.CHARGE = "Grand Total Fee";
                         modelGrandList = new List<AccruedReportViewModel>();
                         iGrand = 0;
                         //foreach (var grandTotal in arrMonthGrnadTotal.ToArray())
@@ -3603,7 +3605,7 @@ namespace BBDEVSYS.Services.Accrued
 
                             model.CHARGE = "Trxn Fee";
                             model.GetType().GetProperty(monthIndex).SetValue(model,
-                          Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => m.n.TRANSACTIONS ?? 0)))));
+                          Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => (m.n.TRANSACTIONS ?? 0) * (m.n.RATE_TRANS ?? 0))))));
 
                             _getmnth++;
                         }//row month
@@ -3633,9 +3635,9 @@ namespace BBDEVSYS.Services.Accrued
                             string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
                             var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
 
-                            model.CHARGE = "Amount MDR";
+                            model.CHARGE = "Amount (MDR)";
                             model.GetType().GetProperty(monthIndex).SetValue(model,
-                  Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => m.n.ACTUAL_AMOUNT ?? 0)))));
+                  Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m =>( (m.n.RATE_AMT ?? 0)==0? (m.n.ACTUAL_AMOUNT ?? 0):(m.n.ACTUAL_AMOUNT ?? 0)*((m.n.RATE_AMT ?? 0)/100) ) )))));
 
                             _getmnth++;
                         }//row month
@@ -3657,7 +3659,7 @@ namespace BBDEVSYS.Services.Accrued
                         model = new AccruedReportViewModel();
 
 
-                        model.CHARGE = "Total";
+                        model.CHARGE = "Total Fee"; 
                         _getmnth = monthS;
                         _getyr = yearS;
                         for (int i = 1; i <= mnth; i++)
@@ -3702,7 +3704,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         List<AccruedReportViewModel> granmodelList = new List<AccruedReportViewModel>();
                         var granmodel = new AccruedReportViewModel();
-                        granmodel.CHARGE = "Total All Trxn";
+                        granmodel.CHARGE = "Total All Trxn.";
                         var culture = CultureInfo.GetCultureInfo("en-US");
                         var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
                         var getmonth = (yearE * 12 + monthE) - (yearS * 12 + monthS);
@@ -3737,7 +3739,7 @@ namespace BBDEVSYS.Services.Accrued
 
 
                         granmodel = new AccruedReportViewModel();
-                        granmodel.CHARGE = "Grand Total";
+                        granmodel.CHARGE = "Grand Total Fee";
                         _getmnth = monthS;
                         _getyr = yearS;
                         for (int i = 1; i <= mnth; i++)
@@ -4047,7 +4049,7 @@ namespace BBDEVSYS.Services.Accrued
                             AccruedReportViewModel modelTotal = new AccruedReportViewModel();
 
 
-                            modelTotal.CHARGE = "Total";
+                            modelTotal.CHARGE = "Total Fee";
                             var culture = CultureInfo.GetCultureInfo("en-US");
                             var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
                             var getmonth = (yearE * 12 + monthE) - (yearS * 12 + monthS);
@@ -4205,7 +4207,7 @@ namespace BBDEVSYS.Services.Accrued
                         //modelTotalList.Add(granmodel);
 
                         granmodel = new AccruedReportViewModel();
-                        granmodel.CHARGE = "Grand Total";
+                        granmodel.CHARGE = "Grand Total Fee";
                         _getmnth = monthS;
                         _getyr = yearS;
                         for (int i = 1; i <= mnth; i++)
