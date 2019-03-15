@@ -349,6 +349,19 @@ namespace BBDEVSYS.Services.Shared
                                 {
                                     rowMergeS = startRowFrom + rowT;
                                 }
+                                if (item["CHARGE"] == "Trxn.")
+                                {
+
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Black);
+                                        r.Style.Font.Bold = true;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#dda1be"));
+                                    }
+
+                                }
                                 if (item["CHARGE"] == "Total Trxn")
                                 {
 

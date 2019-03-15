@@ -813,9 +813,38 @@ namespace BBDEVSYS.Services.Accrued
                         int _yrr = yearS;
                         int _iLoop = 0;
 
+                        #region set value column month  transaction
+
+                        model.CHARGE = "Trxns.";
+                        while (_iLoop < _diffmonths)
+                        {
+                            if (_mnth == 13)
+                            {
+                                _mnth = 1;
+                                _yrr++;
+                            }
+                            string yStr = _yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.TRANSACTIONS ?? 0)) : item_inv_chrge.Sum(m => (m.TRANSACTIONS ?? 0) );
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                        Convert.ToString(string.Format("{0:#,##0.####}", sumtrxn)));
+
+                            _iLoop++;
+                            _mnth++;
+                        }
+                        modelList.Add(model);
+
+
+                        #endregion
+
 
                         #region set value column month total transaction
-
+                        model = new AccruedReportViewModel();
                         model.CHARGE = "Trxns Fee";
                         while (_iLoop < _diffmonths)
                         {
@@ -1872,12 +1901,44 @@ namespace BBDEVSYS.Services.Accrued
 
                         #endregion
 
-
-
                         #region set value column month total transaction
                         int mnth = monthS;
                         int yrr = yearS;
                         int iLoop = 0;
+                        model.CHARGE = "Trxn.";
+
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                            decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.TRANSACTIONS ?? 0)) : item_inv_chrge.Sum(m => (m.TRANSACTIONS ?? 0));
+
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                            Convert.ToString(string.Format("{0:#,##0.####}", sumtrxn)));
+
+                            iLoop++;
+                            mnth++;
+                        }
+                        modelList.Add(model);
+
+
+                        #endregion
+
+
+                        #region set value column month total transaction
+                        model = new AccruedReportViewModel();
+                         mnth = monthS;
+                         yrr = yearS;
+                         iLoop = 0;
                         model.CHARGE = "Trxn Fee";
 
                         while (iLoop < _diffmonths)
@@ -3590,8 +3651,37 @@ namespace BBDEVSYS.Services.Accrued
                         var mnth = getmonth + 1;
                         int _getmnth = monthS;
                         int _getyr = yearS;
-                        #region Total Trxn
 
+                        #region  Trxn
+
+                        _getmnth = monthS;
+                        _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                            model.CHARGE = "Trxn.";
+                            model.GetType().GetProperty(monthIndex).SetValue(model,
+                          Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => (m.n.TRANSACTIONS ?? 0))))));
+
+                            _getmnth++;
+                        }//row month
+                        modelList.Add(model);
+
+
+                        //End sum total trxn
+
+                        #endregion
+
+
+                        #region Total Trxn
+                        model = new AccruedReportViewModel();
                         _getmnth = monthS;
                         _getyr = yearS;
                         for (int i = 1; i <= mnth; i++)
