@@ -1,0 +1,54 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@model List<BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel>
+
+@if (Model.Any())
+{
+    foreach (var item in Model)
+    {
+        <tr>
+            @using (Html.BeginCollectionItem(""))
+            {
+             
+
+
+            }
+        </tr>
+
+    }
+}
+
+
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        //Set height of fixed column to equals another column
+        var bodyOffset = 17; //padding top + bottom + border in pixel
+        var headerOffset = 17; //padding top + bottom + border in pixel
+        var $table = $('#uploadItemTable');
+        var tableClone = $table.clone();
+        tableClone.find('tr').each(function (i, elem) {
+
+            if (i != 0) {
+                var row = $table.find('tr:eq(' + i + ')');
+
+
+                var fixColumn = row.find('td:nth-child(2)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(3)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(4)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+            }
+
+        });
+        //Change item name for sending to controller
+        ModifyCollectionItemName('uploadItemBody');
+
+    });
+</script>

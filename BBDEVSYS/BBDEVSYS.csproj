@@ -441,7 +441,8 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>ValidatorMessage.resx</DependentUpon>
     </Compile>
-    <Compile Include="Controllers\AccountController.cs" />
+    <Compile Include="Controllers\Adjustrefund\AdjustRefundUploadController.cs" />
+    <Compile Include="Controllers\Shared\AccountController.cs" />
     <Compile Include="Controllers\Accrued\AccruedController.cs" />
     <Compile Include="Controllers\Accrued\AccruedSummaryReportController.cs" />
     <Compile Include="Controllers\Accrued\AccruedUploadController.cs" />
@@ -579,6 +580,7 @@
     <Compile Include="Services\Accrued\AccruedService.cs" />
     <Compile Include="Services\Accrued\AccruedSummaryReportService.cs" />
     <Compile Include="Services\Accrued\AccruedUploadService.cs" />
+    <Compile Include="Services\Adjustrefund\AdjustRefundUploadService.cs" />
     <Compile Include="Services\Authentication\AuthenticationService.cs" />
     <Compile Include="Services\Authorization\AppCompositeRoleService.cs" />
     <Compile Include="Services\Authorization\AssignUserRoleService.cs" />
@@ -618,6 +620,7 @@
     <Compile Include="ViewModels\AccruedUpload\AccruedUploadViewModel.cs" />
     <Compile Include="ViewModels\Accrued\AccruedDetailViewModel.cs" />
     <Compile Include="ViewModels\Accrued\AccruedViewModel.cs" />
+    <Compile Include="ViewModels\Adjustrefund\AdjustrefundUploadViewModel.cs" />
     <Compile Include="ViewModels\Authentication\AuthenticationViewModel.cs" />
     <Compile Include="ViewModels\Authorization\AppCompositeRoleViewModel.cs" />
     <Compile Include="ViewModels\Authorization\AppMenuViewModel.cs" />
@@ -1793,6 +1796,10 @@
     <Content Include="Views\Authorization\AssignUserRole\AssignUserRoleList.cshtml" />
     <Content Include="Views\Home\bckHome.cshtml" />
     <Content Include="Views\Home\Home.cshtml" />
+    <Content Include="Views\Adjustrefund\AdjustrefundUploadDetail.cshtml" />
+    <Content Include="Views\Adjustrefund\AdjustrefundUploadItemHeader.cshtml" />
+    <Content Include="Views\Adjustrefund\AdjustrefundUploadItems.cshtml" />
+    <Content Include="Views\Adjustrefund\AdjustrefundUploadList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -1800,6 +1807,7 @@
     <Folder Include="Report\" />
     <Folder Include="Services\CenterSetting\Costcenter\" />
     <Folder Include="ViewModels\CenterSetting\Costcenter\" />
+    <Folder Include="Views\AdjustRefundUpload\" />
     <Folder Include="Views\CenterSetting\Costcenter\" />
     <Folder Include="Views\ExportExcel\" />
   </ItemGroup>

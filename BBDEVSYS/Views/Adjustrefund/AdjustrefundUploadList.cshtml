@@ -1,0 +1,97 @@
+﻿@model BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel
+@using BBDEVSYS.Services.Shared
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleInvoiceUpload;
+}
+<div class="row">
+    <div class="col-xs-12 ">
+        <div class="true-list-toolbar col-xs-12">
+            <div class="col-xs-12 true-list-toolbar-button">
+                <button type="button" class="btn btn-danger authManage" id="createButton">
+                    <span class="fa fa-plus"></span>
+                    @BBDEVSYS.Content.text.ResourceText.ButtonCreate
+                </button>
+            </div>
+        </div>
+        <table id="dataListTable" class="table table-striped table-bordered table-hover table-responsive true-datatable"></table>
+
+
+    </div>
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        var columns = [
+            { "data": "MonthName", "title": "@BBDEVSYS.Content.text.ResourceText.INV_MONTH", "type": "string", "width": "20%" },
+            { "data": "INV_YEAR", "title": "@BBDEVSYS.Content.text.ResourceText.INV_YEAR", "type": "string", "width": "20%" },
+            { "data": "UploadByName", "title": "@BBDEVSYS.Content.text.ResourceText.UploadBy", "type": "string", "width": "15%" },
+            { "data": "FileName", "title": "@BBDEVSYS.Content.text.ResourceText.FileName", "type": "string", "width": "20%" },
+            { "data": "UPLOAD_DATE", "title": "@BBDEVSYS.Content.text.ResourceText.UploadDate", "type": "date-dd-mmm-yyyy", "width": "20%" },
+
+            { "data": null, "defaultContent": getDataTableButton(["display"]), "orderable": false, "width": "5%", "className": "true-dt-button-column" },
+            { "data": "ID", "type": "num", "hidden": true }
+        ];
+
+        displayDataTable('dataListTable', '@Url.Action("GetList", "InvoiceUpload", new { Area = "Invoice" })', columns);
+
+        //Button action
+        //Display
+        $('#dataListTable tbody').on('click', '.true-dt-button-display', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Detail", "InvoiceUpload", new { Area = "Invoice" })?recordKey=' + id;
+
+            redirectTo(url);
+        });
+
+
+        //Create
+        $('#createButton').click(function () {
+            var recordKey = $('#recordKey').val(0);
+            $('#formState').val('@ConstantVariableService.FormStateCreate');
+
+            var url = '@Url.Action("Manage", "InvoiceUpload", new { Area = "Invoice" })?recordKey=0&formState=' + '@ConstantVariableService.FormStateCreate';
+
+            redirectTo(url);
+        });
+
+        //Edit
+        $('#dataListTable tbody').on('click', '.true-dt-button-edit', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "InvoiceUpload", new { Area = "Invoice" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateEdit';
+
+            redirectTo(url);
+        });
+
+        //Copy
+        $('#dataListTable tbody').on('click', '.true-dt-button-copy', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+            var url = '@Url.Action("Manage", "InvoiceUpload", new { Area = "Invoice" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateCopy';
+
+            redirectTo(url);
+        });
+
+        //Delete
+        $('#dataListTable tbody').on('click', '.true-dt-button-delete', function () {
+            var id = $(this).GetDatatableData()["ID"];
+
+
+            var url = '@Url.Action("Manage", "InvoiceUpload", new { Area = "Invoice" })?recordKey=' + id + '&formState=' + '@ConstantVariableService.FormStateDelete';
+
+            redirectTo(url);
+        });
+
+        //var SpinBtn = ["display", "edit", "delete"];
+        //loadingButton(SpinBtn);
+
+        var allButton = ["display"];
+        var SpinBtn = ['display'];
+        loadingButton(allButton, SpinBtn);
+    });
+
+
+</script>
