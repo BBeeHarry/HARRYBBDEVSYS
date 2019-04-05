@@ -24,7 +24,7 @@ namespace BBDEVSYS.Controllers.Shared
          * Upload file
          ***********************************************/
         [HttpGet]
-        public ActionResult AddAttachmentLine(string fileName, int fileSize, string documentTypeValueType, string validationType)
+        public ActionResult AddAttachmentLine(string fileName, int fileSize, string documentTypeValueType, string validationType,string sheet ="" )
         {
             string message = "";
             AttachmentViewModel attachment = new AttachmentViewModel();
@@ -39,6 +39,8 @@ namespace BBDEVSYS.Controllers.Shared
                 attachment.FileUniqueKey = AttachmentService.GetFileUniqueKey();
                 attachment.SavedFileName = attachment.FileUniqueKey + "_" + fileName;
                 attachment.DocumentTypeValueType = documentTypeValueType;
+                //case excel file
+                attachment.SheetNameExcel = sheet;
 
                 validateResult = AttachmentService.ValidateFileAttachment(attachment, validationType);
             }

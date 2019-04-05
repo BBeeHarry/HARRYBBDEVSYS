@@ -4,7 +4,9 @@ using BBDEVSYS.ViewModels.Shared;
 using FluentValidation;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -16,38 +18,103 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
     {
         public AdjustrefundUploadViewModel()
         {
-           
-            AttachmentList = new List<AttachmentViewModel>();
 
-          
+            AttachmentList = new List<AttachmentViewModel>();
+            adjList = new List<AdjustrefundUploadViewModelItems>();
+            adjDataTable = new DataTable();
+
         }
         //Authorization
-        public const string RoleForManageData = "Role_MA_Invoice_Upload";
-        public const string RoleForDisplayData = "Role_DS_Invoice_Upload";
+        public const string RoleForManageData = "Role_MA_Adjust_Refund_Role";
+        public const string RoleForDisplayData = "Role_DS_Adjust_Refund_Role";
 
-        public const string ProcessCode = "InvoiceUploadProcess";
+        public const string ProcessCode = "AdjustrefundUploadProcess";
+
+        [DisplayName("Sheet")]
+        public string AttachSheet { get; set; }
+
+
+        [DisplayName("User Request")]
+        public string UserRequest { get; set; }
+
+
+
+
+        //[Required(ErrorMessage = "Please select file.")]
+
+        //[FileExt(Allow = ".xls,.xlsx", ErrorMessage = "Only excel file")]
+        [DisplayName("Browse File")]
+        public HttpPostedFileBase[] files { get; set; }
         
-        [Display(Name = "INV_MONTH", ResourceType = typeof(ResourceText))]
-        public Nullable<int> INV_MONTH { get; set; }
-      
-        public string UPLOAD_BY { get; set; }
-        public Nullable<System.DateTime> UPLOAD_DATE { get; set; }
 
-        public string UploadStatus { get; set; }
+        public List<AttachmentViewModel> AttachmentList { get; set; }
+        public List<AdjustrefundUploadViewModelItems> adjList { get;  set; }
+        public DataTable adjDataTable { get;  set; }
 
-        public string Message { get; set; }
-
-        //Text
-        public string InvoiceTypeName { get; set; }
-        public string UploadByName { get; set; }
-
-      
-        //Screen 
-        public virtual bool UserSuperAdmin { get; set; }
-        public virtual string FileName { get; set; }
-        public List<AttachmentViewModel> AttachmentList { get;  set; }
+        public  string NameFormView { get; set; }
     }
+    public class AdjustrefundUploadViewModelItems {
+        #region Data Field 
+        public string SR_STATUS { get; set; }
+        public Nullable<System.DateTime> SR_OPEN_DATE { get; set; }
+        public string SR_NO { get; set; }
+        public string CATEGORY { get; set; }
+        public string SUB_CATEGORY { get; set; }
+        public string ISSUE { get; set; }
+        public string BAN_1 { get; set; }
+        public string PRIM_RESOURCE { get; set; }
+        public string SR_DETAILS { get; set; }
+        public string SR_DIVISION { get; set; }
+        public string SR_OWNER { get; set; }
+        public string BAN_INCORRECT { get; set; }
+        public string BAN_2 { get; set; }
+        public Nullable<decimal> AR_BALANCE_1 { get; set; }
+        public string BAN_1_1 { get; set; }
+        public string CUSTOMER_NAME_1 { get; set; }
+        public string ACCOUNT_TYPE_1 { get; set; }
+        public string COMP_CODE_1 { get; set; }
+        public string AR_BALANCE_1_1 { get; set; }
+        public string BEN_STATUS_1 { get; set; }
+        public string IDENT_1 { get; set; }
+        public string CONV_IND_1 { get; set; }
+        public string CONV_CODE_1 { get; set; }
+        public string T_FORM_ACCOUNT_BC_ID { get; set; }
+        public string BAN_2_1 { get; set; }
+        public string CUSTOMER_NAME_2 { get; set; }
+        public string ACCOUNT_TYPE_2 { get; set; }
+        public string COMP_CODE_2 { get; set; }
+        public Nullable<decimal> AR_BALANCE_2 { get; set; }
+        public string BEN_STATUS_2 { get; set; }
+        public string IDENT_2 { get; set; }
+        public string CONV_IND_2 { get; set; }
+        public string CONV_CODE_2 { get; set; }
+        public string T_TO_ACCOUNT_BC_ID { get; set; }
+        public string RECEIPT_NO { get; set; }
+        public Nullable<decimal> PAY_AMOUNT { get; set; }
+        public Nullable<System.DateTime> DEPOSIT_DATE { get; set; }
+        public string SOURCE_ID { get; set; }
+        public string DOC_BILL_TYPE { get; set; }
+        public string FILE_NAME { get; set; }
 
+        #endregion
+    }
+    //public class FileExt : ValidationAttribute
+    //{
+    //    public string Allow;
+    //    protected  ValidationResult IsValid(object value, FluentValidation.ValidationContext validationContext)
+    //    {
+    //        if (value != null)
+    //        {
+    //            string extension = ((System.Web.HttpPostedFileBase)value).FileName.Split('.')[1];
+    //            if (Allow.Contains(extension))
+    //                return ValidationResult.Success;
+    //            else
+    //                return new ValidationResult(ErrorMessage);
+    //        }
+    //        else
+    //            return ValidationResult.Success;
+    //    }
+    //}
     public class AdjustrefundUploadViewModelValidator : AbstractValidator<AdjustrefundUploadViewModel>
     {
         public AdjustrefundUploadViewModelValidator()

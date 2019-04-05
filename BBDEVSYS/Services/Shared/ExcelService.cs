@@ -186,6 +186,7 @@ namespace BBDEVSYS.Services.Shared
                 
 
                 oleExcelConnection = new OleDbConnection(sConnection);
+
                 oleExcelConnection.Open();
 
                 dtTablesList = oleExcelConnection.GetSchema("Tables");

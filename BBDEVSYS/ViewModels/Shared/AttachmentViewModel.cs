@@ -36,6 +36,8 @@ namespace BBDEVSYS.ViewModels.Shared
         public Nullable<System.DateTime> DocumentDate { get; set; }
         public string DocumentType { get; set; }
         public string Remark { get; set; }
+
+        public string SheetNameExcel { get; set; }
         public string AttachmentGroup { get; set; }
 
         public string DocumentTypeValueType { get; set; }

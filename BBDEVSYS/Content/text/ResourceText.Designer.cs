@@ -574,6 +574,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Integrate ข้อมูล.
+        /// </summary>
+        public static string ButtonIntegrate {
+            get {
+                return ResourceManager.GetString("ButtonIntegrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to เข้าสู่ระบบ.
         /// </summary>
         public static string ButtonLogin {
@@ -633,6 +642,15 @@ namespace BBDEVSYS.Content.text {
         public static string ButtonPeriodCreate {
             get {
                 return ResourceManager.GetString("ButtonPeriodCreate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Preview ข้อมูล.
+        /// </summary>
+        public static string ButtonPreview {
+            get {
+                return ResourceManager.GetString("ButtonPreview", resourceCulture);
             }
         }
         
@@ -1200,6 +1218,15 @@ namespace BBDEVSYS.Content.text {
         public static string List {
             get {
                 return ResourceManager.GetString("List", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust and Refund.
+        /// </summary>
+        public static string MenuAdjAndRfd {
+            get {
+                return ResourceManager.GetString("MenuAdjAndRfd", resourceCulture);
             }
         }
         
@@ -2149,6 +2176,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string String1 {
+            get {
+                return ResourceManager.GetString("String1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to อนุมัติคำขอเรียบร้อย.
         /// </summary>
         public static string SuccessfulApprove {
@@ -2406,6 +2442,33 @@ namespace BBDEVSYS.Content.text {
         public static string TitleAccruedUpload {
             get {
                 return ResourceManager.GetString("TitleAccruedUpload", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust and Refund Integrating Information .
+        /// </summary>
+        public static string TitleAdjAndRfdIntegrate {
+            get {
+                return ResourceManager.GetString("TitleAdjAndRfdIntegrate", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust and Refund Checking Last Adjust Item.
+        /// </summary>
+        public static string TitleAdjAndRfdMapping {
+            get {
+                return ResourceManager.GetString("TitleAdjAndRfdMapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Adjust and Refund Upload Data to MIS.
+        /// </summary>
+        public static string TitleAdjAndRfdUpload {
+            get {
+                return ResourceManager.GetString("TitleAdjAndRfdUpload", resourceCulture);
             }
         }
         

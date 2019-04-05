@@ -993,4 +993,25 @@
   <data name="DURATION" xml:space="preserve">
     <value>Duration</value>
   </data>
+  <data name="ButtonIntegrate" xml:space="preserve">
+    <value>Integrate ข้อมูล</value>
+  </data>
+  <data name="ButtonPreview" xml:space="preserve">
+    <value>Preview ข้อมูล</value>
+  </data>
+  <data name="String1" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MenuAdjAndRfd" xml:space="preserve">
+    <value>Adjust and Refund</value>
+  </data>
+  <data name="TitleAdjAndRfdIntegrate" xml:space="preserve">
+    <value>Adjust and Refund Integrating Information </value>
+  </data>
+  <data name="TitleAdjAndRfdMapping" xml:space="preserve">
+    <value>Adjust and Refund Checking Last Adjust Item</value>
+  </data>
+  <data name="TitleAdjAndRfdUpload" xml:space="preserve">
+    <value>Adjust and Refund Upload Data to MIS</value>
+  </data>
 </root>

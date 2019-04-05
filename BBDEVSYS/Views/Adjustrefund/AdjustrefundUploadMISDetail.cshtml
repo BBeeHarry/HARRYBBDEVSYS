@@ -1,0 +1,449 @@
+﻿@model BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel
+@using BBDEVSYS.Services.Shared
+@using System.Data
+@{
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAdjAndRfdUpload;
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@using (Html.BeginForm("SubmitForm", "AdjustRefundUpload", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+{
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.BoxData</h3>
+
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.UserRequest)
+                            </label>
+                            <div class="col-xs-12 col-md-2">
+                                @Html.TextBoxFor(m => m.UserRequest, new { @class = "form-control " })
+                                @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div id="addAttachment">
+                                <label class="col-xs-12 col-md-2 true-control-label ">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 1
+                                </label>
+
+                                <span class="btn btn-success btn-sm fileinput-button authManage " id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment">
+                                </span>
+                                <div>
+                                    @*<input type="hidden" id="attachRemarkVisible" value="true" />*@
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+@*
+    <div class="form-group">
+        <div class="col-xs-12 col-md-12 " style="text-align:right">
+            <button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="detailActionButton('@ConstantVariableService.FormStateCreate', '@ConstantVariableService.FormActionCreate', 'detailForm', 'default', 'default', 'default', 'default');">
+                <span class="fa fa-upload"></span>
+                <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
+            </button>
+        </div>
+    </div>
+    <div class="form-group" style="display:none;">
+            <div class="col-xs-12 col-md-12 " style="text-align:right">
+                <button type="button" class="btn btn-danger authManage" id="integrateButton" onclick="submitFormDataIntegrateButton()">
+                    <span class="fa fa-upload"></span>
+                    <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonPreview</span>
+                </button>
+            </div>
+        </div>*@
+
+                    </div>
+
+                    <div class="row">
+                        <div class="col-xs-12" style="padding-top: 20px">
+                            <div>
+                                <div class="table-responsive " style="height:400px;">
+                                    <table class="table table-bordered  table-striped true-datatable" id="uploadItemTable" style="width:1900px">
+
+                                        @{
+                                            Html.RenderPartial("~/Views/Adjustrefund/AdjustrefundUploadItems.cshtml", Model);
+                                        }
+
+
+                                    </table>
+
+                                </div>
+                                <div class="form-group">
+
+                                    <label id="rowsData" class="col-xs-12 col-md-3  true-control-label " style="text-align:left">
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="row">
+        <div class="col-xs-12">
+
+            <button type="button" class="btn btn-warning authDisplay" id="infoBackButton" onclick="actionButtonBack();">
+                <span class="fa fa-chevron-circle-left"></span>
+                <span>@BBDEVSYS.Content.text.ResourceText.ButtonBack</span>
+            </button>
+            @*<button type="button" class="btn btn-info authManage" id="verifyButton" onclick="actionButton('@ConstantVariableService.FormActionValidate');">
+                    <span class="glyphicon glyphicon-check"></span>
+                    <span id="verifyButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonValidate</span>
+                </button>*@
+            <button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="actionButton('@ConstantVariableService.FormActionCreate');">
+                    <span class="fa fa-upload"></span>
+                    <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
+                </button>
+
+        </div>
+    </div>
+
+
+    <div>
+        <div id="messagePopup">
+            @Html.Partial("~/Views/Shared/MessagePopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmPopup">
+            @Html.Partial("~/Views/Shared/ConfirmActionPopup.cshtml")
+        </div>
+    </div>
+
+    <div>
+        <div id="confirmBackPopup">
+            @Html.Partial("~/Views/Shared/ConfirmBackPopup.cshtml")
+        </div>
+    </div>
+
+    @Html.Partial("Javascript/AttachmentMultiFileJavaScript")
+                                            @Html.HiddenFor(m => m.ID)
+                                            @Html.HiddenFor(m => m.FormState)
+                                            @Html.HiddenFor(m => m.FormAction)
+
+                                            @Html.HiddenFor(m => m.CREATE_BY)
+                                            @Html.HiddenFor(m => m.CREATE_DATE)
+                                            @Html.HiddenFor(m => m.MODIFIED_BY)
+                                            @Html.HiddenFor(m => m.MODIFIED_DATE)
+                                            @Html.HiddenFor(m => m.NameFormView)
+                                            @Html.HiddenFor(m=>m.adjDataTable)
+
+
+                                            }
+<script type="text/javascript">
+
+
+    function setEmpltyUploadTable() {
+        $("#uploadItemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');
+        var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
+
+        $("#rowsData").text(rowCount);
+
+    }
+
+    function callbackDeleteAttachFile(button) {
+        //Clear upload item table
+        setEmpltyUploadTable()
+    }
+
+    function callbackDeleteAllAttachFile(tableID) {
+        //Clear upload item table
+        setEmpltyUploadTable()
+    }
+
+
+    function callbackAddAttachFile() {
+
+        var lastSavedFilename = "#lastSavedFilename";
+
+        var uploadItemBody = "#uploadItemBody";
+        var SheetFile = "#SheetFile1";
+
+        var fileName = $(lastSavedFilename).val();
+        var row = $(uploadItemBody).children('tr:first');//!isNaN(seqFiles)?  $("'#" + "uploadItemBody" + seqFiles + "'").children('tr:first'):$('#uploadItemBody').children('tr:first') ;
+        var sheet = $(SheetFile).val();
+
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+
+        $("#uploadItemTable").empty();
+        //LoadingRow(row, 'on', true)
+        blockUI();
+        $.ajax({
+            url: '@Url.Action("ImportExcelGenerateTable", "AdjustRefundUpload", new { Area = "Adjustrefund" })',
+            data: form.serialize(),
+            cache: false,
+            success: function (response) {
+                if (response.success) {
+                    $("#uploadItemTable").html(response.html);
+                    var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
+
+                    $("#rowsData").text(rowCount);
+
+                }
+                else {
+
+
+                    deleteAllAttachFile('attachmentTable');
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
+
+                    row = $('#uploadItemBody').children('tr:first');
+                    LoadingRow(row, 'off', true)
+                    setEmpltyUploadTable();
+                }
+
+                unblockUI();
+
+            }
+        }).done(function (result) {
+
+        });
+
+
+
+    }
+
+    function actionButton(formAction) {
+        $('#FormAction').val(formAction);
+        var headerMessage = "default";
+        var bodyMessage = "default";
+
+        if (formAction == '@ConstantVariableService.FormActionValidate') {
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmValidateHeader';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmValidateBody';
+        }
+        else if (formAction == '@ConstantVariableService.FormActionCreate') {
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmUploadJobHeader';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmUploadJobBody';
+        }
+
+        detailActionButton('@Model.FormState', formAction, 'detailForm', headerMessage, bodyMessage, 'default');
+    }
+
+    function actionButtonBack() {
+        goBack('@Model.FormState', '@Url.Action("UploadList", "AdjustrefundUpload", new { Area = "Adjustrefund" })');
+    }
+
+
+    function submitFormDataUploadButton() {
+        blockUI();
+        console.log($('form').attr("id"));
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+        $("#uploadItemTable").empty();
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+        if (form.valid()) {
+            var url = '@Url.Action("SubmitUploadForm", "AdjustrefundUpload", new { Area = "Adjustrefund" })?' + form.serialize();
+            $.ajax({
+                //url: url,
+                //type: 'post',
+                //contentType: 'json',
+                //data: form.serialize(),
+
+                url: url,
+                data: form.serialize(),
+                cache: false,
+                success: function (response) {
+                    $("#uploadItemTable").html(response);
+                    var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
+
+                    $("#rowsData").text(rowCount);
+                    unblockUI();
+                    //$("#uploadItemBody").html(response.html);
+                }
+            }).done(function (result) {
+                unblockUI();
+            });
+            //unblockUI();
+
+            //submitFormDataIntegrateButton();
+            return false;
+
+
+        } else {
+
+            for (var i = 0; i < validator.errorList.length; i++) {
+                message = message + validator.errorList[i].message + "<br />";
+                unblockUI();
+            }
+        }
+
+    }
+    function submitFormDataIntegrateButton() {
+        blockUI();
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+
+
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+
+        $("#uploadItemTable").empty();
+        var url = '@Url.Action("PreviewData", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
+        $.ajax({
+            //contentType: 'json',
+            url: url,
+            data: form.serialize(),
+            cache: false,
+            success: function (response) {
+                //unblockUI();
+
+                //var dataTable = $('#uploadItemTable').DataTable({
+                //    'paging': true,
+                //    //'lengthChange': false,
+                //    'searching': true,
+                //    'ordering': true,
+                //    'info': true,
+                //    //'autoWidth': false
+                //});
+                //dataTable.row.add($(response)).draw();
+                if (response.success) {
+                    $("#uploadItemBody").html(response.html);
+                }
+                else {
+
+                    deleteAllAttachFile('attachmentTable');
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
+
+                    row = $('#uploadItemBody').children('tr:first');
+                    LoadingRow(row, 'off', true)
+                    setEmpltyUploadTable();
+                }
+
+                //$("#uploadItemTable").html(response);
+                var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
+
+                $("#rowsData").text(rowCount);
+
+                unblockUI();
+            }
+        }).done(function (result) {
+
+
+            unblockUI();
+        });
+        //$.post(url, form.serialize(), function (response) {
+        //    
+        //    $("#uploadItemBody").html(response.html);
+
+        //});
+        //unblockUI();
+        return false;
+    }
+    //Callback function when click ok button on confirmation popup
+    function okActionCallback() {
+       
+        if (isNoHistory()) {
+            var url = '@Url.Action("UploadList", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
+
+            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', url)
+        }
+        else {
+            var action = $('#FormAction').val();
+
+            if (action == '@ConstantVariableService.FormActionValidate') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
+            }
+            else if (action == '@ConstantVariableService.FormActionCreate') {
+                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+            }
+        }
+    }
+    function RedirectCallbackOkAction() {
+        //Prevent redirect page
+    }
+    $(document).ready(function () {
+        //Set UI from form state (readonly, editable etc.)
+        detailSetFormUI($('#FormState').val())
+
+        //Set attachment column visibility for multiple attachment
+        setColumnVisibility('attachmentDiv');
+
+        setEmpltyUploadTable();
+        //ModifyCollectionItemName('uploadItemBody');
+
+        //set Sheet Data
+        $("#AttachSheet").val("Batch Refund")
+
+        //$("#uploadButton").click(function () {
+
+        //    submitFormDataIntegrateButton();
+        //    $("#detailForm").submit();
+        //    event.preventDefault();
+        //});
+
+
+
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

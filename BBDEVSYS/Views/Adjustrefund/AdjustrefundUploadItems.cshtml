@@ -1,21 +1,44 @@
 ﻿@using HtmlHelpers.BeginCollectionItem
-@model List<BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel>
+@using System.Data
+@using HtmlHelpers.BeginCollectionItem
+@*@model  List<BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel>*@
+@model BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel
 
-@if (Model.Any())
+@if (Model.adjDataTable != null)
 {
-    foreach (var item in Model)
+    if (Model.adjDataTable.Rows.Count > 0)
     {
-        <tr>
-            @using (Html.BeginCollectionItem(""))
+        <thead id="uploadItemHeader" style="background-color:#f7bf4f">
+            <tr>
+                @foreach (DataColumn column in Model.adjDataTable.Columns)
+                {
+                    <th style="min-width:150px">@column.ColumnName</th>
+                }
+            </tr>
+
+        </thead>
+        <tbody id="uploadItemBody">
+            @foreach (DataRow item in Model.adjDataTable.Rows)
             {
-             
-
-
+                <tr>
+                    @using (Html.BeginCollectionItem("Model.adjDataTable.Rows"))
+                    {
+                        foreach (DataColumn col in Model.adjDataTable.Columns)
+                        {
+                            <td style="width:auto">@item[col.ColumnName]</td>
+                        }
+                    }
+                </tr>
             }
-        </tr>
 
+            @*<label class="col-xs-12 col-md-2 true-control-label true-require-field"> </label>*@
+
+        </tbody>
     }
+
 }
+
+
 
 
 <script src="~/Content/js/input.initialization.js"></script>

@@ -1,76 +1,398 @@
 ﻿@model BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel
 @using BBDEVSYS.Services.Shared
+@using System.Data
 @{
-    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleInvoiceUpload;
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAdjAndRfdIntegrate;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-@using (Html.BeginForm("SubmitForm", "InvoiceUpload", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+@using (Html.BeginForm("SubmitMergeForm", "AdjustRefundUpload", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
 {
     <div class="row">
         <div class="col-xs-12">
             <div class="box box-success">
                 <div class="box-header with-border">
-                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.BoxDetail</h3>
+                    <h3 class="box-title">@BBDEVSYS.Content.text.ResourceText.BoxData</h3>
 
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div>
                 </div>
+
                 <div class="box-body">
                     <div class="col-md-12">
-                    
+                        @*<div class="form-group">
+                            @Html.LabelFor(model => model.files, htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple" })
+
+                            </div>
+                        </div>
                         <div class="form-group">
-                            <label class="col-xs-12 col-md-3 true-control-label true-require-field">
-                                @BBDEVSYS.Content.text.ResourceText.File
-                            </label>
-                            <div class="col-xs-12 col-md-9">
-                                <span class="btn btn-danger btn-sm fileinput-button authManage" id="addAttachment">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Upload" class="btn btn-primary" />
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10 text-success">
+                                @ViewBag.UploadStatus
+                            </div>
+                        </div>*@
+
+
+
+                        <div class="form-group">
+                                                        @*<label class="col-xs-12 col-md-2 true-control-label true-require-field">
+        @Html.LabelFor(m => m.SheetFile1)
+        </label>
+        <div class="col-xs-12 col-md-2">
+        @Html.TextBoxFor(m => m.SheetFile1, new { @class = "form-control " })
+        </div>
+        <label class="col-xs-12 col-md-1 true-control-label ">
+        @BBDEVSYS.Content.text.ResourceText.File 1
+        </label>
+        <div class="col-xs-12 col-md-4  true-control-label " style="text-align:left">
+
+        <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+        <i class="glyphicon glyphicon-plus"></i>
+        <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+        <input id="fileUpload" type="file" name="files[]" class="file-upload" multiple="multiple">
+
+        </span>
+        <div>
+        <input type="hidden" id="lastSavedFilename" />
+        <input type="hidden" id="attachFileNameVisible" value="true" />
+        <input type="hidden" id="attachDocTypeValueType" value="" />
+        <input type="hidden" id="attachSingleFile" value="true" />
+        <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+        <input type="hidden" id="attachDocTypeValueType" value="" />
+        <table class="no-footer" id="attachmentTable">
+        <tbody id="attachmentBody">
+        @foreach (var item in Model.AttachmentList)
+        {
+        Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+        }
+        </tbody>
+        </table>
+        </div>
+        </div>*@
+                        </div>
+
+
+                        <div class="form-group">
+                            <div id="addAttachment1">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 1
+                                </label>
+
+                                <span class="btn btn-success btn-sm fileinput-button authManage " id="addAttachment">
                                     <i class="glyphicon glyphicon-plus"></i>
                                     <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
-                                    <input id="fileUpload" type="file" name="files[]" class="file-upload">
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment1">
                                 </span>
                                 <div>
+                                    @*<input type="hidden" id="attachRemarkVisible" value="true" />*@
                                     <input type="hidden" id="lastSavedFilename" />
-                                    <input type="hidden" id="attachFileNameVisible" value="true" />
-                                    <input type="hidden" id="attachDocTypeValueType" value="" />
-                                    <input type="hidden" id="attachSingleFile" value="true" />
                                     <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
-                                    <table class="no-footer" id="attachmentTable">
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment1">
                                         <tbody id="attachmentBody">
                                             @foreach (var item in Model.AttachmentList)
                                             {
-                                                Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment1", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+
+                        <div class="form-group">
+
+                            <div id="addAttachment2">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 2
+                                </label>
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment2">
+                                </span>
+                                <div>
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment2">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment2", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
                                             }
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </div>
-                   
+
+                        <div class="form-group">
+
+                            <div id="addAttachment3">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 3
+                                </label>
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment3">
+                                </span>
+                                <div>
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment3">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment3", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div id="addAttachment4">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 4
+                                </label>
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment4">
+                                </span>
+                                <div>
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment4">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment4", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div id="addAttachment5">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 5
+                                </label>
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment5">
+                                </span>
+                                <div>
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment5">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment5", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <div id="addAttachment6">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                    @Html.LabelFor(m => m.AttachSheet)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                    @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                    @BBDEVSYS.Content.text.ResourceText.File 6
+                                </label>
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                    <i class="glyphicon glyphicon-plus"></i>
+                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment6">
+                                </span>
+                                <div>
+                                    <input type="hidden" id="lastSavedFilename" />
+                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                    <input type="hidden" id="attachFileNameVisible" value="true" />
+                                    <input type="hidden" id="attachSingleFile" value="true" />
+                                    <input type="hidden" id="attachDocTypeValueType" value="" />
+                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment6">
+                                        <tbody id="attachmentBody">
+                                            @foreach (var item in Model.AttachmentList)
+                                            {
+                                                if (string.Equals(item.AttachmentGroup, "addAttachment6", StringComparison.OrdinalIgnoreCase))
+                                                {
+                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                }
+                                            }
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                        <div class="form-group">
+                            <div class="col-xs-12 col-md-12 " style="text-align:right">
+                                <button type="button" class="btn btn-danger authManage" id="uploadButton" @*onclick="submitFormDataMergeButton()"*@>
+                                    <span class="fa fa-upload"></span>
+                                    <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonIntegrate</span>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="form-group" style="display:none;">
+                            <div class="col-xs-12 col-md-12 " style="text-align:right">
+                                <button type="button" class="btn btn-danger authManage" id="integrateButton" onclick="submitFormDataIntegrateButton()">
+                                    <span class="fa fa-upload"></span>
+                                    <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonPreview</span>
+                                </button>
+                            </div>
+                        </div>
 
                     </div>
 
                     <div class="row">
                         <div class="col-xs-12" style="padding-top: 20px">
                             <div>
-                                <div class="col-xs-12" style="text-align:right">
-                                     <table id="uploadItemTable" class="table table-striped table-hover no-footer dtr-inline true-table-detail-item table-fix-column" style="display: block; overflow-x: auto; table-layout: fixed; width: 100%">
-                                        <thead id="uploadItemHeader">
-                                            <tr>
-                                               
-                                            </tr>
+                                <div class="table-responsive " style="height:400px;">
+                                    <table class="table table-bordered  table-striped true-datatable" id="uploadItemTable" style="width:1900px">
+                                        @*<table id="uploadItemTable" class="table table-striped  table-bordered " style="width:1900px">*@
 
-                                        </thead>
-                                        <tbody id="uploadItemBody">
-                                          
+                                        @*<div class="col-xs-12" style="text-align:right">
+                                            <table id="uploadItemTable" class="table table-responsive table-striped table-hover no-footer dtr-inline true-table-detail-item table-fix-column" style="display: block; overflow-x: auto; table-layout: fixed; width: 100%">*@
 
-                                        </tbody>
+                                        @*<thead id="uploadItemHeader">
+                                                                        <tr>
+                                                                            @foreach (DataColumn column in Model.adjDataTable.Columns)
+                                                                            {
+                                                                                <th>@column.ColumnName</th>
+                                                                            }
+                                                                        </tr>
+
+                                                                    </thead>
+                                                                    <tbody id="uploadItemBody">
+                                                                        @if (Model.adjDataTable.Rows.Count == 0)
+                                            {
+                                                                            <tr class="NoDataRowTr"><td class="NoDataRow" colspan="11">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>
+                                                                        }
+                                                                        else
+                                                                        {
+
+                                                                            foreach (DataRow item in Model.adjDataTable.Rows)
+                                                                            {
+                                                                                <tr>
+                                                                                    @foreach (DataColumn col in Model.adjDataTable.Columns)
+                                                                                    {
+                                                                                        <td>@item[col.ColumnName]</td>
+                                                                                    }
+                                                                                </tr>
+
+                                                                            }
+
+
+
+                                                                        }
+
+                                                                    </tbody>*@
+                                        @{
+                                            Html.RenderPartial("~/Views/Adjustrefund/AdjustrefundUploadItems.cshtml", Model);
+                                        }
+
+
                                     </table>
-                                </div>
-                        </div>
-                    </div>
 
+                                </div>
+                                <div class="form-group">
+
+                                    <label id="rowsData" class="col-xs-12 col-md-3  true-control-label " style="text-align:left">
+                                    </label>
+
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -87,12 +409,12 @@
             @*<button type="button" class="btn btn-info authManage" id="verifyButton" onclick="actionButton('@ConstantVariableService.FormActionValidate');">
                 <span class="glyphicon glyphicon-check"></span>
                 <span id="verifyButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonValidate</span>
-            </button>*@
-            <button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="actionButton('@ConstantVariableService.FormActionCreate');">
+                </button>*@
+            @*<button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="actionButton('@ConstantVariableService.FormActionCreate');">
                 <span class="fa fa-upload"></span>
                 <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
-            </button>
-          
+                </button>*@
+
         </div>
     </div>
 
@@ -115,31 +437,30 @@
         </div>
     </div>
 
-    @Html.Partial("Javascript/AttachmentJavaScript")
-    @Html.HiddenFor(m => m.ID)
-    @Html.HiddenFor(m => m.FormState)
-    @Html.HiddenFor(m => m.FormAction)
+    @Html.Partial("Javascript/AttachmentMultiFileJavaScript")
+                                            @Html.HiddenFor(m => m.ID)
+                                            @Html.HiddenFor(m => m.FormState)
+                                            @Html.HiddenFor(m => m.FormAction)
 
-    @Html.HiddenFor(m => m.CREATE_BY)
-    @Html.HiddenFor(m => m.CREATE_DATE)
-    @Html.HiddenFor(m => m.MODIFIED_BY)
-    @Html.HiddenFor(m => m.MODIFIED_DATE)
+                                            @Html.HiddenFor(m => m.CREATE_BY)
+                                            @Html.HiddenFor(m => m.CREATE_DATE)
+                                            @Html.HiddenFor(m => m.MODIFIED_BY)
+                                            @Html.HiddenFor(m => m.MODIFIED_DATE)
+                                            @Html.HiddenFor(m => m.NameFormView)
 
-    @Html.HiddenFor(m => m.UploadStatus)
-    @Html.HiddenFor(m => m.UPLOAD_DATE)
-    @Html.HiddenFor(m => m.UPLOAD_BY)
-   
 
-}
+
+
+                                            }
 <script type="text/javascript">
 
-    function onChangeCritiria() {
-        deleteAllAttachFile('attachmentTable');
-        setEmpltyUploadTable();
-    }
 
     function setEmpltyUploadTable() {
         $("#uploadItemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');
+        var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
+
+        $("#rowsData").text(rowCount);
+
     }
 
     function callbackDeleteAttachFile(button) {
@@ -151,33 +472,38 @@
         //Clear upload item table
         setEmpltyUploadTable()
     }
-   
-    function callbackAddAttachFile() {
-        var fileName = $('#lastSavedFilename').val();
-        var row = $('#uploadItemBody').children('tr:first');
 
-        LoadingRow(row, 'on', true)
-        blockUI();
 
+    function callbackAddAttachFile(seqFiles) {
+
+        var lastSavedFilename = "#lastSavedFilename";
+
+        var uploadItemBody = "#uploadItemBody";
+        var SheetFile = "#SheetFile1";
+        if (!isNaN(seqFiles)) {
+            lastSavedFilename += seqFiles;
+        }
+        var fileName = $(lastSavedFilename).val();
+        var row = $(uploadItemBody).children('tr:first');//!isNaN(seqFiles)?  $("'#" + "uploadItemBody" + seqFiles + "'").children('tr:first'):$('#uploadItemBody').children('tr:first') ;
+        var sheet = $(SheetFile).val();
+        //LoadingRow(row, 'on', true)
+        @*blockUI();
         $.ajax({
-            url: '@Url.Action("ImportExcel", "InvoiceUpload", new { Area = "Invoice" })',
+            url: '@Url.Action("ImportExcel", "AdjustRefundUpload", new { Area = "Adjustrefund" })',
             data: {
-                "fileName": fileName
-
+                "fileName": fileName,
+                "sheetName": sheet,
             },
             cache: false,
             success: function (response) {
                 if (response.success) {
-                    $("#uploadItemBody").html(response.html);
+                    //$("#uploadItemBody").html(response.html);
+                    //$("#TxtFile1"+ seqFiles).text(fileName);
+
+
                 }
                 else {
-                    ////setEmpltyUploadTable();
-                    ////Remove uploaded file
-                    //var message = '';
-                    //for (var i = 0; i < response.errorList.length; i++) {
-                    //    message = message + response.errorList[i].Message + "<br />";
-                    //    console.log(message)
-                    //}
+
 
                     deleteAllAttachFile('attachmentTable');
                     displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
@@ -188,15 +514,52 @@
                 }
 
                 unblockUI();
-               
+
             }
         }).done(function (result) {
-           
+
+        });*@
+
+    }
+    function uploadAttachFile(fileName) {
+        var fileName = fileName;
+        var row = $('#uploadItemBody').children('tr:first');
+        var sheet = $("#SheetFile1").val();
+        LoadingRow(row, 'on', true)
+        blockUI();
+
+        $.ajax({
+            url: '@Url.Action("ImportExcel", "AdjustRefundUpload", new { Area = "Adjustrefund" })',
+            data: {
+                "fileName": fileName,
+                "sheetName": sheet,
+            },
+            cache: false,
+            success: function (response) {
+                if (response.success) {
+                    //$("#uploadItemBody").html(response.html);
+                    $("#TxtFile1").text(fileName);
+                }
+                else {
+
+
+                    @*deleteAllAttachFile('attachmentTable');
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
+
+                    row = $('#uploadItemBody').children('tr:first');
+                    LoadingRow(row, 'off', true)
+                    setEmpltyUploadTable();*@
+                }
+
+                unblockUI();
+
+            }
+        }).done(function (result) {
+
         });
 
     }
-    function actionButton(formAction)
-    {
+    function actionButton(formAction) {
         $('#FormAction').val(formAction);
         var headerMessage = "default";
         var bodyMessage = "default";
@@ -214,18 +577,125 @@
     }
 
     function actionButtonBack() {
-        goBack('@Model.FormState', '@Url.Action("List", "InvoiceUpload", new { Area = "Invoice" })');
+        goBack('@Model.FormState', '@Url.Action("List", "AdjustrefundUpload", new { Area = "Adjustrefund" })');
     }
 
- 
 
+    function submitFormDataMergeButton() {
+        blockUI();
+        console.log($('form').attr("id"));
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+        $("#uploadItemTable").empty();
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+        if (form.valid()) {
+            var url = '@Url.Action("SubmitMergeForm", "AdjustrefundUpload", new { Area = "Adjustrefund" })?' + form.serialize();
+            $.ajax({
+                url: url,
+                type: 'post',
+                //contentType: 'json',
+                data: form.serialize(),
+                success: function (response) {
+                    unblockUI();
+                    //$("#uploadItemBody").html(response.html);
+                }
+            }).done(function (result) {
+                console.log("Hooray, it worked!");
+                //submitFormDataIntegrateButton();
+                //window.open(url);
+                unblockUI();
+            });
+            //unblockUI();
+
+            submitFormDataIntegrateButton();
+            return false;
+            @*$.post(form.attr("action"), form.serialize(), function (response) {
+
+                if (response != null && response.success) {
+
+                }
+            });*@
+
+        } else {
+
+            for (var i = 0; i < validator.errorList.length; i++) {
+                message = message + validator.errorList[i].message + "<br />";
+                unblockUI();
+            }
+        }
+      
+    }
+    function submitFormDataIntegrateButton() {
+        blockUI();
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+
+
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+
+        $("#uploadItemTable").empty();
+        var url = '@Url.Action("PreviewData", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
+        $.ajax({
+            //contentType: 'json',
+            url: url,
+            data: form.serialize(),
+            cache: false,
+            success: function (response) {
+                //unblockUI();
+
+                //var dataTable = $('#uploadItemTable').DataTable({
+                //    'paging': true,
+                //    //'lengthChange': false,
+                //    'searching': true,
+                //    'ordering': true,
+                //    'info': true,
+                //    //'autoWidth': false
+                //});
+
+                //dataTable.row.add($(response)).draw();
+
+                $("#uploadItemTable").html(response);
+                var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
+
+                $("#rowsData").text(rowCount);
+
+                unblockUI();
+            }
+        }).done(function (result) {
+
+
+            unblockUI();
+        });
+        //$.post(url, form.serialize(), function (response) {
+        //    debugger;
+        //    $("#uploadItemBody").html(response.html);
+
+        //});
+        //unblockUI();
+        return false;
+    }
     //Callback function when click ok button on confirmation popup
     function okActionCallback() {
-        if (isNoHistory()) {
-            var url = '@Url.Action("List", "InvoiceUpload", new { Area = "Invoice" })';
-           
 
-            detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', url)
+        if (isNoHistory()) {
+            var url = '@Url.Action("List", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
+            var formID = 'detailForm';
+
+            var form = $('#' + formID);
+            
+            $.validator.unobtrusive.parse(form);
+            var validator = form.validate();
+
+            //var url = '@Url.Action("SubmitMergeForm", "AdjustrefundUpload", new { Area = "Adjustrefund" })?' + form.serialize();
+
+            window.open(url);
+            unblockUI();
+
+            //detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', url)
         }
         else {
             var action = $('#FormAction').val();
@@ -250,8 +720,30 @@
         //Set attachment column visibility for MC tracking attachment
         setColumnVisibility('InternalAttachmentDiv');
 
-
+        setEmpltyUploadTable();
         //ModifyCollectionItemName('uploadItemBody');
+
+        $("#uploadButton").click(function () {
+
+            submitFormDataIntegrateButton();
+            $("#detailForm").submit();
+            event.preventDefault();
+        });
+
+
+
+        var fileupload = $("#FileUpload1");
+        var filePath = $("#spnFilePath");
+        var button = $("#btnFileUpload");
+        button.click(function () {
+            fileupload.click();
+        });
+        fileupload.change(function () {
+            var fileName = $(this).val().split('\\')[$(this).val().split('\\').length - 1];
+            filePath.html("<b>Selected File: </b>" + fileName);
+            $("#TxtFile1").val(fileName);
+
+        });
 
     });
 </script>

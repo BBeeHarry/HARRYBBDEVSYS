@@ -47,6 +47,9 @@
         @Html.HiddenFor(m => m.ErrorFlag, new { id = "errorflag_" + Model.FileUniqueKey })
         @Html.HiddenFor(m => m.DeleteFlag, new { id = "deleteflag_" + Model.FileUniqueKey })
 
+        //--Add Sheet Name 1 Apr 2019
+        @Html.HiddenFor(m => m.SheetNameExcel, new { id = "sheetNameExcel_" + Model.FileUniqueKey })
+
     }
 
 </tr>
