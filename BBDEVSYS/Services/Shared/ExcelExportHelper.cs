@@ -1054,6 +1054,7 @@ namespace BBDEVSYS.Services.Shared
                         //DataTable 
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
+                        dataTable.TableName = dataSet.Tables[data].TableName;
 
                         ExcelWorksheet workSheet = null;
 

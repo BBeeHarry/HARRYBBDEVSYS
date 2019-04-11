@@ -610,6 +610,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Mapping ข้อมูล.
+        /// </summary>
+        public static string ButtonMapping {
+            get {
+                return ResourceManager.GetString("ButtonMapping", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ตกลง.
         /// </summary>
         public static string ButtonOK {

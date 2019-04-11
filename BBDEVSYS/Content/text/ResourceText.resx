@@ -1014,4 +1014,7 @@
   <data name="TitleAdjAndRfdUpload" xml:space="preserve">
     <value>Adjust and Refund Upload Data to MIS</value>
   </data>
+  <data name="ButtonMapping" xml:space="preserve">
+    <value>Mapping ข้อมูล</value>
+  </data>
 </root>

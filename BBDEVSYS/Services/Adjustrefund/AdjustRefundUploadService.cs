@@ -364,7 +364,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         DataTable data = new DataTable();
 
                         data = resultDataTable.ReturnResult.AsEnumerable().CopyToDataTable();
-                        dtFile = GenerateFormatFieldUploadtoMIS(data);
+                        dtFile = data;// GenerateFormatFieldUploadtoMIS(data);
 
                         resultDataTable.ReturnResult.Clear();
                         resultDataTable.ReturnResult = dtFile.AsEnumerable().CopyToDataTable();
@@ -381,8 +381,202 @@ namespace BBDEVSYS.Services.Adjustrefund
             }
             return resultDataTable;
         }
-
         private static DataTable GenerateFormatFieldUploadtoMIS(DataTable data)
+        {
+
+
+            DataTable dataUpload = new DataTable();
+            DataTable dataMapping = new DataTable();
+            try
+            {
+                if (data.Rows.Count > 0)
+                {
+                    dataUpload = data.AsEnumerable().CopyToDataTable();
+
+                    var existscol = dataUpload.Columns.Contains("RF_ID");
+
+                    if (!dataUpload.Columns.Contains("RF_ID")) dataUpload.Columns.Add("RF_ID");
+                    if (!dataUpload.Columns.Contains("DOC_NO")) dataUpload.Columns.Add("DOC_NO");
+                    if (!dataUpload.Columns.Contains("REF_NO")) dataUpload.Columns.Add("REF_NO");
+                    if (!dataUpload.Columns.Contains("REASON_ID")) dataUpload.Columns.Add("REASON_ID");
+                    if (!dataUpload.Columns.Contains("REASON_REFUND")) dataUpload.Columns.Add("REASON_REFUND");
+                    if (!dataUpload.Columns.Contains("ADDRESS")) dataUpload.Columns.Add("ADDRESS");
+                    if (!dataUpload.Columns.Contains("EXPLANATION")) dataUpload.Columns.Add("EXPLANATION");
+                    if (!dataUpload.Columns.Contains("REQEST_BY")) dataUpload.Columns.Add("REQEST_BY");
+                    if (!dataUpload.Columns.Contains("COMPLETE_BY")) dataUpload.Columns.Add("COMPLETE_BY");
+                    if (!dataUpload.Columns.Contains("COMPLETE_DATE")) dataUpload.Columns.Add("COMPLETE_DATE", typeof(DateTime));
+                    if (!dataUpload.Columns.Contains("DUE_DATE")) dataUpload.Columns.Add("DUE_DATE", typeof(DateTime));
+                    if (!dataUpload.Columns.Contains("DOC_STATUS")) dataUpload.Columns.Add("DOC_STATUS");
+                    if (!dataUpload.Columns.Contains("DESIGNATION_CODE_FROM")) dataUpload.Columns.Add("DESIGNATION_CODE_FROM");
+                    if (!dataUpload.Columns.Contains("REF1_FROM")) dataUpload.Columns.Add("REF1_FROM");
+                    if (!dataUpload.Columns.Contains("REF2_FROM")) dataUpload.Columns.Add("REF2_FROM");
+                    if (!dataUpload.Columns.Contains("DESIGNATION_CODE_TO")) dataUpload.Columns.Add("DESIGNATION_CODE_TO");
+                    if (!dataUpload.Columns.Contains("REF1_TO")) dataUpload.Columns.Add("REF1_TO");
+                    if (!dataUpload.Columns.Contains("REF2_TO")) dataUpload.Columns.Add("REF2_TO");
+
+
+                    DataTable dtCol = new DataTable();
+                    foreach (DataColumn item in dataUpload.Columns)
+                    {
+                        dtCol.Columns.Add(item.ColumnName);
+                        dtCol.Columns[item.ColumnName].DataType = System.Type.GetType(item.DataType.FullName);
+                    }
+                    var query = (from order in dataUpload.AsEnumerable()
+                                 select new
+                                 {
+                                     RF_ID = dataUpload.Columns.Contains("RF_ID") ? null : order["RF_ID"],
+                                     REQUEST_NO = dataUpload.Columns.Contains("SR_NO") ? null : order["SR_NO"],
+                                     DOC_NO = dataUpload.Columns.Contains("DOC_NO") ? null : order["DOC_NO"],
+                                     REF_NO = dataUpload.Columns.Contains("REF_NO") ? null : order["REF_NO"],
+                                     PAID_FROM = dataUpload.Columns.Contains("COMP_CODE_1") ? null : order["COMP_CODE_1"],
+                                     ACCOUNT_FROM = dataUpload.Columns.Contains("BAN_12") ? null : order["BAN_12"],
+                                     CUSTOMER_NAME = dataUpload.Columns.Contains("CUSTOMER_NAME_1") ? null : order["CUSTOMER_NAME_1"],
+                                     PAID_TO = dataUpload.Columns.Contains("COMP_CODE_2") ? null : order["COMP_CODE_2"],
+                                     ACCOUNT_TO = dataUpload.Columns.Contains("BAN_21") ? null : order["BAN_21"],
+                                     CUSTOMER_NAME_TO = dataUpload.Columns.Contains("CUSTOMER_NAME_2") ? null : order["CUSTOMER_NAME_2"],
+                                     DEPOSIT_DATE = dataUpload.Columns.Contains("DEPOSITE_DATE") ? (DateTime?)null : order["DEPOSITE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DEPOSITE_DATE"),
+                                     SOURCE_ID = dataUpload.Columns.Contains("SOURCE_ID") ? null : order["SOURCE_ID"],
+                                     AMOUNT = dataUpload.Columns.Contains("PAY_AMOUNT") ? 0 : order["PAY_AMOUNT"] == System.DBNull.Value ? 0 : order.Field<double>("PAY_AMOUNT"),
+                                     RECEIPT_NO = dataUpload.Columns.Contains("RECEIPT_NO") ? null : order["RECEIPT_NO"],
+                                     REASON_ID = dataUpload.Columns.Contains("REASON_ID") ? null : order["REASON_ID"],
+                                     REASON_REFUND = dataUpload.Columns.Contains("REASON_REFUND") ? null : order["REASON_REFUND"],
+                                     ADDRESS = dataUpload.Columns.Contains("ADDRESS") ? null : order["ADDRESS"],
+                                     EXPLANATION = dataUpload.Columns.Contains("EXPLANATION") ? null : order["EXPLANATION"],
+                                     REQEST_BY = dataUpload.Columns.Contains("REQEST_BY") ? null : order["REQEST_BY"],
+                                     CREATE_DATE = dataUpload.Columns.Contains("SR_OPEN_DATE") ? null : order["SR_OPEN_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("SR_OPEN_DATE"),
+                                     COMPLETE_BY = dataUpload.Columns.Contains("COMPLETE_BY") ? null : order["COMPLETE_BY"],
+                                     COMPLETE_DATE = dataUpload.Columns.Contains("COMPLETE_DATE") ? null : order["COMPLETE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("COMPLETE_DATE"),
+                                     DUE_DATE = dataUpload.Columns.Contains("DUE_DATE") ? null : order["DUE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DUE_DATE"),
+                                     DOC_STATUS = dataUpload.Columns.Contains("DOC_STATUS") ? null : order["DOC_STATUS"],
+                                     ACCOUNT_TYPE_FROM = dataUpload.Columns.Contains("ACCOUNT_TYPE_1") ? null : order["ACCOUNT_TYPE_1"],
+                                     AR_BALANCE_FROM = dataUpload.Columns.Contains("AR_BALANCE_11") ? 0 : order["AR_BALANCE_11"] == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_11"),
+                                     BEN_ACCOUNT_STATUS_FROM = dataUpload.Columns.Contains("BEN_STATUS_1") ? null : order["BEN_STATUS_1"],
+                                     IDENTIFICATION_FROM = dataUpload.Columns.Contains("IDENT_1") ? null : order["IDENT_1"],
+                                     CONVERGENCE_INDICATER_FROM = dataUpload.Columns.Contains("CONV_IND_1") ? null : order["CONV_IND_1"],
+                                     CONVERGENCE_CODE_FROM = dataUpload.Columns.Contains("CONV_CODE_1") ? null : order["CONV_CODE_1"],
+                                     ACCOUNT_BC_ID_FROM = dataUpload.Columns.Contains("T_FORM_ACCOUNT_BC_ID") ? null : order["T_FORM_ACCOUNT_BC_ID"],
+                                     DESIGNATION_CODE_FROM = dataUpload.Columns.Contains("DESIGNATION_CODE_FROM") ? null : order["DESIGNATION_CODE_FROM"],
+                                     REF1_FROM = dataUpload.Columns.Contains("REF1_FROM") ? null : order["REF1_FROM"],
+                                     REF2_FROM = dataUpload.Columns.Contains("REF2_FROM") ? null : order["REF2_FROM"],
+                                     ACCOUNT_TYPE_TO = dataUpload.Columns.Contains("ACCOUNT_TYPE_2") ? null : order["ACCOUNT_TYPE_2"],
+                                     AR_BALANCE_TO = dataUpload.Columns.Contains("AR_BALANCE_2") ? 0 : order["AR_BALANCE_2"] == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_2"),
+                                     BEN_ACCOUNT_STATUS_TO = dataUpload.Columns.Contains("BEN_STATUS_2") ? null : order["BEN_STATUS_2"],
+                                     IDENTIFICATION_TO = dataUpload.Columns.Contains("IDENT_2") ? null : order["IDENT_2"],
+                                     CONVERGENCE_INDICATER_TO = dataUpload.Columns.Contains("CONV_IND_2") ? null : order["CONV_IND_2"],
+                                     CONVERGENCE_CODE_TO = dataUpload.Columns.Contains("CONV_CODE_2") ? null : order["CONV_CODE_2"],
+                                     ACCOUNT_BC_ID_TO = dataUpload.Columns.Contains("T_TO_ACCOUNT_BC_ID") ? null : order["T_TO_ACCOUNT_BC_ID"],
+                                     DESIGNATION_CODE_TO = dataUpload.Columns.Contains("DESIGNATION_CODE_TO") ? null : order["DESIGNATION_CODE_TO"],
+                                     REF1_TO = dataUpload.Columns.Contains("REF2_TO") ? null : order["REF1_TO"],
+                                     REF2_TO = dataUpload.Columns.Contains("REF2_TO") ? null : order["REF2_TO"],
+                                     CATEGORY = dataUpload.Columns.Contains("CATEGORY") ? null : order["CATEGORY"],
+                                     SUB_CATEGORY = dataUpload.Columns.Contains("SUB_CATEGORY") ? null : order["SUB_CATEGORY"],
+                                     ISSUE = dataUpload.Columns.Contains("ISSUE") ? null : order["ISSUE"],
+                                     BAN = dataUpload.Columns.Contains("BAN") ? null : order["BAN"],
+                                     PRIM_RESOURCE = dataUpload.Columns.Contains("PRIM_RESOURCE") ? null : order["PRIM_RESOURCE"],
+                                     DETAIL = dataUpload.Columns.Contains("SR_DETAILS") ? null : order["SR_DETAILS"],
+                                     SR_DIVISION = dataUpload.Columns.Contains("SR_DIVISION") ? null : order["SR_DIVISION"],
+                                     SR_OWNER = dataUpload.Columns.Contains("SR_OWNER") ? null : order["SR_OWNER"],
+
+                                 }).ToList();
+
+
+                    dataMapping = ReportService.ConvertListToDatatable(query);
+
+                    #region set index column
+                    // mapping compare column name like mis SR_DETAILS	Detail
+
+                    //string[] oldColumnName = new string[] { "SR_NO", "COMP_CODE_1", "BAN_12", "CUSTOMER_NAME_1", "COMP_CODE_2", "BAN_21", "CUSTOMER_NAME_2", "DEPOSITE_DATE", "PAY_AMOUNT", "SR_OPEN_DATE", "ACCOUNT_TYPE_1", "AR_BALANCE_11", "BEN_STATUS_1", "IDENT_1", "CONV_IND_1", "CONV_CODE_1", "T_FORM_ACCOUNT_BC_ID", "ACCOUNT_TYPE_2", "AR_BALANCE_2", "BEN_STATUS_2", "IDENT_2", "CONV_IND_2", "CONV_CODE_2", "T_TO_ACCOUNT_BC_ID", "SR_DETAILS" };
+                    //string[] newColumnName = new string[] { "REQUEST_NO", "PAID_FROM", "ACCOUNT_FROM", "CUSTOMER_NAME", "PAID_TO", "ACCOUNT_TO", "CUSTOMER_NAME_TO", "DEPOSIT_DATE", "AMOUNT", "CREATE_DATE", "ACCOUNT_TYPE_FROM", "AR_BALANCE_FROM", "BEN_ACCOUNT_STATUS_FROM", "IDENTIFICATION_FROM", "CONVERGENCE_INDICATER_FROM", "CONVERGENCE_CODE_FROM", "ACCOUNT_BC_ID_FROM", "ACCOUNT_TYPE_TO", "AR_BALANCE_TO", "BEN_ACCOUNT_STATUS_TO", "IDENTIFICATION_TO", "CONVERGENCE_INDICATER_TO", "CONVERGENCE_CODE_TO", "ACCOUNT_BC_ID_TO" , "DETAIL" };
+
+
+                    //foreach (DataColumn item in dataUpload.Columns)
+                    //{
+
+                    //    var existvalue = oldColumnName.ToList().Where(m => m == item.ColumnName).FirstOrDefault();
+                    //    if (existvalue != null)
+                    //    {
+                    //        int keyIndex = Array.IndexOf(oldColumnName.ToArray(), item.ColumnName);
+                    //        if (keyIndex > -1)
+                    //        {
+                    //            item.ColumnName = newColumnName[keyIndex];
+
+                    //        }
+                    //    }
+                    //}
+
+
+                    //dataUpload.Columns["RF_ID"].SetOrdinal(0);
+                    //dataUpload.Columns["REQUEST_NO"].SetOrdinal(1);
+                    //dataUpload.Columns["DOC_NO"].SetOrdinal(2);
+                    //dataUpload.Columns["REF_NO"].SetOrdinal(3);
+                    //dataUpload.Columns["PAID_FROM"].SetOrdinal(4);
+                    //dataUpload.Columns["ACCOUNT_FROM"].SetOrdinal(5);
+                    //dataUpload.Columns["CUSTOMER_NAME"].SetOrdinal(6);
+                    //dataUpload.Columns["PAID_TO"].SetOrdinal(7);
+                    //dataUpload.Columns["ACCOUNT_TO"].SetOrdinal(8);
+                    //dataUpload.Columns["CUSTOMER_NAME_TO"].SetOrdinal(9);
+                    //dataUpload.Columns["DEPOSIT_DATE"].SetOrdinal(10);
+                    //dataUpload.Columns["SOURCE_ID"].SetOrdinal(11);
+                    //dataUpload.Columns["AMOUNT"].SetOrdinal(12);
+                    //dataUpload.Columns["RECEIPT_NO"].SetOrdinal(13);
+                    //dataUpload.Columns["REASON_ID"].SetOrdinal(14);
+                    //dataUpload.Columns["REASON_REFUND"].SetOrdinal(15);
+                    //dataUpload.Columns["ADDRESS"].SetOrdinal(16);
+                    //dataUpload.Columns["EXPLANATION"].SetOrdinal(17);
+                    //dataUpload.Columns["REQEST_BY"].SetOrdinal(18);
+                    //dataUpload.Columns["CREATE_DATE"].SetOrdinal(19);
+                    //dataUpload.Columns["COMPLETE_BY"].SetOrdinal(20);
+                    //dataUpload.Columns["COMPLETE_DATE"].SetOrdinal(21);
+                    //dataUpload.Columns["DUE_DATE"].SetOrdinal(22);
+                    //dataUpload.Columns["DOC_STATUS"].SetOrdinal(23);
+                    //dataUpload.Columns["ACCOUNT_TYPE_FROM"].SetOrdinal(24);
+                    //dataUpload.Columns["AR_BALANCE_FROM"].SetOrdinal(25);
+                    //dataUpload.Columns["BEN_ACCOUNT_STATUS_FROM"].SetOrdinal(26);
+                    //dataUpload.Columns["IDENTIFICATION_FROM"].SetOrdinal(27);
+                    //dataUpload.Columns["CONVERGENCE_INDICATER_FROM"].SetOrdinal(28);
+                    //dataUpload.Columns["CONVERGENCE_CODE_FROM"].SetOrdinal(29);
+                    //dataUpload.Columns["ACCOUNT_BC_ID_FROM"].SetOrdinal(30);
+                    //dataUpload.Columns["DESIGNATION_CODE_FROM"].SetOrdinal(31);
+                    //dataUpload.Columns["REF1_FROM"].SetOrdinal(32);
+                    //dataUpload.Columns["REF2_FROM"].SetOrdinal(33);
+                    //dataUpload.Columns["ACCOUNT_TYPE_TO"].SetOrdinal(34);
+                    //dataUpload.Columns["AR_BALANCE_TO"].SetOrdinal(35);
+                    //dataUpload.Columns["BEN_ACCOUNT_STATUS_TO"].SetOrdinal(36);
+                    //dataUpload.Columns["IDENTIFICATION_TO"].SetOrdinal(37);
+                    //dataUpload.Columns["CONVERGENCE_INDICATER_TO"].SetOrdinal(38);
+                    //dataUpload.Columns["CONVERGENCE_CODE_TO"].SetOrdinal(39);
+                    //dataUpload.Columns["ACCOUNT_BC_ID_TO"].SetOrdinal(40);
+                    //dataUpload.Columns["DESIGNATION_CODE_TO"].SetOrdinal(41);
+                    //dataUpload.Columns["REF1_TO"].SetOrdinal(42);
+                    //dataUpload.Columns["REF2_TO"].SetOrdinal(43);
+                    //dataUpload.Columns["CATEGORY"].SetOrdinal(44);
+                    //dataUpload.Columns["SUB_CATEGORY"].SetOrdinal(45);
+                    //dataUpload.Columns["ISSUE"].SetOrdinal(46);
+                    //dataUpload.Columns["BAN"].SetOrdinal(47);
+                    //dataUpload.Columns["PRIM_RESOURCE"].SetOrdinal(48);
+                    //dataUpload.Columns["DETAIL"].SetOrdinal(49);
+                    //dataUpload.Columns["SR_DIVISION"].SetOrdinal(50);
+                    //dataUpload.Columns["SR_OWNER"].SetOrdinal(51);
+
+
+                    #endregion
+
+
+
+
+
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return dataMapping;
+        }
+
+        private static DataTable GenerateFormatFieldData(DataTable data)
         {
 
 
@@ -414,12 +608,12 @@ namespace BBDEVSYS.Services.Adjustrefund
                     dataUpload.Columns.Add("REF2_TO");
 
 
-                    DataTable dtCol = new DataTable();
-                    foreach (DataColumn item in dataUpload.Columns)
-                    {
-                        dtCol.Columns.Add(item.ColumnName);
-                        dtCol.Columns[item.ColumnName].DataType = System.Type.GetType(item.DataType.FullName);
-                    }
+                    //DataTable dtCol = new DataTable();
+                    //foreach (DataColumn item in dataUpload.Columns)
+                    //{
+                    //    dtCol.Columns.Add(item.ColumnName);
+                    //    dtCol.Columns[item.ColumnName].DataType = System.Type.GetType(item.DataType.FullName);
+                    //}
                     var query = (from order in dataUpload.AsEnumerable()
                                  select new
                                  {
@@ -433,7 +627,8 @@ namespace BBDEVSYS.Services.Adjustrefund
                                      PAID_TO = order["COMP_CODE_2"],
                                      ACCOUNT_TO = order["BAN_21"],
                                      CUSTOMER_NAME_TO = order["CUSTOMER_NAME_2"],
-                                     DEPOSIT_DATE = order["DEPOSITE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DEPOSITE_DATE"),
+                                     //DEPOSIT_DATE = order["DEPOSITE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DEPOSITE_DATE"),
+                                     DEPOSIT_DATE = order["DEPOSITE_DATE"] == System.DBNull.Value ? (DateTime?)null : order["DEPOSITE_DATE"],
                                      SOURCE_ID = order["SOURCE_ID"],
                                      AMOUNT = order["PAY_AMOUNT"] == System.DBNull.Value ? 0 : order.Field<double>("PAY_AMOUNT"),
                                      RECEIPT_NO = order["RECEIPT_NO"],
@@ -442,10 +637,13 @@ namespace BBDEVSYS.Services.Adjustrefund
                                      ADDRESS = order["ADDRESS"],
                                      EXPLANATION = order["EXPLANATION"],
                                      REQEST_BY = order["REQEST_BY"],
-                                     CREATE_DATE = order["SR_OPEN_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("SR_OPEN_DATE"),
+                                     //CREATE_DATE = order["SR_OPEN_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("SR_OPEN_DATE"),
+                                     CREATE_DATE = order["SR_OPEN_DATE"] == System.DBNull.Value ? (DateTime?)null : order["SR_OPEN_DATE"],
                                      COMPLETE_BY = order["COMPLETE_BY"],
-                                     COMPLETE_DATE = order["COMPLETE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("COMPLETE_DATE"),
-                                     DUE_DATE = order["DUE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DUE_DATE"),
+                                     //COMPLETE_DATE = order["COMPLETE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("COMPLETE_DATE"),
+                                     //DUE_DATE = order["DUE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DUE_DATE"),
+                                     COMPLETE_DATE = order["COMPLETE_DATE"] == System.DBNull.Value ? (DateTime?)null : order["COMPLETE_DATE"],
+                                     DUE_DATE = order["DUE_DATE"] == System.DBNull.Value ? (DateTime?)null : order["DUE_DATE"],
                                      DOC_STATUS = order["DOC_STATUS"],
                                      ACCOUNT_TYPE_FROM = order["ACCOUNT_TYPE_1"],
                                      AR_BALANCE_FROM = order["AR_BALANCE_11"] == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_11"),
@@ -480,6 +678,8 @@ namespace BBDEVSYS.Services.Adjustrefund
 
 
                     dataMapping = ReportService.ConvertListToDatatable(query);
+
+
 
                     #region set index column
                     // mapping compare column name like mis SR_DETAILS	Detail
@@ -644,8 +844,8 @@ namespace BBDEVSYS.Services.Adjustrefund
                             OleDbDataAdapter dataAdapter = new OleDbDataAdapter(oleExcelCommand);
 
                             dataAdapter.Fill(dtFile);
-                            string tbName = sheet.Replace("$", "");
-                            dtFile.TableName = tbName;
+                            string tbName = sheet.Replace("'", "").Replace("$", "");
+                            dtFile.TableName = tbName.Trim();
                             ds.Tables.Add(dtFile);
                         }
                     }
@@ -663,32 +863,43 @@ namespace BBDEVSYS.Services.Adjustrefund
                 if (ds.Tables.Count > 0)
                 {
                     string tbNameMap = string.Empty;
-                    if (ds.Tables[0].TableName.Replace("'", "").Trim() == "SQL_Results")
+                    if (ds.Tables[0].TableName == "SQL_Results")
                     {
-                        tbNameMap = ds.Tables[ds.Tables.Count - 1].TableName.Replace("'", "").Trim();
+                        tbNameMap = ds.Tables[ds.Tables.Count - 1].TableName;
                     }
                     else
                     {
-                        tbNameMap = ds.Tables[0].TableName.Replace("'", "").Trim();
+                        tbNameMap = ds.Tables[0].TableName;
                     }
                     foreach (DataTable item in ds.Tables)
                     {
                         DataTable dataMerge = new DataTable();
 
 
-                        if (item.TableName.Replace("'", "").Trim() == "Verify#3")
+                        if (item.TableName == "Verify#3")
                         {
                             dataMerge = GenerateFormatAllMappingData(item, ds.Tables["Sheet1"]).AsEnumerable().CopyToDataTable();
-                            dataMerge.TableName = item.TableName.Replace("'", "").Trim();
+                            dataMerge.TableName = item.TableName;
                             getDataset.Tables.Add(dataMerge);
                         }
                         else
                         {
-                            if (sheetList.ToList().Any(m => m == item.TableName.Replace("'", "").Trim()))
+                            if (sheetList.ToList().Any(m => m == item.TableName))
                             {
-                                dataMerge = item.AsEnumerable().CopyToDataTable();
-                                dataMerge.TableName = item.TableName.Replace("'", "").Trim();
-                                getDataset.Tables.Add(dataMerge);
+                                if (item.TableName == "Batch Refund")
+                                {
+                                    dataMerge = GenerateFormatFieldData(item.AsEnumerable().CopyToDataTable());
+                                    dataMerge.TableName = item.TableName;
+                                    getDataset.Tables.Add(dataMerge);
+                                }
+                                else
+                                {
+                                    dataMerge = item.AsEnumerable().CopyToDataTable();
+                                    dataMerge.TableName = item.TableName;
+                                    getDataset.Tables.Add(dataMerge);
+                                }
+
+
                             }
                         }
                     }
@@ -1039,7 +1250,14 @@ myTable.Columns.Add(colTimeSpan);*/
                     col.DataType = System.Type.GetType(typeData);
                     Type dataT = col.DataType;
                     dt.Columns.Add(col.Caption);
-                    dt.Columns[col.Caption].DataType = System.Type.GetType(typeData);
+                    if (dataT.FullName == "System.DateTime")
+                    {
+                        dt.Columns[col.Caption].DataType = System.Type.GetType("System.String");
+                    }
+                    else 
+                    {
+                        dt.Columns[col.Caption].DataType = System.Type.GetType(typeData);
+                    }
                 }
                 for (int i = 0; i < ds.Tables.Count; i++)
                 {
@@ -1059,7 +1277,7 @@ myTable.Columns.Add(colTimeSpan);*/
                            .Where(x => x.ColumnName == item.Caption).FirstOrDefault();
                             if (columns != null)
                             {
-                                datadr[item.Caption] = dr[item.Caption];
+                                datadr[item.Caption] = dr[item.Caption].GetType().FullName == "System.DateTime"?((DateTime)(dr[item.Caption])).Date.ToShortDateString(): dr[item.Caption];
                             }
                             //}
                         }
@@ -1281,7 +1499,7 @@ myTable.Columns.Add(colTimeSpan);*/
                                 //txtPathFile.Text = "";
                                 //return;
 
-                                string dropSql = "DROP TABLE "+ server_dbname + ".[dbo].TEMP_REFUND";
+                                string dropSql = "DROP TABLE " + server_dbname + ".[dbo].TEMP_REFUND";
                                 //Drop table Temp
                                 SqlCommand oCmd = new SqlCommand(dropSql, connection);
                                 oCmd.ExecuteNonQuery();
@@ -1319,13 +1537,13 @@ myTable.Columns.Add(colTimeSpan);*/
                     builder.DataSource = server_machine;   // update me
                     builder.UserID = server_user;              // update me
                     builder.Password = server_password;      // update me
-                    builder.InitialCatalog = server_dbname ;// "MIS_PAYMENT";
+                    builder.InitialCatalog = server_dbname;// "MIS_PAYMENT";
 
 
                     using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                     {
                         string sql = //"insert into Main (Firt Name, Last Name) values(textbox2.Text,textbox3.Text)";
-                        "IF NOT EXISTS ( SELECT * FROM   ["+ server_dbname + "].[dbo].[REFUND_PAYMENT_REQUSITION] " +
+                        "IF NOT EXISTS ( SELECT * FROM   [" + server_dbname + "].[dbo].[REFUND_PAYMENT_REQUSITION] " +
                         "WHERE [REQUEST_NO] IN (SELECT DISTINCT([REQUEST_NO]) FROM   [" + server_dbname + "].[dbo].[TEMP_REFUND]) ) BEGIN " +
                         "INSERT INTO  [" + server_dbname + "].[dbo].[REFUND_PAYMENT_REQUSITION] (" +
     "            [RF_ID]" +
@@ -1567,7 +1785,15 @@ myTable.Columns.Add(colTimeSpan);*/
                 }
                 else
                 {
-                    sheet = "[' " + sheet.Trim() + "$']";
+                    var shname = listSheet.Where(n => n.Contains(sheet)).FirstOrDefault();
+                    if (shname!=null)
+                    {
+                        sheet = "[" + shname + "]";
+                    }
+                    else
+                    {
+                        sheet = "['" + sheet.Trim() + "$']";
+                    }
 
                 }
                 //[' Batch Refund$']

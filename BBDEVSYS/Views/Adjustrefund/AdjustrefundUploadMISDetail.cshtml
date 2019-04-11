@@ -55,6 +55,7 @@
                                     <input type="hidden" id="attachSingleFile" value="true" />
                                     <input type="hidden" id="attachDocTypeValueType" value="" />
 
+
                                     <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment">
                                         <tbody id="attachmentBody">
                                             @foreach (var item in Model.AttachmentList)
@@ -70,23 +71,23 @@
                             </div>
 
                         </div>
-@*
-    <div class="form-group">
-        <div class="col-xs-12 col-md-12 " style="text-align:right">
-            <button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="detailActionButton('@ConstantVariableService.FormStateCreate', '@ConstantVariableService.FormActionCreate', 'detailForm', 'default', 'default', 'default', 'default');">
-                <span class="fa fa-upload"></span>
-                <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
-            </button>
-        </div>
-    </div>
-    <div class="form-group" style="display:none;">
-            <div class="col-xs-12 col-md-12 " style="text-align:right">
-                <button type="button" class="btn btn-danger authManage" id="integrateButton" onclick="submitFormDataIntegrateButton()">
-                    <span class="fa fa-upload"></span>
-                    <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonPreview</span>
-                </button>
-            </div>
-        </div>*@
+                        @*
+                            <div class="form-group">
+                                <div class="col-xs-12 col-md-12 " style="text-align:right">
+                                    <button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="detailActionButton('@ConstantVariableService.FormStateCreate', '@ConstantVariableService.FormActionCreate', 'detailForm', 'default', 'default', 'default', 'default');">
+                                        <span class="fa fa-upload"></span>
+                                        <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="form-group" style="display:none;">
+                                    <div class="col-xs-12 col-md-12 " style="text-align:right">
+                                        <button type="button" class="btn btn-danger authManage" id="integrateButton" onclick="submitFormDataIntegrateButton()">
+                                            <span class="fa fa-upload"></span>
+                                            <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonPreview</span>
+                                        </button>
+                                    </div>
+                                </div>*@
 
                     </div>
 
@@ -132,9 +133,9 @@
                     <span id="verifyButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonValidate</span>
                 </button>*@
             <button type="button" class="btn btn-danger authManage" id="uploadButton" onclick="actionButton('@ConstantVariableService.FormActionCreate');">
-                    <span class="fa fa-upload"></span>
-                    <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
-                </button>
+                <span class="fa fa-upload"></span>
+                <span id="uploadButtonText">@BBDEVSYS.Content.text.ResourceText.ButtonUpload</span>
+            </button>
 
         </div>
     </div>
@@ -168,12 +169,16 @@
                                             @Html.HiddenFor(m => m.MODIFIED_BY)
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
-                                            @Html.HiddenFor(m=>m.adjDataTable)
+                                            @Html.HiddenFor(m => m.adjDataTable)
 
 
                                             }
 <script type="text/javascript">
 
+    function onChangeCritiria() {
+        deleteAllAttachFile('attachmentTable');
+        setEmpltyUploadTable();
+    }
 
     function setEmpltyUploadTable() {
         $("#uploadItemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');
@@ -217,6 +222,7 @@
             data: form.serialize(),
             cache: false,
             success: function (response) {
+              
                 if (response.success) {
                     $("#uploadItemTable").html(response.html);
                     var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
@@ -225,14 +231,16 @@
 
                 }
                 else {
-
-
                     deleteAllAttachFile('attachmentTable');
+
+                    //$('#addAttachment').removeAttr('display','none');
                     displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
 
                     row = $('#uploadItemBody').children('tr:first');
                     LoadingRow(row, 'off', true)
                     setEmpltyUploadTable();
+
+                    location.reload();
                 }
 
                 unblockUI();
@@ -369,7 +377,7 @@
             unblockUI();
         });
         //$.post(url, form.serialize(), function (response) {
-        //    
+        //
         //    $("#uploadItemBody").html(response.html);
 
         //});
@@ -378,7 +386,7 @@
     }
     //Callback function when click ok button on confirmation popup
     function okActionCallback() {
-       
+
         if (isNoHistory()) {
             var url = '@Url.Action("UploadList", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
 
