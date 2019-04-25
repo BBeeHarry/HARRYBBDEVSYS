@@ -34,7 +34,7 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
         public string AttachSheet { get; set; }
 
 
-        [DisplayName("User Request")]
+        [DisplayName("User Id")]
         public string UserRequest { get; set; }
 
 

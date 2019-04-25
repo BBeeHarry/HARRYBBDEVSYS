@@ -2414,7 +2414,7 @@ namespace BBDEVSYS.Services.Accrued
                                             _mnth++;
                                         }
 
-                                        #region sub cal trans & amt & rate & net
+                                        #region sub cal trans & amt & rate & net mark
                                         //foreach (var dataSub in dataSubList)
                                         //{
                                         //    arrMonthTrxnSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TRANSACTIONS ?? 0);
@@ -3023,14 +3023,14 @@ namespace BBDEVSYS.Services.Accrued
                                             var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).FirstOrDefault();
 
 
-                                            decimal[] arrMonthTrxnSub = new decimal[getmonths];
-                                            decimal[] arrMonthAMTSub = new decimal[getmonths];
-                                            decimal[] arrMonthChargeSub = new decimal[getmonths];
+                                            decimal[] arrMonthTrxnSub = new decimal[months];
+                                            decimal[] arrMonthAMTSub = new decimal[months];
+                                            decimal[] arrMonthChargeSub = new decimal[months];
 
-                                            decimal[] arrMonthTrxn_RateSub = new decimal[getmonths];
-                                            decimal[] arrMonthAMT_RateSub = new decimal[getmonths];
+                                            decimal[] arrMonthTrxn_RateSub = new decimal[months];
+                                            decimal[] arrMonthAMT_RateSub = new decimal[months];
 
-                                            #region cal sub accrued
+                                            #region cal sub accrued mark
                                             //var dataSubList = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList();
                                             //int _mnth = 1;
                                             //int _yr = years;
@@ -3131,7 +3131,7 @@ namespace BBDEVSYS.Services.Accrued
                                             #endregion
 
 
-
+                                            //-------------------wrong
                                             #region amt
                                             foreach (var dataSub in data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList())
                                             {

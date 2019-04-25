@@ -7,7 +7,7 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@using (Html.BeginForm("", "", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
+@using (Html.BeginForm("SubmitForm", "AccruedSummaryReport", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
 {
     <div class="row">
         <div class="col-xs-12">
@@ -91,13 +91,20 @@
 
 
                             </div>
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.IS_STATUS)
+                            </label>
+                            <div class="col-xs-12 col-md-3">
+                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), new { @class = "form-control", style = "width:100%;" })
+                                @Html.ValidationMessageFor(m => m.IS_STATUS, "", new { @class = "text-danger" })
+                            </div>
 
                         </div>
 
                         <div class="form-group">
                             <div class="col-xs-12" style="text-align:right;">
 
-                                <button type="button" class="btn btn-success authDisplay" id="reportButton" onclick="getActionButton();">
+                                <button type="button" class="btn btn-success authDisplay" id="reportButton" @*onclick="getActionButton();"*@>
                                     <span class="fa fa-file-excel-o"></span>
                                     <span>@BBDEVSYS.Content.text.ResourceText.ButtonReportDisplay</span>
                                 </button>
@@ -279,20 +286,14 @@
                 data: form.serialize(),
                 //url: url,
                 success: function (response) {
-                    //unblockUI();
+                    unblockUI();
                 }
             }).done(function (result) {
                 window.open(url);
                 unblockUI();
             });
             return false;
-            @*$.post(form.attr("action"), form.serialize(), function (response) {
-
-            if (response != null && response.success) {
-
-            }
-        });*@
-
+     
         } else {
 
             for (var i = 0; i < validator.errorList.length; i++) {
@@ -461,6 +462,11 @@
     var $getpaymentItemCode;
     var flagClose = false;
     $(document).ready(function () {
+
+        $("#reportButton").click(function () {
+            $("#detailForm").submit();
+            event.preventDefault();
+        });
 
         var month = new Array();
         month[0] = "Jan";

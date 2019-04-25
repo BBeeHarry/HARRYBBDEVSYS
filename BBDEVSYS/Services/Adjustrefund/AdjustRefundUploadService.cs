@@ -787,10 +787,13 @@ namespace BBDEVSYS.Services.Adjustrefund
 
 
                 int i = 1;
+                string sheetTemp = string.Empty;// Create Temporarily  testing
+             
                 foreach (var item in formData.AttachmentList)
                 {
+
                     //string fileName = "";
-                    string sheetName = "SheetFile" + i.ToString();
+                    // string sheetName = "SheetFile" + i.ToString();
                     //string fileNameIndex = "";
                     var sheetModel = item.SheetNameExcel;//formData.GetType().GetProperty(sheetName).GetValue(formData);
 
@@ -824,30 +827,82 @@ namespace BBDEVSYS.Services.Adjustrefund
                     }
                     oleExcelConnection.Open();
 
-                    dtTablesList = oleExcelConnection.GetSchema("Tables");
+                    //dtTablesList = oleExcelConnection.GetSchema("Tables");
+                    //// Get the data table containg the schema guid.
+                    dtTablesList = oleExcelConnection.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
+
                     List<string> listSheet = new List<string>();
-                    foreach (DataRow drSheet in dtTablesList.Rows)
+                    if (string.IsNullOrEmpty(sheetModel))
                     {
-                        if (drSheet["TABLE_NAME"].ToString().Contains("$"))//checks whether row contains '_xlnm#_FilterDatabase' or sheet name(i.e. sheet name always ends with $ sign)
+                        foreach (DataRow drSheet in dtTablesList.Rows)
                         {
-                            listSheet.Add(drSheet["TABLE_NAME"].ToString());
+                            if (drSheet["TABLE_NAME"].ToString().Contains("$"))//checks whether row contains '_xlnm#_FilterDatabase' or sheet name(i.e. sheet name always ends with $ sign)
+                            {
+                                listSheet.Add(drSheet["TABLE_NAME"].ToString());
+                            }
+                        }
+
+                        if (dtTablesList.Rows.Count > 0)
+                        {
+                            if (listSheet.Count <= 2)
+                            {
+                                string sheet = listSheet[0];
+                                DataTable dtFile = new DataTable();
+                                sSheetNameList = new string[dtTablesList.Rows.Count];
+                                oleExcelCommand = new OleDbCommand(("Select * From " + "[" + sheet + "]"), oleExcelConnection);
+
+                                OleDbDataAdapter dataAdapter = new OleDbDataAdapter(oleExcelCommand);
+
+                                dataAdapter.Fill(dtFile);
+                                string tbName = sheet.Replace("'", "").Replace("$", "");
+                                if (!ds.Tables.Contains(tbName.Trim()))
+                                {
+                                    dtFile.TableName = tbName.Trim();
+                                }
+
+                      //          List<DataTable> tables =ds.Tables.Cast<DataTable>().Where(t => t.Columns.Cast<DataColumn>()
+                      //.All(c => columnNames.Contains(c.ColumnName)) ).Distinct().ToList();
+                                ds.Tables.Add(dtFile);
+                            }
+                            else
+                            {
+                                foreach (var sheet in listSheet)
+                                {
+                                    DataTable dtFile = new DataTable();
+                                    sSheetNameList = new string[dtTablesList.Rows.Count];
+                                    oleExcelCommand = new OleDbCommand(("Select * From " + "[" + sheet + "]"), oleExcelConnection);
+
+                                    OleDbDataAdapter dataAdapter = new OleDbDataAdapter(oleExcelCommand);
+
+                                    dataAdapter.Fill(dtFile);
+                                    string tbName = sheet.Replace("'", "").Replace("$", "");
+                                    
+                                    if (!ds.Tables.Contains(tbName.Trim()))
+                                    {
+                                        dtFile.TableName = tbName.Trim();
+                                    }
+                                    
+                                    ds.Tables.Add(dtFile);
+                                }
+                            }
                         }
                     }
-                    if (dtTablesList.Rows.Count > 0)
+                    else
                     {
-                        foreach (var sheet in listSheet)
+                        string sheet = sheetModel;
+                        DataTable dtFile = new DataTable();
+                        sSheetNameList = new string[dtTablesList.Rows.Count];
+                        oleExcelCommand = new OleDbCommand(("Select * From " + "[" + sheet + "]"), oleExcelConnection);
+
+                        OleDbDataAdapter dataAdapter = new OleDbDataAdapter(oleExcelCommand);
+
+                        dataAdapter.Fill(dtFile);
+                        string tbName = sheet.Replace("'", "").Replace("$", "");
+                        if (!ds.Tables.Contains(tbName.Trim()))
                         {
-                            DataTable dtFile = new DataTable();
-                            sSheetNameList = new string[dtTablesList.Rows.Count];
-                            oleExcelCommand = new OleDbCommand(("Select * From " + "[" + sheet + "]"), oleExcelConnection);
-
-                            OleDbDataAdapter dataAdapter = new OleDbDataAdapter(oleExcelCommand);
-
-                            dataAdapter.Fill(dtFile);
-                            string tbName = sheet.Replace("'", "").Replace("$", "");
                             dtFile.TableName = tbName.Trim();
-                            ds.Tables.Add(dtFile);
                         }
+                        ds.Tables.Add(dtFile);
                     }
 
                     oleExcelConnection.Close();
@@ -871,6 +926,11 @@ namespace BBDEVSYS.Services.Adjustrefund
                     {
                         tbNameMap = ds.Tables[0].TableName;
                     }
+                    var sheetName = new List<string>();
+                    for (int t = 0; t < ds.Tables.Count; t++)
+                    {
+                        sheetName.Add(ds.Tables[t].TableName);
+                    }
                     foreach (DataTable item in ds.Tables)
                     {
                         DataTable dataMerge = new DataTable();
@@ -878,7 +938,9 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                         if (item.TableName == "Verify#3")
                         {
-                            dataMerge = GenerateFormatAllMappingData(item, ds.Tables["Sheet1"]).AsEnumerable().CopyToDataTable();
+                            var sh = sheetName.Where(n => sheetList.ToList().All(u => n != u)).FirstOrDefault();
+                            string sheetBan = sh != null ? sh.ToString() : "Sheet1";
+                            dataMerge = GenerateFormatAllMappingData(item, ds.Tables[sheetBan]).AsEnumerable().CopyToDataTable();
                             dataMerge.TableName = item.TableName;
                             getDataset.Tables.Add(dataMerge);
                         }
@@ -1254,7 +1316,7 @@ myTable.Columns.Add(colTimeSpan);*/
                     {
                         dt.Columns[col.Caption].DataType = System.Type.GetType("System.String");
                     }
-                    else 
+                    else
                     {
                         dt.Columns[col.Caption].DataType = System.Type.GetType(typeData);
                     }
@@ -1277,7 +1339,7 @@ myTable.Columns.Add(colTimeSpan);*/
                            .Where(x => x.ColumnName == item.Caption).FirstOrDefault();
                             if (columns != null)
                             {
-                                datadr[item.Caption] = dr[item.Caption].GetType().FullName == "System.DateTime"?((DateTime)(dr[item.Caption])).Date.ToShortDateString(): dr[item.Caption];
+                                datadr[item.Caption] = dr[item.Caption].GetType().FullName == "System.DateTime" ? ((DateTime)(dr[item.Caption])).Date.ToShortDateString() : dr[item.Caption];
                             }
                             //}
                         }
@@ -1786,7 +1848,7 @@ myTable.Columns.Add(colTimeSpan);*/
                 else
                 {
                     var shname = listSheet.Where(n => n.Contains(sheet)).FirstOrDefault();
-                    if (shname!=null)
+                    if (shname != null)
                     {
                         sheet = "[" + shname + "]";
                     }

@@ -44,13 +44,23 @@ namespace BBDEVSYS.Controllers.Report
             //                     .Select(x => x.ColumnName)
             //                     .ToArray();
             //byte[] filecontent = ExcelExportHelper.ExportExcel(dt, "Actual TMN Expense 2018", false, columns);
+
+            string reportTypeName ="All";
+            if (formData.FEE_TYPE=="2")
+            {
+                reportTypeName = "Accrued";
+            }
+            else if (formData.FEE_TYPE == "3")
+            {
+                reportTypeName = "Actual";
+            }
             if (filecontent == null)
             {
                 return List();
             }
             else
             {
-                return File(filecontent, ExcelExportHelper.ExcelContentType, "Actual TMN Expense 2018.xlsx");
+                return File(filecontent, ExcelExportHelper.ExcelContentType, reportTypeName + " TMN Expense "+formData.END_YEAR+".xlsx");
             }
 
         }

@@ -26,6 +26,8 @@ namespace BBDEVSYS.ViewModels.AccruedReport
             BusinessUnitLst = new List<SelectListItem>();
             feeTypeLst = new List<SelectListItem>();
             channelsList = new List<SelectListItem>();
+
+            StatusList = new List<ValueHelpViewModel>();
         }
         //Authorization
         public const string RoleForManageData = "";
@@ -76,6 +78,9 @@ namespace BBDEVSYS.ViewModels.AccruedReport
         [Display(Name = "CHANNELS", ResourceType = typeof(ResourceText))]
         public string CHANNELSValue { get; set; }
 
+        [Display(Name = "STATUS", ResourceType = typeof(ResourceText))]
+        public string IS_STATUS { get; set; }
+
         public int x { get; set; }
         public int y { get; set; }
 
@@ -85,6 +90,7 @@ namespace BBDEVSYS.ViewModels.AccruedReport
         public List<SelectListItem> feeTypeLst { get;  set; }
         public List<SelectListItem> channelsList { get;  set; }
         public List<SelectListItem> BusinessUnitLst { get;  set; }
+        public List<ValueHelpViewModel> StatusList { get;  set; }
 
         public class AccruedDetailReportViewModelValidator : AbstractValidator<AccruedDetailReportViewModel>
         {

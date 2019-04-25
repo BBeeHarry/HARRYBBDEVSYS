@@ -126,10 +126,11 @@
 
                         <div class="form-group">
                             <label class="col-xs-12 col-md-3 true-control-label">
-                                @Html.LabelFor(m => m.INCLUDE_VAT_AMOUNT)
+                                @Html.LabelFor(m => m.NET_AMOUNT)
                             </label>
                             <div class="col-xs-12 col-md-3">
-                                @Html.TextBoxFor(m => m.INCLUDE_VAT_AMOUNT, new { @class = "form-control decimal2digit", @readonly = true })
+                                @Html.TextBoxFor(m => m.NET_AMOUNT, new { @class = "form-control decimal2digit", @readonly = true })
+                                @Html.ValidationMessageFor(m => m.NET_AMOUNT, "", new { @class = "text-danger" })
                             </div>
                             <label class="col-xs-12 col-md-2 true-control-label">
                                 @Html.LabelFor(m => m.DEDUCT_WHT_AMOUNT)
@@ -137,14 +138,16 @@
                             <div class="col-xs-12 col-md-3">
                                 @Html.TextBoxFor(m => m.DEDUCT_WHT_AMOUNT, new { @class = "form-control decimal2digit", @readonly = true })
                             </div>
+                          
+
                         </div>
+
                         <div class="form-group">
                             <label class="col-xs-12 col-md-3 true-control-label">
-                                @Html.LabelFor(m => m.NET_AMOUNT)
+                                @Html.LabelFor(m => m.INCLUDE_VAT_AMOUNT)
                             </label>
                             <div class="col-xs-12 col-md-3">
-                                @Html.TextBoxFor(m => m.NET_AMOUNT, new { @class = "form-control decimal2digit", @readonly = true })
-                                @Html.ValidationMessageFor(m => m.NET_AMOUNT, "", new { @class = "text-danger" })
+                                @Html.TextBoxFor(m => m.INCLUDE_VAT_AMOUNT, new { @class = "form-control decimal2digit", @readonly = true })
                             </div>
                             <label class="col-xs-12 col-md-2 true-control-label">
                                 @Html.LabelFor(m => m.DISCOUNT)
