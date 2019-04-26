@@ -22,16 +22,15 @@
                 <div class="box-body">
                     <div class="col-md-12">
                         <div class="form-group">
-                            <div class="form-group">
-                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
-                                    @Html.LabelFor(m => m.BUSINESS_UNIT) :
-                                </label>
-                                <div class="col-xs-12 col-md-6">
-                                    @Html.DropDownListFor(m => m.BUSINESS_UNIT, new SelectList(Model.BusinessUnitLst, "Value", "Text", "All"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeCritiria(this.value)" })
-
-                                </div>
-                            </div>
                             <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.BUSINESS_UNIT) :
+                            </label>
+                            <div class="col-xs-12 col-md-2">
+                                @Html.DropDownListFor(m => m.BUSINESS_UNIT, new SelectList(Model.BusinessUnitLst, "Value", "Text", "All"), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeCritiria(this.value)" })
+
+                            </div>
+
+                            <label class="col-xs-12 col-md-1 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.COMPANY_CODE) :
                             </label>
                             <div class="col-xs-12 col-md-6">
@@ -44,28 +43,28 @@
                             <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.MonthValue) :
                             </label>
-                            <div class="col-xs-12 col-md-3">
+                            <div class="col-xs-12 col-md-1">
                                 @*@Html.DropDownListFor(model => model.SelectedMonth, (IEnumerable<SelectListItem>)ViewBag.Months, "Month")*@
 
                                 @*@Html.DropDownListFor(m => m.START_MONTH, new SelectList(Model.MonthLst, "Value", "Text", Model.MonthValue), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeMonthCode(this.value)" })*@
                                 @Html.TextBoxFor(m => m.START_MONTH, new { @class = "form-control numberonly", maxlength = 2 })
                                 @Html.ValidationMessageFor(m => m.START_MONTH, "", new { @class = "text-danger" })
                             </div>
-                            <div class="col-xs-12 col-md-3">
+                            <div class="col-xs-12 col-md-1">
                                 @Html.TextBoxFor(m => m.END_MONTH, new { @class = "form-control numberonly", maxlength = 2 })
                                 @Html.ValidationMessageFor(m => m.END_MONTH, "", new { @class = "text-danger" })
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                        @*</div>
+                        <div class="form-group">*@
+                            <label class="col-xs-12 col-md-1 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.YearValue) :
                             </label>
-                            <div class="col-xs-12 col-md-3">
+                            <div class="col-xs-12 col-md-2">
                                 @*@Html.DropDownListFor(m => m.INV_YEAR, new SelectList(Model.YearLst, "Value", "Text", Model.YearValue), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeYearCode(this.value)" })*@
                                 @Html.TextBoxFor(m => m.START_YEAR, new { @class = "form-control numberonly ", maxlength = 4 })
                                 @Html.ValidationMessageFor(m => m.START_YEAR, "", new { @class = "text-danger" })
                             </div>
-                            <div class="col-xs-12 col-md-3">
+                            <div class="col-xs-12 col-md-2">
                                 @Html.TextBoxFor(m => m.END_YEAR, new { @class = "form-control numberonly", maxlength = 4 })
                                 @Html.ValidationMessageFor(m => m.END_YEAR, "", new { @class = "text-danger" })
                             </div>
@@ -74,29 +73,45 @@
                             <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.CHANNELSValue) :
                             </label>
-                            <div class="col-xs-12 col-md-6">
+                            <div class="col-xs-12 col-md-4">
                                 @Html.DropDownListFor(m => m.CHANNELSValue, new SelectList(Model.channelsList, "Value", "Text", "All"), "", new { @class = "form-control", style = "width:100%;" })
 
 
                             </div>
 
-                        </div>
-                        <div class="form-group">
+                        @*</div>
+                        <div class="form-group">*@
                             <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.FEE_TYPE) :
                             </label>
                             <div class="col-xs-12 col-md-3">
 
-                                @Html.DropDownListFor(m => m.FEE_TYPE, new SelectList(Model.feeTypeLst, "Value", "Text", 1), "", new { @class = "form-control", style = "width:100%;" })
+                                @Html.DropDownListFor(m => m.FEE_TYPE, new SelectList(Model.feeTypeLst, "Value", "Text", 1), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeShowReportType(this)" })
 
 
                             </div>
-                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
-                                @Html.LabelFor(m => m.IS_STATUS)
+
+
+                        </div>
+                        <div class="form-group" id="div-report-type" style="display:none;">
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.REPORT_TYPE) :
                             </label>
-                            <div class="col-xs-12 col-md-3">
-                                @Html.DropDownListFor(m => m.IS_STATUS, new SelectList(Model.StatusList, "ValueKey", "ValueText"), new { @class = "form-control", style = "width:100%;" })
-                                @Html.ValidationMessageFor(m => m.IS_STATUS, "", new { @class = "text-danger" })
+                            <div class="col-xs-12 col-md-4">
+
+                                @Html.DropDownListFor(m => m.REPORT_TYPE, new SelectList(Model.ReportTypeLst, "Value", "Text", 1), "", new { @class = "form-control", style = "width:100%;", @onchange = "onChangeShowReportStatus(this)" })
+
+
+                            </div>
+                            <div id="div-report-actual" style="display:none;">
+                                <label class="col-xs-12 col-md-2 true-control-label ">
+                                    @Html.LabelFor(m => m.IS_STATUS)
+                                </label>
+                                <div class="col-xs-12 col-md-3">
+                                    @Html.DropDownListFor(m => m.IsStatusList, new MultiSelectList(Model.StatusList, "ValueKey", "ValueText", Model.StatusList.Select(m => m.ValueKey)), htmlAttributes: new { @multiple = "multiple", @class = "form-control  ",style="width:100%" })
+
+                                    @Html.ValidationMessageFor(m => m.IS_STATUS, "", new { @class = "text-danger" })
+                                </div>
                             </div>
 
                         </div>
@@ -148,25 +163,25 @@
 
 
 <div class="row" style="display:none;">
-        <div class="col-xs-12 ">
+    <div class="col-xs-12 ">
 
-            <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:scroll">
+        <div class="col-md-12 table-responsive" style="overflow-x:auto;overflow-y:scroll">
 
-                <table class="table table-bordered  table-striped true-datatable" id="dataListTable" style="width:1000px"></table>
+            <table class="table table-bordered  table-striped true-datatable" id="dataListTable" style="width:1000px"></table>
+        </div>
+        <div class="row">
+            <div class="col-xs-12">
+
+                <button type="button" class="btn btn-success authDisplay" id="reportButton" onclick="getActionButton();">
+                    <span class="fa fa-file-excel-o"></span>
+                    <span>@BBDEVSYS.Content.text.ResourceText.ButtonReportDisplay</span>
+                </button>
+
             </div>
-                <div class="row">
-                    <div class="col-xs-12">
-
-                        <button type="button" class="btn btn-success authDisplay" id="reportButton" onclick="getActionButton();">
-                            <span class="fa fa-file-excel-o"></span>
-                            <span>@BBDEVSYS.Content.text.ResourceText.ButtonReportDisplay</span>
-                        </button>
-
-                    </div>
-                </div>
+        </div>
 
     </div>
-    </div>
+</div>
 <script>
 
     function searchResult() {
@@ -282,18 +297,20 @@
         if (form.valid()) {
             var url = '@Url.Action("SubmitForm", "AccruedSummaryReport", new { Area = "Accrued" })?' + form.serialize();
             $.ajax({
+                url: '@Url.Action("SubmitForm", "AccruedSummaryReport", new { Area = "Accrued" })', // add new testing run submit callback
                 contentType: 'json',
+                type: "POST",  // add new testing run submit callback
                 data: form.serialize(),
                 //url: url,
                 success: function (response) {
                     unblockUI();
                 }
             }).done(function (result) {
-                window.open(url);
+                //window.open(url); // add new testing run submit callback
                 unblockUI();
             });
             return false;
-     
+
         } else {
 
             for (var i = 0; i < validator.errorList.length; i++) {
@@ -302,7 +319,43 @@
             }
         }
     }
+    function onChangeShowReportType(rptType) {
 
+        if (rptType.value == 3) {
+            $("#div-report-type").show()
+            $('#REPORT_TYPE').show();
+        }
+        else {
+
+            $("#div-report-type").css('display', 'none')
+        }
+          
+    }
+    function onChangeShowReportStatus(rptType) {
+        if (rptType.value == 2) {
+            $("#div-report-actual").show()
+
+            $("#IsStatusList").show();
+        }
+        else {
+            $("#div-report-actual").css('display', 'none')
+
+            //$("#IsStatusList").hide();
+
+            //$("#REPORT_TYPE option:selected").val('1');
+            //$inputs = $("#IsStatusList");
+            //$("#IsStatusList option:selected").prop("selected", false);
+            //$("#IsStatusList").multiselect('refresh');
+            //$.each($inputs, function () {
+            //    $(this).focus(function () {
+            //        $.each($inputs, function () {
+            //            $(this).val('');
+            //            $(this).attr('checked', false);
+            //        })
+            //    });
+            //})
+        }
+    }
     @*function onChangeYearCode(year) {
         $("[data-valmsg-for='INV_YEAR']").html("");
         var error = false;

@@ -1017,4 +1017,7 @@
   <data name="ButtonMapping" xml:space="preserve">
     <value>Mapping ข้อมูล</value>
   </data>
+  <data name="REPORT_TYPE" xml:space="preserve">
+    <value>Report Type</value>
+  </data>
 </root>

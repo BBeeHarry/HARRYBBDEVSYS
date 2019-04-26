@@ -80,6 +80,22 @@ namespace BBDEVSYS.Services.Accrued
 
                     model.feeTypeLst = list;
 
+
+                    //--Get List ReportType
+                    list = new List<SelectListItem>();
+
+                    var reportList = new List<string>();
+                    reportList.Add("Report Payment Fee Charging");
+                    reportList.Add("Report Invoice Status");
+                    list.AddRange(reportList
+                          .Select((rpt, index) => new SelectListItem
+                          {
+                              Value = (index + 1).ToString(),
+                              Text = (rpt).ToString()
+                          }).ToList());
+
+                    model.ReportTypeLst = list;
+
                     //--Get List Channel
                     list = new List<SelectListItem>();
 
@@ -396,197 +412,241 @@ namespace BBDEVSYS.Services.Accrued
             try
             {
                 DataSet ds = new DataSet();
-
-                using (var context = new PYMFEEEntities())
+                if (formData.REPORT_TYPE == "2")
                 {
-                    var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit select com).ToList();
-
+                    ds = new DataSet();
                     #region  Summary Status Invoice Report
 
-                    //DataTable statusInv = new DataTable();
-                    //statusInv = GetStatusInvoceReport(formData);
+                    DataTable statusInv = new DataTable();
+                    statusInv = GetStatusInvoceReport(formData);
 
-                    //if (statusInv.Rows.Count > 0)
-                    //{
-                    //    DataTable _dt = new DataTable();
-                    //    _dt = statusInv.AsEnumerable().CopyToDataTable();
-                    //    _dt.TableName = "Summary";
-                    //    //ds = new DataSet();
-                    //    ds.Tables.Add(_dt);
-                    //}
+                    if (statusInv.Rows.Count > 0)
+                    {
+                        DataTable _dt = new DataTable();
+                        _dt = statusInv.AsEnumerable().CopyToDataTable();
+                        _dt.TableName = "Details";
+                        //ds = new DataSet();
+                        ds.Tables.Add(_dt);
+                    }
                     #endregion
-                    if (formData.FEE_TYPE == "1")//All Report
+                }
+                else
+                {
+                    ds = new DataSet();
+                    #region report type payment fee
+                    using (var context = new PYMFEEEntities())
                     {
-                        // ds = GetReportList(formData);
+                        var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit select com).ToList();
 
-
-                        #region Accrued & Actual
-
-                        if (string.IsNullOrEmpty(formData.COMPANY_CODE))
+                        if (formData.FEE_TYPE == "1")//All Report
                         {
+                            // ds = GetReportList(formData);
 
-                            var comBuLst = companyData.ToList();
-                            if (formData.BUSINESS_UNIT != "ALL")
+
+                            #region Accrued & Actual
+
+                            if (string.IsNullOrEmpty(formData.COMPANY_CODE))
                             {
-                                comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
+
+                                var comBuLst = companyData.ToList();
+                                if (formData.BUSINESS_UNIT != "ALL")
+                                {
+                                    comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
+                                }
+                                #region  Summary All Report
+                                List<AccruedReportViewModel> data = GetAllAccruedandActualReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                                if (data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(data);
+                                    _dt.TableName = "All";
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                                #endregion
+
+
+                                foreach (var item in comBuLst)
+                                {
+                                    List<AccruedReportViewModel> _data = GetAccruedandActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                                    if (_data.Any())
+                                    {
+                                        DataTable _dt = new DataTable();
+                                        _dt = ReportService.ToDataTable(_data);
+                                        _dt.TableName = item.contraction;
+                                        //ds = new DataSet();
+                                        ds.Tables.Add(_dt);
+                                    }
+                                }
                             }
-                            #region  Summary All Report
-                            List<AccruedReportViewModel> data = GetAllAccruedandActualReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-
-                            if (data.Any())
+                            else
                             {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(data);
-                                _dt.TableName = "All";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
-                            #endregion
+                                #region  Summary All Report
+                                List<AccruedReportViewModel> data = GetAllAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
+                                if (data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(data);
+                                    _dt.TableName = "All";
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                                #endregion
 
-                            foreach (var item in comBuLst)
-                            {
-                                List<AccruedReportViewModel> _data = GetAccruedandActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                List<AccruedReportViewModel> _data = GetAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
                                 if (_data.Any())
                                 {
                                     DataTable _dt = new DataTable();
                                     _dt = ReportService.ToDataTable(_data);
-                                    _dt.TableName = item.contraction;
+                                    _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
                                     //ds = new DataSet();
                                     ds.Tables.Add(_dt);
                                 }
                             }
-                        }
-                        else
-                        {
-                            #region  Summary All Report
-                            List<AccruedReportViewModel> data = GetAllAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-
-                            if (data.Any())
-                            {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(data);
-                                _dt.TableName = "All";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
+                            //}
                             #endregion
-
-                            List<AccruedReportViewModel> _data = GetAccruedandActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-
-                            if (_data.Any())
-                            {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(_data);
-                                _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
                         }
-                        //}
-                        #endregion
-                    }
-                    else if (formData.FEE_TYPE == "2")//Accrued Value
-                    {
-                        #region Accrued
-
-                        if (string.IsNullOrEmpty(formData.COMPANY_CODE))
+                        else if (formData.FEE_TYPE == "2")//Accrued Value
                         {
+                            #region Accrued
 
-                            var comBuLst = companyData.ToList();
-                            if (formData.BUSINESS_UNIT != "ALL")
+                            if (string.IsNullOrEmpty(formData.COMPANY_CODE))
                             {
-                                comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
+
+                                var comBuLst = companyData.ToList();
+                                if (formData.BUSINESS_UNIT != "ALL")
+                                {
+                                    comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
+                                }
+                                #region  Summary All Report
+                                List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                                if (data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(data);
+                                    _dt.TableName = "All";
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                                #endregion
+
+                                foreach (var item in comBuLst)
+                                {
+                                    List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                    if (_data.Any())
+                                    {
+                                        DataTable _dt = new DataTable();
+                                        _dt = ReportService.ToDataTable(_data);
+                                        _dt.TableName = item.contraction;
+                                        //ds = new DataSet();
+                                        ds.Tables.Add(_dt);
+                                    }
+                                }
                             }
-                            #region  Summary All Report
-                            List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-
-                            if (data.Any())
+                            else
                             {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(data);
-                                _dt.TableName = "All";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
-                            #endregion
+                                #region  Summary All Report
+                                List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
-                            foreach (var item in comBuLst)
-                            {
-                                List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                if (data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(data);
+                                    _dt.TableName = "All";
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                                #endregion
+
+                                List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                                 if (_data.Any())
                                 {
                                     DataTable _dt = new DataTable();
                                     _dt = ReportService.ToDataTable(_data);
-                                    _dt.TableName = item.contraction;
+                                    _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
                                     //ds = new DataSet();
                                     ds.Tables.Add(_dt);
                                 }
                             }
+                            //}
+                            #endregion
+
                         }
                         else
                         {
-                            #region  Summary All Report
-                            List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                            #region Actual
 
-                            if (data.Any())
+                            if (string.IsNullOrEmpty(formData.COMPANY_CODE))
                             {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(data);
-                                _dt.TableName = "All";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
+
+                                var comBuLst = companyData.ToList();
+                                if (formData.BUSINESS_UNIT != "ALL")
+                                {
+                                    comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
+                                }
+                                #region  Summary All Report
+                                List<AccruedReportViewModel> data = GetAllActualReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+
+                                if (data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(data);
+                                    _dt.TableName = "All";
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                                #endregion
+                                foreach (var item in comBuLst)
+                                {
+                                    List<AccruedReportViewModel> _data = GetActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                    if (_data.Any())
+                                    {
+                                        DataTable _dt = new DataTable();
+                                        _dt = ReportService.ToDataTable(_data);
+                                        _dt.TableName = item.contraction;
+
+                                        #region remove column
+                                        //var colBU = _dt.Columns.Cast<DataColumn>().Where(x => x.ColumnName == "BU").Select(x => x.ColumnName).FirstOrDefault();
+                                        //var colCOMP = _dt.Columns.Cast<DataColumn>().Where(x => x.ColumnName == "COMPANY").Select(x => x.ColumnName).FirstOrDefault();
+                                        //if (colBU != null)
+                                        //{
+                                        //    _dt.Columns.Remove("BU");
+                                        //}
+                                        //if (colCOMP != null)
+                                        //{
+                                        //    _dt.Columns.Remove("COMPANY");
+                                        //}
+                                        #endregion
+                                        //ds = new DataSet();
+                                        ds.Tables.Add(_dt);
+                                    }
+                                }
                             }
-                            #endregion
-
-                            List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-                            if (_data.Any())
+                            else
                             {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(_data);
-                                _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
-                        }
-                        //}
-                        #endregion
+                                #region  Summary All Report
+                                List<AccruedReportViewModel> data = GetAllActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
-                    }
-                    else
-                    {
-                        #region Actual
-
-                        if (string.IsNullOrEmpty(formData.COMPANY_CODE))
-                        {
-
-                            var comBuLst = companyData.ToList();
-                            if (formData.BUSINESS_UNIT != "ALL")
-                            {
-                                comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
-                            }
-                            #region  Summary All Report
-                            List<AccruedReportViewModel> data = GetAllActualReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-
-                            if (data.Any())
-                            {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(data);
-                                _dt.TableName = "All";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
-                            #endregion
-                            foreach (var item in comBuLst)
-                            {
-                                List<AccruedReportViewModel> _data = GetActualReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                if (data.Any())
+                                {
+                                    DataTable _dt = new DataTable();
+                                    _dt = ReportService.ToDataTable(data);
+                                    _dt.TableName = "All";
+                                    //ds = new DataSet();
+                                    ds.Tables.Add(_dt);
+                                }
+                                #endregion
+                                List<AccruedReportViewModel> _data = GetActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                                 if (_data.Any())
                                 {
                                     DataTable _dt = new DataTable();
                                     _dt = ReportService.ToDataTable(_data);
-                                    _dt.TableName = item.contraction;
-
+                                    _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
                                     #region remove column
                                     //var colBU = _dt.Columns.Cast<DataColumn>().Where(x => x.ColumnName == "BU").Select(x => x.ColumnName).FirstOrDefault();
                                     //var colCOMP = _dt.Columns.Cast<DataColumn>().Where(x => x.ColumnName == "COMPANY").Select(x => x.ColumnName).FirstOrDefault();
@@ -603,48 +663,18 @@ namespace BBDEVSYS.Services.Accrued
                                     ds.Tables.Add(_dt);
                                 }
                             }
-                        }
-                        else
-                        {
-                            #region  Summary All Report
-                            List<AccruedReportViewModel> data = GetAllActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-
-                            if (data.Any())
-                            {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(data);
-                                _dt.TableName = "All";
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
+                            //}
                             #endregion
-                            List<AccruedReportViewModel> _data = GetActualReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
-                            if (_data.Any())
-                            {
-                                DataTable _dt = new DataTable();
-                                _dt = ReportService.ToDataTable(_data);
-                                _dt.TableName = companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault() != null ? companyData.Where(m => m.BAN_COMPANY == formData.COMPANY_CODE).FirstOrDefault().contraction : "";
-                                #region remove column
-                                //var colBU = _dt.Columns.Cast<DataColumn>().Where(x => x.ColumnName == "BU").Select(x => x.ColumnName).FirstOrDefault();
-                                //var colCOMP = _dt.Columns.Cast<DataColumn>().Where(x => x.ColumnName == "COMPANY").Select(x => x.ColumnName).FirstOrDefault();
-                                //if (colBU != null)
-                                //{
-                                //    _dt.Columns.Remove("BU");
-                                //}
-                                //if (colCOMP != null)
-                                //{
-                                //    _dt.Columns.Remove("COMPANY");
-                                //}
-                                #endregion
-                                //ds = new DataSet();
-                                ds.Tables.Add(_dt);
-                            }
-                        }
-                        //}
-                        #endregion
 
-                    }
-                } //End  
+                        }
+
+
+
+                    } //End  
+
+                    #endregion
+                }
+
                 if (ds.Tables.Count > 0)
                 {
                     string feeType = "All";
@@ -659,7 +689,13 @@ namespace BBDEVSYS.Services.Accrued
 
                     }
 
-                    filecontent = ExcelExportHelper.ExportExcel(ds, feeType + "  Expense " + formData.END_YEAR, false, formData);//, columns);
+                    if (formData.REPORT_TYPE == "2")
+                    {
+                        feeType = "Invoice Status";
+                    }
+
+                    filecontent = formData.REPORT_TYPE == "2"? ExcelExportHelper.ExportExcelStatus(ds, feeType + "  Expense " + formData.END_YEAR, false, formData)
+                        : ExcelExportHelper.ExportExcel(ds, feeType + "  Expense " + formData.END_YEAR, false, formData);//, columns);
                 }
             }
             catch (Exception ex)
@@ -682,7 +718,7 @@ namespace BBDEVSYS.Services.Accrued
                 dataReport.Columns.Add("Month", typeof(Int32));
                 dataReport.Columns.Add("Year", typeof(Int32));
                 dataReport.Columns.Add("Catalog");
-                dataReport.Columns.Add("TransStatus", typeof(Int32));
+                //dataReport.Columns.Add("TransStatus", typeof(Int32));
                 dataReport.Columns.Add("Transaction", typeof(Int32));
                 dataReport.Columns.Add("TransactionFee", typeof(double));
                 dataReport.Columns.Add("AmountMDR", typeof(double));
@@ -692,10 +728,10 @@ namespace BBDEVSYS.Services.Accrued
                 dataReport.Columns.Add("AmountIcldVat", typeof(double));
                 #endregion
 
-                //JavaScriptSerializer js = new JavaScriptSerializer();
-                //List<string> statusList = js.Deserialize<List<string>>(formData.IS_STATUS);
-                //List<InvoiceViewModel> paymentitemsList = new List<InvoiceViewModel>();
-                //List<InvoiceViewModel> data = new List<InvoiceViewModel>();
+                JavaScriptSerializer js = new JavaScriptSerializer();
+                List<string> statusList = formData.IsStatusList;// js.Deserialize<List<string>>(formData.IS_STATUS);
+                List<InvoiceViewModel> paymentitemsList = new List<InvoiceViewModel>();
+                List<InvoiceViewModel> data = new List<InvoiceViewModel>();
 
 
                 using (var context = new PYMFEEEntities())
@@ -717,7 +753,7 @@ namespace BBDEVSYS.Services.Accrued
 
                     var entFeeInvItem = (from m in context.FEE_INVOICE_ITEM select m).ToList();
 
-                   
+
 
                     var companyData = (from com in context.COMPANies where com.IsPaymentFee == true orderby com.Bussiness_Unit, com.BAN_COMPANY select com).ToList();
 
@@ -740,8 +776,13 @@ namespace BBDEVSYS.Services.Accrued
 
                     if (formData.CHANNELSValue != "ALL")
                     {
-                        entCatalog = (from m in entCatalog where m.CHANNELS == formData.CHANNELS orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
+                        entCatalog = (from m in entCatalog where m.CHANNELS == formData.CHANNELSValue orderby m.CHANNELS, m.PAYMENT_ITEMS_NAME select m).ToList();
                         entFeeInv = entFeeInv.Where(m => entCatalog.Any(o => m.PAYMENT_ITEMS_CODE == o.PAYMENT_ITEMS_CODE)).ToList();
+
+                    }
+                    if (formData.IsStatusList.Any())
+                    {
+                        entFeeInv = entFeeInv.Where(m => formData.IsStatusList.Any(s=>m.IS_STATUS==s)).ToList();
 
                     }
                     if (entFeeInv.Any())
@@ -759,18 +800,18 @@ namespace BBDEVSYS.Services.Accrued
                     var _diffmonths = get_month + 1;
                     int currentMonth = DateTime.Now.Date.Month;
                     decimal[] arrMonthGrandTrxn = new decimal[_diffmonths];
-                    decimal[] arrMonthGrnadTotal = new decimal[get_month + 1];
+                    decimal[] arrMonthGrnadTotal = new decimal[_diffmonths];
                     foreach (var catalog in entCatalog)
                     {
                         int month = formData.START_MONTH;
 
                         int year = formData.START_YEAR;
                         var getCom = companyData.Where(m => m.BAN_COMPANY == catalog.COMPANY_CODE).FirstOrDefault();
-
-
-                        for (int i = formData.START_MONTH; i <= get_month; i++)
+                        int i = 0;
+                        while (i < _diffmonths)
+                        //for (int i = formData.START_MONTH; i <= get_month; i++)
                         {
-                            if (i == 13)
+                            if (month == 13)
                             {
                                 month = 1;
                                 year++;
@@ -779,28 +820,17 @@ namespace BBDEVSYS.Services.Accrued
                              && (m.INV_YEAR * 12 + m.INV_MONTH) == (year * 12 + month)).FirstOrDefault();
 
 
-                          
+
                             string status = "ยังไม่วางบิล ไม่มีการทำจ่าย";
 
                             DataRow item = dataReport.NewRow();
-                            item["StatusName"] = status;
-                            item["BusinessUnit"] = getCom ==null?"": getCom.Bussiness_Unit;
-                            item["CompanyName"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
-                            item["Month"] = month;
-                            item["Year"] = year;
-                            item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
-
-                           
-                            //item["TransStatus"] = "";
-                            //item["Transaction"] = "";
-                            //item["TransactionFee"] = "";
-                            //item["Amount"] = "";
-                            //item["AmountIcldVat"] = "";
 
                             if (getFeeInv != null)
                             {
+                               
+
                                 var getFeeInvItem = entFeeInvItem.Where(m => getFeeInv.INV_NO == m.INV_NO).ToList();
-                                if (getFeeInv.IS_STATUS=="1")
+                                if (getFeeInv.IS_STATUS == "1")
                                 {
                                     status = "มีการวางบิล แต่ยังไม่ทำบนระบบPROและยังไม่ทำจ่าย";
                                 }
@@ -814,21 +844,57 @@ namespace BBDEVSYS.Services.Accrued
                                 }
                                 item["StatusName"] = status;
 
-                                item["TransStatus"] = 0;
-                                item["Transaction"] = getFeeInvItem.Sum( m=>(m.TRANSACTIONS??0)) ;
-                                item["TransactionFee"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0) * ((m.RATE_TRANS ?? 0)==0? 1 : (m.RATE_TRANS ?? 0)) );
+                                //item["TransStatus"] = 0;
+
+                                item["BusinessUnit"] = getCom == null ? "" : getCom.Bussiness_Unit;
+                                item["CompanyName"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
+                                item["Month"] = month;
+                                item["Year"] = year;
+                                item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
+
+                                item["Transaction"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0));
+                                item["TransactionFee"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0) * ((m.RATE_TRANS ?? 0) == 0 ? 1 : (m.RATE_TRANS ?? 0)));
 
                                 item["AmountMDR"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
-                                item["AmountMDRFee"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) == 0 ? 1 :( (m.RATE_AMT ?? 0)/100) )); 
+                                item["AmountMDRFee"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) == 0 ? 1 : ((m.RATE_AMT ?? 0) / 100)));
 
-                                item["Amount"] =( getFeeInv.NET_AMOUNT??0);
-                                item["AmountVat"] =( Convert.ToDouble( (getFeeInv.NET_AMOUNT ?? 0) ) * 0.07);
-                                item["AmountIcldVat"] = (getFeeInv.INCLUDE_VAT_AMOUNT ?? 0); 
+                                item["Amount"] = (getFeeInv.NET_AMOUNT ?? 0);
+                                item["AmountVat"] = (Convert.ToDouble((getFeeInv.NET_AMOUNT ?? 0)) * 0.07);
+                                item["AmountIcldVat"] = (getFeeInv.INCLUDE_VAT_AMOUNT ?? 0);
+
+                                dataReport.Rows.Add(item);
 
                             }
-                            dataReport.Rows.Add(item);
+                            else
+                            {
+                                if (formData.IsStatusList.Where(s => s == "0").Any() || !formData.IsStatusList.Any())
+                                {
+                                    item["StatusName"] = status;
+                                    //item["TransStatus"] = 0;
+
+                                    item["BusinessUnit"] = getCom == null ? "" : getCom.Bussiness_Unit;
+                                    item["CompanyName"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
+                                    item["Month"] = month;
+                                    item["Year"] = year;
+                                    item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
+
+                                    item["Transaction"] = 0;
+                                    item["TransactionFee"] = 0;
+
+                                    item["AmountMDR"] = 0;
+                                    item["AmountMDRFee"] = 0;
+
+                                    item["Amount"] = 0;
+                                    item["AmountVat"] = 0;
+                                    item["AmountIcldVat"] = 0;
+
+                                    dataReport.Rows.Add(item);
+                                }
+                            }
+                          
 
                             month++;
+                            i++;
                         }
                     }
 
@@ -1087,31 +1153,31 @@ namespace BBDEVSYS.Services.Accrued
 
                         #region set value column month amount mdr
 
-                        //model = new AccruedReportViewModel();
+                        model = new AccruedReportViewModel();
 
-                        //model.CHARGE = "Amount";
-                        //while (_iLoop < _diffmonths)
-                        //{
-                        //    if (_mnth == 13)
-                        //    {
-                        //        _mnth = 1;
-                        //        _yrr++;
-                        //    }
-                        //    string yStr = _yrr.ToString().Substring(2, 2);
-                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
+                        model.CHARGE = "Amount";
+                        while (_iLoop < _diffmonths)
+                        {
+                            if (_mnth == 13)
+                            {
+                                _mnth = 1;
+                                _yrr++;
+                            }
+                            string yStr = _yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_mnth - 1] + yStr;
 
-                        //    var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
 
-                        //    var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
-                        //    decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) : item_inv_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+                            decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) : item_inv_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
 
-                        //    model.GetType().GetProperty((monthIndex)).SetValue(model,
-                        //Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                        Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
 
-                        //    _iLoop++;
-                        //    _mnth++;
-                        //}
-                        //modelList.Add(model);
+                            _iLoop++;
+                            _mnth++;
+                        }
+                        modelList.Add(model);
 
 
                         #endregion
@@ -2215,35 +2281,35 @@ namespace BBDEVSYS.Services.Accrued
                         #endregion
 
                         #region set value column month amount mdr
-                        //mnth = monthS;
-                        //yrr = yearS;
-                        //iLoop = 0;
+                        mnth = monthS;
+                        yrr = yearS;
+                        iLoop = 0;
 
-                        //model = new AccruedReportViewModel();
-                        //model.CHARGE = "Amount";
+                        model = new AccruedReportViewModel();
+                        model.CHARGE = "Amount";
 
-                        //while (iLoop < _diffmonths)
-                        //{
-                        //    if (mnth == 13)
-                        //    {
-                        //        mnth = 1;
-                        //        yrr++;
-                        //    }
-                        //    string yStr = yrr.ToString().Substring(2, 2);
-                        //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
+                        while (iLoop < _diffmonths)
+                        {
+                            if (mnth == 13)
+                            {
+                                mnth = 1;
+                                yrr++;
+                            }
+                            string yStr = yrr.ToString().Substring(2, 2);
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[mnth - 1] + yStr;
 
-                        //    var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                            var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
 
-                        //    var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
-                        //    decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) : item_inv_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                            var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+                            decimal sumamount = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0)) : item_inv_chrge.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
 
-                        //    model.GetType().GetProperty((monthIndex)).SetValue(model,
-                        //    Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
+                            model.GetType().GetProperty((monthIndex)).SetValue(model,
+                            Convert.ToString(string.Format("{0:#,##0.####}", sumamount)));
 
-                        //    iLoop++;
-                        //    mnth++;
-                        //}
-                        //modelList.Add(model);
+                            iLoop++;
+                            mnth++;
+                        }
+                        modelList.Add(model);
 
 
                         #endregion
@@ -3993,30 +4059,30 @@ namespace BBDEVSYS.Services.Accrued
 
 
 
-                  //      model = new AccruedReportViewModel();
-                  //      _getmnth = monthS;
-                  //      _getyr = yearS;
-                  //      for (int i = 1; i <= mnth; i++)
-                  //      {
-                  //          if (_getmnth == 13)
-                  //          {
-                  //              _getmnth = 1;
-                  //              _getyr = _getyr + 1;
-                  //          }
-                  //          string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
-                  //          var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+                        model = new AccruedReportViewModel();
+                        _getmnth = monthS;
+                        _getyr = yearS;
+                        for (int i = 1; i <= mnth; i++)
+                        {
+                            if (_getmnth == 13)
+                            {
+                                _getmnth = 1;
+                                _getyr = _getyr + 1;
+                            }
+                            string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
+                            var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
 
-                  //          model.CHARGE = "Amount";
-                  //          model.GetType().GetProperty(monthIndex).SetValue(model,
-                  //Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => (m.n.ACTUAL_AMOUNT ?? 0))))));
+                            model.CHARGE = "Amount";
+                            model.GetType().GetProperty(monthIndex).SetValue(model,
+                  Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.Sum(m => (m.n.ACTUAL_AMOUNT ?? 0))))));
 
-                  //          _getmnth++;
-                  //      }//row month
-                  //      modelList.Add(model);
+                            _getmnth++;
+                        }//row month
+                        modelList.Add(model);
 
 
 
-                  //      //End sum total trxn
+                        //End sum total trxn
 
                         #endregion
 

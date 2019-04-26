@@ -549,73 +549,414 @@ namespace BBDEVSYS.Services.Shared
             }
         }
 
-        public static byte[] ExportExcel(DataSet dataSet, string heading = "", bool showSrNo = false, AccruedDetailReportViewModel formData = null, params string[] columnsToTake)
+        public static byte[] ExportExcelStatus(DataSet dataSet, string heading = "", bool showSrNo = false, AccruedDetailReportViewModel formData = null, params string[] columnsToTake)
         {
             try
             {
 
                 byte[] result = null;
-                #region columnName
-                var culture = CultureInfo.GetCultureInfo("en-US");
-                var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
-                var month = (formData.END_YEAR * 12 + formData.END_MONTH) - (formData.START_YEAR * 12 + formData.START_MONTH);
-                List<string> colNames = new List<string>();
-                List<string> addcolNames = new List<string>();
-                colNames.Add("CHANNELS");
-                colNames.Add("FEE");
-                colNames.Add("CHARGE");
-                addcolNames.AddRange(colNames);
-                //for (int i = formData.START_MONTH - 1; i <= month; i++)
-                //{
-                //    if (i > 13)
-                //    {
-                //        i = 0;
-                //    }
-                //    int rowmonth = i + 1;
-                //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i];
-                //    addcolNames.Add(monthIndex);
-
-                //}
-                addcolNames.AddRange(colNames);
-                //1 == Start Month
-                int b = 0;
-                int getmonth = 0;
-                int getyear = 0;
-                getmonth = formData.START_MONTH - 1;
-                getyear = formData.START_YEAR;
-                while (b <= month)
-                {
-
-                    if (getmonth == 12)
-                    {
-                        ++getyear;
-                        getmonth = 0;
-                    }
-                    int rowmonth = getmonth + 1;
-                    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth] + Convert.ToString(getyear).Substring(2, 2);
-                    addcolNames.Add(monthIndex);
-                    b++;
-                    getmonth++;
-                }
-                string[] columns = dataSet.Tables[0].Columns.Cast<DataColumn>()
-                  .Where(x => addcolNames.Any(m => x.ColumnName == m))
-                                   .Select(x => x.ColumnName
-                                   //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
-                                   )
-                                   .ToArray();
-
-                columnsToTake = columns;
-                #endregion
 
                 using (ExcelPackage package = new ExcelPackage())
                 {
                     DataTable dataTable = new DataTable();
                     for (int data = 0; data < dataSet.Tables.Count; data++)
                     {
+
                         //DataTable 
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
                         int colIndex = 0;
+
+                        // set ignore sheet name "Details"
+                        if (dataTable.TableName != "Details")
+                        {
+                            #region columnName
+                            var culture = CultureInfo.GetCultureInfo("en-US");
+                            var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                            var month = (formData.END_YEAR * 12 + formData.END_MONTH) - (formData.START_YEAR * 12 + formData.START_MONTH);
+                            List<string> colNames = new List<string>();
+                            List<string> addcolNames = new List<string>();
+                            colNames.Add("CHANNELS");
+                            colNames.Add("FEE");
+                            colNames.Add("CHARGE");
+                            addcolNames.AddRange(colNames);
+                          
+                            addcolNames.AddRange(colNames);
+                            //1 == Start Month
+                            int b = 0;
+                            int getmonth = 0;
+                            int getyear = 0;
+                            getmonth = formData.START_MONTH - 1;
+                            getyear = formData.START_YEAR;
+                            while (b <= month)
+                            {
+
+                                if (getmonth == 12)
+                                {
+                                    ++getyear;
+                                    getmonth = 0;
+                                }
+                                int rowmonth = getmonth + 1;
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth] + Convert.ToString(getyear).Substring(2, 2);
+                                addcolNames.Add(monthIndex);
+                                b++;
+                                getmonth++;
+                            }
+                            string[] columns = dataSet.Tables[0].Columns.Cast<DataColumn>()
+                              .Where(x => addcolNames.Any(m => x.ColumnName == m))
+                                               .Select(x => x.ColumnName
+                                               //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
+                                               )
+                                               .ToArray();
+
+                            columnsToTake = columns;
+                            #endregion
+
+                        }
+                        else
+                        {
+                            columnsToTake = dataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+                        }
+           
+                        ExcelWorksheet workSheet = null;
+
+                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", dataSet.Tables[data].TableName));
+
+                        int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
+
+                        if (showSrNo)
+
+                        {
+                            DataColumn dataColumn = dataTable.Columns.Add("#", typeof(int));
+                            dataColumn.SetOrdinal(0);
+                            int index = 1;
+                            foreach (DataRow item in dataTable.Rows)
+                            {
+                                item[0] = index;
+                                index++;
+                            }
+                        }
+
+
+                        // add the content into the Excel file  
+                        workSheet.Cells["A" + startRowFrom].LoadFromDataTable(dataTable, true);
+
+                        // set ignore sheet name "Details"
+                        if (dataTable.TableName != "Details")
+                        {
+                            #region set DataType Number
+                            int rowIgnore = 0;
+                            foreach (var cell in workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
+                            {
+                                if (cell.Value == "Inv No." || cell.Value == "PO No.")
+                                {
+                                    rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
+                                }
+                                if (!cell.Address.Contains("C"))
+                                {
+                                    string letters = string.Empty;
+                                    string numbers = string.Empty;
+
+                                    foreach (char c in cell.Address)
+                                    {
+                                        if (Char.IsLetter(c))
+                                        {
+                                            letters += c;
+                                        }
+                                        if (Char.IsNumber(c))
+                                        {
+                                            numbers += c;
+                                        }
+                                    }
+                                    if (rowIgnore != Convert.ToInt32(numbers))
+                                    {
+                                        cell.Value = Convert.ToDecimal(cell.Value);
+                                    }
+                                }
+                            }
+                            using (ExcelRange r = workSheet.Cells[startRowFrom + 1, 4, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
+                            {
+                                string chkcolName = workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, 3].Value.ToString();
+
+                                r.Style.Numberformat.Format = "#,##0.00;_-#,##0.00;0;_-@";
+                                r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                            }
+                            #endregion
+                        }
+                        // autofit width of cells with small content  
+                        int columnIndex = 1;
+                        foreach (DataColumn column in dataTable.Columns)
+                        {
+                            ExcelRange columnCells = workSheet.Cells[workSheet.Dimension.Start.Row, columnIndex, workSheet.Dimension.End.Row, columnIndex];
+
+                            int maxLength = columnCells.Max(cell => cell.Value == null ? 0 : cell.Value.ToString().Count());
+                            if (maxLength < 150)
+                            {
+                                workSheet.Column(columnIndex).AutoFit();
+                            }
+
+
+                            columnIndex++;
+                        }
+
+                        // format header - bold, red on white  
+                        using (ExcelRange r = workSheet.Cells[startRowFrom, 1, startRowFrom, dataTable.Columns.Count])
+                        {
+                            r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                            r.Style.Font.Bold = true;
+                            r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#3f7abf"));
+
+                            //border
+                            r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                            r.Style.Border.Top.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Left.Color.SetColor(System.Drawing.Color.White);
+                            r.Style.Border.Right.Color.SetColor(System.Drawing.Color.White);
+
+                        }
+                        workSheet.Row(startRowFrom).Height = 40;
+                        // set ignore sheet name "Details"
+                        if (dataTable.TableName != "Details")
+                        {
+                            #region  set formating footer
+                            //format highligh -bold, red on white
+                            int rowT = 0;
+                            int rowMergeS = 0;
+                            int rowMergeE = 0;
+                            foreach (DataRow item in dataTable.Rows)
+                            {
+
+                                rowT++;
+                                //count row firs merge
+                                if (!string.IsNullOrEmpty(item["CHANNELS"].ToString()))
+                                {
+                                    rowMergeS = startRowFrom + rowT;
+                                }
+                                if (item["CHARGE"] == "Total Trxn")
+                                {
+
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
+                                        r.Style.Font.Bold = true;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
+                                    }
+
+                                }
+                                if (item["CHARGE"] == "Total Fee")
+                                {
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
+                                        r.Style.Font.Bold = true;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
+                                    }
+
+                                }
+                                if (item["CHARGE"] == "PO No.")
+                                {
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        r.Style.Font.Bold = false;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                    }
+
+                                }
+                                if (item["CHARGE"] == "Inv No.")
+                                {
+                                    // Count Row for Merge Data
+                                    rowMergeE = startRowFrom + rowT;
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        r.Style.Font.Bold = false;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                    }
+
+                                }
+                                if (data == 0)
+                                {//--Merge Row Report All
+                                    if (item["CHARGE"] == "Total Fee")
+                                    {
+                                        rowMergeE = startRowFrom + rowT;
+                                        //using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                        //{
+                                        //    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        //    r.Style.Font.Bold = false;
+                                        //    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        //    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                        //}
+
+                                    }
+                                }
+                                if (rowMergeS != 0 && rowMergeE != 0 && rowMergeS <= rowMergeE)
+                                {
+
+                                    //merge channels column
+                                    using (ExcelRange r = workSheet.Cells[rowMergeS, 1, rowMergeE, 1])
+                                    {
+                                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                                        r.Merge = true;
+                                    }
+                                    //merge fee column
+                                    using (ExcelRange r = workSheet.Cells[rowMergeS, 2, rowMergeE, 2])
+                                    {
+                                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                                        r.Merge = true;
+                                    }
+
+                                    rowMergeS = 0;
+                                    rowMergeE = 0;
+                                }
+                            }
+                            #endregion
+                        }
+                        using (ExcelRange r = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
+                        {
+
+                            r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                            r.Style.Border.Top.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Left.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Right.Color.SetColor(System.Drawing.Color.Black);
+
+                        }
+
+                        // removed ignored columns  
+                        for (int i = dataTable.Columns.Count - 1; i >= 0; i--)
+                        {
+                            if (i == 0 && showSrNo)
+                            {
+                                continue;
+                            }
+                            if (!columnsToTake.Contains(dataTable.Columns[i].ColumnName))
+                            {
+                                workSheet.DeleteColumn(i + 1);
+                            }
+                        }
+
+
+                        if (!String.IsNullOrEmpty(heading))
+                        {
+                            workSheet.Cells["A1"].Value = heading;
+                            workSheet.Cells["A1"].Style.Font.Size = 20;
+
+                            workSheet.InsertColumn(1, 1);
+                            workSheet.InsertRow(1, 1);
+                            workSheet.Column(1).Width = 5;
+                        }
+                        //----------}
+                    }
+                    //end for
+                    result = package.GetAsByteArray();
+
+
+                    return result;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public static byte[] ExportExcel(DataSet dataSet, string heading = "", bool showSrNo = false, AccruedDetailReportViewModel formData = null, params string[] columnsToTake)
+        {
+            try
+            {
+
+                byte[] result = null;
+             
+                using (ExcelPackage package = new ExcelPackage())
+                {
+                    DataTable dataTable = new DataTable();
+                    for (int data = 0; data < dataSet.Tables.Count; data++)
+                    {
+                       
+                        //DataTable 
+                        dataTable = new DataTable();
+                        dataTable = dataSet.Tables[data];
+                        int colIndex = 0;
+
+                        // set ignore sheet name "Summary"
+                        if (dataTable.TableName != "Summary")
+                        {
+                            #region columnName
+                            var culture = CultureInfo.GetCultureInfo("en-US");
+                            var dateTimeInfo = DateTimeFormatInfo.GetInstance(culture);
+                            var month = (formData.END_YEAR * 12 + formData.END_MONTH) - (formData.START_YEAR * 12 + formData.START_MONTH);
+                            List<string> colNames = new List<string>();
+                            List<string> addcolNames = new List<string>();
+                            colNames.Add("CHANNELS");
+                            colNames.Add("FEE");
+                            colNames.Add("CHARGE");
+                            addcolNames.AddRange(colNames);
+                            //for (int i = formData.START_MONTH - 1; i <= month; i++)
+                            //{
+                            //    if (i > 13)
+                            //    {
+                            //        i = 0;
+                            //    }
+                            //    int rowmonth = i + 1;
+                            //    string monthIndex = dateTimeInfo.AbbreviatedMonthNames[i];
+                            //    addcolNames.Add(monthIndex);
+
+                            //}
+                            addcolNames.AddRange(colNames);
+                            //1 == Start Month
+                            int b = 0;
+                            int getmonth = 0;
+                            int getyear = 0;
+                            getmonth = formData.START_MONTH - 1;
+                            getyear = formData.START_YEAR;
+                            while (b <= month)
+                            {
+
+                                if (getmonth == 12)
+                                {
+                                    ++getyear;
+                                    getmonth = 0;
+                                }
+                                int rowmonth = getmonth + 1;
+                                string monthIndex = dateTimeInfo.AbbreviatedMonthNames[getmonth] + Convert.ToString(getyear).Substring(2, 2);
+                                addcolNames.Add(monthIndex);
+                                b++;
+                                getmonth++;
+                            }
+                            string[] columns = dataSet.Tables[0].Columns.Cast<DataColumn>()
+                              .Where(x => addcolNames.Any(m => x.ColumnName == m))
+                                               .Select(x => x.ColumnName
+                                               //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
+                                               )
+                                               .ToArray();
+
+                            columnsToTake = columns;
+                            #endregion
+
+                        }
+                        else
+                        {
+                            columnsToTake = dataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+                        }
                         ////rename column names 
                         //foreach (var item in dataTable.Columns)
                         //{
@@ -629,6 +970,8 @@ namespace BBDEVSYS.Services.Shared
                         //    colIndex++;
                         //    if (columnsToTake.Length == colIndex && colIndex != 0) break;
                         //}
+
+
 
                         #region mark rename column names 
 
@@ -650,7 +993,7 @@ namespace BBDEVSYS.Services.Shared
 
                         ExcelWorksheet workSheet = null;
 
-                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", heading + " " + dataSet.Tables[data].TableName));
+                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", dataSet.Tables[data].TableName));
 
                         int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
 
@@ -670,51 +1013,56 @@ namespace BBDEVSYS.Services.Shared
 
                         // add the content into the Excel file  
                         workSheet.Cells["A" + startRowFrom].LoadFromDataTable(dataTable, true);
-                        #region set DataType Number
-                        int rowIgnore = 0;
-                        foreach (var cell in workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
-                        {
-                            if (cell.Value == "Inv No." || cell.Value == "PO No.")
-                            {
-                                rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
-                            }
-                            //if (!cell.Address.Contains("C"))
-                            //{
-                            //    if (rowIgnore != Convert.ToInt32(cell.Address.Substring(1)))
-                            //    {
-                            //        cell.Value = Convert.ToDecimal(cell.Value);
-                            //    }
-                            //}
-                            if (!cell.Address.Contains("C"))
-                            {
-                                string letters = string.Empty;
-                                string numbers = string.Empty;
 
-                                foreach (char c in cell.Address)
+                        // set ignore sheet name "Summary"
+                        if (dataTable.TableName != "Summary")
+                        {
+                            #region set DataType Number
+                            int rowIgnore = 0;
+                            foreach (var cell in workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
+                            {
+                                if (cell.Value == "Inv No." || cell.Value == "PO No.")
                                 {
-                                    if (Char.IsLetter(c))
+                                    rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
+                                }
+                                //if (!cell.Address.Contains("C"))
+                                //{
+                                //    if (rowIgnore != Convert.ToInt32(cell.Address.Substring(1)))
+                                //    {
+                                //        cell.Value = Convert.ToDecimal(cell.Value);
+                                //    }
+                                //}
+                                if (!cell.Address.Contains("C"))
+                                {
+                                    string letters = string.Empty;
+                                    string numbers = string.Empty;
+
+                                    foreach (char c in cell.Address)
                                     {
-                                        letters += c;
+                                        if (Char.IsLetter(c))
+                                        {
+                                            letters += c;
+                                        }
+                                        if (Char.IsNumber(c))
+                                        {
+                                            numbers += c;
+                                        }
                                     }
-                                    if (Char.IsNumber(c))
+                                    if (rowIgnore != Convert.ToInt32(numbers))
                                     {
-                                        numbers += c;
+                                        cell.Value = Convert.ToDecimal(cell.Value);
                                     }
                                 }
-                                if (rowIgnore != Convert.ToInt32(numbers))
-                                {
-                                    cell.Value = Convert.ToDecimal(cell.Value);
-                                }
                             }
-                        }
-                        using (ExcelRange r = workSheet.Cells[startRowFrom + 1, 4, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
-                        {
-                            string chkcolName = workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, 3].Value.ToString();
+                            using (ExcelRange r = workSheet.Cells[startRowFrom + 1, 4, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
+                            {
+                                string chkcolName = workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, 3].Value.ToString();
 
-                            r.Style.Numberformat.Format = "#,##0.00;_-#,##0.00;0;_-@";
-                            r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                                r.Style.Numberformat.Format = "#,##0.00;_-#,##0.00;0;_-@";
+                                r.Style.HorizontalAlignment = ExcelHorizontalAlignment.Right;
+                            }
+                            #endregion
                         }
-                        #endregion
                         // autofit width of cells with small content  
                         int columnIndex = 1;
                         foreach (DataColumn column in dataTable.Columns)
@@ -752,106 +1100,110 @@ namespace BBDEVSYS.Services.Shared
 
                         }
                         workSheet.Row(startRowFrom).Height = 40;
-
-                        //format highligh -bold, red on white
-                        int rowT = 0;
-                        int rowMergeS = 0;
-                        int rowMergeE = 0;
-                        foreach (DataRow item in dataTable.Rows)
+                        // set ignore sheet name "Summary"
+                        if (dataTable.TableName != "Summary")
                         {
-
-                            rowT++;
-                            //count row firs merge
-                            if (!string.IsNullOrEmpty(item["CHANNELS"].ToString()))
-                            {
-                                rowMergeS = startRowFrom + rowT;
-                            }
-                            if (item["CHARGE"] == "Total Trxn")
+                            #region  set formating footer
+                            //format highligh -bold, red on white
+                            int rowT = 0;
+                            int rowMergeS = 0;
+                            int rowMergeE = 0;
+                            foreach (DataRow item in dataTable.Rows)
                             {
 
-                                using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                rowT++;
+                                //count row firs merge
+                                if (!string.IsNullOrEmpty(item["CHANNELS"].ToString()))
+                                {
+                                    rowMergeS = startRowFrom + rowT;
+                                }
+                                if (item["CHARGE"] == "Total Trxn")
                                 {
 
-                                    r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
-                                    r.Style.Font.Bold = true;
-                                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
+                                        r.Style.Font.Bold = true;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
+                                    }
+
                                 }
-
-                            }
-                            if (item["CHARGE"] == "Total Fee")
-                            {
-                                using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
-                                {
-
-                                    r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
-                                    r.Style.Font.Bold = true;
-                                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
-                                }
-
-                            }
-                            if (item["CHARGE"] == "PO No.")
-                            {
-                                using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
-                                {
-
-                                    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
-                                    r.Style.Font.Bold = false;
-                                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
-                                }
-
-                            }
-                            if (item["CHARGE"] == "Inv No.")
-                            {
-                                // Count Row for Merge Data
-                                rowMergeE = startRowFrom + rowT;
-                                using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
-                                {
-                                    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
-                                    r.Style.Font.Bold = false;
-                                    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
-                                }
-
-                            }
-                            if (data == 0)
-                            {//--Merge Row Report All
                                 if (item["CHARGE"] == "Total Fee")
                                 {
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.Blue);
+                                        r.Style.Font.Bold = true;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#fced6a"));
+                                    }
+
+                                }
+                                if (item["CHARGE"] == "PO No.")
+                                {
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        r.Style.Font.Bold = false;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                    }
+
+                                }
+                                if (item["CHARGE"] == "Inv No.")
+                                {
+                                    // Count Row for Merge Data
                                     rowMergeE = startRowFrom + rowT;
-                                    //using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
-                                    //{
-                                    //    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
-                                    //    r.Style.Font.Bold = false;
-                                    //    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
-                                    //    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
-                                    //}
+                                    using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                    {
+                                        r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        r.Style.Font.Bold = false;
+                                        r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                    }
 
+                                }
+                                if (data == 0)
+                                {//--Merge Row Report All
+                                    if (item["CHARGE"] == "Total Fee")
+                                    {
+                                        rowMergeE = startRowFrom + rowT;
+                                        //using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
+                                        //{
+                                        //    r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                                        //    r.Style.Font.Bold = false;
+                                        //    r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                                        //    r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#7aa3ef"));
+                                        //}
+
+                                    }
+                                }
+                                if (rowMergeS != 0 && rowMergeE != 0 && rowMergeS <= rowMergeE)
+                                {
+
+                                    //merge channels column
+                                    using (ExcelRange r = workSheet.Cells[rowMergeS, 1, rowMergeE, 1])
+                                    {
+                                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                                        r.Merge = true;
+                                    }
+                                    //merge fee column
+                                    using (ExcelRange r = workSheet.Cells[rowMergeS, 2, rowMergeE, 2])
+                                    {
+                                        r.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
+                                        r.Merge = true;
+                                    }
+
+                                    rowMergeS = 0;
+                                    rowMergeE = 0;
                                 }
                             }
-                            if (rowMergeS != 0 && rowMergeE != 0 && rowMergeS <= rowMergeE)
-                            {
-
-                                //merge channels column
-                                using (ExcelRange r = workSheet.Cells[rowMergeS, 1, rowMergeE, 1])
-                                {
-                                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
-                                    r.Merge = true;
-                                }
-                                //merge fee column
-                                using (ExcelRange r = workSheet.Cells[rowMergeS, 2, rowMergeE, 2])
-                                {
-                                    r.Style.VerticalAlignment = ExcelVerticalAlignment.Top;
-                                    r.Merge = true;
-                                }
-
-                                rowMergeS = 0;
-                                rowMergeE = 0;
-                            }
+                            #endregion
                         }
-
                         using (ExcelRange r = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
                         {
 

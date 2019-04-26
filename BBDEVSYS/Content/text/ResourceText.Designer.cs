@@ -2140,6 +2140,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Report Type.
+        /// </summary>
+        public static string REPORT_TYPE {
+            get {
+                return ResourceManager.GetString("REPORT_TYPE", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to แสดงข้อมูล.
         /// </summary>
         public static string RoleDisplay {
