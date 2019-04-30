@@ -712,20 +712,21 @@ namespace BBDEVSYS.Services.Accrued
             try
             {
                 #region gennerate Header column
-                dataReport.Columns.Add("StatusName");
-                dataReport.Columns.Add("BusinessUnit");
-                dataReport.Columns.Add("CompanyName");
+                dataReport.Columns.Add("Status Name");
+                dataReport.Columns.Add("Business Unit");
+                dataReport.Columns.Add("Company Name");
                 dataReport.Columns.Add("Month", typeof(Int32));
                 dataReport.Columns.Add("Year", typeof(Int32));
                 dataReport.Columns.Add("Catalog");
+                dataReport.Columns.Add("Supplier");
                 //dataReport.Columns.Add("TransStatus", typeof(Int32));
                 dataReport.Columns.Add("Transaction", typeof(Int32));
-                dataReport.Columns.Add("TransactionFee", typeof(double));
-                dataReport.Columns.Add("AmountMDR", typeof(double));
-                dataReport.Columns.Add("AmountMDRFee", typeof(double));
+                dataReport.Columns.Add("Transaction Fee", typeof(double));
+                dataReport.Columns.Add("Amount(MDR)", typeof(double));
+                dataReport.Columns.Add("Amount(MDR) Charging", typeof(double));
                 dataReport.Columns.Add("Amount", typeof(double));
-                dataReport.Columns.Add("AmountVat", typeof(double));
-                dataReport.Columns.Add("AmountIcldVat", typeof(double));
+                dataReport.Columns.Add("Amount(VAT)", typeof(double));
+                dataReport.Columns.Add("Amount(Inc.VAT)", typeof(double));
                 #endregion
 
                 JavaScriptSerializer js = new JavaScriptSerializer();
@@ -842,25 +843,26 @@ namespace BBDEVSYS.Services.Accrued
                                 {
                                     status = "ทำจ่ายแล้ว";
                                 }
-                                item["StatusName"] = status;
+                                item["Status Name"] = status;
 
                                 //item["TransStatus"] = 0;
 
-                                item["BusinessUnit"] = getCom == null ? "" : getCom.Bussiness_Unit;
-                                item["CompanyName"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
+                                item["Business Unit"] = getCom == null ? "" : getCom.Bussiness_Unit;
+                                item["Company Name"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
                                 item["Month"] = month;
                                 item["Year"] = year;
                                 item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
+                                item["Supplier"]=catalog.Supplier;
 
                                 item["Transaction"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0));
-                                item["TransactionFee"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0) * ((m.RATE_TRANS ?? 0) == 0 ? 1 : (m.RATE_TRANS ?? 0)));
+                                item["Transaction Fee"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0) * ((m.RATE_TRANS ?? 0) == 0 ? 1 : (m.RATE_TRANS ?? 0)));
 
-                                item["AmountMDR"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
-                                item["AmountMDRFee"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) == 0 ? 1 : ((m.RATE_AMT ?? 0) / 100)));
+                                item["Amount(MDR)"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
+                                item["Amount(MDR) Charging"] = getFeeInvItem.Sum(m => (m.ACTUAL_AMOUNT ?? 0) * ((m.RATE_AMT ?? 0) == 0 ? 1 : ((m.RATE_AMT ?? 0) / 100)));
 
                                 item["Amount"] = (getFeeInv.NET_AMOUNT ?? 0);
-                                item["AmountVat"] = (Convert.ToDouble((getFeeInv.NET_AMOUNT ?? 0)) * 0.07);
-                                item["AmountIcldVat"] = (getFeeInv.INCLUDE_VAT_AMOUNT ?? 0);
+                                item["Amount(VAT)"] = (Convert.ToDouble((getFeeInv.NET_AMOUNT ?? 0)) * 0.07);
+                                item["Amount(Inc.VAT)"] = (getFeeInv.INCLUDE_VAT_AMOUNT ?? 0);
 
                                 dataReport.Rows.Add(item);
 
@@ -869,24 +871,25 @@ namespace BBDEVSYS.Services.Accrued
                             {
                                 if (formData.IsStatusList.Where(s => s == "0").Any() || !formData.IsStatusList.Any())
                                 {
-                                    item["StatusName"] = status;
+                                    item["Status Name"] = status;
                                     //item["TransStatus"] = 0;
 
-                                    item["BusinessUnit"] = getCom == null ? "" : getCom.Bussiness_Unit;
-                                    item["CompanyName"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
+                                    item["Business Unit"] = getCom == null ? "" : getCom.Bussiness_Unit;
+                                    item["Company Name"] = getCom == null ? "" : getCom.COMPANY_NAME_EN;
                                     item["Month"] = month;
                                     item["Year"] = year;
                                     item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
+                                    item["Supplier"] = catalog.Supplier;
 
                                     item["Transaction"] = 0;
-                                    item["TransactionFee"] = 0;
+                                    item["Transaction Fee"] = 0;
 
-                                    item["AmountMDR"] = 0;
-                                    item["AmountMDRFee"] = 0;
+                                    item["Amount(MDR)"] = 0;
+                                    item["Amount(MDR) Charging"] = 0;
 
                                     item["Amount"] = 0;
-                                    item["AmountVat"] = 0;
-                                    item["AmountIcldVat"] = 0;
+                                    item["Amount(VAT)"] = 0;
+                                    item["Amount(Inc.VAT)"] = 0;
 
                                     dataReport.Rows.Add(item);
                                 }

@@ -64,7 +64,7 @@ namespace BBDEVSYS.Services.Home
                         decimal sumall = act + acc;
 
                         decimal sumact = (sumall == 0) ? 0 : (act / sumall) * 100;
-                        decimal sumacc = (sumall == 0) ? 0 : (acc / sumall) * 100;
+                        decimal sumacc = (sumall == 0) ? 0 :  (acc / sumall) * 100;
 
                         sumact = Math.Round(sumact, 2, MidpointRounding.AwayFromZero);
                         sumacc = Math.Round(sumacc, 2, MidpointRounding.AwayFromZero);

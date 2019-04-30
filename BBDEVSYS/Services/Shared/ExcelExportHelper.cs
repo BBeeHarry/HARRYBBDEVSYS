@@ -2,6 +2,7 @@
 using BBDEVSYS.ViewModels.AccruedReport;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using OfficeOpenXml.Table.PivotTable;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -620,6 +621,8 @@ namespace BBDEVSYS.Services.Shared
            
                         ExcelWorksheet workSheet = null;
 
+                        ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
+
                         workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", dataSet.Tables[data].TableName));
 
                         int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
@@ -863,6 +866,44 @@ namespace BBDEVSYS.Services.Shared
                             workSheet.Column(1).Width = 5;
                         }
                         //----------}
+
+                        #region pivot data
+
+                        //define the data range on the source sheet
+                        //var dataRange = workSheet.Cells[workSheet.Dimension.Address];
+                        var dataRange = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
+
+                        //create the pivot table
+                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells["A4"], dataRange, "PivotTable");
+
+                        //label field
+                        //pivotTable.RowFields.Add(pivotTable.Fields["Column A"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Year"]);
+                        //pivotTable.RowFields.Add(pivotTable.Fields["Month"]);
+                        //pivotTable.RowFields.Add(pivotTable.Fields["Business Unit"]);
+                        //pivotTable.DataOnRows = false;
+
+
+                        //data Column
+                        pivotTable.ColumnFields.Add(pivotTable.Fields["Status Name"]);
+                        //pivotTable.FirstDataCol = false;
+
+                        //data fields
+
+                        var field = pivotTable.DataFields.Add(pivotTable.Fields["Status Name"]);
+                        field.Name = "Count of Transaction Status";
+                        field.Function = DataFieldFunctions.Count;
+
+                        field = pivotTable.DataFields.Add(pivotTable.Fields["Amount(MDR) Charging"]);
+                        field.Name = "Sum of Amount(MDR) Charging";
+                        field.Function = DataFieldFunctions.Sum;
+                        field.Format = "0.00";
+
+                        field = pivotTable.DataFields.Add(pivotTable.Fields["Transaction Fee"]);
+                        field.Name = "Sum of Transaction Fee";
+                        field.Function = DataFieldFunctions.Sum;
+                        field.Format = "€#,##0.00";
+                        #endregion
                     }
                     //end for
                     result = package.GetAsByteArray();
