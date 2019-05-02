@@ -1963,6 +1963,12 @@ namespace BBDEVSYS.Services.Accrued
                                             _monthc++;
                                             continue;
                                         }
+                                        //--remove value has not invoice amount = 0
+                                        else if (arrMonthCharge[i - 1] == 0)
+                                        {
+                                            _monthc++;
+                                            continue;
+                                        }
                                         else
                                         {
                                             #region case not complete
@@ -2068,599 +2074,608 @@ namespace BBDEVSYS.Services.Accrued
                                 }
                                 else
                                 {
-                                    model.ACCRUED_ID = item_acccharge != null ? item_acccharge.ACCRUED_ID : 0;
-                                    model.ACCRUED_ITEM_ID = item_acccharge != null ? item_acccharge.ACCRUED_ITEM_ID : 0;
-                                    model.PERIOD_ACCRUED = string.Concat(_monthc.ToString().PadLeft(2, '0'), " / ", _yearc);
-                                    model.INV_MONTH = _monthc;
-                                    model.INV_YEAR = _yearc;
-                                    model.SEQUENCE = sequence;
-                                    model.CHANNELS = item.CHANNELS;
-                                    model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
-                                    model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
-
-                                    model.CURRENCY = "THB";
-                                    model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
-                                    model.CCT_CODE = item.CCT_CODE;
-                                    model.GL_ACCOUNT = item.GL_ACCOUNT;
-                                    model.COST_CENTER = item.COST_CENTER;
-                                    model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
-
-
-                                    model.ACCRUED_MONTH = month;// _monthc;
-                                    model.ACCRUED_YEAR = year;// _yearc;
-                                    model.COMPANY_CODE = companyCode;
-
-
-                                    model.TRANSACTIONS = arrMonthTrxn[i - 1];
-                                    model.AMOUNT = arrMonthAMT[i - 1];
-                                    model.INV_AMOUNT = arrMonthCharge[i - 1];
-
-
-                                    model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
-                                    model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
-
-                                    model.ISPLAN = true;
-
-                                    model.EDITION = 0;
-
-                                    if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
+                                    //--remove value has not invoice amount = 0
+                                    if (arrMonthCharge[i - 1] == 0)
                                     {
-                                        model.CREATE_BY = userInfo.UserCode;
-                                        model.CREATE_DATE = DateTime.Now;
+                                        _monthc++;
+                                        continue;
                                     }
                                     else
                                     {
-                                        model.MODIFIED_BY = userInfo.UserCode;
-                                        //model.MODIFIED_DATE = DateTime.Now;
-                                    }
-                                    model.MODIFIED_DATE = DateTime.Now;
+                                        model.ACCRUED_ID = item_acccharge != null ? item_acccharge.ACCRUED_ID : 0;
+                                        model.ACCRUED_ITEM_ID = item_acccharge != null ? item_acccharge.ACCRUED_ITEM_ID : 0;
+                                        model.PERIOD_ACCRUED = string.Concat(_monthc.ToString().PadLeft(2, '0'), " / ", _yearc);
+                                        model.INV_MONTH = _monthc;
+                                        model.INV_YEAR = _yearc;
+                                        model.SEQUENCE = sequence;
+                                        model.CHANNELS = item.CHANNELS;
+                                        model.PAYMENT_ITEMS_NAME = item.PAYMENT_ITEMS_NAME;
+                                        model.PAYMENT_ITEMS_CODE = item.PAYMENT_ITEMS_CODE;
 
-                                    #region sub accrued
-                                    int subsequence = 1;
-                                    var dataAccruedSub = payment_items_charge.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).ToList();
-                                    var acdataAccruedSub = data_accr.Where(m => m.ACCRUED_ITEM_ID == model.ACCRUED_ITEM_ID).ToList();
-
-                                    var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
-                                    foreach (var sub in dataAccruedSub)
-                                    {
-                                        var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).FirstOrDefault();
-                                        decimal[] arrMonthTrxnSub = new decimal[months];
-                                        decimal[] arrMonthAMTSub = new decimal[months];
-                                        decimal[] arrMonthChargeSub = new decimal[months];
-
-                                        decimal[] arrMonthTrxn_RateSub = new decimal[months];
-                                        decimal[] arrMonthAMT_RateSub = new decimal[months];
+                                        model.CURRENCY = "THB";
+                                        model.Supplier = get_pymitem == null ? "" : get_pymitem.Supplier;
+                                        model.CCT_CODE = item.CCT_CODE;
+                                        model.GL_ACCOUNT = item.GL_ACCOUNT;
+                                        model.COST_CENTER = item.COST_CENTER;
+                                        model.COST_CENTER_FUND = string.IsNullOrEmpty(item.FUND_CODE) ? item.COST_CENTER : string.Concat(item.COST_CENTER, "/", item.FUND_CODE);
 
 
-                                        #region amt
-                                        var dataSubList = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList();
-                                        int _mnth = 1;
-                                        int _yr = years;
+                                        model.ACCRUED_MONTH = month;// _monthc;
+                                        model.ACCRUED_YEAR = year;// _yearc;
+                                        model.COMPANY_CODE = companyCode;
 
-                                        for (int r = 1; r <= months; r++)
+
+                                        model.TRANSACTIONS = arrMonthTrxn[i - 1];
+                                        model.AMOUNT = arrMonthAMT[i - 1];
+                                        model.INV_AMOUNT = arrMonthCharge[i - 1];
+
+
+                                        model.REMARK = "ประมาณการย้อนหลัง 3 เดือน";
+                                        model.REMARK_INVOICE = "ประมาณการย้อนหลัง 3 เดือน";
+
+                                        model.ISPLAN = true;
+
+                                        model.EDITION = 0;
+
+                                        if (string.Equals(formState, ConstantVariableService.FormActionCreate, StringComparison.OrdinalIgnoreCase))
                                         {
-                                            if (r == 13)
+                                            model.CREATE_BY = userInfo.UserCode;
+                                            model.CREATE_DATE = DateTime.Now;
+                                        }
+                                        else
+                                        {
+                                            model.MODIFIED_BY = userInfo.UserCode;
+                                            //model.MODIFIED_DATE = DateTime.Now;
+                                        }
+                                        model.MODIFIED_DATE = DateTime.Now;
+
+                                        #region sub accrued
+                                        int subsequence = 1;
+                                        var dataAccruedSub = payment_items_charge.Where(m => m.PAYMENT_ITEMS_NAME == item.PAYMENT_ITEMS_NAME).ToList();
+                                        var acdataAccruedSub = data_accr.Where(m => m.ACCRUED_ITEM_ID == model.ACCRUED_ITEM_ID).ToList();
+
+                                        var entAccruedItemSubLst = new List<AccruedDetailSubViewModel>();
+                                        foreach (var sub in dataAccruedSub)
+                                        {
+                                            var getaccSub = acdataAccruedSub.Where(m => m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).FirstOrDefault();
+                                            decimal[] arrMonthTrxnSub = new decimal[months];
+                                            decimal[] arrMonthAMTSub = new decimal[months];
+                                            decimal[] arrMonthChargeSub = new decimal[months];
+
+                                            decimal[] arrMonthTrxn_RateSub = new decimal[months];
+                                            decimal[] arrMonthAMT_RateSub = new decimal[months];
+
+
+                                            #region amt
+                                            var dataSubList = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE && m.PAYMENT_ITEMS_FEE_ITEM == sub.PAYMENT_ITEMS_FEE_NAME).OrderBy(m => m.ID).ToList();
+                                            int _mnth = 1;
+                                            int _yr = years;
+
+                                            for (int r = 1; r <= months; r++)
                                             {
-                                                _mnth = 1;
-                                                _yr = _yr + 1;
-                                            }
-                                            var dataSub = dataSubList.Where(h => (h.INV_YEAR * 12) + h.INV_MONTH == (_yr * 12) + _mnth).FirstOrDefault();
-
-                                            //var e = dataSubList.Where(h => (h.INV_YEAR * 12) + h.INV_MONTH == (_yr * 12) + _mnth).ToList();
-                                            if (dataSub != null)
-                                            {
-                                                arrMonthTrxnSub[r - 1] = (dataSub.TRANSACTIONS ?? 0);
-                                                arrMonthAMTSub[r - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
-                                                arrMonthChargeSub[r - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                                arrMonthTrxn_RateSub[r - 1] = (dataSub.RATE_TRANS ?? 0);
-                                                arrMonthAMT_RateSub[r - 1] = (dataSub.RATE_AMT ?? 0);
-
-                                            }
-                                            else
-                                            {
-                                                //if (r == i)
-                                                //{ }
-                                                //check must not exists had Payment and had not Sub Detail
-                                                var existInv = feeInvList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE
-                                                && (m.INV_YEAR * 12) + m.INV_MONTH == (_yr * 12) + _mnth
-                                                && m.IS_STATUS != "3").OrderBy(m => m.ID).ToList();
-
-
-
-                                                #region check must not exists had Payment and had not Sub Detail
-                                                var get_dataSubList = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE
-                                                && (m.INV_YEAR * 12) + m.INV_MONTH == (_yr * 12) + _mnth).OrderBy(m => m.ID).ToList();
-                                                if (!get_dataSubList.Any())
+                                                if (r == 13)
                                                 {
-                                                    #region sub cal trans & amt & rate & net
+                                                    _mnth = 1;
+                                                    _yr = _yr + 1;
+                                                }
+                                                var dataSub = dataSubList.Where(h => (h.INV_YEAR * 12) + h.INV_MONTH == (_yr * 12) + _mnth).FirstOrDefault();
 
+                                                //var e = dataSubList.Where(h => (h.INV_YEAR * 12) + h.INV_MONTH == (_yr * 12) + _mnth).ToList();
+                                                if (dataSub != null)
+                                                {
+                                                    arrMonthTrxnSub[r - 1] = (dataSub.TRANSACTIONS ?? 0);
+                                                    arrMonthAMTSub[r - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
+                                                    arrMonthChargeSub[r - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
 
-                                                    int iTrxnSub = r - 1;
+                                                    arrMonthTrxn_RateSub[r - 1] = (dataSub.RATE_TRANS ?? 0);
+                                                    arrMonthAMT_RateSub[r - 1] = (dataSub.RATE_AMT ?? 0);
 
-                                                    if (iTrxnSub > 2)
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub - 1;
-                                                        int avgIndexS = iTrxnSub - 3;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthTrxnSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthTrxnSub[iTrxnSub] = avgVal;
-                                                    }
-                                                    else
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                        int avgIndexS = 0;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthTrxnSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthTrxnSub[iTrxnSub] = avgVal;
-
-                                                    }
-
-                                                    if (iTrxnSub > 2)
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub - 1;
-                                                        int avgIndexS = iTrxnSub - 3;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthAMTSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthAMTSub[iTrxnSub] = avgVal;
-                                                    }
-                                                    else
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                        int avgIndexS = 0;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthAMTSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthAMTSub[iTrxnSub] = avgVal;
-                                                    }
-
-
-
-                                                    #region avg rate
-
-                                                    if (iTrxnSub > 2)
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub - 1;
-                                                        int avgIndexS = iTrxnSub - 3;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthTrxn_RateSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
-                                                    }
-                                                    else
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                        int avgIndexS = 0;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthTrxn_RateSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
-                                                    }
-
-                                                    if (iTrxnSub > 2)
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub - 1;
-                                                        int avgIndexS = iTrxnSub - 3;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthAMT_RateSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthAMT_RateSub[iTrxnSub] = avgVal;
-                                                    }
-                                                    else
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                        int avgIndexS = 0;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthAMT_RateSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthAMT_RateSub[iTrxnSub] = avgVal;
-
-                                                    }
-
-                                                    #endregion
-
-
-                                                    if (iTrxnSub > 2)
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub - 1;
-                                                        int avgIndexS = iTrxnSub - 3;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthChargeSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthChargeSub[iTrxnSub] = avgVal;
-                                                    }
-                                                    else
-                                                    {
-                                                        decimal avgVal = 0;
-                                                        int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                                        int avgIndexS = 0;
-                                                        List<decimal> avgList = new List<decimal>();
-                                                        for (int a = avgIndexS; a <= avgIndexE; a++)
-                                                        {
-                                                            avgList.Add(arrMonthChargeSub[a]);
-                                                        }
-                                                        avgVal = avgList.Average();
-                                                        arrMonthChargeSub[iTrxnSub] = avgVal;
-
-                                                    }
-
-
-                                                    #endregion
                                                 }
                                                 else
                                                 {
-                                                    if (existInv.Any())
+                                                    //if (r == i)
+                                                    //{ }
+                                                    //check must not exists had Payment and had not Sub Detail
+                                                    var existInv = feeInvList.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE
+                                                    && (m.INV_YEAR * 12) + m.INV_MONTH == (_yr * 12) + _mnth
+                                                    && m.IS_STATUS != "3").OrderBy(m => m.ID).ToList();
+
+
+
+                                                    #region check must not exists had Payment and had not Sub Detail
+                                                    var get_dataSubList = data.Where(m => m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE
+                                                    && (m.INV_YEAR * 12) + m.INV_MONTH == (_yr * 12) + _mnth).OrderBy(m => m.ID).ToList();
+                                                    if (!get_dataSubList.Any())
                                                     {
+                                                        #region sub cal trans & amt & rate & net
 
-                                                        #region cal avg 3 month sub tran & amt & rate & net
-                                                        int _mnthS = _mnth - 3;
-                                                        _mnthS = _mnthS < 0 ? 12 + _mnthS : _mnthS;
-                                                        int _mnthE = _mnth - 1;
-                                                        _mnthE = _mnthE < 0 ? 12 + _mnthE : _mnthE;
-                                                        int _yrS = years;
-                                                        int _yrE = _yr;
-                                                        if (_mnthS == 0)
+
+                                                        int iTrxnSub = r - 1;
+
+                                                        if (iTrxnSub > 2)
                                                         {
-                                                            _mnthS = 12;
-                                                            _yrS = _yrS - 1;
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub - 1;
+                                                            int avgIndexS = iTrxnSub - 3;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthTrxnSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthTrxnSub[iTrxnSub] = avgVal;
                                                         }
-                                                        if (_mnthE == 0)
+                                                        else
                                                         {
-                                                            _mnthE = 12;
-                                                            _yrE = _yrE - 1;
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                            int avgIndexS = 0;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthTrxnSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthTrxnSub[iTrxnSub] = avgVal;
+
                                                         }
 
-                                                        List<decimal> valueTrxnSubAvg = new List<decimal>();
-                                                        List<decimal> valueAMTSubAvg = new List<decimal>();
-                                                        List<decimal> valueChargeSubAvg = new List<decimal>();
-                                                        List<decimal> valueTrxn_RateSubAvg = new List<decimal>();
-                                                        List<decimal> valueAMT_RateSubAvg = new List<decimal>();
-
-                                                        int y = _yrS;
-                                                        int m = _mnthS;
-                                                        int loop = 0;
-                                                        while (loop < 3)
+                                                        if (iTrxnSub > 2)
                                                         {
-                                                            if (m == 13)
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub - 1;
+                                                            int avgIndexS = iTrxnSub - 3;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
                                                             {
-                                                                m = 1;
-                                                                y = y + 1;
+                                                                avgList.Add(arrMonthAMTSub[a]);
                                                             }
-                                                            var _dataSub = dataSubList.Where(x => (x.INV_YEAR * 12) + x.INV_MONTH == (y * 12) + m).FirstOrDefault();
-                                                            if (_dataSub != null)
-                                                            {
-                                                                valueTrxnSubAvg.Add(_dataSub.TRANSACTIONS ?? 0);
-                                                                valueAMTSubAvg.Add(_dataSub.ACTUAL_AMOUNT ?? 0);
-                                                                valueChargeSubAvg.Add(_dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
-                                                                valueTrxn_RateSubAvg.Add(_dataSub.RATE_TRANS ?? 0);
-                                                                valueAMT_RateSubAvg.Add(_dataSub.RATE_AMT ?? 0);
-                                                            }
-                                                            else
-                                                            {
-                                                                valueTrxnSubAvg.Add(0);
-                                                                valueAMTSubAvg.Add(0);
-                                                                valueChargeSubAvg.Add(0);
-                                                                valueTrxn_RateSubAvg.Add(0);
-                                                                valueAMT_RateSubAvg.Add(0);
-                                                            }
-                                                            m++;
-                                                            loop++;
+                                                            avgVal = avgList.Average();
+                                                            arrMonthAMTSub[iTrxnSub] = avgVal;
                                                         }
-                                                        arrMonthTrxnSub[r - 1] = (valueTrxnSubAvg.Average());
-                                                        arrMonthAMTSub[r - 1] = (valueAMTSubAvg.Average());
-                                                        arrMonthChargeSub[r - 1] = (valueChargeSubAvg.Average());
+                                                        else
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                            int avgIndexS = 0;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthAMTSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthAMTSub[iTrxnSub] = avgVal;
+                                                        }
 
-                                                        arrMonthTrxn_RateSub[r - 1] = (valueTrxn_RateSubAvg.Average());
-                                                        arrMonthAMT_RateSub[r - 1] = (valueAMT_RateSubAvg.Average());
-                                                        //var _dataSub = dataSubList.Where(h =>
-                                                        //(h.INV_YEAR * 12) + h.INV_MONTH >= (_yrS * 12) + _mnthS &&
-                                                        //(h.INV_YEAR * 12) + h.INV_MONTH <= (_yrE * 12) + _mnthE).ToList();
-                                                        //if (_dataSub.Any())
-                                                        //{
-                                                        //    arrMonthTrxnSub[r - 1] = (_dataSub.Average(g => g.TRANSACTIONS ?? 0));
-                                                        //    arrMonthAMTSub[r - 1] = (_dataSub.Average(g => g.ACTUAL_AMOUNT ?? 0));
-                                                        //    arrMonthChargeSub[r - 1] = (_dataSub.Average(g => g.TOTAL_CHARGE_AMOUNT ?? 0));
 
-                                                        //    arrMonthTrxn_RateSub[r - 1] = (_dataSub.Average(g => g.RATE_TRANS ?? 0));
-                                                        //    arrMonthAMT_RateSub[r - 1] = (_dataSub.Average(g => g.RATE_AMT ?? 0));
-                                                        //}
+
+                                                        #region avg rate
+
+                                                        if (iTrxnSub > 2)
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub - 1;
+                                                            int avgIndexS = iTrxnSub - 3;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthTrxn_RateSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+                                                        }
+                                                        else
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                            int avgIndexS = 0;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthTrxn_RateSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+                                                        }
+
+                                                        if (iTrxnSub > 2)
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub - 1;
+                                                            int avgIndexS = iTrxnSub - 3;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthAMT_RateSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+                                                        }
+                                                        else
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                            int avgIndexS = 0;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthAMT_RateSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+
+                                                        }
+
+                                                        #endregion
+
+
+                                                        if (iTrxnSub > 2)
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub - 1;
+                                                            int avgIndexS = iTrxnSub - 3;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthChargeSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthChargeSub[iTrxnSub] = avgVal;
+                                                        }
+                                                        else
+                                                        {
+                                                            decimal avgVal = 0;
+                                                            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                                            int avgIndexS = 0;
+                                                            List<decimal> avgList = new List<decimal>();
+                                                            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                                            {
+                                                                avgList.Add(arrMonthChargeSub[a]);
+                                                            }
+                                                            avgVal = avgList.Average();
+                                                            arrMonthChargeSub[iTrxnSub] = avgVal;
+
+                                                        }
+
 
                                                         #endregion
                                                     }
+                                                    else
+                                                    {
+                                                        if (existInv.Any())
+                                                        {
+
+                                                            #region cal avg 3 month sub tran & amt & rate & net
+                                                            int _mnthS = _mnth - 3;
+                                                            _mnthS = _mnthS < 0 ? 12 + _mnthS : _mnthS;
+                                                            int _mnthE = _mnth - 1;
+                                                            _mnthE = _mnthE < 0 ? 12 + _mnthE : _mnthE;
+                                                            int _yrS = years;
+                                                            int _yrE = _yr;
+                                                            if (_mnthS == 0)
+                                                            {
+                                                                _mnthS = 12;
+                                                                _yrS = _yrS - 1;
+                                                            }
+                                                            if (_mnthE == 0)
+                                                            {
+                                                                _mnthE = 12;
+                                                                _yrE = _yrE - 1;
+                                                            }
+
+                                                            List<decimal> valueTrxnSubAvg = new List<decimal>();
+                                                            List<decimal> valueAMTSubAvg = new List<decimal>();
+                                                            List<decimal> valueChargeSubAvg = new List<decimal>();
+                                                            List<decimal> valueTrxn_RateSubAvg = new List<decimal>();
+                                                            List<decimal> valueAMT_RateSubAvg = new List<decimal>();
+
+                                                            int y = _yrS;
+                                                            int m = _mnthS;
+                                                            int loop = 0;
+                                                            while (loop < 3)
+                                                            {
+                                                                if (m == 13)
+                                                                {
+                                                                    m = 1;
+                                                                    y = y + 1;
+                                                                }
+                                                                var _dataSub = dataSubList.Where(x => (x.INV_YEAR * 12) + x.INV_MONTH == (y * 12) + m).FirstOrDefault();
+                                                                if (_dataSub != null)
+                                                                {
+                                                                    valueTrxnSubAvg.Add(_dataSub.TRANSACTIONS ?? 0);
+                                                                    valueAMTSubAvg.Add(_dataSub.ACTUAL_AMOUNT ?? 0);
+                                                                    valueChargeSubAvg.Add(_dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
+                                                                    valueTrxn_RateSubAvg.Add(_dataSub.RATE_TRANS ?? 0);
+                                                                    valueAMT_RateSubAvg.Add(_dataSub.RATE_AMT ?? 0);
+                                                                }
+                                                                else
+                                                                {
+                                                                    valueTrxnSubAvg.Add(0);
+                                                                    valueAMTSubAvg.Add(0);
+                                                                    valueChargeSubAvg.Add(0);
+                                                                    valueTrxn_RateSubAvg.Add(0);
+                                                                    valueAMT_RateSubAvg.Add(0);
+                                                                }
+                                                                m++;
+                                                                loop++;
+                                                            }
+                                                            arrMonthTrxnSub[r - 1] = (valueTrxnSubAvg.Average());
+                                                            arrMonthAMTSub[r - 1] = (valueAMTSubAvg.Average());
+                                                            arrMonthChargeSub[r - 1] = (valueChargeSubAvg.Average());
+
+                                                            arrMonthTrxn_RateSub[r - 1] = (valueTrxn_RateSubAvg.Average());
+                                                            arrMonthAMT_RateSub[r - 1] = (valueAMT_RateSubAvg.Average());
+                                                            //var _dataSub = dataSubList.Where(h =>
+                                                            //(h.INV_YEAR * 12) + h.INV_MONTH >= (_yrS * 12) + _mnthS &&
+                                                            //(h.INV_YEAR * 12) + h.INV_MONTH <= (_yrE * 12) + _mnthE).ToList();
+                                                            //if (_dataSub.Any())
+                                                            //{
+                                                            //    arrMonthTrxnSub[r - 1] = (_dataSub.Average(g => g.TRANSACTIONS ?? 0));
+                                                            //    arrMonthAMTSub[r - 1] = (_dataSub.Average(g => g.ACTUAL_AMOUNT ?? 0));
+                                                            //    arrMonthChargeSub[r - 1] = (_dataSub.Average(g => g.TOTAL_CHARGE_AMOUNT ?? 0));
+
+                                                            //    arrMonthTrxn_RateSub[r - 1] = (_dataSub.Average(g => g.RATE_TRANS ?? 0));
+                                                            //    arrMonthAMT_RateSub[r - 1] = (_dataSub.Average(g => g.RATE_AMT ?? 0));
+                                                            //}
+
+                                                            #endregion
+                                                        }
+                                                    }
+                                                    #endregion
+
+
                                                 }
-                                                #endregion
-
-
+                                                _mnth++;
                                             }
-                                            _mnth++;
+
+                                            #region sub cal trans & amt & rate & net mark
+                                            //foreach (var dataSub in dataSubList)
+                                            //{
+                                            //    arrMonthTrxnSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TRANSACTIONS ?? 0);
+                                            //    arrMonthAMTSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
+                                            //    arrMonthChargeSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
+
+                                            //    arrMonthTrxn_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_TRANS ?? 0);
+                                            //    arrMonthAMT_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_AMT ?? 0);
+                                            //}
+
+                                            //int iTrxnSub = 0;
+
+                                            //foreach (var arr in arrMonthTrxnSub.ToArray())
+                                            //{
+                                            //    if (arrMonthTrxnSub.ToList().All(m => m == 0))
+                                            //    { break; }
+                                            //    if (arr == 0)
+                                            //    {
+                                            //        if (iTrxnSub > 2)
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub - 1;
+                                            //            int avgIndexS = iTrxnSub - 3;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthTrxnSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthTrxnSub[iTrxnSub] = avgVal;
+                                            //        }
+                                            //        else
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                            //            int avgIndexS = 0;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthTrxnSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthTrxnSub[iTrxnSub] = avgVal;
+
+                                            //        }
+                                            //    }
+                                            //    iTrxnSub++;
+                                            //}
+                                            //iTrxnSub = 0;
+                                            //foreach (var arr in arrMonthAMTSub.ToArray())
+                                            //{
+                                            //    if (arrMonthAMTSub.ToList().All(m => m == 0))
+                                            //    { break; }
+                                            //    if (arr == 0)
+                                            //    {
+                                            //        if (iTrxnSub > 2)
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub - 1;
+                                            //            int avgIndexS = iTrxnSub - 3;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthAMTSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthAMTSub[iTrxnSub] = avgVal;
+                                            //        }
+                                            //        else
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                            //            int avgIndexS = 0;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthAMTSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthAMTSub[iTrxnSub] = avgVal;
+
+                                            //        }
+                                            //    }
+                                            //    iTrxnSub++;
+                                            //}
+
+
+                                            //#region avg rate
+
+                                            //iTrxnSub = 0;
+                                            //foreach (var arr in arrMonthTrxn_RateSub.ToArray())
+                                            //{
+                                            //    if (arrMonthTrxn_RateSub.ToList().All(m => m == 0))
+                                            //    { break; }
+                                            //    if (arr == 0)
+                                            //    {
+                                            //        if (iTrxnSub > 2)
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub - 1;
+                                            //            int avgIndexS = iTrxnSub - 3;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthTrxn_RateSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+                                            //        }
+                                            //        else
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                            //            int avgIndexS = 0;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthTrxn_RateSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
+                                            //        }
+
+                                            //    }
+                                            //    iTrxnSub++;
+                                            //}
+                                            //iTrxnSub = 0;
+                                            //foreach (var arr in arrMonthAMT_RateSub.ToArray())
+                                            //{
+                                            //    if (arrMonthAMT_RateSub.ToList().All(m => m == 0))
+                                            //    { break; }
+                                            //    if (arr == 0)
+                                            //    {
+                                            //        if (iTrxnSub > 2)
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub - 1;
+                                            //            int avgIndexS = iTrxnSub - 3;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthAMT_RateSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+                                            //        }
+                                            //        else
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                            //            int avgIndexS = 0;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthAMT_RateSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthAMT_RateSub[iTrxnSub] = avgVal;
+
+                                            //        }
+                                            //    }
+                                            //    iTrxnSub++;
+                                            //}
+
+                                            //#endregion
+
+                                            //iTrxnSub = 0;
+                                            //foreach (var arr in arrMonthChargeSub.ToArray())
+                                            //{
+                                            //    if (arrMonthChargeSub.ToList().All(m => m == 0))
+                                            //    { break; }
+                                            //    if (arr == 0)
+                                            //    {
+                                            //        if (iTrxnSub > 2)
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub - 1;
+                                            //            int avgIndexS = iTrxnSub - 3;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthChargeSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthChargeSub[iTrxnSub] = avgVal;
+                                            //        }
+                                            //        else
+                                            //        {
+                                            //            decimal avgVal = 0;
+                                            //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
+                                            //            int avgIndexS = 0;
+                                            //            List<decimal> avgList = new List<decimal>();
+                                            //            for (int a = avgIndexS; a <= avgIndexE; a++)
+                                            //            {
+                                            //                avgList.Add(arrMonthChargeSub[a]);
+                                            //            }
+                                            //            avgVal = avgList.Average();
+                                            //            arrMonthChargeSub[iTrxnSub] = avgVal;
+
+                                            //        }
+                                            //    }
+                                            //    iTrxnSub++;
+                                            //}
+
+
+
+                                            #endregion
+
+                                            #endregion
+
+
+                                            var entAccruedItemSub = new AccruedDetailSubViewModel();
+                                            MVMMappingService.MoveData(model, entAccruedItemSub);
+                                            entAccruedItemSub.ID = getaccSub != null ? getaccSub.ID : 0;
+                                            entAccruedItemSub.ACCRUED_MONTH = month;// _monthc;
+                                            entAccruedItemSub.ACCRUED_YEAR = year;// _yearc;
+                                            entAccruedItemSub.CREATE_BY = model.CREATE_BY;
+                                            entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
+                                            entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
+                                            entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
+                                            entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
+                                            entAccruedItemSub.PRO_NO = model.PRO_NO;
+                                            entAccruedItemSub.INV_NO = model.INV_NO;
+                                            entAccruedItemSub.INV_MONTH = _monthc;
+                                            entAccruedItemSub.INV_YEAR = _yearc;
+                                            entAccruedItemSub.SEQUENCE = subsequence;
+                                            entAccruedItemSub.PAYMENT_ITEMS_FEE_ITEM = sub.PAYMENT_ITEMS_FEE_NAME;
+                                            entAccruedItemSub.TRANSACTIONS = arrMonthTrxnSub[i - 1];
+                                            entAccruedItemSub.ACTUAL_AMOUNT = arrMonthAMTSub[i - 1];
+                                            entAccruedItemSub.TOTAL_CHARGE_AMOUNT = arrMonthChargeSub[i - 1];
+                                            entAccruedItemSub.RATE_TRANS = arrMonthTrxn_RateSub[i - 1];
+                                            entAccruedItemSub.RATE_AMT = arrMonthAMT_RateSub[i - 1];
+                                            entAccruedItemSubLst.Add(entAccruedItemSub);
+
+                                            subsequence++;
                                         }
-
-                                        #region sub cal trans & amt & rate & net mark
-                                        //foreach (var dataSub in dataSubList)
-                                        //{
-                                        //    arrMonthTrxnSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TRANSACTIONS ?? 0);
-                                        //    arrMonthAMTSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.ACTUAL_AMOUNT ?? 0);
-                                        //    arrMonthChargeSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.TOTAL_CHARGE_AMOUNT ?? 0);
-
-                                        //    arrMonthTrxn_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_TRANS ?? 0);
-                                        //    arrMonthAMT_RateSub[(dataSub.INV_MONTH ?? 0) - 1] = (dataSub.RATE_AMT ?? 0);
-                                        //}
-
-                                        //int iTrxnSub = 0;
-
-                                        //foreach (var arr in arrMonthTrxnSub.ToArray())
-                                        //{
-                                        //    if (arrMonthTrxnSub.ToList().All(m => m == 0))
-                                        //    { break; }
-                                        //    if (arr == 0)
-                                        //    {
-                                        //        if (iTrxnSub > 2)
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub - 1;
-                                        //            int avgIndexS = iTrxnSub - 3;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthTrxnSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthTrxnSub[iTrxnSub] = avgVal;
-                                        //        }
-                                        //        else
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                        //            int avgIndexS = 0;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthTrxnSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthTrxnSub[iTrxnSub] = avgVal;
-
-                                        //        }
-                                        //    }
-                                        //    iTrxnSub++;
-                                        //}
-                                        //iTrxnSub = 0;
-                                        //foreach (var arr in arrMonthAMTSub.ToArray())
-                                        //{
-                                        //    if (arrMonthAMTSub.ToList().All(m => m == 0))
-                                        //    { break; }
-                                        //    if (arr == 0)
-                                        //    {
-                                        //        if (iTrxnSub > 2)
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub - 1;
-                                        //            int avgIndexS = iTrxnSub - 3;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthAMTSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthAMTSub[iTrxnSub] = avgVal;
-                                        //        }
-                                        //        else
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                        //            int avgIndexS = 0;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthAMTSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthAMTSub[iTrxnSub] = avgVal;
-
-                                        //        }
-                                        //    }
-                                        //    iTrxnSub++;
-                                        //}
-
-
-                                        //#region avg rate
-
-                                        //iTrxnSub = 0;
-                                        //foreach (var arr in arrMonthTrxn_RateSub.ToArray())
-                                        //{
-                                        //    if (arrMonthTrxn_RateSub.ToList().All(m => m == 0))
-                                        //    { break; }
-                                        //    if (arr == 0)
-                                        //    {
-                                        //        if (iTrxnSub > 2)
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub - 1;
-                                        //            int avgIndexS = iTrxnSub - 3;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthTrxn_RateSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
-                                        //        }
-                                        //        else
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                        //            int avgIndexS = 0;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthTrxn_RateSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthTrxn_RateSub[iTrxnSub] = avgVal;
-                                        //        }
-
-                                        //    }
-                                        //    iTrxnSub++;
-                                        //}
-                                        //iTrxnSub = 0;
-                                        //foreach (var arr in arrMonthAMT_RateSub.ToArray())
-                                        //{
-                                        //    if (arrMonthAMT_RateSub.ToList().All(m => m == 0))
-                                        //    { break; }
-                                        //    if (arr == 0)
-                                        //    {
-                                        //        if (iTrxnSub > 2)
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub - 1;
-                                        //            int avgIndexS = iTrxnSub - 3;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthAMT_RateSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthAMT_RateSub[iTrxnSub] = avgVal;
-                                        //        }
-                                        //        else
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                        //            int avgIndexS = 0;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthAMT_RateSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthAMT_RateSub[iTrxnSub] = avgVal;
-
-                                        //        }
-                                        //    }
-                                        //    iTrxnSub++;
-                                        //}
-
-                                        //#endregion
-
-                                        //iTrxnSub = 0;
-                                        //foreach (var arr in arrMonthChargeSub.ToArray())
-                                        //{
-                                        //    if (arrMonthChargeSub.ToList().All(m => m == 0))
-                                        //    { break; }
-                                        //    if (arr == 0)
-                                        //    {
-                                        //        if (iTrxnSub > 2)
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub - 1;
-                                        //            int avgIndexS = iTrxnSub - 3;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthChargeSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthChargeSub[iTrxnSub] = avgVal;
-                                        //        }
-                                        //        else
-                                        //        {
-                                        //            decimal avgVal = 0;
-                                        //            int avgIndexE = iTrxnSub == 0 ? iTrxnSub : iTrxnSub - 1;
-                                        //            int avgIndexS = 0;
-                                        //            List<decimal> avgList = new List<decimal>();
-                                        //            for (int a = avgIndexS; a <= avgIndexE; a++)
-                                        //            {
-                                        //                avgList.Add(arrMonthChargeSub[a]);
-                                        //            }
-                                        //            avgVal = avgList.Average();
-                                        //            arrMonthChargeSub[iTrxnSub] = avgVal;
-
-                                        //        }
-                                        //    }
-                                        //    iTrxnSub++;
-                                        //}
-
-
-
+                                        model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
                                         #endregion
+                                        //Get Json Model AccruedDetail
+                                        var jsonSerialiser = new JavaScriptSerializer();
+                                        string AccruedJSON = jsonSerialiser.Serialize(model);
+                                        model.AccruedJSON = AccruedJSON;
 
-                                        #endregion
 
-
-                                        var entAccruedItemSub = new AccruedDetailSubViewModel();
-                                        MVMMappingService.MoveData(model, entAccruedItemSub);
-                                        entAccruedItemSub.ID = getaccSub != null ? getaccSub.ID : 0;
-                                        entAccruedItemSub.ACCRUED_MONTH = month;// _monthc;
-                                        entAccruedItemSub.ACCRUED_YEAR = year;// _yearc;
-                                        entAccruedItemSub.CREATE_BY = model.CREATE_BY;
-                                        entAccruedItemSub.CREATE_DATE = model.CREATE_DATE;
-                                        entAccruedItemSub.MODIFIED_BY = model.MODIFIED_BY;
-                                        entAccruedItemSub.MODIFIED_DATE = model.MODIFIED_DATE;
-                                        entAccruedItemSub.NET_AMOUNT = model.INV_AMOUNT;
-                                        entAccruedItemSub.PRO_NO = model.PRO_NO;
-                                        entAccruedItemSub.INV_NO = model.INV_NO;
-                                        entAccruedItemSub.INV_MONTH = _monthc;
-                                        entAccruedItemSub.INV_YEAR = _yearc;
-                                        entAccruedItemSub.SEQUENCE = subsequence;
-                                        entAccruedItemSub.PAYMENT_ITEMS_FEE_ITEM = sub.PAYMENT_ITEMS_FEE_NAME;
-                                        entAccruedItemSub.TRANSACTIONS = arrMonthTrxnSub[i - 1];
-                                        entAccruedItemSub.ACTUAL_AMOUNT = arrMonthAMTSub[i - 1];
-                                        entAccruedItemSub.TOTAL_CHARGE_AMOUNT = arrMonthChargeSub[i - 1];
-                                        entAccruedItemSub.RATE_TRANS = arrMonthTrxn_RateSub[i - 1];
-                                        entAccruedItemSub.RATE_AMT = arrMonthAMT_RateSub[i - 1];
-                                        entAccruedItemSubLst.Add(entAccruedItemSub);
-
-                                        subsequence++;
+                                        accruedItemList.Add(model);
+                                        sequence++;
                                     }
-                                    model.AccruedItemSubList.AddRange(entAccruedItemSubLst);
-                                    #endregion
-                                    //Get Json Model AccruedDetail
-                                    var jsonSerialiser = new JavaScriptSerializer();
-                                    string AccruedJSON = jsonSerialiser.Serialize(model);
-                                    model.AccruedJSON = AccruedJSON;
-
-
-                                    accruedItemList.Add(model);
-                                    sequence++;
                                 }
 
                                 _monthc++; // keep value month

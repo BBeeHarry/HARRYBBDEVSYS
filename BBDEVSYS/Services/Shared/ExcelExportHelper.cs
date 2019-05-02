@@ -10,6 +10,7 @@ using System.Data;
 using System.Globalization;
 using System.Linq;
 using System.Web;
+using WebGrease.Css.Ast;
 
 namespace BBDEVSYS.Services.Shared
 {
@@ -581,7 +582,7 @@ namespace BBDEVSYS.Services.Shared
                             colNames.Add("FEE");
                             colNames.Add("CHARGE");
                             addcolNames.AddRange(colNames);
-                          
+
                             addcolNames.AddRange(colNames);
                             //1 == Start Month
                             int b = 0;
@@ -618,11 +619,10 @@ namespace BBDEVSYS.Services.Shared
                         {
                             columnsToTake = dataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
                         }
-           
+
                         ExcelWorksheet workSheet = null;
 
                         ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
-
                         workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", dataSet.Tables[data].TableName));
 
                         int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
@@ -868,20 +868,61 @@ namespace BBDEVSYS.Services.Shared
                         //----------}
 
                         #region pivot data
-
+                        #region mark
                         //define the data range on the source sheet
                         //var dataRange = workSheet.Cells[workSheet.Dimension.Address];
-                        var dataRange = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
 
-                        //create the pivot table
-                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells["A4"], dataRange, "PivotTable");
 
-                        //label field
-                        //pivotTable.RowFields.Add(pivotTable.Fields["Column A"]);
-                        pivotTable.RowFields.Add(pivotTable.Fields["Year"]);
-                        //pivotTable.RowFields.Add(pivotTable.Fields["Month"]);
-                        //pivotTable.RowFields.Add(pivotTable.Fields["Business Unit"]);
+
+                        //string pageName = "Pivot-" + dataTable.TableName.Replace(" ", "");
+                        //var wsPivot = package.Workbook.Worksheets.Add(pageName);
+                        ////package.Workbook.Worksheets.MoveBefore(PageName, dataTable.TableName);
+
+                        //var dataRange = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
+                        //var pivotTable = wsPivot.PivotTables.Add(wsPivot.Cells["C3"], dataRange, "Pivot_" + dataTable.TableName.Replace(" ", ""));
+                        //pivotTable.ShowHeaders = true;
+                        //pivotTable.UseAutoFormatting = true;
+                        //pivotTable.ApplyWidthHeightFormats = true;
+                        //pivotTable.ShowDrill = true;
+                        //pivotTable.FirstHeaderRow = 1;  // first row has headers
+                        //pivotTable.FirstDataCol = 1;    // first col of data
+                        //pivotTable.FirstDataRow = 2;    // first row of data
+                        //List<string> _GroupByColumns;
+                        //List<string> _SummaryColumns;
+                        //_GroupByColumns = new List<string>(new string[] { "Year", "Month", "Business Unit" } ); /*rows*/
+                        //_SummaryColumns = new List<string>(new string[] { "Amount(MDR) Charging"}); /*column*/
+                        ////                    new string[] { "OrganizationTitle", "GroupingTitle", "DetailTitle" }, /* collapsible rows */
+                        ////new string[] { "Baseline", "Increase", "Decrease", "NetChange", "CurrentCount" }); /* summary columns */
+                        //foreach (string row in _GroupByColumns)
+                        //{
+                        //    var field = pivotTable.Fields[row];
+                        //    pivotTable.RowFields.Add(field);
+                        //    field.Sort = eSortType.Ascending;
+                        //}
+
+                        //foreach (string column in _SummaryColumns)
+                        //{
+                        //    var field = pivotTable.Fields[column];
+                        //    ExcelPivotTableDataField results = pivotTable.DataFields.Add(field);
+                        //}
+
                         //pivotTable.DataOnRows = false;
+                        //---------------------------------------------------------------------
+
+                        //var dataRange = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
+                        #endregion
+                        //ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
+                        var rangePivotTable = workSheet.Cells["A" + startRowFrom+1].LoadFromDataTable(dataTable, true);
+                        var rangePivotTable2 = workSheet.Cells[startRowFrom , 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
+                     
+                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 1], rangePivotTable, "PivotTable");
+                        //package.Workbook.Worksheets.MoveBefore(1,0);
+                        //label field
+                        pivotTable.RowFields.Add(pivotTable.Fields["Year"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Month"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Business Unit"]);
+                        pivotTable.DataOnRows = false;
+
 
 
                         //data Column
@@ -889,21 +930,82 @@ namespace BBDEVSYS.Services.Shared
                         //pivotTable.FirstDataCol = false;
 
                         //data fields
-
+                        var fields = pivotTable.Fields["Status Name"];
                         var field = pivotTable.DataFields.Add(pivotTable.Fields["Status Name"]);
                         field.Name = "Count of Transaction Status";
                         field.Function = DataFieldFunctions.Count;
+                        field.Format = "#,##0";
+                        fields.Sort = eSortType.Ascending;
 
-                        field = pivotTable.DataFields.Add(pivotTable.Fields["Amount(MDR) Charging"]);
-                        field.Name = "Sum of Amount(MDR) Charging";
-                        field.Function = DataFieldFunctions.Sum;
-                        field.Format = "0.00";
 
                         field = pivotTable.DataFields.Add(pivotTable.Fields["Transaction Fee"]);
                         field.Name = "Sum of Transaction Fee";
                         field.Function = DataFieldFunctions.Sum;
-                        field.Format = "€#,##0.00";
+                        field.Format = "#,##0.00";
+
+                        field = pivotTable.DataFields.Add(pivotTable.Fields["Amount(MDR) Charging"]);
+                        field.Name = "Sum of Amount(MDR) Charging";
+                        field.Function = DataFieldFunctions.Sum;
+                        field.Format = "#,##0.00";
+
+                       
+
+                        //var rows = worksheetPivot.Dimension.Rows;
+
+                        var pivotTable2 = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[30, 1], rangePivotTable, "PivotTable2");
+                        //package.Workbook.Worksheets.MoveBefore(1,0);
+                        //label field
+                        pivotTable2.RowFields.Add(pivotTable2.Fields["Year"]);
+                        pivotTable2.RowFields.Add(pivotTable2.Fields["Month"]);
+                        pivotTable2.RowFields.Add(pivotTable2.Fields["Business Unit"]);
+                        pivotTable2.DataOnRows = false;
+
+
+                        //data Column
+                        pivotTable2.ColumnFields.Add(pivotTable2.Fields["Status Name"]);
+                        //pivotTable.FirstDataCol = false;
+
+                        //data fields
+
+                        field = pivotTable2.DataFields.Add(pivotTable2.Fields["Amount(MDR) Charging"]);
+                        field.Name = "Sum of Amount(MDR) Charging";
+                        field.Function = DataFieldFunctions.Sum;
+                        field.Format = "#,##0.00";
+                      
+                        var pivotTable3 = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[70, 1], rangePivotTable, "PivotTable3");
+                        //package.Workbook.Worksheets.MoveBefore(1,0);
+                        //label field
+                        pivotTable3.RowFields.Add(pivotTable3.Fields["Year"]);
+                        pivotTable3.RowFields.Add(pivotTable3.Fields["Month"]);
+                        pivotTable3.RowFields.Add(pivotTable3.Fields["Business Unit"]);
+                        pivotTable3.DataOnRows = false;
+
+
+                        //data Column
+                        pivotTable3.ColumnFields.Add(pivotTable3.Fields["Status Name"]);
+                        //pivotTable.FirstDataCol = false;
+
+                        //data fields
+
+                        fields = pivotTable3.Fields["Status Name"];
+                        field = pivotTable3.DataFields.Add(pivotTable3.Fields["Status Name"]);
+                        field.Name = "Count of Transaction Status";
+                        field.Function = DataFieldFunctions.Count;
+                        field.Format = "#,##0";
+                        fields.Sort = eSortType.Ascending;
+
                         #endregion
+
+                        #region name heading pivot
+                        worksheetPivot.Cells[1, 1].Value = "Summary";
+                        worksheetPivot.Cells[1, 1].Style.Font.Size = 20;
+                        worksheetPivot.Cells[29, 1].Value = "Summary Amount(MDR) Charging";
+                        worksheetPivot.Cells[29, 1].Style.Font.Size = 20;
+                        worksheetPivot.Cells[69, 1].Value = "Summary Transaction (Invoice Status)";
+                        worksheetPivot.Cells[69, 1].Style.Font.Size = 20;
+                        #endregion
+
+
                     }
                     //end for
                     result = package.GetAsByteArray();
@@ -926,13 +1028,13 @@ namespace BBDEVSYS.Services.Shared
             {
 
                 byte[] result = null;
-             
+
                 using (ExcelPackage package = new ExcelPackage())
                 {
                     DataTable dataTable = new DataTable();
                     for (int data = 0; data < dataSet.Tables.Count; data++)
                     {
-                       
+
                         //DataTable 
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
@@ -1557,13 +1659,13 @@ namespace BBDEVSYS.Services.Shared
 
                         //var cellFormatDate = workSheet.Cells[1, 1, 1, dataTable.Columns.Count];//, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
 
-                       
+
                         //var idx1 = workSheet.Cells["1:1"].First(c => c.Value.ToString().Contains("DATE") ).Start.Column;
                         //var idx = workSheet.Cells[1, 1, 1, dataTable.Columns.Count].First(c => c.Value.ToString().Contains("DATE")).Start.Column;
 
                         //workSheet.Column(idx).Style.Numberformat.Format = "dd/mm/yyyy";
 
-                       
+
 
                         ////set Date format
                         //var dateFormat = workSheet.Cells[startRowFrom + 1, 2, startRowFrom + dataTable.Rows.Count, 2];
