@@ -1003,9 +1003,9 @@ namespace BBDEVSYS.Services.Adjustrefund
                             foreach (DataRow dradj in adjList.Rows)
                             {
 
-                                dr["Last_Reason_Adjust"] = dradj[4].ToString();
-                                dr["Last_Adjust_Date"] = dradj[1];
-                                dr["Last_Adjust_Amount"] = Convert.ToDecimal(dradj[6]) + Convert.ToDecimal(dradj[7]);
+                                dr["Last_Reason_Adjust"] = dradj[5].ToString();
+                                dr["Last_Adjust_Date"] = dradj[2];
+                                dr["Last_Adjust_Amount"] = Convert.ToDecimal(dradj[7]) + Convert.ToDecimal(dradj[8]);
                             }
                         }
 
@@ -1070,7 +1070,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                 dt.Columns.Add("T_TO_ACCOUNT_BC_ID", typeof(double));
                 dt.Columns.Add("PYM_Designate_Code");
                 dt.Columns.Add("Last_Reason_Adjust");
-                dt.Columns.Add("Last_Adjust_Date", typeof(DateTime));
+                dt.Columns.Add("Last_Adjust_Date");//, typeof(DateTime));
                 dt.Columns.Add("Last_Adjust_Amount", typeof(double));
                 dt.Columns.Add("W_off_Status");
                 dt.Columns.Add("45");

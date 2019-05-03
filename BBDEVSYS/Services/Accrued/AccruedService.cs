@@ -5548,6 +5548,7 @@ namespace BBDEVSYS.Services.Accrued
                     }
 
                     //Commit Header and Item
+
                     scope.Complete();
 
                     result.Message = ResourceText.SuccessfulEdit;
