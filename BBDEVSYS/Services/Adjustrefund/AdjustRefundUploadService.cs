@@ -788,7 +788,11 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                 int i = 1;
                 string sheetTemp = string.Empty;// Create Temporarily  testing
-             
+                bool checkfileExist = false;
+                if (formData.AttachmentList.Count ==1)
+                {
+                    checkfileExist = true;
+                }
                 foreach (var item in formData.AttachmentList)
                 {
 
@@ -940,7 +944,14 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             var sh = sheetName.Where(n => sheetList.ToList().All(u => n != u)).FirstOrDefault();
                             string sheetBan = sh != null ? sh.ToString() : "Sheet1";
-                            dataMerge = GenerateFormatAllMappingData(item, ds.Tables[sheetBan]).AsEnumerable().CopyToDataTable();
+                            if (checkfileExist)
+                            {
+                                dataMerge = item.AsEnumerable().CopyToDataTable();
+                            }
+                            else
+                            {
+                                dataMerge = GenerateFormatAllMappingData(item, ds.Tables[sheetBan]).AsEnumerable().CopyToDataTable();
+                            }
                             dataMerge.TableName = item.TableName;
                             getDataset.Tables.Add(dataMerge);
                         }
@@ -1681,7 +1692,7 @@ myTable.Columns.Add(colTimeSpan);*/
     "      ,[SOURCE_ID]" +
     "      ,CONVERT(DECIMAL(18,2), [AMOUNT])" +
     "      ,[RECEIPT_NO]" +
-    "      ,[REASON_ID]" +
+    "      ,'RS09'" +
     "      ,(CASE WHEN PAID_FROM =PAID_TO THEN 'CRF-CO'" +
     "		ELSE " +
     "		CASE" +
