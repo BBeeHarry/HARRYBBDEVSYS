@@ -717,7 +717,7 @@ namespace BBDEVSYS.Services.Accrued
                 dataReport.Columns.Add("Year", typeof(Int32));
                 dataReport.Columns.Add("Catalog");
                 dataReport.Columns.Add("Invoice No.");
-                dataReport.Columns.Add("Po No.");
+                dataReport.Columns.Add("Pro No.");
                 dataReport.Columns.Add("Supplier");
                 //dataReport.Columns.Add("TransStatus", typeof(Int32));
                 dataReport.Columns.Add("Transaction", typeof(Int32));
@@ -854,7 +854,7 @@ namespace BBDEVSYS.Services.Accrued
                                 item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
                                 item["Supplier"] = catalog.Supplier;
                                 item["Invoice No."] = getFeeInv.INV_NO;
-                                item["Po No."] = getFeeInv.PRO_NO;
+                                item["Pro No."] = getFeeInv.PRO_NO;
                                 item["Transaction"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0));
                                 item["Transaction Fee"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0) * ((m.RATE_TRANS ?? 0) == 0 ? 1 : (m.RATE_TRANS ?? 0)));
 
@@ -881,7 +881,7 @@ namespace BBDEVSYS.Services.Accrued
                                     item["Year"] = year;
                                     item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
                                     item["Invoice No."] = string.Empty;
-                                    item["Po No."] = string.Empty;
+                                    item["Pro No."] = string.Empty;
                                     item["Supplier"] = catalog.Supplier;
 
                                     item["Transaction"] = 0;
@@ -1935,7 +1935,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         #region PO
                         modelTotal = new AccruedReportViewModel();
-                        modelTotal.CHARGE = "PO No.";
+                        modelTotal.CHARGE = "PRO No.";
                         modelTotalList = new List<AccruedReportViewModel>();
 
 
@@ -3113,7 +3113,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         #region PO
                         modelTotal = new AccruedReportViewModel();
-                        modelTotal.CHARGE = "PO No.";
+                        modelTotal.CHARGE = "PRO No.";
                         modelTotalList = new List<AccruedReportViewModel>();
 
 
@@ -3789,7 +3789,7 @@ namespace BBDEVSYS.Services.Accrued
 
                             #region PO
                             modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "PO No.";
+                            modelTotal.CHARGE = "PRO No.";
                             modelTotalList = new List<AccruedReportViewModel>();
 
 
@@ -4649,7 +4649,7 @@ namespace BBDEVSYS.Services.Accrued
                             modelTotalList.Add(modelTotal);
                             //PO 
                             modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "PO No.";
+                            modelTotal.CHARGE = "PRO No.";
                             _getmnth = monthS;
                             _getyr = yearS;
                             for (int i = 1; i <= mnth; i++)

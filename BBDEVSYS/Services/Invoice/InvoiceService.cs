@@ -822,7 +822,7 @@ namespace BBDEVSYS.Services.Invoice
                             {
                                 entFeeInv.IS_STATUS = "0";
                             }
-                            //Status Not Accrued Not Create PO No.
+                            //Status Not Accrued Not Create PRO No.
                             if (formData.REMARK == "For Accrued")
                             {
                                 entFeeInv.IS_STATUS = "1";
@@ -986,7 +986,7 @@ namespace BBDEVSYS.Services.Invoice
                             {
                                 entfeeInv.IS_STATUS = "0";
                             }
-                            //Status Not Accrued Not Create PO No.
+                            //Status Not Accrued Not Create PRO No.
                             if (formData.REMARK == "For Accrued")
                             {
                                 entfeeInv.IS_STATUS = "1";

@@ -921,7 +921,7 @@ namespace BBDEVSYS.Services.Accrued
 
                             #region PO
                             modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "PO No.";
+                            modelTotal.CHARGE = "PRO No.";
                             modelTotalList = new List<AccruedReportViewModel>();
 
 
@@ -1518,7 +1518,7 @@ namespace BBDEVSYS.Services.Accrued
 
                             #region PO
                             modelTotal = new AccruedReportViewModel();
-                            modelTotal.CHARGE = "PO No.";
+                            modelTotal.CHARGE = "PRO No.";
                             modelTotalList = new List<AccruedReportViewModel>();
 
 

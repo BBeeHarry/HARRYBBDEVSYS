@@ -1964,7 +1964,7 @@ namespace BBDEVSYS.Services.Invoice
                         {
                             uploadItem.INV_NO = uploadItem.INV_NO.Trim();
                         }
-                        ////PO NO.
+                        ////PRO No.
                         uploadItem.PRO_NO = uploadItem.PRO_NO.Trim();
                         //if (string.IsNullOrWhiteSpace(uploadItem.PRO_NO))
                         //{

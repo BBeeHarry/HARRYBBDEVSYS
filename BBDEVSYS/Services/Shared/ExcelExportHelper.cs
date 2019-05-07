@@ -237,7 +237,7 @@ namespace BBDEVSYS.Services.Shared
 
 
 
-                                if (cell.Value == "Inv No." || cell.Value == "PO No.")
+                                if (cell.Value == "Inv No." || cell.Value == "PRO No.")
                                 {
                                     rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
                                 }
@@ -389,7 +389,7 @@ namespace BBDEVSYS.Services.Shared
                                     }
 
                                 }
-                                if (item["CHARGE"] == "PO No.")
+                                if (item["CHARGE"] == "PRO No.")
                                 {
                                     using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                     {
@@ -651,7 +651,7 @@ namespace BBDEVSYS.Services.Shared
                             int rowIgnore = 0;
                             foreach (var cell in workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
                             {
-                                if (cell.Value == "Inv No." || cell.Value == "PO No.")
+                                if (cell.Value == "Inv No." || cell.Value == "PRO No.")
                                 {
                                     rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
                                 }
@@ -765,7 +765,7 @@ namespace BBDEVSYS.Services.Shared
                                     }
 
                                 }
-                                if (item["CHARGE"] == "PO No.")
+                                if (item["CHARGE"] == "PRO No.")
                                 {
                                     using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                     {
@@ -1167,7 +1167,7 @@ namespace BBDEVSYS.Services.Shared
                             int rowIgnore = 0;
                             foreach (var cell in workSheet.Cells[startRowFrom + 1, 3, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
                             {
-                                if (cell.Value == "Inv No." || cell.Value == "PO No.")
+                                if (cell.Value == "Inv No." || cell.Value == "PRO No.")
                                 {
                                     rowIgnore = Convert.ToInt32(cell.Address.Substring(1));
                                 }
@@ -1288,7 +1288,7 @@ namespace BBDEVSYS.Services.Shared
                                     }
 
                                 }
-                                if (item["CHARGE"] == "PO No.")
+                                if (item["CHARGE"] == "PRO No.")
                                 {
                                     using (ExcelRange r = workSheet.Cells[startRowFrom + rowT, 3, startRowFrom + rowT, dataTable.Columns.Count])
                                     {
