@@ -912,15 +912,16 @@ namespace BBDEVSYS.Services.Shared
                         //var dataRange = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
                         #endregion
                         //ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
-                        var rangePivotTable = workSheet.Cells["A" + startRowFrom+1].LoadFromDataTable(dataTable, true);
-                        var rangePivotTable2 = workSheet.Cells[startRowFrom , 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
+                        //var rangePivotTable2 = workSheet.Cells["A" + (startRowFrom+1)].LoadFromDataTable(dataTable, true);
+                        var rangePivotTable = workSheet.Cells[(startRowFrom +1), 2,( (startRowFrom+1) + dataTable.Rows.Count), dataTable.Columns.Count];
                      
                         var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 1], rangePivotTable, "PivotTable");
                         //package.Workbook.Worksheets.MoveBefore(1,0);
                         //label field
+
+                        pivotTable.RowFields.Add(pivotTable.Fields["Business Unit"]);
                         pivotTable.RowFields.Add(pivotTable.Fields["Year"]);
                         pivotTable.RowFields.Add(pivotTable.Fields["Month"]);
-                        pivotTable.RowFields.Add(pivotTable.Fields["Business Unit"]);
                         pivotTable.DataOnRows = false;
 
 
@@ -948,16 +949,17 @@ namespace BBDEVSYS.Services.Shared
                         field.Function = DataFieldFunctions.Sum;
                         field.Format = "#,##0.00";
 
-                       
+
 
                         //var rows = worksheetPivot.Dimension.Rows;
 
-                        var pivotTable2 = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[30, 1], rangePivotTable, "PivotTable2");
+                        var pivotTable2 = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 15], rangePivotTable, "PivotTable2");
                         //package.Workbook.Worksheets.MoveBefore(1,0);
                         //label field
+
+                        pivotTable2.RowFields.Add(pivotTable2.Fields["Business Unit"]);
                         pivotTable2.RowFields.Add(pivotTable2.Fields["Year"]);
                         pivotTable2.RowFields.Add(pivotTable2.Fields["Month"]);
-                        pivotTable2.RowFields.Add(pivotTable2.Fields["Business Unit"]);
                         pivotTable2.DataOnRows = false;
 
 
@@ -971,13 +973,14 @@ namespace BBDEVSYS.Services.Shared
                         field.Name = "Sum of Amount(MDR) Charging";
                         field.Function = DataFieldFunctions.Sum;
                         field.Format = "#,##0.00";
-                      
-                        var pivotTable3 = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[70, 1], rangePivotTable, "PivotTable3");
+
+                        var pivotTable3 = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 25], rangePivotTable, "PivotTable3");
                         //package.Workbook.Worksheets.MoveBefore(1,0);
                         //label field
+
+                        pivotTable3.RowFields.Add(pivotTable3.Fields["Business Unit"]);
                         pivotTable3.RowFields.Add(pivotTable3.Fields["Year"]);
                         pivotTable3.RowFields.Add(pivotTable3.Fields["Month"]);
-                        pivotTable3.RowFields.Add(pivotTable3.Fields["Business Unit"]);
                         pivotTable3.DataOnRows = false;
 
 
@@ -999,10 +1002,10 @@ namespace BBDEVSYS.Services.Shared
                         #region name heading pivot
                         worksheetPivot.Cells[1, 1].Value = "Summary";
                         worksheetPivot.Cells[1, 1].Style.Font.Size = 20;
-                        worksheetPivot.Cells[29, 1].Value = "Summary Amount(MDR) Charging";
-                        worksheetPivot.Cells[29, 1].Style.Font.Size = 20;
-                        worksheetPivot.Cells[69, 1].Value = "Summary Transaction (Invoice Status)";
-                        worksheetPivot.Cells[69, 1].Style.Font.Size = 20;
+                        worksheetPivot.Cells[1, 15].Value = "Summary Amount(MDR) Charging";
+                        worksheetPivot.Cells[1, 15].Style.Font.Size = 20;
+                        worksheetPivot.Cells[1, 25].Value = "Summary Transaction (Invoice Status)";
+                        worksheetPivot.Cells[1, 25].Style.Font.Size = 20;
                         #endregion
 
 
@@ -1707,6 +1710,16 @@ namespace BBDEVSYS.Services.Shared
                             workSheet.InsertRow(1, 1);
                             workSheet.Column(1).Width = 5;
                         }
+
+                        //--fit Column in  Worksheet
+                        if (dataTable.TableName.Contains("Fund Transfer Memo"))
+                        {
+                            workSheet.Cells.AutoFitColumns();
+                        }
+                        var tt = workSheet.Dimension.Address.Contains("Date");
+                        
+                      
+                       // workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                         //----------}
                     }
                     //end for

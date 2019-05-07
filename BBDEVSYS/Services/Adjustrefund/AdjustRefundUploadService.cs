@@ -312,6 +312,13 @@ namespace BBDEVSYS.Services.Adjustrefund
                         dataResultBatchFundTransfer.TableName = "Batch Fund Transfer";
                         getDataset.Tables.Add(dataResultBatchFundTransfer);
 
+
+                        DataTable sheetdataFundTransferMemo = dataResultBatchFundTransfer.AsEnumerable().CopyToDataTable();
+                        DataTable dataFundTransferMemo = new DataTable();
+                        dataFundTransferMemo = GenerateFundTransMemo(sheetdataFundTransferMemo);
+                        dataFundTransferMemo.TableName = "Fund Transfer Memo";
+                        getDataset.Tables.Add(dataFundTransferMemo);
+
                         DataTable sheetdatadataResultBatch_Refund = dataResultVerified3.AsEnumerable().CopyToDataTable();
                         DataTable dataResultBatch_Refund = new DataTable();
                         dataResultBatch_Refund = (from m in sheetdatadataResultBatch_Refund.AsEnumerable()
@@ -333,6 +340,73 @@ namespace BBDEVSYS.Services.Adjustrefund
             }
             return getDataset;
         }
+
+        private static DataTable GenerateFundTransMemo(DataTable fundTransData)
+        {
+            DataTable memoData = new DataTable();
+            try
+            {
+                memoData.Columns.Add("account_id");
+                memoData.Columns.Add("rt_id");
+                memoData.Columns.Add("amount",typeof(decimal));
+                memoData.Columns.Add("deposit_date");
+                memoData.Columns.Add("pymt_source_id");
+                memoData.Columns.Add("reason_code");
+                memoData.Columns.Add("original_acc");
+                memoData.Columns.Add("bill_inv_no");
+                memoData.Columns.Add("designationCode");
+                memoData.Columns.Add("memoText");
+
+                foreach (DataRow row in fundTransData.Rows)
+                {
+                    DataRow dataRow = memoData.NewRow();
+                    dataRow["account_id"] = fundTransData.Columns.Contains("BAN_INCORRECT") ? row["BAN_INCORRECT"] :null;
+                    dataRow["rt_id"] = fundTransData.Columns.Contains("RECEIPT_NO") ? row["RECEIPT_NO"] : null;
+                    dataRow["amount"] = fundTransData.Columns.Contains("PAY_AMOUNT") ? row["PAY_AMOUNT"] : 0;
+                    dataRow["deposit_date"] = fundTransData.Columns.Contains("DEPOSITE_DATE") ? row["DEPOSITE_DATE"] : null;
+                    dataRow["pymt_source_id"] = fundTransData.Columns.Contains("SOURCE_ID") ? row["SOURCE_ID"] : null;
+                    dataRow["reason_code"] = fundTransData.Columns.Contains("RECEIPT_NO") ? row["RECEIPT_NO"] : null;
+                    dataRow["original_acc"] = fundTransData.Columns.Contains("BAN_2") ? row["BAN_2"] : null;
+                    if (fundTransData.Columns.Contains("COMP_CODE_1"))
+                    {
+                        string reason = string.Empty;
+                        if (row["COMP_CODE_1"].ToString() == "RM")
+                        {
+                            reason = "Correct Ban";
+                        }
+                        else if (row["COMP_CODE_1"].ToString() == "TI")
+                        {
+                            reason = "Refund overpayment";
+                        }
+                        else if (row["COMP_CODE_1"].ToString() == "TVG")
+                        {
+                            reason = "Transfer to correct BAN";
+                        }
+                        else
+                        {
+                            reason = "etc. reason exception";
+                        }
+                        dataRow["reason_code"] = reason;
+                    }
+                    string sr = fundTransData.Columns.Contains("SR_NO") ? row["SR_NO"].ToString() : null;
+                    Nullable<decimal> amt = fundTransData.Columns.Contains("AR_BALANCE_1") ? Convert.ToDecimal(row["AR_BALANCE_1"]?? "0") : 0;
+                    amt = Math.Abs(amt??0);
+                    dataRow["memoText"] = string.Concat("Fund Transfer From Ban  ", dataRow["account_id"]," To Ban ", dataRow["original_acc"], " Amount ", amt, " Baht Refer SR. ",sr);
+
+                    memoData.Rows.Add(dataRow);
+
+                }
+
+       
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return memoData;
+        }
+
         public ValidationWithReturnResult<DataTable> InitialDataFormUploadViewModel(AdjustrefundUploadViewModel formData)
         {
             DataSet getDataset = new DataSet();
@@ -917,7 +991,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                 }
                 #endregion
 
-                string[] sheetList = new string[] { "SQL_Results", "Verify#3", "BAN Last Adjust", "Send To Verify", "Batch Fund Transfer", "Batch Refund" };
+                string[] sheetList = new string[] { "SQL_Results", "Verify#3", "BAN Last Adjust", "Send To Verify", "Batch Fund Transfer", "Fund Transfer Memo", "Batch Refund" };
 
                 if (ds.Tables.Count > 0)
                 {

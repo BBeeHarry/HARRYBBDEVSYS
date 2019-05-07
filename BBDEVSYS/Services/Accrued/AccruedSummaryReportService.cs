@@ -441,8 +441,6 @@ namespace BBDEVSYS.Services.Accrued
                         if (formData.FEE_TYPE == "1")//All Report
                         {
                             // ds = GetReportList(formData);
-
-
                             #region Accrued & Actual
 
                             if (string.IsNullOrEmpty(formData.COMPANY_CODE))
@@ -523,7 +521,7 @@ namespace BBDEVSYS.Services.Accrued
                                     comBuLst = comBuLst.Where(m => m.Bussiness_Unit == formData.BUSINESS_UNIT).ToList();
                                 }
                                 #region  Summary All Report
-                                List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                List<AccruedReportViewModel> data = GetAllAccruedReportList("", formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
                                 if (data.Any())
                                 {
@@ -537,7 +535,7 @@ namespace BBDEVSYS.Services.Accrued
 
                                 foreach (var item in comBuLst)
                                 {
-                                    List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                    List<AccruedReportViewModel> _data = GetAccruedReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                                     if (_data.Any())
                                     {
                                         DataTable _dt = new DataTable();
@@ -551,7 +549,7 @@ namespace BBDEVSYS.Services.Accrued
                             else
                             {
                                 #region  Summary All Report
-                                List<AccruedReportViewModel> data = GetAllAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                List<AccruedReportViewModel> data = GetAllAccruedReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
 
                                 if (data.Any())
                                 {
@@ -563,7 +561,7 @@ namespace BBDEVSYS.Services.Accrued
                                 }
                                 #endregion
 
-                                List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                                List<AccruedReportViewModel> _data = GetAccruedReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                                 if (_data.Any())
                                 {
                                     DataTable _dt = new DataTable();
@@ -694,7 +692,7 @@ namespace BBDEVSYS.Services.Accrued
                         feeType = "Invoice Status";
                     }
 
-                    filecontent = formData.REPORT_TYPE == "2"? ExcelExportHelper.ExportExcelStatus(ds, feeType + "  Expense " + formData.END_YEAR, false, formData)
+                    filecontent = formData.REPORT_TYPE == "2" ? ExcelExportHelper.ExportExcelStatus(ds, feeType + "  Expense " + formData.END_YEAR, false, formData)
                         : ExcelExportHelper.ExportExcel(ds, feeType + "  Expense " + formData.END_YEAR, false, formData);//, columns);
                 }
             }
@@ -718,6 +716,8 @@ namespace BBDEVSYS.Services.Accrued
                 dataReport.Columns.Add("Month", typeof(Int32));
                 dataReport.Columns.Add("Year", typeof(Int32));
                 dataReport.Columns.Add("Catalog");
+                dataReport.Columns.Add("Invoice No.");
+                dataReport.Columns.Add("Po No.");
                 dataReport.Columns.Add("Supplier");
                 //dataReport.Columns.Add("TransStatus", typeof(Int32));
                 dataReport.Columns.Add("Transaction", typeof(Int32));
@@ -783,7 +783,7 @@ namespace BBDEVSYS.Services.Accrued
                     }
                     if (formData.IsStatusList.Any())
                     {
-                        entFeeInv = entFeeInv.Where(m => formData.IsStatusList.Any(s=>m.IS_STATUS==s)).ToList();
+                        entFeeInv = entFeeInv.Where(m => formData.IsStatusList.Any(s => m.IS_STATUS == s)).ToList();
 
                     }
                     if (entFeeInv.Any())
@@ -828,7 +828,7 @@ namespace BBDEVSYS.Services.Accrued
 
                             if (getFeeInv != null)
                             {
-                               
+
 
                                 var getFeeInvItem = entFeeInvItem.Where(m => getFeeInv.INV_NO == m.INV_NO).ToList();
                                 if (getFeeInv.IS_STATUS == "1")
@@ -852,8 +852,9 @@ namespace BBDEVSYS.Services.Accrued
                                 item["Month"] = month;
                                 item["Year"] = year;
                                 item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
-                                item["Supplier"]=catalog.Supplier;
-
+                                item["Supplier"] = catalog.Supplier;
+                                item["Invoice No."] = getFeeInv.INV_NO;
+                                item["Po No."] = getFeeInv.PRO_NO;
                                 item["Transaction"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0));
                                 item["Transaction Fee"] = getFeeInvItem.Sum(m => (m.TRANSACTIONS ?? 0) * ((m.RATE_TRANS ?? 0) == 0 ? 1 : (m.RATE_TRANS ?? 0)));
 
@@ -879,6 +880,8 @@ namespace BBDEVSYS.Services.Accrued
                                     item["Month"] = month;
                                     item["Year"] = year;
                                     item["Catalog"] = catalog.PAYMENT_ITEMS_NAME;
+                                    item["Invoice No."] = string.Empty;
+                                    item["Po No."] = string.Empty;
                                     item["Supplier"] = catalog.Supplier;
 
                                     item["Transaction"] = 0;
@@ -894,7 +897,7 @@ namespace BBDEVSYS.Services.Accrued
                                     dataReport.Rows.Add(item);
                                 }
                             }
-                          
+
 
                             month++;
                             i++;
@@ -929,7 +932,7 @@ namespace BBDEVSYS.Services.Accrued
 
                         foreach (var item in comBuLst)
                         {
-                            List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                            List<AccruedReportViewModel> _data = GetAccruedReportList(item.BAN_COMPANY, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                             if (_data.Any())
                             {
                                 DataTable _dt = new DataTable();
@@ -942,7 +945,7 @@ namespace BBDEVSYS.Services.Accrued
                     }
                     else
                     {
-                        List<AccruedReportViewModel> _data = GetAccruedReportList_Summary(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
+                        List<AccruedReportViewModel> _data = GetAccruedReportList(formData.COMPANY_CODE, formData.START_MONTH, formData.START_YEAR, formData.END_MONTH, formData.END_YEAR, formData.CHANNELSValue, Convert.ToInt32(formData.FEE_TYPE), formData.BUSINESS_UNIT);
                         if (_data.Any())
                         {
                             DataTable _dt = new DataTable();
@@ -961,7 +964,7 @@ namespace BBDEVSYS.Services.Accrued
             }
             return ds;
         }
-        public List<AccruedReportViewModel> GetAllAccruedReportList_Summary(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
+        public List<AccruedReportViewModel> GetAllAccruedReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
         {
             List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
             try
@@ -1110,6 +1113,15 @@ namespace BBDEVSYS.Services.Accrued
                             var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
 
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
+
+                            //--Check Sum Transaction Price Catalog Printing
+                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Print"))
+                            {
+                                item_acc_chrge = item_acc_chrge.Where(m => m.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity")).ToList();
+                                item_inv_chrge = item_inv_chrge.Where(m => m.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity")).ToList();
+
+                            }
+
                             decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.TRANSACTIONS ?? 0)) : item_inv_chrge.Sum(m => (m.TRANSACTIONS ?? 0));
 
                             model.GetType().GetProperty((monthIndex)).SetValue(model,
@@ -1359,7 +1371,7 @@ namespace BBDEVSYS.Services.Accrued
             return modelList;
         }
 
-        public List<AccruedReportViewModel> GetAccruedReportList_Summary(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
+        public List<AccruedReportViewModel> GetAccruedReportList(string companyCode, int monthS, int yearS, int monthE, int yearE, string chnn = "ALL", int fee = 1, string bu = "ALL")
         {
             List<AccruedReportViewModel> modelList = new List<AccruedReportViewModel>();
             try
@@ -1501,8 +1513,26 @@ namespace BBDEVSYS.Services.Accrued
                                     if (data_charge.CHARGE_TYPE == "TRXN")
                                     {
                                         arrMonthTrxn[n - 1] = (item_chrge.TRANSACTIONS ?? 0);
-                                        arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
-                                        arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+
+                                        //--Check Sum Transaction Price Catalog Printing
+                                        if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
+                                        {
+                                            if (item_chrge != null)
+                                            {
+                                                if (item_chrge.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity"))
+                                                {
+                                                    arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                                    arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                                }
+                                            }
+                                           
+                                        }
+                                        else
+                                        {
+
+                                            arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                            arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                        }
                                     }
                                     if (data_charge.CHARGE_TYPE == "MDR")
                                     {
@@ -1542,8 +1572,25 @@ namespace BBDEVSYS.Services.Accrued
 
                                     arrMonthTrxn[iTrxn] = (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
 
-                                    arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
-                                    arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    //--Check Sum Transaction Price Catalog Printing
+                                    if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
+                                    {
+                                        if (get_data_inv != null)
+                                        {
+                                            if (get_data_inv.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity"))
+                                            {
+                                                arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                                arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                            }
+                                        }
+                                       
+                                    }
+                                    else
+                                    {
+
+                                        arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                        arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    }
                                 }
                                 //}
                                 _mnth++;
@@ -2236,6 +2283,15 @@ namespace BBDEVSYS.Services.Accrued
                             var item_acc_chrge = get_entFeeAccrItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
 
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
+
+                            //--Check Sum Transaction Price Catalog Printing
+                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Print"))
+                            {
+                                item_acc_chrge = item_acc_chrge.Where(m => m.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity")).ToList();
+                                item_inv_chrge = item_inv_chrge.Where(m => m.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity")).ToList();
+
+                            }
+
                             decimal sumtrxn = item_acc_chrge.Any() ? item_acc_chrge.Sum(m => (m.TRANSACTIONS ?? 0)) : item_inv_chrge.Sum(m => (m.TRANSACTIONS ?? 0));
 
                             model.GetType().GetProperty((monthIndex)).SetValue(model,
@@ -2250,7 +2306,7 @@ namespace BBDEVSYS.Services.Accrued
                         #endregion
 
 
-                        #region set value column month total transaction
+                        #region set value column month total transaction fee
                         model = new AccruedReportViewModel();
                         mnth = monthS;
                         yrr = yearS;
@@ -2567,7 +2623,7 @@ namespace BBDEVSYS.Services.Accrued
                     var _diffmonths = get_month + 1;
                     int currentMonth = DateTime.Now.Date.Month;
                     decimal[] arrMonthGrandTrxn = new decimal[_diffmonths];
-                    decimal[] arrMonthGrnadTotal = new decimal[get_month + 1];
+                    decimal[] arrMonthGrnadTotal = new decimal[_diffmonths];
 
                     #region Detail
                     foreach (var item in feeList)
@@ -2637,8 +2693,24 @@ namespace BBDEVSYS.Services.Accrued
                                     if (data_charge.CHARGE_TYPE == "TRXN")
                                     {
                                         arrMonthTrxn[n - 1] = (item_chrge.TRANSACTIONS ?? 0);
-                                        arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
-                                        arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                        //--Check Sum Transaction Price Catalog Printing
+                                        if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
+                                        {
+                                            if (item_chrge != null)
+                                            {
+                                                if (item_chrge.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity"))
+                                                {
+                                                    arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                                    arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                                }
+                                            }
+                                           
+                                        }
+                                        else
+                                        {
+                                            arrMonthTotalTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                            arrMonthGrandTrxn[n - 1] += (item_chrge.TRANSACTIONS ?? 0);
+                                        }
                                     }
                                     if (data_charge.CHARGE_TYPE == "MDR")
                                     {
@@ -2678,8 +2750,25 @@ namespace BBDEVSYS.Services.Accrued
 
                                     arrMonthTrxn[iTrxn] = (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
 
-                                    arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
-                                    arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    //--Check Sum Transaction Price Catalog Printing
+                                    if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
+                                    {
+                                        if (get_data_inv != null)
+                                        {
+                                            if (get_data_inv.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity"))
+                                            {
+                                                arrMonthTotalTrxn[iTrxn] += (get_data_inv.TRANSACTIONS ?? 0);
+                                                arrMonthGrandTrxn[iTrxn] += (get_data_inv.TRANSACTIONS ?? 0);
+                                            }
+                                        }
+
+                                    }
+                                    else
+                                    {
+
+                                        arrMonthTotalTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                        arrMonthGrandTrxn[iTrxn] += (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
+                                    }
                                 }
                                 //}
                                 _mnth++;
@@ -4015,6 +4104,12 @@ namespace BBDEVSYS.Services.Accrued
                             }
                             string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
                             var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+                            //--Check Sum Transaction Price Catalog Printing
+                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Print"))
+                            {
+                                valueFeeLst = valueFeeLst.Where(m => m.n.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity")).ToList();
+
+                            }
 
                             model.CHARGE = "Trxn.";
                             model.GetType().GetProperty(monthIndex).SetValue(model,
@@ -4377,13 +4472,6 @@ namespace BBDEVSYS.Services.Accrued
                                         model.GetType().GetProperty(monthIndex).SetValue(model,
                                Convert.ToString(string.Format("{0:#,##0.####}", (valueFeeLst.n.TRANSACTIONS ?? 0))));
 
-
-                                        //totalChageAmt1 = totalChageAmt1 + (valueFeeLst.n.TRANSACTIONS ?? 0);
-                                        //sumChageAmt1 = sumChageAmt1 + (valueFeeLst.n.TOTAL_CHARGE_AMOUNT ?? 0);
-                                        ////Sum All Trans
-                                        //sumAllTrxn1 += (valueFeeLst.n.TRANSACTIONS ?? 0);
-                                        ////Sum All Grand Total
-                                        //sumAllTotal1 += (valueFeeLst.n.TOTAL_CHARGE_AMOUNT ?? 0);
                                     }
                                     else
                                     {
@@ -4420,6 +4508,13 @@ namespace BBDEVSYS.Services.Accrued
                                     }
                                     string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
                                     var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
+
+                                    //--Check Sum Transaction Price Catalog Printing
+                                    if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
+                                    {
+                                        valueFeeLst = valueFeeLst.Where(m => m.n.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity")).ToList();
+
+                                    }
 
                                     modelTotal.CHARGE = "Total Trxn";
                                     modelTotal.GetType().GetProperty(monthIndex).SetValue(modelTotal,
