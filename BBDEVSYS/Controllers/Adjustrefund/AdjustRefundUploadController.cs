@@ -411,6 +411,23 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             }
         }
 
+        [AuthorizeService(AllowRoleList = new[] { AdjustrefundUploadViewModel.RoleForManageData })]
+        public ActionResult SubmitReportForm(AdjustrefundUploadViewModel formData)
+        {
+
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+            byte[] filecontent = service.SubmitFormFileCloseAndSendContent(formData);
+
+            if (filecontent == null)
+            {
+                return List();
+            }
+            else
+            {
+                return File(filecontent, ExcelExportHelper.ExcelContentType, "RRM_Summary Send out.xlsx");
+
+            }
+        }
 
         [AuthorizeService(AllowRoleList = new[] { AdjustrefundUploadViewModel.RoleForDisplayData, AdjustrefundUploadViewModel.RoleForManageData })]
         // GET: AdjustRefundUpload to MIS
@@ -423,6 +440,16 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             model.UserRequest = "00003333";
             //return View("~/Views/Adjustrefund/Upload.cshtml");
             return View("~/Views/Adjustrefund/AdjustrefundUploadMISDetail.cshtml", model);
+        }
+        [AuthorizeService(AllowRoleList = new[] { AdjustrefundUploadViewModel.RoleForDisplayData, AdjustrefundUploadViewModel.RoleForManageData })]
+        // GET: AdjustRefundUpload to MIS
+        public ActionResult SummaryReportList()
+        {
+            ViewBag.Title = UtilityService.GetPagetTitlePrefix(ConstantVariableService.FormStateList);
+            AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
+            model.NameFormView = "AdjustrefundDoneAndClose";
+            model.UserRequest = "00003333";
+            return View("~/Views/Adjustrefund/AdjustrefundDoneAndClose.cshtml", model);
         }
 
         //[HttpPost]
@@ -448,6 +475,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             AdjustRefundUploadService service = new AdjustRefundUploadService();
 
             var result = service.InitialDataFormUploadViewModel(formData);
+            
 
             AdjustrefundUploadViewModel model = formData;
             if (!result.ErrorFlag)
