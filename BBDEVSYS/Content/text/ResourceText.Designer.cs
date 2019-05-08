@@ -2464,6 +2464,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Adjust and Refund Summary Report for Send out.
+        /// </summary>
+        public static string TitleAdjAndRfdDone {
+            get {
+                return ResourceManager.GetString("TitleAdjAndRfdDone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Adjust and Refund Integrating Information .
         /// </summary>
         public static string TitleAdjAndRfdIntegrate {

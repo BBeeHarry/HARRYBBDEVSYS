@@ -24,8 +24,10 @@ namespace BBDEVSYS.Controllers.Adjustrefund
         public ActionResult List()
         {
             ViewBag.Title = UtilityService.GetPagetTitlePrefix(ConstantVariableService.FormStateList);
-            //PaymentItemsService service = new PaymentItemsService();
+
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+            model = service.InitialListSearch();
             model.NameFormView = "AdjustrefundUploadDetail";
             //return View("~/Views/Adjustrefund/Upload.cshtml");
             return View("~/Views/Adjustrefund/AdjustrefundUploadDetail.cshtml", model);
@@ -61,14 +63,16 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             //AdjustrefundUploadViewModel model = service.SubmitMergeFormData(formData);
 
             byte[] filecontent = service.SubmitFormFileContent(formData);
+            string shotNameTeam = string.Empty;
 
+            shotNameTeam = SettingService.SetShortName(formData.UserRequest);
             if (filecontent == null)
             {
                 return List();
             }
             else
             {
-                return File(filecontent, ExcelExportHelper.ExcelContentType, "RRM_Mapping Input.xlsx");
+                return File(filecontent, ExcelExportHelper.ExcelContentType, shotNameTeam+ "_Mapping Input_"+DateTime.Now.Date.ToString("yyyyMMdd")+ "_MIS format_Adjust" + ".xlsx");
                 //return new JsonResult()
                 //{
                 //    Data = new
@@ -388,6 +392,8 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             ViewBag.Title = UtilityService.GetPagetTitlePrefix(ConstantVariableService.FormStateList);
             //PaymentItemsService service = new PaymentItemsService();
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+            model = service.InitialListSearch();
             model.NameFormView = "AdjustrefundCheckAdjDetail";
             //return View("~/Views/Adjustrefund/Upload.cshtml");
             return View("~/Views/Adjustrefund/AdjustrefundCheckAdjDetail.cshtml", model);
@@ -399,14 +405,16 @@ namespace BBDEVSYS.Controllers.Adjustrefund
 
             AdjustRefundUploadService service = new AdjustRefundUploadService();
             byte[] filecontent = service.SubmitFormFileMappingContent(formData);
+            string shotNameTeam = string.Empty;
 
+            shotNameTeam = SettingService.SetShortName(formData.UserRequest);
             if (filecontent == null)
             {
                 return List();
             }
             else
             {
-                return File(filecontent, ExcelExportHelper.ExcelContentType, "RRM_Mapping Input Convert.xlsx");
+                return File(filecontent, ExcelExportHelper.ExcelContentType, shotNameTeam+ "_Mapping Input_"+DateTime.Now.Date.ToString("yyyyMMdd")+ "_MIS format_Convert" + ".xlsx");
 
             }
         }
@@ -418,13 +426,17 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             AdjustRefundUploadService service = new AdjustRefundUploadService();
             byte[] filecontent = service.SubmitFormFileCloseAndSendContent(formData);
 
+            string shotNameTeam = string.Empty;
+
+            shotNameTeam = SettingService.SetShortName(formData.UserRequest);
+
             if (filecontent == null)
             {
                 return List();
             }
             else
             {
-                return File(filecontent, ExcelExportHelper.ExcelContentType, "RRM_Summary Send out.xlsx");
+                return File(filecontent, ExcelExportHelper.ExcelContentType, shotNameTeam + "_Summary Send out_" + DateTime.Now.Date.ToString("dd MMM yyyy") + "_Send Close SR & Done Activity" + ".xlsx");
 
             }
         }
@@ -436,6 +448,8 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             ViewBag.Title = UtilityService.GetPagetTitlePrefix(ConstantVariableService.FormStateList);
             //PaymentItemsService service = new PaymentItemsService();
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+            model = service.InitialListSearch();
             model.NameFormView = "AdjustrefundUploadMISDetail";
             model.UserRequest = "00003333";
             //return View("~/Views/Adjustrefund/Upload.cshtml");
@@ -447,6 +461,8 @@ namespace BBDEVSYS.Controllers.Adjustrefund
         {
             ViewBag.Title = UtilityService.GetPagetTitlePrefix(ConstantVariableService.FormStateList);
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+            model = service.InitialListSearch();
             model.NameFormView = "AdjustrefundDoneAndClose";
             model.UserRequest = "00003333";
             return View("~/Views/Adjustrefund/AdjustrefundDoneAndClose.cshtml", model);
@@ -475,7 +491,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             AdjustRefundUploadService service = new AdjustRefundUploadService();
 
             var result = service.InitialDataFormUploadViewModel(formData);
-            
+
 
             AdjustrefundUploadViewModel model = formData;
             if (!result.ErrorFlag)
@@ -507,8 +523,8 @@ namespace BBDEVSYS.Controllers.Adjustrefund
                     },
                     JsonRequestBehavior.AllowGet);
             }
-        } 
-        
+        }
+
 
 
     }

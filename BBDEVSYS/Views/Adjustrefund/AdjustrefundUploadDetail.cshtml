@@ -21,63 +21,72 @@
                 <div class="box-body">
                     <div class="col-md-12">
                         @*<div class="form-group">
-                            @Html.LabelFor(model => model.files, htmlAttributes: new { @class = "control-label col-md-2" })
-                            <div class="col-md-10">
-                                @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple" })
+                                @Html.LabelFor(model => model.files, htmlAttributes: new { @class = "control-label col-md-2" })
+                                <div class="col-md-10">
+                                    @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple" })
 
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10">
+                                    <input type="submit" value="Upload" class="btn btn-primary" />
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <div class="col-md-offset-2 col-md-10 text-success">
+                                    @ViewBag.UploadStatus
+                                </div>
+                            </div>*@
+
+
+
+                        <div class="form-group">
+                            @*<label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.SheetFile1)
+                                </label>
+                                <div class="col-xs-12 col-md-2">
+                                @Html.TextBoxFor(m => m.SheetFile1, new { @class = "form-control " })
+                                </div>
+                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                @BBDEVSYS.Content.text.ResourceText.File 1
+                                </label>
+                                <div class="col-xs-12 col-md-4  true-control-label " style="text-align:left">
+
+                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                <i class="glyphicon glyphicon-plus"></i>
+                                <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                <input id="fileUpload" type="file" name="files[]" class="file-upload" multiple="multiple">
+
+                                </span>
+                                <div>
+                                <input type="hidden" id="lastSavedFilename" />
+                                <input type="hidden" id="attachFileNameVisible" value="true" />
+                                <input type="hidden" id="attachDocTypeValueType" value="" />
+                                <input type="hidden" id="attachSingleFile" value="true" />
+                                <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                <input type="hidden" id="attachDocTypeValueType" value="" />
+                                <table class="no-footer" id="attachmentTable">
+                                <tbody id="attachmentBody">
+                                @foreach (var item in Model.AttachmentList)
+                                {
+                                Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                }
+                                </tbody>
+                                </table>
+                                </div>
+                                </div>*@
+                        </div>
+
+                        <div class="form-group">
+
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.UserRequest)
+                            </label>
+                            <div class="col-xs-12 col-md-5">
+                                @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;" })
+                                @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10">
-                                <input type="submit" value="Upload" class="btn btn-primary" />
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-2 col-md-10 text-success">
-                                @ViewBag.UploadStatus
-                            </div>
-                        </div>*@
-
-
-
-                        <div class="form-group">
-                                                        @*<label class="col-xs-12 col-md-2 true-control-label true-require-field">
-        @Html.LabelFor(m => m.SheetFile1)
-        </label>
-        <div class="col-xs-12 col-md-2">
-        @Html.TextBoxFor(m => m.SheetFile1, new { @class = "form-control " })
-        </div>
-        <label class="col-xs-12 col-md-1 true-control-label ">
-        @BBDEVSYS.Content.text.ResourceText.File 1
-        </label>
-        <div class="col-xs-12 col-md-4  true-control-label " style="text-align:left">
-
-        <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
-        <i class="glyphicon glyphicon-plus"></i>
-        <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
-        <input id="fileUpload" type="file" name="files[]" class="file-upload" multiple="multiple">
-
-        </span>
-        <div>
-        <input type="hidden" id="lastSavedFilename" />
-        <input type="hidden" id="attachFileNameVisible" value="true" />
-        <input type="hidden" id="attachDocTypeValueType" value="" />
-        <input type="hidden" id="attachSingleFile" value="true" />
-        <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
-        <input type="hidden" id="attachDocTypeValueType" value="" />
-        <table class="no-footer" id="attachmentTable">
-        <tbody id="attachmentBody">
-        @foreach (var item in Model.AttachmentList)
-        {
-        Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
-        }
-        </tbody>
-        </table>
-        </div>
-        </div>*@
-                        </div>
-
-
                         <div class="form-group">
                             <div id="addAttachment1">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
@@ -447,7 +456,7 @@
                                             @Html.HiddenFor(m => m.MODIFIED_BY)
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
-
+                                            @Html.HiddenFor(m =>m.UserRequest)
 
 
 
@@ -625,7 +634,7 @@
                 unblockUI();
             }
         }
-      
+
     }
     function submitFormDataIntegrateButton() {
         blockUI();
@@ -686,7 +695,7 @@
             var formID = 'detailForm';
 
             var form = $('#' + formID);
-            
+
             $.validator.unobtrusive.parse(form);
             var validator = form.validate();
 

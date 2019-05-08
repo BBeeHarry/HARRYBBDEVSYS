@@ -1630,14 +1630,14 @@ namespace BBDEVSYS.Services.Shared
                         }
                         #region pivot data
 
-                        ////ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
-                        ////var rangePivotTable2 = workSheet.Cells["A" + (startRowFrom+1)].LoadFromDataTable(dataTable, true);
-                        //var rangePivotTable = workSheet.Cells[startRowFrom , 1, ((startRowFrom +1) + dataTable.Rows.Count), dataTable.Columns.Count];
+                        //ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
+                        //var rangePivotTable2 = workSheet.Cells["A" + (startRowFrom+1)].LoadFromDataTable(dataTable, true);
+                        var rangePivotTable = workSheet.Cells[startRowFrom, 1, ((startRowFrom + 1) + dataTable.Rows.Count), dataTable.Columns.Count];
 
                         //var pivotTable = workSheetPivot.PivotTables.Add(workSheetPivot.Cells[1, 1], rangePivotTable, "PivotSummaryTable");
                         ////package.Workbook.Worksheets.MoveBefore(1,0);
 
-                        ////--label field
+                        //--label field
 
                         //pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
                         //pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
@@ -1645,16 +1645,16 @@ namespace BBDEVSYS.Services.Shared
                         //pivotTable.DataOnRows = false;
 
 
-                        
+
                         ////--data Column
                         //var fld = pivotTable.ColumnFields.Add(pivotTable.Fields["Status"]);
                         ////pivotTable.FirstDataCol = false;
 
-                        //fld.Compact = false;
-                        //fld.Outline = false;
-                        //fld.ShowAll = false;
-                        //fld.SubtotalTop = false;
-                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        ////fld.Compact = false;
+                        ////fld.Outline = false;
+                        ////fld.ShowAll = false;
+                        ////fld.SubtotalTop = false;
+                        ////fld.SubTotalFunctions = eSubTotalFunctions.None;
 
                         ////data fields
                         ////data fields

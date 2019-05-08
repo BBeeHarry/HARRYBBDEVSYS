@@ -2,7 +2,7 @@
 @using BBDEVSYS.Services.Shared
 @using System.Data
 @{
-    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAdjAndRfdUpload;
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAdjAndRfdDone;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @using (Html.BeginForm("SubmitReportForm", "AdjustRefundUpload", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
@@ -21,23 +21,24 @@
                 <div class="box-body">
                     <div class="col-md-12">
                         <div class="form-group">
+
                             <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.UserRequest)
                             </label>
-                            <div class="col-xs-12 col-md-2">
-                                @Html.TextBoxFor(m => m.UserRequest, new { @class = "form-control " })
+                            <div class="col-xs-12 col-md-5">
+                                @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;" })
                                 @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
                             <div id="addAttachment1">
-                                <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                <label class="col-xs-12 col-md-2 true-control-label true-require-field" style="display:none;"> 
                                     @Html.LabelFor(m => m.AttachSheet)
                                 </label>
-                                <div class="col-xs-12 col-md-2">
+                                <div class="col-xs-12 col-md-2" style="display:none;">
                                     @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
                                 </div>
-                                <label class="col-xs-12 col-md-1 true-control-label ">
+                                <label class="col-xs-12 col-md-2 true-control-label ">
                                     @BBDEVSYS.Content.text.ResourceText.File 1
                                 </label>
 
@@ -152,6 +153,7 @@
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
                                             @Html.HiddenFor(m => m.adjDataTable)
+                                            @Html.HiddenFor(m => m.UserRequest)
 
 
                                             }
@@ -315,7 +317,7 @@
             data: form.serialize(),
             cache: false,
             success: function (response) {
-                //unblockUI();
+                     //unblockUI();
 
                 //var dataTable = $('#uploadItemTable').DataTable({
                 //    'paging': true,
@@ -325,21 +327,10 @@
                 //    'info': true,
                 //    //'autoWidth': false
                 //});
+
                 //dataTable.row.add($(response)).draw();
-                if (response.success) {
-                    $("#uploadItemBody").html(response.html);
-                }
-                else {
 
-                    deleteAllAttachFile('attachmentTable');
-                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
-
-                    row = $('#uploadItemBody').children('tr:first');
-                    LoadingRow(row, 'off', true)
-                    setEmpltyUploadTable();
-                }
-
-                //$("#uploadItemTable").html(response);
+                $("#uploadItemTable").html(response);
                 var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
 
                 $("#rowsData").text(rowCount);

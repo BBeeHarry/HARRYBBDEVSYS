@@ -2,7 +2,7 @@
 @using BBDEVSYS.Services.Shared
 @using System.Data
 @{
-    ViewBag.Title =ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAdjAndRfdMapping;
+    ViewBag.Title = ViewBag.Title + BBDEVSYS.Content.text.ResourceText.TitleAdjAndRfdMapping;
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @using (Html.BeginForm("SubmitMappingForm", "AdjustRefundUpload", FormMethod.Post, new { enctype = "multipart/form-data", id = "detailForm", @class = "form-horizontal" }))
@@ -20,7 +20,18 @@
 
                 <div class="box-body">
                     <div class="col-md-12">
-                       
+
+                        <div class="form-group">
+
+                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
+                                @Html.LabelFor(m => m.UserRequest)
+                            </label>
+                            <div class="col-xs-12 col-md-5">
+                                @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;" })
+                                @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+
                         <div class="form-group">
                             <div id="addAttachment1">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
@@ -109,7 +120,7 @@
                                 </button>
                             </div>
                         </div>
-                       
+
                     </div>
 
                     <div class="row">
@@ -117,7 +128,7 @@
                             <div>
                                 <div class="table-responsive " style="height:400px;">
                                     <table class="table table-bordered  table-striped true-datatable" id="uploadItemTable" style="width:1900px">
-                                       
+
                                         @{
                                             Html.RenderPartial("~/Views/Adjustrefund/AdjustrefundUploadItems.cshtml", Model);
                                         }
@@ -181,7 +192,7 @@
                                             @Html.HiddenFor(m => m.MODIFIED_BY)
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
-
+                                            @Html.HiddenFor(m=>m.UserRequest)
 
 
                                             }
@@ -254,7 +265,7 @@
         });*@
 
     }
- 
+
     function actionButton(formAction) {
         $('#FormAction').val(formAction);
         var headerMessage = "default";
@@ -321,7 +332,7 @@
                 unblockUI();
             }
         }
-      
+
     }
     function submitFormDataIntegrateButton() {
         blockUI();
@@ -382,7 +393,7 @@
             var formID = 'detailForm';
 
             var form = $('#' + formID);
-            
+
             $.validator.unobtrusive.parse(form);
             var validator = form.validate();
 
@@ -413,7 +424,7 @@
 
         //Set attachment column visibility for multiple attachment
         setColumnVisibility('attachmentDiv');
-       
+
         setEmpltyUploadTable();
         //ModifyCollectionItemName('uploadItemBody');
 

@@ -22,6 +22,8 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
             AttachmentList = new List<AttachmentViewModel>();
             adjList = new List<AdjustrefundUploadViewModelItems>();
             adjDataTable = new DataTable();
+            UserRequestList = new List<ValueHelpViewModel>();
+            
 
         }
         //Authorization
@@ -52,6 +54,7 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
         public DataTable adjDataTable { get;  set; }
 
         public  string NameFormView { get; set; }
+        public List<ValueHelpViewModel> UserRequestList { get;  set; }
     }
     public class AdjustrefundUploadViewModelItems {
         #region Data Field 

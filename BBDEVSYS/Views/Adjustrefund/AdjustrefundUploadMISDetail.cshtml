@@ -21,11 +21,12 @@
                 <div class="box-body">
                     <div class="col-md-12">
                         <div class="form-group">
+
                             <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                 @Html.LabelFor(m => m.UserRequest)
                             </label>
-                            <div class="col-xs-12 col-md-2">
-                                @Html.TextBoxFor(m => m.UserRequest, new { @class = "form-control " })
+                            <div class="col-xs-12 col-md-5">
+                                @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;" })
                                 @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
                             </div>
                         </div>
@@ -170,7 +171,7 @@
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
                                             @Html.HiddenFor(m => m.adjDataTable)
-
+                                            @Html.HiddenFor(m=>m.UserRequest)
 
                                             }
 <script type="text/javascript">
@@ -222,7 +223,7 @@
             data: form.serialize(),
             cache: false,
             success: function (response) {
-              
+
                 if (response.success) {
                     $("#uploadItemTable").html(response.html);
                     var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";

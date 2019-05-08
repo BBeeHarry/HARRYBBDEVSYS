@@ -33,6 +33,19 @@ namespace BBDEVSYS.Services.Shared
                 }
             }
         }
+        public static string SetShortName(string requestId)
+        {
+            string shotNameTeam = string.Empty;
+            if (requestId == "00002222")
+            {
+                shotNameTeam = "PRS";
+            }
+            else
+            {
+                shotNameTeam = "RRM";
+            }
+            return shotNameTeam;
+        }
 
         public static int? GetColumnLength<T>(String columnName)
         {

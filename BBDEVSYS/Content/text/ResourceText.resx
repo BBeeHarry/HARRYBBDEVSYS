@@ -1020,4 +1020,7 @@
   <data name="REPORT_TYPE" xml:space="preserve">
     <value>Report Type</value>
   </data>
+  <data name="TitleAdjAndRfdDone" xml:space="preserve">
+    <value>Adjust and Refund Summary Report for Send out</value>
+  </data>
 </root>

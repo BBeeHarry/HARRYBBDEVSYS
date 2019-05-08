@@ -115,6 +115,10 @@ namespace BBDEVSYS.Services.Shared
         //Form state
         public const string STATUSTYPE = "STATUS_INVOICE";
 
+        //Team Request
+        //Form state
+        public const string REQUESTTEAMTYPE = "TEAM REQUEST";
+
         public const string ISACTIONTYPE = "IS_ACTION";
         public const string DURATIONTYPE = "DURATIONS";
         public const string CHARGETYPE = "CHARGE_TYPE";

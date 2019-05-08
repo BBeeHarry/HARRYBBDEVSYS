@@ -370,15 +370,15 @@ namespace BBDEVSYS.Services.Adjustrefund
                     if (fundTransData.Columns.Contains("COMP_CODE_1"))
                     {
                         string reason = string.Empty;
-                        if (row["COMP_CODE_1"].ToString() == "RM")
+                        if (row["COMP_CODE_1"].ToString() == "RM"|| row["COMP_CODE_1"].ToString() == "RF"|| row["COMP_CODE_1"].ToString() == "TS")
                         {
                             reason = "Correct Ban";
                         }
-                        else if (row["COMP_CODE_1"].ToString() == "TI")
+                        else if (row["COMP_CODE_1"].ToString() == "TI"|| row["COMP_CODE_1"].ToString() == "TD")
                         {
                             reason = "Refund overpayment";
                         }
-                        else if (row["COMP_CODE_1"].ToString() == "TVG")
+                        else if (row["COMP_CODE_1"].ToString() == "VC"|| row["COMP_CODE_1"].ToString() == "VX")
                         {
                             reason = "Transfer to correct BAN";
                         }
@@ -455,6 +455,25 @@ namespace BBDEVSYS.Services.Adjustrefund
             }
             return resultDataTable;
         }
+
+        public AdjustrefundUploadViewModel InitialListSearch()
+        {
+            AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
+            try
+            {
+                //--Get Status Invoice
+                var getRequestTeam = ValueHelpService.GetValueHelp(ConstantVariableService.REQUESTTEAMTYPE).ToList();
+                model.UserRequestList = getRequestTeam;
+
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return model;
+        }
+
         private static DataTable GenerateFormatFieldUploadtoMIS(DataTable data)
         {
 
@@ -1372,124 +1391,329 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                 foreach (DataRow dr in data.Rows)
                 {
-                    #region RRM
-                    dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
-                    dr["Data file Lot"] = dr["PYM Designation Code"];
-                    string reason = string.Empty;
-                    //--case dr["Result To Payment Resolution Team After Batch"]  equal null
-                    //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value
-                    //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"])
-                    //    : dr["Result To Payment Resolution Team After Batch"].ToString();
+                    if (actionBy == "00003333")
+                    {
+                        #region RRM
+                        dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                        dr["Data file Lot"] = dr["PYM Designation Code"];
+                        string reason = string.Empty;
+                        //--case dr["Result To Payment Resolution Team After Batch"]  equal null
+                        //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value
+                        //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"])
+                        //    : dr["Result To Payment Resolution Team After Batch"].ToString();
 
 
-                    if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Fund Transfer"
-                        || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Batch Fund Transfer")
-                    {
-                        reason = "Manual Fund Transfer";
+                        if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Fund Transfer"
+                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Batch Fund Transfer")
+                        {
+                            reason = "Manual Fund Transfer";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Refund"
+                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Batch Refund")
+                        {
+                            reason = "Input Batch To Batch Refund";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Send To Verify"
+                           || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_diff_thai_id.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีโยกเงินต่างบุคคล";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_format_fail.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_not_indy.xlsx To Send To Verify")
+                        {
+                            reason = "Change owner to CRRM และ Feedback SR";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_notfound.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีไม่มียอดเงินเกิน";
+                        }
+                        else
+                        {
+                            reason = "0";
+                        }
+                        dr["Result Reason"] = reason;
+                        /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer",
+                        * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund",
+                        * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",
+                        * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล",
+                        * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch",
+                        * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR",
+                        * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน",
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund",
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer",
+                        * IF(BL1="RRM_output_refund.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",0))))))))))*/
+                        string status = string.Empty;
+                        if (dr["Result Reason"].ToString() == "Manual Fund Transfer")
+                        {
+                            status = "On Process";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
+                        {
+                            status = "Complete";
+                        }
+                        else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
+                        {
+                            status = "Pending";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Change owner to CRRM และ Feedback SR")
+                        {
+                            status = "Rejected";
+                        }
+                        else
+                        {
+                            status = "0";
+                        }
+                        dr["Status"] = status;
+
+                        string actBy = string.Empty;
+                        if (dr["Status"].ToString() == "On Process")
+                        {
+                            actBy = "P'Jeab, P'Tle, N'Nan";
+                        }
+                        else if (dr["Status"].ToString() == "Complete")
+                        {
+                            actBy = "K.Siripong S.";
+                        }
+                        else
+                        {
+                            actBy = "RRM User";
+                        }
+                        dr["Action"] = actBy;
+
+                        #endregion
                     }
-                    else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Refund"
-                        || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Batch Refund")
+                    else if (actionBy == "00002222")
                     {
-                        reason = "Input Batch To Batch Refund";
-                    }
-                    else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Send To Verify"
-                       || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Send To Verify")
-                    {
-                        reason = "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน";
-                    }
-                    else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_diff_thai_id.xlsx To Send To Verify")
-                    {
-                        reason = "ตรวจสอบกรณีโยกเงินต่างบุคคล";
-                    }
-                    else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_format_fail.xlsx To Send To Verify")
-                    {
-                        reason = "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch";
-                    }
-                    else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_not_indy.xlsx To Send To Verify")
-                    {
-                        reason = "Change owner to CRRM และ Feedback SR";
-                    }
-                    else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_notfound.xlsx To Send To Verify")
-                    {
-                        reason = "ตรวจสอบกรณีไม่มียอดเงินเกิน";
+                        #region PRS
+                        dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                        dr["Data file Lot"] = dr["PYM Designation Code"];
+                        string reason = string.Empty;
+                       
+
+                        if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Fund Transfer")
+                        {
+                            reason = "Manual Fund Transfer ban cancel";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Refund"
+                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Refund")
+                        {
+                            reason = "Input Batch To Batch Refund";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Send To Verify"
+                           || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_diff_thai_id.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีโยกเงินต่างบุคคล";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_format_fail.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_not_indy.xlsx To Send To Verify")
+                        {
+                            reason = "Change owner to CPayment_Resolution และ Feedback SR";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Fund Transfer")
+                        {
+                            reason = "Manual Fund Transfer";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_notfound.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีไม่มียอดเงินเกิน";
+                        }
+                        else
+                        {
+                            reason = "0";
+                        }
+                        dr["Result Reason"] = reason;
+                      
+                        string status = string.Empty;
+                        if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
+                        {
+                            status = "Complete";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Manual Fund Transfer ban cancel")
+                        {
+                            status = "Change Owner";
+                        }
+                        else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน"
+                            || dr["Result Reason"].ToString() == "Manual Fund Transfer")
+                        {
+                            status = "Pending";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Change owner to Payment_Resolution และ Feedback SR")
+                        {
+                            status = "Rejected";
+                        }
+                        else
+                        {
+                            status = "0";
+                        }
+                        dr["Status"] = status;
+                     
+                        string actBy = string.Empty;
+                        if (dr["Status"].ToString() == "On Process")
+                        {
+                            actBy = "P'Jeab, P'Tle, N'Nan";
+                        }
+                        else if (dr["Status"].ToString() == "Complete")
+                        {
+                            actBy = "K.Siripong S.";
+                        }
+                        else
+                        {
+                            actBy = "Payment_Resolution User";
+                        }
+                        /*=IF(BP1="On Process","P'Jeab, P'Tle, N'Nan",
+                         * IF(BP1="Complete","K.Siripong S.","Payment_Resolution User"))*/
+                        dr["Action"] = actBy;
+
+                        #endregion
                     }
                     else
                     {
-                        reason = "0";
-                    }
-                    dr["Result Reason"] = reason;
-                    /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer",
-                    * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund",
-                    * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",
-                    * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล",
-                    * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch",
-                    * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR",
-                    * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน",
-                    * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund",
-                    * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer",
-                    * IF(BL1="RRM_output_refund.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",0))))))))))*/
-                    string status = string.Empty;
-                    if (dr["Result Reason"].ToString() == "Manual Fund Transfer")
-                    {
-                        status = "On Process";
-                    }
-                    else if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
-                    {
-                        status = "Complete";
-                    }
-                    else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
-                        || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
-                        || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
-                        || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
-                    {
-                        status = "Pending";
-                    }
-                    else if (dr["Result Reason"].ToString() == "Change owner to CRRM และ Feedback SR")
-                    {
-                        status = "Rejected";
-                    }
-                    else
-                    {
-                        status = "0";
-                    }
-                    dr["Status"] = status;
+                        #region RRM
+                        dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                        dr["Data file Lot"] = dr["PYM Designation Code"];
+                        string reason = string.Empty;
+                        //--case dr["Result To Payment Resolution Team After Batch"]  equal null
+                        //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value
+                        //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"])
+                        //    : dr["Result To Payment Resolution Team After Batch"].ToString();
 
-                    string actBy = string.Empty;
-                    if (dr["Status"].ToString() == "On Process")
-                    {
-                        actBy = "P'Jeab, P'Tle, N'Nan";
-                    }
-                    else if (dr["Status"].ToString() == "Complete")
-                    {
-                        actBy = "K.Siripong S.";
-                    }
-                    else
-                    {
-                        actBy = "RRM User";
-                    }
-                    dr["Action"] = actBy;
 
-                    #endregion
+                        if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Fund Transfer"
+                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Batch Fund Transfer")
+                        {
+                            reason = "Manual Fund Transfer";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Refund"
+                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Batch Refund")
+                        {
+                            reason = "Input Batch To Batch Refund";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Send To Verify"
+                           || dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_refund.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_diff_thai_id.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีโยกเงินต่างบุคคล";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_format_fail.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_not_indy.xlsx To Send To Verify")
+                        {
+                            reason = "Change owner to CRRM และ Feedback SR";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_output_notfound.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีไม่มียอดเงินเกิน";
+                        }
+                        else
+                        {
+                            reason = "0";
+                        }
+                        dr["Result Reason"] = reason;
+                        /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer",
+                        * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund",
+                        * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",
+                        * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล",
+                        * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch",
+                        * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR",
+                        * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน",
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund",
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer",
+                        * IF(BL1="RRM_output_refund.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",0))))))))))*/
+                        string status = string.Empty;
+                        if (dr["Result Reason"].ToString() == "Manual Fund Transfer")
+                        {
+                            status = "On Process";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
+                        {
+                            status = "Complete";
+                        }
+                        else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
+                        {
+                            status = "Pending";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Change owner to CRRM และ Feedback SR")
+                        {
+                            status = "Rejected";
+                        }
+                        else
+                        {
+                            status = "0";
+                        }
+                        dr["Status"] = status;
+
+                        string actBy = string.Empty;
+                        if (dr["Status"].ToString() == "On Process")
+                        {
+                            actBy = "P'Jeab, P'Tle, N'Nan";
+                        }
+                        else if (dr["Status"].ToString() == "Complete")
+                        {
+                            actBy = "K.Siripong S.";
+                        }
+                        else
+                        {
+                            actBy = "RRM User";
+                        }
+                        dr["Action"] = actBy;
+
+                        #endregion
+                    }
                 }
                 data.TableName = "Data Summary";
                 if (data.Rows.Count > 0)
                 {
-                    var listobj = data.Rows.Cast<DataRow>().Where(dr => dr["Action"].ToString() != "RRM User").ToList();
-                    if (listobj.Any())
+                    if (actionBy == "00003333")
                     {
-                        dtResult = data.AsEnumerable().Where(p => p.Field<String>("Action") != "RRM User").CopyToDataTable();
+                        var listobj = data.Rows.Cast<DataRow>().Where(dr => dr["Action"].ToString() != "RRM User").ToList();
+                        if (listobj.Any())
+                        {
+                            dtResult = data.AsEnumerable().Where(p => p.Field<String>("Action") != "RRM User").CopyToDataTable();
+                        }
+                    }
+                    else
+                    {
+                        dtResult = data.AsEnumerable().CopyToDataTable();
                     }
                 }
 
-  //              var listobj = data.Rows
-  //.Cast<DataRow>()
-  //.Where(dr => dr["Action"].ToString() != "RRM User").ToList();
-  //              if (true)
-  //              {
+                //              var listobj = data.Rows
+                //.Cast<DataRow>()
+                //.Where(dr => dr["Action"].ToString() != "RRM User").ToList();
+                //              if (true)
+                //              {
 
-  //              }
-  //              dtt = ReportService.ConvertListToDatatable(listobj);
-  //              dtt.TableName = "Summary Report";
+                //              }
+                //              dtt = ReportService.ConvertListToDatatable(listobj);
+                //              dtt.TableName = "Summary Report";
             }
             catch (Exception ex)
             {
