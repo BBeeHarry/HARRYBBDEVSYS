@@ -913,8 +913,8 @@ namespace BBDEVSYS.Services.Shared
                         #endregion
                         //ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
                         //var rangePivotTable2 = workSheet.Cells["A" + (startRowFrom+1)].LoadFromDataTable(dataTable, true);
-                        var rangePivotTable = workSheet.Cells[(startRowFrom +1), 2,( (startRowFrom+1) + dataTable.Rows.Count), dataTable.Columns.Count];
-                     
+                        var rangePivotTable = workSheet.Cells[(startRowFrom + 1), 2, ((startRowFrom + 1) + dataTable.Rows.Count), dataTable.Columns.Count];
+
                         var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 1], rangePivotTable, "PivotTable");
                         //package.Workbook.Worksheets.MoveBefore(1,0);
                         //label field
@@ -930,13 +930,13 @@ namespace BBDEVSYS.Services.Shared
                         pivotTable.ColumnFields.Add(pivotTable.Fields["Status Name"]);
                         //pivotTable.FirstDataCol = false;
 
-                       
+
 
                         var field = pivotTable.DataFields.Add(pivotTable.Fields["Amount(Excl.VAT)"]);
                         field.Name = "Sum of Amount(Excl.VAT)";
                         field.Function = DataFieldFunctions.Sum;
                         field.Format = "#,##0.00";
-                        
+
 
                         //var rows = worksheetPivot.Dimension.Rows;
 
@@ -1485,13 +1485,13 @@ namespace BBDEVSYS.Services.Shared
         {
             return ExportExcel(ListToDataTable<T>(data), Heading, showSlno, ColumnsToTake);
         }
+
         public static byte[] ExportExcelMutiSheetActiveCloseData(DataSet dataSet, string heading = "", bool showSrNo = false, params string[] columnsToTake)
         {
             try
             {
 
                 byte[] result = null;
-  
 
                 using (ExcelPackage package = new ExcelPackage())
                 {
@@ -1499,25 +1499,23 @@ namespace BBDEVSYS.Services.Shared
                     for (int data = 0; data < dataSet.Tables.Count; data++)
                     {
 
-                        string[] columns = dataSet.Tables[data].Columns.Cast<DataColumn>()
-                                               //.Where(x => addcolNames.Any(m => x.ColumnName == m))
-                                               .Select(x => x.ColumnName
-                                               //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
-                                               )
-                                               .ToArray();
-
-                        columnsToTake = columns;
                         //DataTable 
                         dataTable = new DataTable();
                         dataTable = dataSet.Tables[data];
-                        dataTable.TableName = dataSet.Tables[data].TableName;
+
+
+                        // set ignore sheet name "Details"
+
+                        columnsToTake = dataTable.Columns.Cast<DataColumn>().Select(x => x.ColumnName).ToArray();
+
 
                         ExcelWorksheet workSheet = null;
-                        ExcelWorksheet workSheetPivot = package.Workbook.Worksheets.Add("Summary");
-                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0}", heading + " " + dataSet.Tables[data].TableName));
+
+                        ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
+                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", dataSet.Tables[data].TableName));
 
                         int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
-
+                        //--add row
                         if (showSrNo)
 
                         {
@@ -1535,6 +1533,7 @@ namespace BBDEVSYS.Services.Shared
                         // add the content into the Excel file  
                         workSheet.Cells["A" + startRowFrom].LoadFromDataTable(dataTable, true);
 
+
                         // autofit width of cells with small content  
                         int columnIndex = 1;
                         foreach (DataColumn column in dataTable.Columns)
@@ -1551,13 +1550,13 @@ namespace BBDEVSYS.Services.Shared
                             columnIndex++;
                         }
 
-                        // set freez patent 
-                        workSheet.View.FreezePanes(2, 1);
+                        //// set freez patent 
+                        //workSheet.View.FreezePanes(2, 1);
 
                         // format header - bold, red on white  
                         using (ExcelRange r = workSheet.Cells[startRowFrom, 1, startRowFrom, dataTable.Columns.Count])
                         {
-                         
+
                             // Shown rows are then sorted by 'Salaries' values in the descending order.
                             r.AutoFilter = true;
                             r.Style.Font.Name = "Calibri";
@@ -1604,7 +1603,300 @@ namespace BBDEVSYS.Services.Shared
                             r.Style.Border.Right.Color.SetColor(System.Drawing.Color.Black);
 
                         }
-                        
+
+                        // removed ignored columns  
+                        for (int i = dataTable.Columns.Count - 1; i >= 0; i--)
+                        {
+                            if (i == 0 && showSrNo)
+                            {
+                                continue;
+                            }
+                            if (!columnsToTake.Contains(dataTable.Columns[i].ColumnName))
+                            {
+                                workSheet.DeleteColumn(i + 1);
+                            }
+                        }
+
+
+                        if (!String.IsNullOrEmpty(heading))
+                        {
+                            workSheet.Cells["A1"].Value = heading;
+                            workSheet.Cells["A1"].Style.Font.Size = 20;
+
+                            workSheet.InsertColumn(1, 1);
+                            workSheet.InsertRow(1, 1);
+                            workSheet.Column(1).Width = 5;
+                        }
+                        //----------}
+
+                        #region pivot data
+                        //var dataRange = workSheet.Cells[workSheet.Dimension.Address.ToString()];
+                        //dataRange.AutoFitColumns();
+                        //var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells["A3"], dataRange, "Pivotname");
+                        //pivotTable.MultipleFieldFilters = true;
+                        //pivotTable.RowGrandTotals = true;
+                        //pivotTable.ColumGrandTotals = true;
+                        //pivotTable.Compact = true;
+                        //pivotTable.CompactData = true;
+                        //pivotTable.GridDropZones = false;
+                        //pivotTable.Outline = false;
+                        //pivotTable.OutlineData = false;
+                        //pivotTable.ShowError = true;
+                        //pivotTable.ErrorCaption = "[error]";
+                        //pivotTable.ShowHeaders = true;
+                        //pivotTable.UseAutoFormatting = true;
+                        //pivotTable.ApplyWidthHeightFormats = true;
+                        //pivotTable.ShowDrill = true;
+                        //pivotTable.FirstDataCol = 3;
+                        //pivotTable.RowHeaderCaption = "Claims";
+                        ////var dataRange = package.Workbook./*Worksheets[tableName].*/Names[pivotRangeName];
+                        ////var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells["C3"], dataRange, "Pivot_" + dataTable.TableName.Replace(" ", ""));
+                        ////pivotTable.ShowHeaders = true;
+                        ////pivotTable.UseAutoFormatting = true;
+                        ////pivotTable.ApplyWidthHeightFormats = true;
+                        ////pivotTable.ShowDrill = true;
+                        ////pivotTable.FirstHeaderRow = 1;  // first row has headers
+                        ////pivotTable.FirstDataCol = 1;    // first col of data
+                        ////pivotTable.FirstDataRow = 2;    // first row of data
+
+                        //ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
+                        //var rangePivotTable = workSheet.Cells["A" + (startRowFrom)].LoadFromDataTable(dataTable, true);
+                        var rangePivotTable = workSheet.Cells[startRowFrom, 1,( startRowFrom+dataTable.Rows.Count), dataTable.Columns.Count];
+                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2,1], rangePivotTable, "PivotTable");
+                        //package.Workbook.Worksheets.MoveBefore(1,0);
+                      
+                        //--label field
+
+                        pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Result Reason"]);
+                        pivotTable.DataOnRows = false;
+
+
+
+                        //--data Column
+                        pivotTable.ColumnFields.Add(pivotTable.Fields["Status"]);
+                        //pivotTable.FirstDataCol = false;
+
+                        //fld.Compact = false;
+                        //fld.Outline = false;
+                        //fld.ShowAll = false;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+
+                        //data fields
+                        //data fields
+                        var fields = pivotTable.Fields["Status"];
+                        var field = pivotTable.DataFields.Add(pivotTable.Fields["SR #"]);
+                        field.Name = "Count of SR #";
+                        field.Function = DataFieldFunctions.Count;
+                        field.Format = "#,##0";
+                        fields.Sort = eSortType.Ascending;
+
+
+                        field = pivotTable.DataFields.Add(pivotTable.Fields["AMOUNT"]);
+                        field.Name = "Sum of AMOUNT";
+                        field.Function = DataFieldFunctions.Sum;
+                        field.Format = "#,##0.00";
+
+
+
+
+                        #endregion
+
+                        #region name heading pivot
+                        //workSheetPivot.Cells[1, 1].Value = "Summary SR Verify Batch Refund ";
+                        //workSheetPivot.Cells[1, 1].Style.Font.Size = 20;
+                        #endregion
+
+                        //pivotTable.Compact = false;
+                        //pivotTable.CompactData = false;
+                        //pivotTable.Indent = 0;
+                        //pivotTable.RowGrandTotals = false;
+                        //pivotTable.UseAutoFormatting = true;
+                        //pivotTable.ShowMemberPropertyTips = false;
+                        //pivotTable.DataOnRows = false;
+
+                        //pivotTable.Outline = false;
+                        //pivotTable.Compact = false;
+                        //pivotTable.RowGrandTotals = false;
+                        //pivotTable.Outline = false;
+                        //pivotTable.Compact = false;
+                        //pivotTable.ShowAll = false;
+                        //pivotTable.SubtotalTop = false;
+                        //pivotTable.su
+
+                        #region formatting pivot
+                        //pivotTable.MultipleFieldFilters = true;
+                        //pivotTable.ColumnGrandTotals = true;
+                        //pivotTable.RowGrandTotals = true;
+                        //pivotTable.ColumGrandTotals = true;
+                        //pivotTable.Compact = true;
+                        //pivotTable.CompactData = true;
+                        pivotTable.GridDropZones = true;
+                        //pivotTable.Outline = true;
+                        //pivotTable.OutlineData = false;
+                        //pivotTable.ShowError = true;
+                        //pivotTable.ErrorCaption = "[error]";
+                        //pivotTable.ShowHeaders = true;
+                        //pivotTable.UseAutoFormatting = true;
+                        //pivotTable.ApplyWidthHeightFormats = true;
+                        pivotTable.ShowDrill = true;
+
+                        //pivotTable.FirstDataCol = 3;
+                        //pivotTable.RowHeaderCaption = "Claims";
+
+                        //using (ExcelRange range = worksheetPivot.Cells[worksheetPivot.Dimension.Address.ToString()])
+                        //{
+                        //    range.Merge = true;
+                        //    range.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Medium, System.Drawing.Color.Black);
+                        //    range.Value = "Summary SR Verify Batch Refund ";
+                        //    range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        //    range.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        //    range.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                        //    range.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                        //    range.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                        //    range.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                        //}
+                        #endregion
+
+
+                    }
+                    //end for
+                    result = package.GetAsByteArray();
+
+
+                    return result;
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+        }
+
+        public static byte[] ExportExcelMutiSheetActiveCloseData2(DataSet dataSet, string heading = "", bool showSrNo = false, params string[] columnsToTake)
+        {
+            try
+            {
+
+                byte[] result = null;
+
+
+                using (ExcelPackage package = new ExcelPackage())
+                {
+                    DataTable dataTable = new DataTable();
+                    for (int data = 0; data < dataSet.Tables.Count; data++)
+                    {
+
+                        string[] columns = dataSet.Tables[data].Columns.Cast<DataColumn>()
+                                               //.Where(x => addcolNames.Any(m => x.ColumnName == m))
+                                               .Select(x => x.ColumnName
+                                               //(colNames.All(u => x.ColumnName != u) ? x.ColumnName + Convert.ToString(formData.START_YEAR).Substring(2, 2) : x.ColumnName)
+                                               )
+                                               .ToArray();
+
+                        columnsToTake = columns;
+                        //DataTable 
+                        dataTable = new DataTable();
+                        dataTable = dataSet.Tables[data];
+                        dataTable.TableName = dataSet.Tables[data].TableName;
+
+                        ExcelWorksheet workSheet = null;
+                        ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Summary");
+                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0}", heading + " " + dataSet.Tables[data].TableName));
+
+                        int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
+
+                        if (showSrNo)
+
+                        {
+                            DataColumn dataColumn = dataTable.Columns.Add("#", typeof(int));
+                            dataColumn.SetOrdinal(0);
+                            int index = 1;
+                            foreach (DataRow item in dataTable.Rows)
+                            {
+                                item[0] = index;
+                                index++;
+                            }
+                        }
+
+
+                        // add the content into the Excel file  
+                        workSheet.Cells["A" + startRowFrom].LoadFromDataTable(dataTable, true);
+
+                        // autofit width of cells with small content  
+                        int columnIndex = 1;
+                        foreach (DataColumn column in dataTable.Columns)
+                        {
+                            ExcelRange columnCells = workSheet.Cells[workSheet.Dimension.Start.Row, columnIndex, workSheet.Dimension.End.Row, columnIndex];
+
+                            int maxLength = columnCells.Max(cell => cell.Value == null ? 0 : cell.Value.ToString().Count());
+                            if (maxLength < 150)
+                            {
+                                workSheet.Column(columnIndex).AutoFit();
+                            }
+
+
+                            columnIndex++;
+                        }
+
+                        // set freez patent 
+                        //workSheet.View.FreezePanes(2, 1);
+
+                        // format header - bold, red on white  
+                        using (ExcelRange r = workSheet.Cells[startRowFrom, 1, startRowFrom, dataTable.Columns.Count])
+                        {
+
+                            // Shown rows are then sorted by 'Salaries' values in the descending order.
+                            r.AutoFilter = true;
+                            r.Style.Font.Name = "Calibri";
+                            r.Style.Font.Size = 8;
+
+                            r.Style.Font.Color.SetColor(System.Drawing.Color.White);
+                            r.Style.Font.Bold = true;
+                            r.Style.Fill.PatternType = OfficeOpenXml.Style.ExcelFillStyle.Solid;
+                            r.Style.Fill.BackgroundColor.SetColor(System.Drawing.ColorTranslator.FromHtml("#6b5b9e"));
+
+                            //r.AutoFilter(5, "4", Excel.XlAutoFilterOperator.xlFilterValues, Type.Missing, true);
+
+                            //border
+                            r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                            r.Style.Border.Top.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Left.Color.SetColor(System.Drawing.Color.White);
+                            r.Style.Border.Right.Color.SetColor(System.Drawing.Color.White);
+
+                        }
+                        workSheet.Row(startRowFrom).Height = 40;
+
+
+
+                        using (ExcelRange r = workSheet.Cells[startRowFrom + 1, 1, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count])
+                        {
+                            //r.Style.Numberformat.Format = "General";
+
+                            r.Style.Font.Size = 8;
+
+
+                            r.Style.Border.Top.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Bottom.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Left.Style = ExcelBorderStyle.Thin;
+                            r.Style.Border.Right.Style = ExcelBorderStyle.Thin;
+
+                            r.Style.Border.Top.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Bottom.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Left.Color.SetColor(System.Drawing.Color.Black);
+                            r.Style.Border.Right.Color.SetColor(System.Drawing.Color.Black);
+
+                        }
+
                         // removed ignored columns  
                         for (int i = dataTable.Columns.Count - 1; i >= 0; i--)
                         {
@@ -1634,42 +1926,42 @@ namespace BBDEVSYS.Services.Shared
                         //var rangePivotTable2 = workSheet.Cells["A" + (startRowFrom+1)].LoadFromDataTable(dataTable, true);
                         var rangePivotTable = workSheet.Cells[startRowFrom, 1, ((startRowFrom + 1) + dataTable.Rows.Count), dataTable.Columns.Count];
 
-                        //var pivotTable = workSheetPivot.PivotTables.Add(workSheetPivot.Cells[1, 1], rangePivotTable, "PivotSummaryTable");
-                        ////package.Workbook.Worksheets.MoveBefore(1,0);
+                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 1], rangePivotTable, "PivotTable");
+                        //package.Workbook.Worksheets.MoveBefore(1,0);
 
                         //--label field
 
-                        //pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
-                        //pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
-                        //pivotTable.RowFields.Add(pivotTable.Fields["Result Reason"]);
-                        //pivotTable.DataOnRows = false;
+                        pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Result Reason"]);
+                        pivotTable.DataOnRows = false;
 
 
 
-                        ////--data Column
-                        //var fld = pivotTable.ColumnFields.Add(pivotTable.Fields["Status"]);
-                        ////pivotTable.FirstDataCol = false;
+                        //--data Column
+                        pivotTable.ColumnFields.Add(pivotTable.Fields["Status"]);
+                        //pivotTable.FirstDataCol = false;
 
-                        ////fld.Compact = false;
-                        ////fld.Outline = false;
-                        ////fld.ShowAll = false;
-                        ////fld.SubtotalTop = false;
-                        ////fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld.Compact = false;
+                        //fld.Outline = false;
+                        //fld.ShowAll = false;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
 
-                        ////data fields
-                        ////data fields
-                        //var fields = pivotTable.Fields["Status"];
-                        //var field = pivotTable.DataFields.Add(pivotTable.Fields["SR #"]);
-                        //field.Name = "Count of SR #";
-                        //field.Function = DataFieldFunctions.Count;
-                        //field.Format = "#,##0";
-                        //fields.Sort = eSortType.Ascending;
+                        //data fields
+                        //data fields
+                        var fields = pivotTable.Fields["Status"];
+                        var field = pivotTable.DataFields.Add(pivotTable.Fields["SR #"]);
+                        field.Name = "Count of SR #";
+                        field.Function = DataFieldFunctions.Count;
+                        field.Format = "#,##0";
+                        fields.Sort = eSortType.Ascending;
 
 
-                        //field = pivotTable.DataFields.Add(pivotTable.Fields["AMOUNT"]);
-                        //field.Name = "Sum of AMOUNT";
-                        //field.Function = DataFieldFunctions.Sum;
-                        //field.Format = "#,##0.00";
+                        field = pivotTable.DataFields.Add(pivotTable.Fields["AMOUNT"]);
+                        field.Name = "Sum of AMOUNT";
+                        field.Function = DataFieldFunctions.Sum;
+                        field.Format = "#,##0.00";
 
 
 
@@ -1914,9 +2206,9 @@ namespace BBDEVSYS.Services.Shared
                             workSheet.Cells.AutoFitColumns();
                         }
                         var tt = workSheet.Dimension.Address.Contains("Date");
-                        
-                      
-                       // workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
+
+
+                        // workSheet.Cells[workSheet.Dimension.Address].AutoFitColumns();
                         //----------}
                     }
                     //end for

@@ -977,7 +977,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                     var existTable = ds.Tables.Contains("Verify#3");
                     if (item.TableName.Contains("Verify#3"))
                     {
-
+                        //dataMerge = item.AsEnumerable().CopyToDataTable();
                         dataMerge = GenerateFormatAllSummaryReportData(item, formData.UserRequest).AsEnumerable().CopyToDataTable();
 
                         dataMerge.TableName = item.TableName;
@@ -1217,14 +1217,22 @@ namespace BBDEVSYS.Services.Adjustrefund
             DataTable data = new DataTable();
             try
             {
-                dataVer = (from adj in dataVerify.AsEnumerable()
-                           where adj.Field<string>("Result_PRS_Before_Batch") != "Send To Verify"
-                           select adj).CopyToDataTable();
+                if (actionBy == "00003333")
+                {
+                    dataVer = (from adj in dataVerify.AsEnumerable()
+                               where adj.Field<string>("Result_PRS_Before_Batch") != "Send To Verify"
+                               select adj).CopyToDataTable();
+                }
+                else
+                {
+                    dataVer = (from adj in dataVerify.AsEnumerable()
+                               select adj).CopyToDataTable();
+                }
                 var query = (from order in dataVer.AsEnumerable()
                              select new
                              {
                                  SR_STATUS = order["SR_STATUS"],
-                                 SR_OPEN_DATE = order["SR_OPEN_DATE"] == System.DBNull.Value ? (DateTime?)null : order["SR_OPEN_DATE"],
+                                 SR_OPEN_DATE = order["SR_OPEN_DATE"],// == System.DBNull.Value ? (DateTime?)null : order["SR_OPEN_DATE"], 
                                  SR_NO = order["SR_NO"],
                                  CATEGORY = order["CATEGORY"],
                                  SUB_CATEGORY = order["SUB_CATEGORY"],
@@ -1236,12 +1244,12 @@ namespace BBDEVSYS.Services.Adjustrefund
                                  SR_OWNER = order["SR_OWNER"],
                                  BAN_INCORRECT = order["BAN_INCORRECT"],
                                  BAN_2 = order["BAN_2"],
-                                 AR_BALANCE_1 = order["AR_BALANCE_1"] == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_1"),
+                                 AR_BALANCE_1 = order["AR_BALANCE_1"],// == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_1"), 
                                  BAN_12 = order["BAN_12"],
                                  CUSTOMER_NAME_1 = order["CUSTOMER_NAME_1"],
                                  ACCOUNT_TYPE_1 = order["ACCOUNT_TYPE_1"],
                                  COMP_CODE_1 = order["COMP_CODE_1"],
-                                 AR_BALANCE_11 = order["AR_BALANCE_11"] == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_11"),
+                                 AR_BALANCE_11 = order["AR_BALANCE_11"],//== System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_11"), 
                                  BEN_STATUS_1 = order["BEN_STATUS_1"],
                                  IDENT_1 = order["IDENT_1"],
                                  CONV_IND_1 = order["CONV_IND_1"],
@@ -1251,15 +1259,15 @@ namespace BBDEVSYS.Services.Adjustrefund
                                  CUSTOMER_NAME_2 = order["CUSTOMER_NAME_2"],
                                  ACCOUNT_TYPE_2 = order["ACCOUNT_TYPE_2"],
                                  COMP_CODE_2 = order["COMP_CODE_2"],
-                                 AR_BALANCE_2 = order["AR_BALANCE_2"] == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_2"),
+                                 AR_BALANCE_2 = order["AR_BALANCE_2"],// == System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_2"), 
                                  BEN_STATUS_2 = order["BEN_STATUS_2"],
                                  IDENT_2 = order["IDENT_2"],
                                  CONV_IND_2 = order["CONV_IND_2"],
                                  CONV_CODE_2 = order["CONV_CODE_2"],
                                  T_TO_ACCOUNT_BC_ID = order["T_TO_ACCOUNT_BC_ID"],
                                  RECEIPT_NO = order["RECEIPT_NO"],
-                                 PAY_AMOUNT = order["PAY_AMOUNT"] == System.DBNull.Value ? 0 : order.Field<double>("PAY_AMOUNT"),
-                                 DEPOSITE_DATE = order["DEPOSITE_DATE"] == System.DBNull.Value ? (DateTime?)null : order["DEPOSITE_DATE"],
+                                 PAY_AMOUNT = order["PAY_AMOUNT"] == System.DBNull.Value ? "0" : order.Field<string>("PAY_AMOUNT"),
+                                 DEPOSITE_DATE = order["DEPOSITE_DATE"], //== System.DBNull.Value ? (DateTime?)null : order["DEPOSITE_DATE"], 
                                  SOURCE_ID = order["SOURCE_ID"],
                                  DOC_BILL_TYPE = order["DOC_BILL_TYPE"],
                                  FileName = order["FileName"],
@@ -1268,18 +1276,18 @@ namespace BBDEVSYS.Services.Adjustrefund
                                  Last_Adjust_Date = order["Last_Adjust_Date"],
                                  Last_Adjust_Amount = order["Last_Adjust_Amount"],
                                  W_off_Status = order["W_off_Status"],
-                                 //45 = order["45"],
-                                 //46 = order["46"],
-                                 //47 = order["47"],
-                                 //48 = order["48"],
-                                 //49 = order["49"],
-                                 //50 = order["50"],
+                                 //45 = order["45"], 
+                                 //46 = order["46"], 
+                                 //47 = order["47"], 
+                                 //48 = order["48"], 
+                                 //49 = order["49"], 
+                                 //50 = order["50"], 
                                  Account_Type = order["Account_Type"],
                                  Identification_From_BAN = order["Identification_From_BAN"],
                                  AR_Balance = order["AR_Balance"],
                                  Ben_Account_Status = order["Ben_Account_Status"],
                                  Comapany_All = order["Comapany_All"],
-                                 //PYM_Designate_Code = order["PYM_Designate_Code"],
+                                 //PYM_Designate_Code = order["PYM_Designate_Code"], 
                                  Map = order["Map"],
                                  Result = order["Result"],
                                  Sum_Amount_Receipt = order["Sum_Amount_Receipt"],
@@ -1288,13 +1296,13 @@ namespace BBDEVSYS.Services.Adjustrefund
                                  Result_Map = order["Result_Map"],
                                  Result_PRS_Before_Batch = order["Result_PRS_Before_Batch"],
                                  Result_PRS_After_Batch = order["Result_PRS_After_Batch"],
-                                 //# N/A
-                                 //# N/A
-                                 //Result = order["Result"]
-                                 //#N/A
-                                 //#N/A
-                                 //#N/A
-                                 //#N/A
+                                 //# N/A 
+                                 //# N/A 
+                                 //Result = order["Result"] 
+                                 //#N/A 
+                                 //#N/A 
+                                 //#N/A 
+                                 //#N/A 
 
 
 
@@ -1339,40 +1347,45 @@ namespace BBDEVSYS.Services.Adjustrefund
                 data.Columns["CONV_IND_2"].ColumnName = "To Convergence Indicater";
                 data.Columns["CONV_CODE_2"].ColumnName = "To Convergence Code";
                 data.Columns["T_TO_ACCOUNT_BC_ID"].ColumnName = "To Account BC ID";
-                data.Columns["RECEIPT_NO"].ColumnName = "RECEIPT_NO";
-                data.Columns["PAY_AMOUNT"].ColumnName = "AMOUNT";
+
+
+                ////data.Columns["RECEIPT_NO"].ColumnName = "RECEIPT_NO";
+                ////data.Columns["PAY_AMOUNT"].ColumnName = "AMOUNT"; 
+                ////data.Columns["SOURCE_ID"].ColumnName = "SOURCE_ID";
+                ////data.Columns["DOC_BILL_TYPE"].ColumnName = "DOC_BILL_TYPE";
+
                 data.Columns["DEPOSITE_DATE"].ColumnName = "DEPOSIT_DATE";
-                data.Columns["SOURCE_ID"].ColumnName = "SOURCE_ID";
-                data.Columns["DOC_BILL_TYPE"].ColumnName = "DOC_BILL_TYPE";
                 data.Columns["FileName"].ColumnName = "PYM Designation Code";
                 data.Columns["Last_Reason_Adjust"].ColumnName = "Last Reason Adjust";
                 data.Columns["Last_Adjust_Date"].ColumnName = "Last Adjust Date";
                 data.Columns["Last_Adjust_Amount"].ColumnName = "Last Adjust Amount";
                 data.Columns["W_off_Status"].ColumnName = "W off Status";
-                //data.Columns["45"].ColumnName = "1";
-                //data.Columns["46"].ColumnName = "2";
-                //data.Columns["47"].ColumnName = "3";
-                //data.Columns["48"].ColumnName = "4";
-                //data.Columns["49"].ColumnName = "5";
-                //data.Columns["50"].ColumnName = "6";
-                data.Columns["Account_Type"].ColumnName = "Account Type 'I' ";
-                data.Columns["Identification_From_BAN"].ColumnName = "Identification From BAN & To BAN";
-                data.Columns["AR_Balance"].ColumnName = "AR Balance < 0";
+                ////data.Columns["45"].ColumnName = "1";
+                ////data.Columns["46"].ColumnName = "2";
+                ////data.Columns["47"].ColumnName = "3";
+                ////data.Columns["48"].ColumnName = "4";
+                ////data.Columns["49"].ColumnName = "5";
+                ////data.Columns["50"].ColumnName = "6";
+                ////data.Columns["PYM_Designate_Code"].ColumnName = "PYM Designation Code";
+
+                data.Columns["Account_Type"].ColumnName = "Account Type I ";
+                data.Columns["Identification_From_BAN"].ColumnName = "Identification From BAN and To BAN";
+                data.Columns["AR_Balance"].ColumnName = "AR Balance less than 0";
                 data.Columns["Ben_Account_Status"].ColumnName = "Ben Account Status";
                 data.Columns["Comapany_All"].ColumnName = "Comapany All";
-                //data.Columns["PYM_Designate_Code"].ColumnName = "PYM Designation Code";
                 data.Columns["Map"].ColumnName = "Map";
                 data.Columns["Result"].ColumnName = "Result";
                 data.Columns["Sum_Amount_Receipt"].ColumnName = "Sum Amount Receipt";
                 data.Columns["Result_AR_Balance"].ColumnName = "Result AR Balance";
-                data.Columns["Company_From_BAN"].ColumnName = "Company From BAN & To BAN";
+                data.Columns["Company_From_BAN"].ColumnName = "Company From BAN and To BAN";
                 data.Columns["Result_Map"].ColumnName = "Result Map";
                 data.Columns["Result_PRS_Before_Batch"].ColumnName = "Result To Payment Resolution Team Before Batch";
                 data.Columns["Result_PRS_After_Batch"].ColumnName = "Result To Payment Resolution Team After Batch";
 
 
                 data.AcceptChanges();
-
+                #region mark
+                data.Columns.Add("AMOUNT", typeof(double));
                 data.Columns.Add("45");
                 data.Columns.Add("46");
                 data.Columns.Add("47");
@@ -1387,20 +1400,26 @@ namespace BBDEVSYS.Services.Adjustrefund
                 data.Columns.Add("Next Action by");
                 data.Columns.Add("Payment_Resolution User");
 
+                foreach (DataRow dr in data.Rows)
+                {
+                    dr["AMOUNT"] = Convert.ToDouble(dr["PAY_AMOUNT"]);
 
+                }
+                data.Columns.Remove("PAY_AMOUNT");
 
                 foreach (DataRow dr in data.Rows)
                 {
+                    #region set data critirea
                     if (actionBy == "00003333")
                     {
-                        #region RRM
+                        #region RRM 
                         dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
                         dr["Data file Lot"] = dr["PYM Designation Code"];
                         string reason = string.Empty;
-                        //--case dr["Result To Payment Resolution Team After Batch"]  equal null
-                        //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value
-                        //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"])
-                        //    : dr["Result To Payment Resolution Team After Batch"].ToString();
+                        //--case dr["Result To Payment Resolution Team After Batch"]  equal null 
+                        //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value 
+                        //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"]) 
+                        //    : dr["Result To Payment Resolution Team After Batch"].ToString(); 
 
 
                         if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Fund Transfer"
@@ -1439,15 +1458,15 @@ namespace BBDEVSYS.Services.Adjustrefund
                             reason = "0";
                         }
                         dr["Result Reason"] = reason;
-                        /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer",
-                        * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund",
-                        * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",
-                        * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล",
-                        * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch",
-                        * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR",
-                        * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน",
-                        * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund",
-                        * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer",
+                        /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer", 
+                        * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund", 
+                        * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน", 
+                        * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล", 
+                        * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch", 
+                        * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR", 
+                        * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน", 
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund", 
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer", 
                         * IF(BL1="RRM_output_refund.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",0))))))))))*/
                         string status = string.Empty;
                         if (dr["Result Reason"].ToString() == "Manual Fund Transfer")
@@ -1478,7 +1497,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         string actBy = string.Empty;
                         if (dr["Status"].ToString() == "On Process")
                         {
-                            actBy = "P'Jeab, P'Tle, N'Nan";
+                            actBy = "K.Siripong S."; //"P'Jeab, P'Tle, N'Nan";
                         }
                         else if (dr["Status"].ToString() == "Complete")
                         {
@@ -1494,11 +1513,11 @@ namespace BBDEVSYS.Services.Adjustrefund
                     }
                     else if (actionBy == "00002222")
                     {
-                        #region PRS
+                        #region PRS 
                         dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
                         dr["Data file Lot"] = dr["PYM Designation Code"];
                         string reason = string.Empty;
-                       
+
 
                         if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Fund Transfer")
                         {
@@ -1524,7 +1543,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_not_indy.xlsx To Send To Verify")
                         {
-                            reason = "Change owner to CPayment_Resolution และ Feedback SR";
+                            reason = "Change owner to Payment_Resolution และ Feedback SR";
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Fund Transfer")
                         {
@@ -1538,8 +1557,9 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             reason = "0";
                         }
+                        /*=IF(BO1="Manual Fund Transfer","Pending",IF(BO1="Manual Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
                         dr["Result Reason"] = reason;
-                      
+
                         string status = string.Empty;
                         if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
                         {
@@ -1566,11 +1586,11 @@ namespace BBDEVSYS.Services.Adjustrefund
                             status = "0";
                         }
                         dr["Status"] = status;
-                     
+
                         string actBy = string.Empty;
                         if (dr["Status"].ToString() == "On Process")
                         {
-                            actBy = "P'Jeab, P'Tle, N'Nan";
+                            actBy = "K.Siripong S."; // "P'Jeab, P'Tle, N'Nan";
                         }
                         else if (dr["Status"].ToString() == "Complete")
                         {
@@ -1580,7 +1600,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             actBy = "Payment_Resolution User";
                         }
-                        /*=IF(BP1="On Process","P'Jeab, P'Tle, N'Nan",
+                        /*=IF(BP1="On Process","P'Jeab, P'Tle, N'Nan", 
                          * IF(BP1="Complete","K.Siripong S.","Payment_Resolution User"))*/
                         dr["Action"] = actBy;
 
@@ -1588,14 +1608,14 @@ namespace BBDEVSYS.Services.Adjustrefund
                     }
                     else
                     {
-                        #region RRM
+                        #region RRM 
                         dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
                         dr["Data file Lot"] = dr["PYM Designation Code"];
                         string reason = string.Empty;
-                        //--case dr["Result To Payment Resolution Team After Batch"]  equal null
-                        //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value
-                        //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"])
-                        //    : dr["Result To Payment Resolution Team After Batch"].ToString();
+                        //--case dr["Result To Payment Resolution Team After Batch"]  equal null 
+                        //dr["Result To Payment Resolution Team After Batch"] =dr["Result To Payment Resolution Team After Batch"]== System.DBNull.Value 
+                        //    ? string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"]) 
+                        //    : dr["Result To Payment Resolution Team After Batch"].ToString(); 
 
 
                         if (dr["Result To Payment Resolution Team After Batch"].ToString() == "RRM_ban_cancel.xlsx To Batch Fund Transfer"
@@ -1634,15 +1654,15 @@ namespace BBDEVSYS.Services.Adjustrefund
                             reason = "0";
                         }
                         dr["Result Reason"] = reason;
-                        /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer",
-                        * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund",
-                        * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",
-                        * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล",
-                        * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch",
-                        * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR",
-                        * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน",
-                        * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund",
-                        * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer",
+                        /*=IF(BL1="RRM_ban_cancel.xlsx To Batch Fund Transfer","Manual Fund Transfer", 
+                        * IF(BL1="RRM_ban_cancel.xlsx To Batch Refund","Input Batch To Batch Refund", 
+                        * IF(BL1="RRM_ban_cancel.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน", 
+                        * IF(BL1="RRM_diff_thai_id.xlsx To Send To Verify","ตรวจสอบกรณีโยกเงินต่างบุคคล", 
+                        * IF(BL1="RRM_format_fail.xlsx To Send To Verify","ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch", 
+                        * IF(BL1="RRM_not_indy.xlsx To Send To Verify","Change owner to CRRM และ Feedback SR", 
+                        * IF(BL1="RRM_output_notfound.xlsx To Send To Verify","ตรวจสอบกรณีไม่มียอดเงินเกิน", 
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Refund","Input Batch To Batch Refund", 
+                        * IF(BL1="RRM_output_refund.xlsx To Batch Fund Transfer","Manual Fund Transfer", 
                         * IF(BL1="RRM_output_refund.xlsx To Send To Verify","ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน",0))))))))))*/
                         string status = string.Empty;
                         if (dr["Result Reason"].ToString() == "Manual Fund Transfer")
@@ -1673,7 +1693,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         string actBy = string.Empty;
                         if (dr["Status"].ToString() == "On Process")
                         {
-                            actBy = "P'Jeab, P'Tle, N'Nan";
+                            actBy = "K.Siripong S."; // "P'Jeab, P'Tle, N'Nan";
                         }
                         else if (dr["Status"].ToString() == "Complete")
                         {
@@ -1687,12 +1707,16 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                         #endregion
                     }
+                    #endregion
                 }
+                #endregion
                 data.TableName = "Data Summary";
                 if (data.Rows.Count > 0)
                 {
+                    #region check get data
                     if (actionBy == "00003333")
                     {
+
                         var listobj = data.Rows.Cast<DataRow>().Where(dr => dr["Action"].ToString() != "RRM User").ToList();
                         if (listobj.Any())
                         {
@@ -1701,19 +1725,22 @@ namespace BBDEVSYS.Services.Adjustrefund
                     }
                     else
                     {
-                        dtResult = data.AsEnumerable().CopyToDataTable();
+                        List<string> ignoreReason = new List<string>();
+                        ignoreReason.Add("Change owner to Payment_Resolution และ Feedback SR");
+                        ignoreReason.Add("ตรวจสอบกรณีโยกเงินต่างบุคคล");
+                        ignoreReason.Add("ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch");
+                        ignoreReason.Add("ตรวจสอบกรณีไม่มียอดเงินเกิน");
+                        var listobj = data.Rows.Cast<DataRow>().Where(dr => ignoreReason.All(r => dr["Result Reason"].ToString() != r)).ToList();
+                        if (listobj.Any())
+                        {
+                            dtResult = data.AsEnumerable().Where(p => ignoreReason.All(r => p.Field<String>("Result Reason") != r)).CopyToDataTable();
+                        }
                     }
+                    #endregion
                 }
+                dtResult = data.AsEnumerable().CopyToDataTable();
 
-                //              var listobj = data.Rows
-                //.Cast<DataRow>()
-                //.Where(dr => dr["Action"].ToString() != "RRM User").ToList();
-                //              if (true)
-                //              {
 
-                //              }
-                //              dtt = ReportService.ConvertListToDatatable(listobj);
-                //              dtt.TableName = "Summary Report";
             }
             catch (Exception ex)
             {
