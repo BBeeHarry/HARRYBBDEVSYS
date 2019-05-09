@@ -1819,6 +1819,7 @@
     <Content Include="Views\Adjustrefund\AdjustrefundCheckAdjDetail.cshtml" />
     <Content Include="Views\Adjustrefund\AdjustrefundUploadMISDetail.cshtml" />
     <Content Include="Views\Adjustrefund\AdjustrefundDoneAndClose.cshtml" />
+    <Content Include="Views\Adjustrefund\AdjustrefundPreviewItems.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

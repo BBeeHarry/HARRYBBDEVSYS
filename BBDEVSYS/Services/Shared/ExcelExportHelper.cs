@@ -2,6 +2,7 @@
 using BBDEVSYS.ViewModels.AccruedReport;
 using OfficeOpenXml;
 using OfficeOpenXml.Style;
+using OfficeOpenXml.Table;
 using OfficeOpenXml.Table.PivotTable;
 using System;
 using System.Collections.Generic;
@@ -1512,7 +1513,7 @@ namespace BBDEVSYS.Services.Shared
                         ExcelWorksheet workSheet = null;
 
                         ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
-                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0} Data", dataSet.Tables[data].TableName));
+                        workSheet = package.Workbook.Worksheets.Add(String.Format("{0}", dataSet.Tables[data].TableName));
 
                         int startRowFrom = String.IsNullOrEmpty(heading) ? 1 : 3;
                         //--add row
@@ -1661,10 +1662,12 @@ namespace BBDEVSYS.Services.Shared
 
                         //ExcelWorksheet worksheetPivot = package.Workbook.Worksheets.Add("Pivot");
                         //var rangePivotTable = workSheet.Cells["A" + (startRowFrom)].LoadFromDataTable(dataTable, true);
-                        var rangePivotTable = workSheet.Cells[startRowFrom, 1,( startRowFrom+dataTable.Rows.Count), dataTable.Columns.Count];
-                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2,1], rangePivotTable, "PivotTable");
+                        var rangePivotTable = workSheet.Cells[startRowFrom, 1, (startRowFrom + dataTable.Rows.Count), dataTable.Columns.Count];
+                        var pivotTable = worksheetPivot.PivotTables.Add(worksheetPivot.Cells[2, 1], rangePivotTable, "PivotTable");
                         //package.Workbook.Worksheets.MoveBefore(1,0);
-                      
+
+
+
                         //--label field
 
                         pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
@@ -1699,7 +1702,77 @@ namespace BBDEVSYS.Services.Shared
                         field.Function = DataFieldFunctions.Sum;
                         field.Format = "#,##0.00";
 
+                        #region formatting pivot
+                        const bool outline = false;
+                        const bool compact = false;
+                        const bool showAll = false;
 
+                        pivotTable.Compact = true;//compact;
+                        pivotTable.CompactData = true;//compact;
+                        pivotTable.Outline = true;//outline;
+                        pivotTable.OutlineData = true;// outline;
+                        pivotTable.Indent = 0;
+                        pivotTable.UseAutoFormatting = true;
+                        pivotTable.ShowMemberPropertyTips = false;
+                        pivotTable.DataOnRows = false;
+                        pivotTable.ShowDrill = false;
+                        pivotTable.EnableDrill = false;
+                        pivotTable.RowGrandTotals = true;// false;
+                        pivotTable.ColumGrandTotals = true;
+                        pivotTable.MultipleFieldFilters = true;
+                        pivotTable.GridDropZones = false;
+
+
+
+
+                        (from pf in pivotTable.Fields
+                         where pf.Axis == ePivotFieldAxis.None && pf.IsDataField == false
+                         select pf).ToList().ForEach(f =>
+                         {
+                             f.Compact = true;//compact;
+                             f.Outline = true;// outline;
+                         });
+
+                        // apply pivot table styling
+                        pivotTable.TableStyle = TableStyles.Medium10;
+                        //var fld = pivotTable.PageFields.Add(pivotTable.Fields["Activity Date"]);
+                        //fld.Compact = compact;
+                        //fld.Outline = outline;
+                        //fld.ShowAll = showAll;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld = pivotTable.PageFields.Add(pivotTable.Fields["Action"]);
+                        //fld.Compact = compact;
+                        //fld.Outline = outline;
+                        //fld.ShowAll = showAll;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld = pivotTable.PageFields.Add(pivotTable.Fields["Result Reason"]);
+                        //fld.Compact = compact;
+                        //fld.Outline = outline;
+                        //fld.ShowAll = showAll;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld = pivotTable.PageFields.Add(pivotTable.Fields["Status"]);
+                        //fld.Compact = compact;
+                        //fld.Outline = outline;
+                        //fld.ShowAll = showAll;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld = pivotTable.PageFields.Add(pivotTable.Fields["SR #"]);
+                        //fld.Compact = compact;
+                        //fld.Outline = outline;
+                        //fld.ShowAll = showAll;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        //fld = pivotTable.PageFields.Add(pivotTable.Fields["AMOUNT"]);
+                        //fld.Compact = compact;
+                        //fld.Outline = outline;
+                        //fld.ShowAll = showAll;
+                        //fld.SubtotalTop = false;
+                        //fld.SubTotalFunctions = eSubTotalFunctions.None;
+                        #endregion
 
 
                         #endregion
@@ -1717,7 +1790,7 @@ namespace BBDEVSYS.Services.Shared
                         //pivotTable.ShowMemberPropertyTips = false;
                         //pivotTable.DataOnRows = false;
 
-                        //pivotTable.Outline = false;
+
                         //pivotTable.Compact = false;
                         //pivotTable.RowGrandTotals = false;
                         //pivotTable.Outline = false;
@@ -1725,40 +1798,6 @@ namespace BBDEVSYS.Services.Shared
                         //pivotTable.ShowAll = false;
                         //pivotTable.SubtotalTop = false;
                         //pivotTable.su
-
-                        #region formatting pivot
-                        //pivotTable.MultipleFieldFilters = true;
-                        //pivotTable.ColumnGrandTotals = true;
-                        //pivotTable.RowGrandTotals = true;
-                        //pivotTable.ColumGrandTotals = true;
-                        //pivotTable.Compact = true;
-                        //pivotTable.CompactData = true;
-                        pivotTable.GridDropZones = true;
-                        //pivotTable.Outline = true;
-                        //pivotTable.OutlineData = false;
-                        //pivotTable.ShowError = true;
-                        //pivotTable.ErrorCaption = "[error]";
-                        //pivotTable.ShowHeaders = true;
-                        //pivotTable.UseAutoFormatting = true;
-                        //pivotTable.ApplyWidthHeightFormats = true;
-                        pivotTable.ShowDrill = true;
-
-                        //pivotTable.FirstDataCol = 3;
-                        //pivotTable.RowHeaderCaption = "Claims";
-
-                        //using (ExcelRange range = worksheetPivot.Cells[worksheetPivot.Dimension.Address.ToString()])
-                        //{
-                        //    range.Merge = true;
-                        //    range.Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Medium, System.Drawing.Color.Black);
-                        //    range.Value = "Summary SR Verify Batch Refund ";
-                        //    range.Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        //    range.Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
-                        //    range.Style.Border.Top.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        //    range.Style.Border.Left.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        //    range.Style.Border.Right.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        //    range.Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
-                        //}
-                        #endregion
 
 
                     }

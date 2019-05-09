@@ -687,6 +687,48 @@
         //unblockUI();
         return false;
     }
+
+    function submitFormDataDownloadCSV() {
+        blockUI();
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+
+
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+
+        @*var url = '@Url.Action("DownloadCSV", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
+        $.ajax({
+            //contentType: 'json',
+            url: url,
+            data: form.serialize(),
+            cache: false,
+            success: function (response) {
+                unblockUI();
+            }
+        }).done(function (result) {
+
+
+            unblockUI();
+        });
+        return false;*@
+        var url = '@Url.Action("DownloadCSV", "AdjustrefundUpload", new { Area = "Adjustrefund" })?' + form.serialize();
+        $.ajax({
+            url: '@Url.Action("DownloadCSV", "AdjustrefundUpload", new { Area = "Adjustrefund" })', // add new testing run submit callback
+            contentType: 'json',
+            type: "POST",  // add new testing run submit callback
+            data: form.serialize(),
+            //url: url,
+            success: function (response) {
+                unblockUI();
+            }
+        }).done(function (result) {
+            window.open(url); // add new testing run submit callback
+            unblockUI();
+        });
+        return false;
+    }
     //Callback function when click ok button on confirmation popup
     function okActionCallback() {
 
@@ -735,6 +777,7 @@
         $("#uploadButton").click(function () {
 
             submitFormDataIntegrateButton();
+            //submitFormDataDownloadCSV();
             $("#detailForm").submit();
             event.preventDefault();
         });

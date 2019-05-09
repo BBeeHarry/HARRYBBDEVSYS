@@ -116,6 +116,32 @@
                         </div>
 
                     </div>
+                    <div class="row" id="previewDiv" style="display:none;">
+                        <div class="box-header with-border">
+                            <h3 class="box-title">@Html.LabelFor(m=>m.HeaderSummary , new {@class = "true-control-label" }) </h3>
+
+                            <div class="box-tools pull-right">
+                                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                            </div>
+                        </div>
+                        <div class="col-xs-12" style="padding-top: 20px">
+                            <div>
+                                <div class="table-responsive " style="height:400px;">
+                                    <table class="table table-bordered  table-striped true-datatable" id="previewItemTable" @*style="width:1900px"*@>
+
+                                        @{
+                                            Html.RenderPartial("~/Views/Adjustrefund/AdjustrefundPreviewItems.cshtml", Model);
+                                        }
+
+
+                                    </table>
+
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
             </div>
         </div>
@@ -171,8 +197,8 @@
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
                                             @Html.HiddenFor(m => m.adjDataTable)
-                                            @Html.HiddenFor(m=>m.UserRequest)
-
+                                            @Html.HiddenFor(m => m.UserRequest)
+                                            @Html.HiddenFor(m=>m.JsonValue)
                                             }
 <script type="text/javascript">
 
@@ -183,9 +209,19 @@
 
     function setEmpltyUploadTable() {
         $("#uploadItemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');
+
+
+        $("#previewItemBody").html('<tr><td class="NoDataRow" colspan="6">@BBDEVSYS.Content.text.ResourceText.Empty</td></tr>');
+
+
         var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
 
         $("#rowsData").text(rowCount);
+
+        $("#previewDiv").hide();
+
+        $("#previewItemTable").empty();
+
 
     }
 
@@ -216,6 +252,9 @@
         var form = $('#' + formID);
 
         $("#uploadItemTable").empty();
+
+        $("#previewItemTable").empty();
+        $("#previewDiv").hide();
         //LoadingRow(row, 'on', true)
         blockUI();
         $.ajax({
@@ -284,6 +323,10 @@
         var message = "";
         var form = $('#' + formID);
         $("#uploadItemTable").empty();
+
+        $("#previewItemTable").empty();
+        $("#previewDiv").hide();
+
         $.validator.unobtrusive.parse(form);
         var validator = form.validate();
         if (form.valid()) {
@@ -323,6 +366,70 @@
         }
 
     }
+    function submitFormPreviewData(jsonValue) {
+        blockUI();
+        var formID = 'detailForm';
+        var message = "";
+        var form = $('#' + formID);
+        var jsonList = jQuery.parseJSON(jsonValue)
+        //jQuery.parseJSON($($json_id).val());
+        if (jsonValue) {
+            $("#JsonValue").val(jsonValue);
+        }
+        console.log($("#JsonValue").val())
+       
+        $.validator.unobtrusive.parse(form);
+        var validator = form.validate();
+
+        $("#previewItemTable").empty();
+        $("#previewDiv").show();
+        var url = '@Url.Action("PreviewUploadMISData", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
+        $.ajax({
+            //contentType: 'json',
+            url: url,
+            data: { "srData" :$("#JsonValue").val(), },// form.serialize(),
+            cache: false,
+            success: function (response) {
+                console.log(response.html)
+
+                if (response.success) {
+                   
+                    $("#previewItemTable").html(response.html);
+
+
+                }
+                @*if (response.success) {
+
+                }
+                else {
+
+                    deleteAllAttachFile('attachmentTable');
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
+
+                    row = $('#previewItemBody').children('tr:first');
+                    LoadingRow(row, 'off', true)
+                    setEmpltyUploadTable();
+                }*@
+
+                //var rowCount = "Data : " + $('#previewItemBody tr').length + " lines";
+
+                //$("#rowsData").text(rowCount);
+
+                unblockUI();
+            }
+        }).done(function (result) {
+
+
+            unblockUI();
+        });
+        //$.post(url, form.serialize(), function (response) {
+        //
+        //    $("#uploadItemBody").html(response.html);
+
+        //});
+        //unblockUI();
+        return false;
+    }
     function submitFormDataIntegrateButton() {
         blockUI();
         var formID = 'detailForm';
@@ -334,6 +441,10 @@
         var validator = form.validate();
 
         $("#uploadItemTable").empty();
+
+        $("#previewItemTable").empty();
+        $("#previewDiv").hide();
+
         var url = '@Url.Action("PreviewData", "AdjustrefundUpload", new { Area = "Adjustrefund" })';
         $.ajax({
             //contentType: 'json',
@@ -400,9 +511,73 @@
                 detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
             }
             else if (action == '@ConstantVariableService.FormActionCreate') {
-                detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
+                //detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm',url)//, 'GOBACK')
+
+                var confirmPopupID = "confirmDiv";
+                var messagePopupID = "messagePopupDiv"
+                var successURL = url
+                var popupPrefixID;
+                if (popupPrefixID) {
+                    if (popupPrefixID.toUpperCase() != 'DEFAULT') {
+                        confirmPopupID = popupPrefixID + confirmPopupID;
+                        messagePopupID = popupPrefixID + messagePopupID;
+                    }
+                }
+
+                $('#' + confirmPopupID).modal('hide');
+
+                var form = $('#' + "detailForm");
+
+                blockUI();
+
+                $.post(form.attr("action"), form.serialize(), function (response) {
+
+                    if (response != null && response.success) {
+
+                        if (response.responseText) {
+                            submitFormPreviewData(response.dataCallback);
+                            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", response.responseText, "S", popupPrefixID);
+                        }
+                        else {
+                            if (action == '@ConstantVariableService.FormActionDelete') {
+                                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", "@BBDEVSYS.Content.text.ResourceText.SuccessfulDelete", "S", popupPrefixID);
+                            }
+                            else {
+                                submitFormPreviewData(response.dataCallback);
+                                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupSuccessHeader", "@BBDEVSYS.Content.text.ResourceText.SuccessfulSave", "S", popupPrefixID);
+                            }
+                        }
+
+                        //Clear action handler
+                        $('#' + messagePopupID).off('click', '.btn, .close');
+
+                        $('#' + messagePopupID).on('click', '.btn, .close', function () {
+                            if (successURL) {
+                                if (successURL.toUpperCase() === "GOBACK") {
+                                    goBack('@ConstantVariableService.FormStateDisplay', successURL);
+                                }
+                                    //else if (successURL.toUpperCase() === "REDIRECTCALLBACK") { //End with Callback
+                                else if (successURL.match('^RedirectCallback')) {
+
+                                    window[successURL]();
+
+                                }
+                                else {
+                                    redirectTo(successURL);
+                                }
+                            }
+                        });
+
+                        //redirectTo(successURL);
+                    } else {
+                        displayModelStateError(form, response.errorList, popupPrefixID);
+                    }
+
+                    unblockUI();
+                });
             }
         }
+        //submitFormPreviewData();
     }
     function RedirectCallbackOkAction() {
         //Prevent redirect page

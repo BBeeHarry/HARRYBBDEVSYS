@@ -48,10 +48,22 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             AdjustRefundUploadService service = new AdjustRefundUploadService();
             ValidationResult result = service.SubmitForm(formData, ModelState);
 
-            return Json(
-                new { success = !result.ErrorFlag, responseText = result.Message, errorList = result.ModelStateErrorList },
-                JsonRequestBehavior.AllowGet
-            );
+            //return Json(
+            //    new { success = !result.ErrorFlag, responseText = result.Message, errorList = result.ModelStateErrorList },
+            //    JsonRequestBehavior.AllowGet
+            //);
+            return new JsonResult()
+            {
+                Data = new
+                {
+                    success = !result.ErrorFlag,
+                    responseText = result.Message,
+                    errorList = result.ModelStateErrorList,
+                    dataCallback = result.AdditionalInfo1
+                },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                //MaxJsonLength = Int32.MaxValue // Use this value to set your maximum size for all of your Requests
+            };
         }
 
         //[HttpPost]
@@ -60,9 +72,31 @@ namespace BBDEVSYS.Controllers.Adjustrefund
         {
 
             AdjustRefundUploadService service = new AdjustRefundUploadService();
-            //AdjustrefundUploadViewModel model = service.SubmitMergeFormData(formData);
+
 
             byte[] filecontent = service.SubmitFormFileContent(formData);
+
+            //DataSet getDataset = new DataSet();
+
+            //getDataset = AdjustRefundUploadService.InitialDataFormViewModel(formData);
+
+
+
+            //if (getDataset.Tables.Count > 0)
+            //{
+
+            //    filecontent = ExcelExportHelper.ExportExcelMutiSheetData(getDataset, "", false);//, columns);
+            //}
+
+            //HttpPostedFileBase file = Request.Files[0];
+            //if (file.ContentLength > 0)
+            //{
+            //    var fileName = Path.GetFileName(file.FileName);
+            //    assignment.FileLocation = Path.Combine(
+            //        Server.MapPath("~/App_Data/uploads"), fileName);
+            //    file.SaveAs(assignment.FileLocation);
+            //}
+
             string shotNameTeam = string.Empty;
 
             shotNameTeam = SettingService.SetShortName(formData.UserRequest);
@@ -72,23 +106,78 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             }
             else
             {
+                //DownloadCSV(getDataset.Tables["Fund Transfer Memo"]);
                 return File(filecontent, ExcelExportHelper.ExcelContentType, shotNameTeam+ "_Mapping Input_"+DateTime.Now.Date.ToString("yyyyMMdd")+ "_MIS format_Adjust" + ".xlsx");
-                //return new JsonResult()
-                //{
-                //    Data = new
-                //    {
-                //        success = true,//!result.ErrorFlag,
-                //        responseText = "",//result.Message,
-                //        html = UtilityService.RenderPartialView(this, "~/Views/Adjustrefund/AdjustrefundUploadItems.cshtml", formData)
-                //    },
-                //    JsonRequestBehavior = JsonRequestBehavior.AllowGet,
-                //    MaxJsonLength = Int32.MaxValue // Use this value to set your maximum size for all of your Requests
-                //};
+             
+            }
+            
+        }
+       public ActionResult DownloadCSV(DataTable formData)
+        {
+
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+
+            #region export CSV
+
+            DataTable dt = new DataTable();
+            dt = formData;// AdjustRefundUploadService.InitialDataFormViewModel(formData).Tables["Fund Transfer Memo"] ;
+            //Build the CSV file data as a Comma separated string.
+            string csvHeader = string.Empty;
+            //Build the CSV file data as a Comma separated string.
+            string csvDetails = string.Empty;
+            //foreach (DataRow rows in dt.Rows)
+            //{
+            foreach (DataColumn column in dt.Columns)
+            {
+                //Add the Header row for CSV file.
+                csvDetails += column.ColumnName + ' ';
             }
 
 
-            //return PartialView("~/Views/Adjustrefund/AdjustrefundUploadItems.cshtml", model);
+            //Add new line.
+            csvDetails += "\r\n";
+
+            foreach (DataRow row in dt.Rows)
+            {
+                foreach (DataColumn column in dt.Columns)
+                {
+                    //Add the Data rows.
+                    csvDetails += row[column.ColumnName].ToString().Replace(",", ";") + ' ';
+                }
+
+                //Add new line.
+                csvDetails += "\r\n";
+            }
+            //}
+
+            // Download the CSV file.
+            //HttpContext.Current.Response.Clear();
+            //HttpContext.Current.Response.Buffer = true;
+            //HttpContext.Current.Response.AddHeader("content-disposition", "attachment;filename=AR_FNTT_" + DateTime.Now.Date.ToString("yyyyMMdd") + ".csv");
+            //HttpContext.Current.Response.Charset = "";
+            //HttpContext.Current.Response.ContentType = "application/text";
+            //HttpContext.Current.Response.Output.Write(csvDetails);
+            //HttpContext.Current.Response.Flush();
+            //HttpContext.Current.Response.End();
+
+            #endregion
+            
+            //string shotNameTeam = string.Empty;
+
+            //shotNameTeam = SettingService.SetShortName(formData.UserRequest);
+            if (csvDetails == "")
+            {
+                return List();
+            }
+            else
+            {
+                return File(new System.Text.UTF8Encoding().GetBytes(csvDetails), "text/csv", "AR_FNTT_" + DateTime.Now.Date.ToString("yyyyMMdd") + ".csv");
+            }
+
         }
+        // return File(new System.Text.UTF8Encoding().GetBytes(csv), "text/csv", "Report123.csv");
+        //    System.IO.FileInfo exportFile = //create your ExportFile
+        //return File(exportFile.FullName, "text/csv", string.Format("Export-{0}.csv", DateTime.Now.ToString("yyyyMMdd-HHmmss")));
         public PartialViewResult PreviewData(AdjustrefundUploadViewModel formData)
         {
             AdjustRefundUploadService service = new AdjustRefundUploadService();
@@ -101,6 +190,32 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             {
                 return null;
             }
+
+        }
+        public ActionResult PreviewUploadMISData(string srData)
+        {
+            AdjustRefundUploadService service = new AdjustRefundUploadService();
+            AdjustrefundUploadViewModel model = service.SubmitPreviewUploadData(srData);
+
+            //if (model != null)
+            //{
+            //    return PartialView("~/Views/Adjustrefund/AdjustrefundPreviewItems.cshtml", model);
+            //}
+            //else
+            //{
+            //    return null;
+            //}
+            return new JsonResult()
+            {
+                Data = new
+                {
+                    success = true,
+                    responseText = "",
+                    html = UtilityService.RenderPartialView(this, "~/Views/Adjustrefund/AdjustrefundPreviewItems.cshtml", model)
+                },
+                JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+                MaxJsonLength = Int32.MaxValue // Use this value to set your maximum size for all of your Requests
+            };
 
         }
 
@@ -452,6 +567,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             model = service.InitialListSearch();
             model.NameFormView = "AdjustrefundUploadMISDetail";
             model.UserRequest = "00003333";
+            model.HeaderSummary = "Result Summary Upoload Data"+DateTime.Now.Date.ToString("dd / MM / yyyy");
             //return View("~/Views/Adjustrefund/Upload.cshtml");
             return View("~/Views/Adjustrefund/AdjustrefundUploadMISDetail.cshtml", model);
         }

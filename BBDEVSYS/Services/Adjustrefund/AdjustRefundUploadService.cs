@@ -14,6 +14,7 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Web.Script.Serialization;
 
 namespace BBDEVSYS.Services.Adjustrefund
 {
@@ -197,6 +198,7 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                 getDataset = InitialDataFormViewModel(formData);
 
+           
                 //if (_data.Any())
                 //{
                 //DataTable _dt = new DataTable();
@@ -370,15 +372,15 @@ namespace BBDEVSYS.Services.Adjustrefund
                     if (fundTransData.Columns.Contains("COMP_CODE_1"))
                     {
                         string reason = string.Empty;
-                        if (row["COMP_CODE_1"].ToString() == "RM"|| row["COMP_CODE_1"].ToString() == "RF"|| row["COMP_CODE_1"].ToString() == "TS")
+                        if (row["COMP_CODE_1"].ToString() == "RM" || row["COMP_CODE_1"].ToString() == "RF" || row["COMP_CODE_1"].ToString() == "TS")
                         {
                             reason = "Correct Ban";
                         }
-                        else if (row["COMP_CODE_1"].ToString() == "TI"|| row["COMP_CODE_1"].ToString() == "TD")
+                        else if (row["COMP_CODE_1"].ToString() == "TI" || row["COMP_CODE_1"].ToString() == "TD")
                         {
                             reason = "Refund overpayment";
                         }
-                        else if (row["COMP_CODE_1"].ToString() == "VC"|| row["COMP_CODE_1"].ToString() == "VX")
+                        else if (row["COMP_CODE_1"].ToString() == "VC" || row["COMP_CODE_1"].ToString() == "VX")
                         {
                             reason = "Transfer to correct BAN";
                         }
@@ -1723,7 +1725,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                             dtResult = data.AsEnumerable().Where(p => p.Field<String>("Action") != "RRM User").CopyToDataTable();
                         }
                     }
-                    else
+                    else if (actionBy == "00002222")
                     {
                         List<string> ignoreReason = new List<string>();
                         ignoreReason.Add("Change owner to Payment_Resolution และ Feedback SR");
@@ -1736,9 +1738,13 @@ namespace BBDEVSYS.Services.Adjustrefund
                             dtResult = data.AsEnumerable().Where(p => ignoreReason.All(r => p.Field<String>("Result Reason") != r)).CopyToDataTable();
                         }
                     }
+                    else
+                    {
+                        dtResult = data.AsEnumerable().CopyToDataTable();
+
+                    }
                     #endregion
                 }
-                dtResult = data.AsEnumerable().CopyToDataTable();
 
 
             }
@@ -2155,7 +2161,20 @@ myTable.Columns.Add(colTimeSpan);*/
         }
 
 
+        public AdjustrefundUploadViewModel SubmitPreviewUploadData(string srData)
+        {
+            AdjustrefundUploadViewModel adjfndModel = new AdjustrefundUploadViewModel();
+            try
+            {
+                adjfndModel.previewDataTable = InitialDataFormPreviewUploadViewModel(srData);
+            }
+            catch (Exception ex)
+            {
 
+                throw ex;
+            }
+            return adjfndModel;
+        }
         public AdjustrefundUploadViewModel SubmitMergeFormData(AdjustrefundUploadViewModel formData)
         {
             AdjustrefundUploadViewModel adjfndModel = new AdjustrefundUploadViewModel();
@@ -2174,6 +2193,7 @@ myTable.Columns.Add(colTimeSpan);*/
                 {
                     adjfndModel.adjDataTable = InitialDataFormUploadViewModel(formData).ReturnResult;
                 }
+
                 else
                 {
                     adjfndModel.adjDataTable = InitialDataFormSummaryReportViewModel(formData).Tables["Verify#3"];
@@ -2187,6 +2207,92 @@ myTable.Columns.Add(colTimeSpan);*/
             return adjfndModel;
         }
 
+        private DataTable InitialDataFormPreviewUploadViewModel(string srData)
+        {
+            DataTable data = new DataTable();
+            try
+            {
+
+                List<string> srList = new List<string>();
+                if (!string.IsNullOrEmpty(srData))
+                {
+
+                    JavaScriptSerializer jsSerial = new JavaScriptSerializer();
+
+                    srList = jsSerial.Deserialize<List<string>>(srData);
+                }
+                string listConcat = string.Join("','", srList.ToArray());
+                using (var context = new PYMFEEEntities())
+                {
+                    //'=== > server's detail
+                    string server_machine = "DESKTOP-S7KNP5L\\SQLEXPRESS2008R2";//"RM-T15-SOMCHAI";
+                    string server_user = "sa";
+                    string server_password = "p@ssw0rd";// "True2017";
+                    string server_dbname = "MIS_PAYMENT_ADJUST";// "MIS_PAYMENT";
+                    string server_table = "TEMP_REFUND";
+
+                    //'=== > sql server variables
+                    sqlConn = new SqlConnection();
+                    sqlDa = new SqlDataAdapter();
+
+                    string strConn = "Data Source='" + server_machine + "';Initial Catalog= '" + server_dbname + "' ;User ID= '" + server_user + "'; Password= '" + server_password + "'";
+
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+                    builder.DataSource = server_machine;   // update me
+                    builder.UserID = server_user;              // update me
+                    builder.Password = server_password;      // update me
+                    builder.InitialCatalog = server_dbname;
+
+
+
+
+                    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                    {
+                        connection.Open();
+                       string sql =  "select   [PAID_FROM],[PAID_TO], " +
+"COUNT ([PAID_FROM]) TRXNS_PAID_FROM, " +
+"COUNT ([PAID_TO]) TRXNS_PAID_TO,[DOC_STATUS]," +
+"SUM([AMOUNT]) AMOUNT" +
+
+" FROM [" + server_dbname + "].[dbo].[REFUND_PAYMENT_REQUSITION]" +
+"  where [REQUEST_NO] " +
+"  in" +
+"  ( '" +
+//"'2-223737986290'," +
+//"'2-223652973935'," +
+//"'2-223676810599'," +
+//"'2-223605636053'," +
+//"'2-223605636053'," +
+//"'2-223642733004'," +
+//"'2-223761542925'," +
+//"'2-223736937726'," +
+//"'2-223676810599'," +
+//"'2-223676810599'" +
+listConcat +
+"" + "' )" +
+"GROUP By PAID_FROM,PAID_TO,DOC_STATUS";
+
+  ;
+                        //SqlCommand command = new SqlCommand(sql, sqlConn);
+                        using (SqlCommand cmd = new SqlCommand(sql, connection))
+                        {
+                            SqlDataAdapter ds = new SqlDataAdapter(cmd);
+                            cmd.CommandType = CommandType.Text;
+                            ds.Fill(data);
+                        }
+                        connection.Close();
+                    }
+                    sqlConn.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return data;
+        }
+
         public ValidationResult SubmitForm(AdjustrefundUploadViewModel formData, ModelStateDictionary modelState)
         {
             ValidationResult result = new ValidationResult();
@@ -2194,6 +2300,8 @@ myTable.Columns.Add(colTimeSpan);*/
             {
                 ValidationWithReturnResult<DataTable> resultDataTable = new ValidationWithReturnResult<DataTable>();
                 resultDataTable = InitialDataFormUploadViewModel(formData);
+                // write the data in the "dataTable"
+                DataTable dt = new DataTable();
                 if (!resultDataTable.ErrorFlag)
                 {
                     formData.adjDataTable = resultDataTable.ReturnResult;
@@ -2328,8 +2436,7 @@ myTable.Columns.Add(colTimeSpan);*/
                             bulkCopy.DestinationTableName = server_table;
                             connection.Open();
 
-                            // write the data in the "dataTable"
-                            DataTable dt = new DataTable();
+                          
 
                             dt = formData.adjDataTable;
 
@@ -2567,6 +2674,22 @@ myTable.Columns.Add(colTimeSpan);*/
 
 
                         }
+                    }
+                    if (dt.Rows.Count > 0)
+                    {
+                        var jsonSerialiser = new JavaScriptSerializer();
+                        string itemJSON = string.Empty;
+                        List<string> sr_no = new List<string>();
+                        if (dt.Columns.Contains("REQUEST_NO"))
+                        {
+                            foreach (DataRow dr in dt.Rows)
+                            {
+                                sr_no.Add(dr["REQUEST_NO"].ToString());
+                            }
+
+                            itemJSON = jsonSerialiser.Serialize(sr_no);
+                        }
+                        result.AdditionalInfo1 = itemJSON;
                     }
                     result.Message = ResourceText.SuccessfulUpload;
                     result.MessageType = "S";

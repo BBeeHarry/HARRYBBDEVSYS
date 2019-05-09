@@ -1,0 +1,77 @@
+﻿@using HtmlHelpers.BeginCollectionItem
+@using System.Data
+@using HtmlHelpers.BeginCollectionItem
+@*@model  List<BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel>*@
+@model BBDEVSYS.ViewModels.Adjustrefund.AdjustrefundUploadViewModel
+
+@if (Model.previewDataTable != null)
+{
+    if (Model.previewDataTable.Rows.Count > 0)
+    {
+        <thead id="uploadItemHeader" style="background-color:#f7bf4f">
+            <tr>
+                @foreach (DataColumn column in Model.previewDataTable.Columns)
+                {
+                    <th style="min-width:50px">@column.ColumnName</th>
+                }
+            </tr>
+
+        </thead>
+        <tbody id="previewItemBody">
+            @foreach (DataRow item in Model.previewDataTable.Rows)
+            {
+                <tr>
+                    @using (Html.BeginCollectionItem("Model.previewDataTable.Rows"))
+                    {
+                        foreach (DataColumn col in Model.previewDataTable.Columns)
+                        {
+                            <td style="width:50px">@item[col.ColumnName]</td>
+                        }
+                    }
+                </tr>
+            }
+
+            @*<label class="col-xs-12 col-md-2 true-control-label true-require-field"> </label>*@
+
+        </tbody>
+    }
+
+}
+
+
+
+
+<script src="~/Content/js/input.initialization.js"></script>
+<script type="text/javascript">
+
+
+    $(document).ready(function () {
+
+        //Set height of fixed column to equals another column
+        var bodyOffset = 17; //padding top + bottom + border in pixel
+        var headerOffset = 17; //padding top + bottom + border in pixel
+        var $table = $('#previewItemTable');
+        var tableClone = $table.clone();
+        tableClone.find('tr').each(function (i, elem) {
+
+            if (i != 0) {
+                var row = $table.find('tr:eq(' + i + ')');
+
+
+                var fixColumn = row.find('td:nth-child(2)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(3)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+                fixColumn = row.find('td:nth-child(4)');
+                setFixedColumnHeight(row, fixColumn, bodyOffset);
+
+            }
+
+        });
+        //Change item name for sending to controller
+        ModifyCollectionItemName('previewItemBody');
+
+    });
+</script>

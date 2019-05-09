@@ -22,6 +22,7 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
             AttachmentList = new List<AttachmentViewModel>();
             adjList = new List<AdjustrefundUploadViewModelItems>();
             adjDataTable = new DataTable();
+            previewDataTable = new DataTable();
             UserRequestList = new List<ValueHelpViewModel>();
             
 
@@ -52,9 +53,14 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
         public List<AttachmentViewModel> AttachmentList { get; set; }
         public List<AdjustrefundUploadViewModelItems> adjList { get;  set; }
         public DataTable adjDataTable { get;  set; }
+        public DataTable previewDataTable { get; set; }
 
         public  string NameFormView { get; set; }
         public List<ValueHelpViewModel> UserRequestList { get;  set; }
+
+        public string JsonValue { get; set; }
+
+        public string HeaderSummary { get; set; }
     }
     public class AdjustrefundUploadViewModelItems {
         #region Data Field 

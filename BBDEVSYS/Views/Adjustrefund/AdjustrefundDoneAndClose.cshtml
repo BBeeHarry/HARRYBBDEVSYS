@@ -22,8 +22,8 @@
                     <div class="col-md-12">
                         <div class="form-group">
 
-                            <label class="col-xs-12 col-md-2 true-control-label true-require-field">
-                                @Html.LabelFor(m => m.UserRequest)
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.UserRequest)  :
                             </label>
                             <div class="col-xs-12 col-md-5">
                                 @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;" })
@@ -39,35 +39,38 @@
                                     @Html.TextBoxFor(m => m.AttachSheet, new { @class = "form-control " })
                                 </div>
                                 <label class="col-xs-12 col-md-2 true-control-label ">
-                                    @BBDEVSYS.Content.text.ResourceText.File 1
+                                    @*@BBDEVSYS.Content.text.ResourceText.File 1*@
+                                    File Format Convert  :
                                 </label>
+                                <div class="col-xs-12 col-md-9">
+                                    <span class="btn btn-success btn-sm fileinput-button authManage " id="addAttachment">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                        <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment1">
+                                    </span>
 
-                                <span class="btn btn-success btn-sm fileinput-button authManage " id="addAttachment">
-                                    <i class="glyphicon glyphicon-plus"></i>
-                                    <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
-                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment1">
-                                </span>
-                                <div>
-                                    @*<input type="hidden" id="attachRemarkVisible" value="true" />*@
-                                    <input type="hidden" id="lastSavedFilename" />
-                                    <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
-                                    <input type="hidden" id="attachDocumentTypeVisible" value="false" />
-                                    <input type="hidden" id="attachFileNameVisible" value="true" />
-                                    <input type="hidden" id="attachSingleFile" value="true" />
-                                    <input type="hidden" id="attachDocTypeValueType" value="" />
-                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment1">
-                                        <tbody id="attachmentBody">
-                                            @foreach (var item in Model.AttachmentList)
-                                            {
-                                                if (string.Equals(item.AttachmentGroup, "addAttachment1", StringComparison.OrdinalIgnoreCase))
+                                    <div>
+                                        @*<input type="hidden" id="attachRemarkVisible" value="true" />*@
+                                        <input type="hidden" id="lastSavedFilename" />
+                                        <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                        <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                        <input type="hidden" id="attachFileNameVisible" value="true" />
+                                        <input type="hidden" id="attachSingleFile" value="true" />
+                                        <input type="hidden" id="attachDocTypeValueType" value="" />
+                                        <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment1">
+                                            <tbody id="attachmentBody">
+                                                @foreach (var item in Model.AttachmentList)
                                                 {
-                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                    if (string.Equals(item.AttachmentGroup, "addAttachment1", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                    }
                                                 }
-                                            }
-                                        </tbody>
-                                    </table>
+                                            </tbody>
+                                        </table>
+                                    </div>
                                 </div>
-                            </div>
+                                </div>
 
                         </div>
   
