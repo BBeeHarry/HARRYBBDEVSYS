@@ -1790,13 +1790,13 @@ namespace BBDEVSYS.Services.Shared
                         //fld.SubTotalFunctions = eSubTotalFunctions.None;
                         #endregion
 
-                        using (ExcelRange r = worksheetPivot.Cells[worksheetPivot.Dimension.Start.Row, worksheetPivot.Dimension.Start.Column, worksheetPivot.Dimension.End.Row, worksheetPivot.Dimension.End.Row])
-                        {
-                            //r.Style.Numberformat.Format = "General";
+                        //using (ExcelRange r = worksheetPivot.Cells[worksheetPivot.Dimension.Start.Row, worksheetPivot.Dimension.Start.Column, worksheetPivot.Dimension.End.Row, worksheetPivot.Dimension.End.Row])
+                        //{
+                        //    //r.Style.Numberformat.Format = "General";
 
-                            r.Style.Font.Size = 8;
+                        //    r.Style.Font.Size = 8;
 
-                        }
+                        //}
 
                         #endregion
 

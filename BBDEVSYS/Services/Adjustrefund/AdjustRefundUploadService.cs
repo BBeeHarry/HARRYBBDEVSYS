@@ -1412,6 +1412,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                     {
                         dr["AMOUNT"] = dr["PAY_AMOUNT"];
                     }
+                    dr["Result To Payment Resolution Team After Batch"] = string.Concat(dr["PYM Designation Code"], " To ", dr["Result To Payment Resolution Team Before Batch"]);
 
                 }
                 data.Columns.Remove("PAY_AMOUNT");
