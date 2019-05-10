@@ -26,12 +26,12 @@
                                 @Html.LabelFor(m => m.UserRequest)
                             </label>
                             <div class="col-xs-12 col-md-5">
-                                @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;" })
+                                @Html.DropDownListFor(m => m.UserRequest, new SelectList(Model.UserRequestList, "ValueKey", "ValueText", "00003333"), new { @class = "form-control", style = "width:100%;", @onchange = "onChangeRequestBy(this)" })
                                 @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
                             </div>
                         </div>
                         <div class="form-group">
-                            <div id="addAttachment">
+                            <div @*id="addAttachmentDiv"*@>
                                 <label class="col-xs-12 col-md-2 true-control-label ">
                                     @Html.LabelFor(m => m.AttachSheet)
                                 </label>
@@ -45,7 +45,7 @@
                                 <span class="btn btn-success btn-sm fileinput-button authManage " id="addAttachment">
                                     <i class="glyphicon glyphicon-plus"></i>
                                     <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
-                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" attach-div-id="addAttachment">
+                                    <input id="fileUpload" type="file" name="files[]" class="file-upload" @*attach-div-id="addAttachmentDiv"*@>
                                 </span>
                                 <div>
                                     @*<input type="hidden" id="attachRemarkVisible" value="true" />*@
@@ -57,15 +57,17 @@
                                     <input type="hidden" id="attachDocTypeValueType" value="" />
 
 
-                                    <table class="no-footer" id="attachmentTable" attach-div-id="addAttachment">
+                                    <table class="no-footer" id="attachmentTable" @*attach-div-id="addAttachmentDiv"*@>
                                         <tbody id="attachmentBody">
                                             @foreach (var item in Model.AttachmentList)
                                             {
-                                                if (string.Equals(item.AttachmentGroup, "addAttachment", StringComparison.OrdinalIgnoreCase))
-                                                {
-                                                    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
-                                                }
+                                                //if (string.Equals(item.AttachmentGroup, "addAttachmentDiv", StringComparison.OrdinalIgnoreCase))
+                                                //{
+                                                //    Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                //}
+                                                Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
                                             }
+                                           
                                         </tbody>
                                     </table>
                                 </div>
@@ -118,7 +120,7 @@
                     </div>
                     <div class="row" id="previewDiv" style="display:none;">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@Html.LabelFor(m=>m.HeaderSummary , new {@class = "true-control-label" }) </h3>
+                            <h3 class="box-title">@Html.DisplayFor(m => m.HeaderSummary ,new { @id = "HeaderSummary" }) </h3>
 
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -198,13 +200,14 @@
                                             @Html.HiddenFor(m => m.NameFormView)
                                             @Html.HiddenFor(m => m.adjDataTable)
                                             @Html.HiddenFor(m => m.UserRequest)
-                                            @Html.HiddenFor(m=>m.JsonValue)
+                                            @Html.HiddenFor(m => m.JsonValue)
                                             }
 <script type="text/javascript">
 
     function onChangeCritiria() {
         deleteAllAttachFile('attachmentTable');
         setEmpltyUploadTable();
+
     }
 
     function setEmpltyUploadTable() {
@@ -229,10 +232,17 @@
         //Clear upload item table
         setEmpltyUploadTable()
     }
+    function onChangeRequestBy(data) {
+        deleteAllAttachFile('attachmentTable');
+        setEmpltyUploadTable()
+        $("#UserRequest").val(data.value);
+        //location.reload();
+    }
 
     function callbackDeleteAllAttachFile(tableID) {
         //Clear upload item table
         setEmpltyUploadTable()
+        //location.reload();
     }
 
 
@@ -243,6 +253,8 @@
         var uploadItemBody = "#uploadItemBody";
         var SheetFile = "#SheetFile1";
 
+        
+
         var fileName = $(lastSavedFilename).val();
         var row = $(uploadItemBody).children('tr:first');//!isNaN(seqFiles)?  $("'#" + "uploadItemBody" + seqFiles + "'").children('tr:first'):$('#uploadItemBody').children('tr:first') ;
         var sheet = $(SheetFile).val();
@@ -250,6 +262,18 @@
         var formID = 'detailForm';
         var message = "";
         var form = $('#' + formID);
+        
+        var errors = true;
+        var requestName = $("#UserRequest").val();
+        if (requestName == "00003333" && fileName.includes("RRM")) {
+            errors = true;
+        }
+        else if (requestName == "00002222" && fileName.includes("PRS")) {
+            errors = true;
+        }
+        else {
+            errors = false;
+        }
 
         $("#uploadItemTable").empty();
 
@@ -262,8 +286,8 @@
             data: form.serialize(),
             cache: false,
             success: function (response) {
-
-                if (response.success) {
+                
+                if (response.success && errors) {
                     $("#uploadItemTable").html(response.html);
                     var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
 
@@ -273,7 +297,9 @@
                 else {
                     deleteAllAttachFile('attachmentTable');
 
-                    //$('#addAttachment').removeAttr('display','none');
+                    if (!errors) {
+                        message = "ข้อมูลไฟล์ไม่ถูกต้อง กรุณาเลือก User Id ให้ตรงกับไฟล์ อัพโหลด";
+                    }
                     displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E", "");
 
                     row = $('#uploadItemBody').children('tr:first');
@@ -377,7 +403,7 @@
             $("#JsonValue").val(jsonValue);
         }
         console.log($("#JsonValue").val())
-       
+
         $.validator.unobtrusive.parse(form);
         var validator = form.validate();
 
@@ -387,13 +413,13 @@
         $.ajax({
             //contentType: 'json',
             url: url,
-            data: { "srData" :$("#JsonValue").val(), },// form.serialize(),
+            data: { "srData": $("#JsonValue").val(), },// form.serialize(),
             cache: false,
             success: function (response) {
                 console.log(response.html)
 
                 if (response.success) {
-                   
+
                     $("#previewItemTable").html(response.html);
 
 

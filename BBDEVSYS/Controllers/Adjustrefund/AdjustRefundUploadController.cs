@@ -100,6 +100,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             string shotNameTeam = string.Empty;
 
             shotNameTeam = SettingService.SetShortName(formData.UserRequest);
+
             if (filecontent == null)
             {
                 return List();
@@ -544,14 +545,18 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             string shotNameTeam = string.Empty;
 
             shotNameTeam = SettingService.SetShortName(formData.UserRequest);
-
+            string fileName = shotNameTeam + "_Summary Send out_" + DateTime.Now.Date.ToString("dd MMM yyyy") + "_Send Close SR & Done Activity";
+            if (formData.UserRequest == "00002222")
+            {
+                fileName = shotNameTeam + "_Summary Send out_" + DateTime.Now.Date.ToString("dd MMM yyyy") + "_result_Send out";
+            }
             if (filecontent == null)
             {
                 return List();
             }
             else
             {
-                return File(filecontent, ExcelExportHelper.ExcelContentType, shotNameTeam + "_Summary Send out_" + DateTime.Now.Date.ToString("dd MMM yyyy") + "_Send Close SR & Done Activity" + ".xlsx");
+                return File(filecontent, ExcelExportHelper.ExcelContentType, fileName + ".xlsx");
 
             }
         }
@@ -567,7 +572,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             model = service.InitialListSearch();
             model.NameFormView = "AdjustrefundUploadMISDetail";
             model.UserRequest = "00003333";
-            model.HeaderSummary = "Result Summary Upoload Data"+DateTime.Now.Date.ToString("dd / MM / yyyy");
+            model.HeaderSummary = "Result Summary Upoload Data of "+DateTime.Now.Date.ToString("dd/MM/yyyy");
             //return View("~/Views/Adjustrefund/Upload.cshtml");
             return View("~/Views/Adjustrefund/AdjustrefundUploadMISDetail.cshtml", model);
         }

@@ -1268,7 +1268,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                                  CONV_CODE_2 = order["CONV_CODE_2"],
                                  T_TO_ACCOUNT_BC_ID = order["T_TO_ACCOUNT_BC_ID"],
                                  RECEIPT_NO = order["RECEIPT_NO"],
-                                 PAY_AMOUNT = order["PAY_AMOUNT"] == System.DBNull.Value ? "0" : order.Field<string>("PAY_AMOUNT"),
+                                 PAY_AMOUNT = order["PAY_AMOUNT"],// == System.DBNull.Value ? "0" : order.Field<string>("PAY_AMOUNT"),
                                  DEPOSITE_DATE = order["DEPOSITE_DATE"], //== System.DBNull.Value ? (DateTime?)null : order["DEPOSITE_DATE"], 
                                  SOURCE_ID = order["SOURCE_ID"],
                                  DOC_BILL_TYPE = order["DOC_BILL_TYPE"],
@@ -1404,7 +1404,14 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                 foreach (DataRow dr in data.Rows)
                 {
-                    dr["AMOUNT"] = Convert.ToDouble(dr["PAY_AMOUNT"]);
+                    if (data.Columns["PAY_AMOUNT"].DataType.FullName == "System.String")
+                    {
+                        dr["AMOUNT"] = Convert.ToDouble(dr["PAY_AMOUNT"]);
+                    }
+                    else
+                    {
+                        dr["AMOUNT"] = dr["PAY_AMOUNT"];
+                    }
 
                 }
                 data.Columns.Remove("PAY_AMOUNT");
@@ -2249,10 +2256,10 @@ myTable.Columns.Add(colTimeSpan);*/
                     using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
                     {
                         connection.Open();
-                       string sql =  "select   [PAID_FROM],[PAID_TO], " +
-"COUNT ([PAID_FROM]) TRXNS_PAID_FROM, " +
-"COUNT ([PAID_TO]) TRXNS_PAID_TO,[DOC_STATUS]," +
-"SUM([AMOUNT]) AMOUNT" +
+                       string sql = "select   [PAID_FROM] as 'From Company',[PAID_TO] as 'To Company' , " +
+"COUNT ([PAID_FROM]) as 'Transactions of From Company' , " +
+"COUNT ([PAID_TO]) 'Transactions of To Company',[DOC_STATUS] as 'Doc Status'," +
+"SUM([AMOUNT]) as 'Sum Amount' " +
 
 " FROM [" + server_dbname + "].[dbo].[REFUND_PAYMENT_REQUSITION]" +
 "  where [REQUEST_NO] " +
@@ -2270,7 +2277,7 @@ myTable.Columns.Add(colTimeSpan);*/
 //"'2-223676810599'" +
 listConcat +
 "" + "' )" +
-"GROUP By PAID_FROM,PAID_TO,DOC_STATUS";
+"GROUP By PAID_FROM,PAID_TO,DOC_STATUS   ORDER BY PAID_FROM";
 
   ;
                         //SqlCommand command = new SqlCommand(sql, sqlConn);

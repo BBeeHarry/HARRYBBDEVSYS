@@ -1671,15 +1671,31 @@ namespace BBDEVSYS.Services.Shared
                         //--label field
 
                         pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
-                        pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
-                        pivotTable.RowFields.Add(pivotTable.Fields["Result Reason"]);
+                        pivotTable.Compact = false;//compact;
+                        pivotTable.CompactData = false;//compact;
+                        pivotTable.Outline = false;//outline;
+                        pivotTable.OutlineData = false;// outline;
+                        pivotTable.Indent = 0;
+                        pivotTable.UseAutoFormatting = true;
+                        pivotTable.ShowMemberPropertyTips = false;
                         pivotTable.DataOnRows = false;
+                        pivotTable.ShowDrill = false;
+                        pivotTable.EnableDrill = false;
+                        pivotTable.RowGrandTotals = true;// false;
+                        pivotTable.ColumGrandTotals = true;
+                        pivotTable.MultipleFieldFilters = true;
+                        pivotTable.GridDropZones = true;
+
+                        pivotTable.RowFields.Add(pivotTable.Fields["Result Reason"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
+                        pivotTable.RowFields.Add(pivotTable.Fields["Status"]);
+                        //pivotTable.DataOnRows = false;
 
 
 
-                        //--data Column
-                        pivotTable.ColumnFields.Add(pivotTable.Fields["Status"]);
-                        //pivotTable.FirstDataCol = false;
+                        ////--data Column
+                        //pivotTable.ColumnFields.Add(pivotTable.Fields["Status"]);
+                        ////pivotTable.FirstDataCol = false;
 
                         //fld.Compact = false;
                         //fld.Outline = false;
@@ -1707,20 +1723,20 @@ namespace BBDEVSYS.Services.Shared
                         const bool compact = false;
                         const bool showAll = false;
 
-                        pivotTable.Compact = true;//compact;
-                        pivotTable.CompactData = true;//compact;
-                        pivotTable.Outline = true;//outline;
-                        pivotTable.OutlineData = true;// outline;
-                        pivotTable.Indent = 0;
-                        pivotTable.UseAutoFormatting = true;
-                        pivotTable.ShowMemberPropertyTips = false;
-                        pivotTable.DataOnRows = false;
-                        pivotTable.ShowDrill = false;
-                        pivotTable.EnableDrill = false;
-                        pivotTable.RowGrandTotals = true;// false;
-                        pivotTable.ColumGrandTotals = true;
-                        pivotTable.MultipleFieldFilters = true;
-                        pivotTable.GridDropZones = false;
+                        //pivotTable.Compact = true;//compact;
+                        //pivotTable.CompactData = true;//compact;
+                        //pivotTable.Outline = true;//outline;
+                        //pivotTable.OutlineData = true;// outline;
+                        //pivotTable.Indent = 0;
+                        //pivotTable.UseAutoFormatting = true;
+                        //pivotTable.ShowMemberPropertyTips = false;
+                        //pivotTable.DataOnRows = false;
+                        //pivotTable.ShowDrill = false;
+                        //pivotTable.EnableDrill = false;
+                        //pivotTable.RowGrandTotals = true;// false;
+                        //pivotTable.ColumGrandTotals = true;
+                        //pivotTable.MultipleFieldFilters = true;
+                        //pivotTable.GridDropZones = false;
 
 
 
@@ -1734,7 +1750,7 @@ namespace BBDEVSYS.Services.Shared
                          });
 
                         // apply pivot table styling
-                        pivotTable.TableStyle = TableStyles.Medium10;
+                        pivotTable.TableStyle = TableStyles.Medium9;
                         //var fld = pivotTable.PageFields.Add(pivotTable.Fields["Activity Date"]);
                         //fld.Compact = compact;
                         //fld.Outline = outline;
@@ -1774,12 +1790,19 @@ namespace BBDEVSYS.Services.Shared
                         //fld.SubTotalFunctions = eSubTotalFunctions.None;
                         #endregion
 
+                        using (ExcelRange r = worksheetPivot.Cells[worksheetPivot.Dimension.Start.Row, worksheetPivot.Dimension.Start.Column, worksheetPivot.Dimension.End.Row, worksheetPivot.Dimension.End.Row])
+                        {
+                            //r.Style.Numberformat.Format = "General";
+
+                            r.Style.Font.Size = 8;
+
+                        }
 
                         #endregion
 
                         #region name heading pivot
-                        //workSheetPivot.Cells[1, 1].Value = "Summary SR Verify Batch Refund ";
-                        //workSheetPivot.Cells[1, 1].Style.Font.Size = 20;
+                        worksheetPivot.Cells[1, 1].Value = "Summary SR Verify Batch Refund ";
+                        worksheetPivot.Cells[1, 1].Style.Font.Size = 20;
                         #endregion
 
                         //pivotTable.Compact = false;
