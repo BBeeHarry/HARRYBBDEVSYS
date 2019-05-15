@@ -509,7 +509,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             //PaymentItemsService service = new PaymentItemsService();
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
             AdjustRefundUploadService service = new AdjustRefundUploadService();
-            model = service.InitialListSearch();
+            model = service.InitialListSearch("ALL");
             model.NameFormView = "AdjustrefundCheckAdjDetail";
             //return View("~/Views/Adjustrefund/Upload.cshtml");
             return View("~/Views/Adjustrefund/AdjustrefundCheckAdjDetail.cshtml", model);

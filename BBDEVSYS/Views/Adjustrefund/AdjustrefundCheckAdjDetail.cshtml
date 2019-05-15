@@ -310,6 +310,7 @@
                 }
             }).done(function (result) {
                 console.log("Hooray, it worked!");
+
                 //submitFormDataIntegrateButton();
                 //window.open(url);
                 unblockUI();
@@ -375,6 +376,7 @@
         }).done(function (result) {
 
 
+            $("#detailForm").submit();
             unblockUI();
         });
         //$.post(url, form.serialize(), function (response) {
@@ -431,8 +433,8 @@
         $("#uploadButton").click(function () {
 
             submitFormDataIntegrateButton();
-            $("#detailForm").submit();
-            event.preventDefault();
+            //$("#detailForm").submit();
+            //event.preventDefault();
         });
     });
 </script>

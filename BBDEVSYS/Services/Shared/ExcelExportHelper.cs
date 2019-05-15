@@ -1671,20 +1671,6 @@ namespace BBDEVSYS.Services.Shared
                         //--label field
 
                         pivotTable.RowFields.Add(pivotTable.Fields["Activity Date"]);
-                        pivotTable.Compact = false;//compact;
-                        pivotTable.CompactData = false;//compact;
-                        pivotTable.Outline = false;//outline;
-                        pivotTable.OutlineData = false;// outline;
-                        pivotTable.Indent = 0;
-                        pivotTable.UseAutoFormatting = true;
-                        pivotTable.ShowMemberPropertyTips = false;
-                        pivotTable.DataOnRows = false;
-                        pivotTable.ShowDrill = false;
-                        pivotTable.EnableDrill = false;
-                        pivotTable.RowGrandTotals = true;// false;
-                        pivotTable.ColumGrandTotals = true;
-                        pivotTable.MultipleFieldFilters = true;
-                        pivotTable.GridDropZones = true;
 
                         pivotTable.RowFields.Add(pivotTable.Fields["Result Reason"]);
                         pivotTable.RowFields.Add(pivotTable.Fields["Action"]);
@@ -1723,20 +1709,20 @@ namespace BBDEVSYS.Services.Shared
                         const bool compact = false;
                         const bool showAll = false;
 
-                        //pivotTable.Compact = true;//compact;
-                        //pivotTable.CompactData = true;//compact;
-                        //pivotTable.Outline = true;//outline;
-                        //pivotTable.OutlineData = true;// outline;
-                        //pivotTable.Indent = 0;
-                        //pivotTable.UseAutoFormatting = true;
-                        //pivotTable.ShowMemberPropertyTips = false;
-                        //pivotTable.DataOnRows = false;
-                        //pivotTable.ShowDrill = false;
-                        //pivotTable.EnableDrill = false;
-                        //pivotTable.RowGrandTotals = true;// false;
-                        //pivotTable.ColumGrandTotals = true;
-                        //pivotTable.MultipleFieldFilters = true;
-                        //pivotTable.GridDropZones = false;
+                        pivotTable.Compact = false;//compact;
+                        pivotTable.CompactData = false;//compact;
+                        pivotTable.Outline = false;//outline;
+                        pivotTable.OutlineData = false;// outline;
+                        pivotTable.Indent = 0;
+                        pivotTable.UseAutoFormatting = true;
+                        pivotTable.ShowMemberPropertyTips = false;
+                        pivotTable.DataOnRows = false;
+                        pivotTable.ShowDrill = false;
+                        pivotTable.EnableDrill = false;
+                        pivotTable.RowGrandTotals = true;// false;
+                        pivotTable.ColumGrandTotals = true;
+                        pivotTable.MultipleFieldFilters = true;
+                        pivotTable.GridDropZones = false;
 
 
 
@@ -1745,8 +1731,8 @@ namespace BBDEVSYS.Services.Shared
                          where pf.Axis == ePivotFieldAxis.None && pf.IsDataField == false
                          select pf).ToList().ForEach(f =>
                          {
-                             f.Compact = true;//compact;
-                             f.Outline = true;// outline;
+                             f.Compact = false;//compact;
+                             f.Outline = false;// outline;
                          });
 
                         // apply pivot table styling
@@ -1789,6 +1775,12 @@ namespace BBDEVSYS.Services.Shared
                         //fld.SubtotalTop = false;
                         //fld.SubTotalFunctions = eSubTotalFunctions.None;
                         #endregion
+
+
+                        // Shown rows are then sorted by 'Salaries' values in the descending order.
+                        //r.AutoFilter = true;
+                        worksheetPivot.Cells[(startRowFrom + 1), 1,( dataTable.Rows.Count + 1), dataTable.Columns.Count].Style.Font.Name = "Calibri";
+                        worksheetPivot.Cells[(startRowFrom + 1), 1, (dataTable.Rows.Count + 1), dataTable.Columns.Count].Style.Font.Size = 8;
 
                         //using (ExcelRange r = worksheetPivot.Cells[worksheetPivot.Dimension.Start.Row, worksheetPivot.Dimension.Start.Column, worksheetPivot.Dimension.End.Row, worksheetPivot.Dimension.End.Row])
                         //{

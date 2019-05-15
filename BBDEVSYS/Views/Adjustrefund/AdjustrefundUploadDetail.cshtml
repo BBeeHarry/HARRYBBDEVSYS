@@ -676,7 +676,7 @@
             }
         }).done(function (result) {
 
-
+            $("#detailForm").submit();
             unblockUI();
         });
         //$.post(url, form.serialize(), function (response) {
@@ -778,8 +778,8 @@
 
             submitFormDataIntegrateButton();
             //submitFormDataDownloadCSV();
-            $("#detailForm").submit();
-            event.preventDefault();
+            //$("#detailForm").submit();
+            //event.preventDefault();
         });
 
 
