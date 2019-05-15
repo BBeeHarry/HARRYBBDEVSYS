@@ -2199,10 +2199,16 @@ namespace BBDEVSYS.Services.Shared
                             r.Style.Border.Left.Color.SetColor(System.Drawing.Color.Black);
                             r.Style.Border.Right.Color.SetColor(System.Drawing.Color.Black);
 
+                            
+
                         }
 
                         //set date format 
+                        //var colHead = workSheet.Cells[1, 1];
+                        //if (colHead.Contains(v))
+                        //{
 
+                        //}
                         //var cellFormatDate = workSheet.Cells[1, 1, 1, dataTable.Columns.Count];//, startRowFrom + dataTable.Rows.Count, dataTable.Columns.Count];
 
 

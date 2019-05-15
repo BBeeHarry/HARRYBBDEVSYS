@@ -441,6 +441,16 @@ namespace BBDEVSYS.Services.Adjustrefund
                         DataTable data = new DataTable();
 
                         data = resultDataTable.ReturnResult.AsEnumerable().CopyToDataTable();
+
+                        foreach (DataRow row in data.Rows)
+                        {
+                            if (row[1] == System.DBNull.Value)
+                            {
+                                row.Delete();
+
+                            }
+                        }
+                        data.AcceptChanges();
                         dtFile = data;// GenerateFormatFieldUploadtoMIS(data);
 
                         resultDataTable.ReturnResult.Clear();
@@ -710,140 +720,38 @@ namespace BBDEVSYS.Services.Adjustrefund
             DataTable dataMapping = new DataTable();
             try
             {
-                if (actionBy == "00004444")
+                #region mapping batch refund upload
+                if (data.Rows.Count > 0)
                 {
-                    #region mapping batch refund upload
-                    if (data.Rows.Count > 0)
-                    {
-                        dataUpload = data.AsEnumerable().CopyToDataTable();
+                    dataUpload = data.AsEnumerable().CopyToDataTable();
 
-                        dataUpload.Columns.Add("RF_ID");
-                        dataUpload.Columns.Add("DOC_NO");
-                        dataUpload.Columns.Add("REF_NO");
-                        dataUpload.Columns.Add("REASON_ID");
-                        dataUpload.Columns.Add("REASON_REFUND");
-                        dataUpload.Columns.Add("ADDRESS");
-                        dataUpload.Columns.Add("EXPLANATION");
-                        dataUpload.Columns.Add("REQEST_BY");
-                        dataUpload.Columns.Add("COMPLETE_BY");
-                        dataUpload.Columns.Add("COMPLETE_DATE", typeof(DateTime));
-                        dataUpload.Columns.Add("DUE_DATE", typeof(DateTime));
-                        dataUpload.Columns.Add("DOC_STATUS");
-                        dataUpload.Columns.Add("DESIGNATION_CODE_FROM");
-                        dataUpload.Columns.Add("REF1_FROM");
-                        dataUpload.Columns.Add("REF2_FROM");
-                        dataUpload.Columns.Add("DESIGNATION_CODE_TO");
-                        dataUpload.Columns.Add("REF1_TO");
-                        dataUpload.Columns.Add("REF2_TO");
+                    dataUpload.Columns.Add("RF_ID");
+                    dataUpload.Columns.Add("DOC_NO");
+                    dataUpload.Columns.Add("REF_NO");
+                    dataUpload.Columns.Add("REASON_ID");
+                    dataUpload.Columns.Add("REASON_REFUND");
+                    dataUpload.Columns.Add("ADDRESS");
+                    dataUpload.Columns.Add("EXPLANATION");
+                    dataUpload.Columns.Add("REQEST_BY");
+                    dataUpload.Columns.Add("COMPLETE_BY");
+                    dataUpload.Columns.Add("COMPLETE_DATE");
+                    dataUpload.Columns.Add("DUE_DATE");
+                    dataUpload.Columns.Add("DOC_STATUS");
+                    dataUpload.Columns.Add("DESIGNATION_CODE_FROM");
+                    dataUpload.Columns.Add("REF1_FROM");
+                    dataUpload.Columns.Add("REF2_FROM");
+                    dataUpload.Columns.Add("DESIGNATION_CODE_TO");
+                    dataUpload.Columns.Add("REF1_TO");
+                    dataUpload.Columns.Add("REF2_TO");
 
 
-                        //DataTable dtCol = new DataTable();
-                        //foreach (DataColumn item in dataUpload.Columns)
-                        //{
-                        //    dtCol.Columns.Add(item.ColumnName);
-                        //    dtCol.Columns[item.ColumnName].DataType = System.Type.GetType(item.DataType.FullName);
-                        //}
-                        var queryDiff = (from order in dataUpload.AsEnumerable()
-                                         select new
-                                         {
-                                             RF_ID = order["RF_ID"],
-                                             REQUEST_NO = order["SR_NO"],
-                                             DOC_NO = order["DOC_NO"],
-                                             REF_NO = order["REF_NO"],
-                                             PAID_FROM = order["COMP_CODE_1"],
-                                             ACCOUNT_FROM = order["BAN_12"],
-                                             CUSTOMER_NAME = order["CUSTOMER_NAME_1"],
-                                             PAID_TO = order["COMP_CODE_2"],
-                                             ACCOUNT_TO = order["BAN_21"],
-                                             CUSTOMER_NAME_TO = order["CUSTOMER_NAME_2"],
-                                             //DEPOSIT_DATE = order["DEPOSITE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DEPOSITE_DATE"),
-                                             DEPOSIT_DATE = order["DEPOSITE_DATE"],//== System.DBNull.Value ? (DateTime?)null : order["DEPOSITE_DATE"],
-                                             SOURCE_ID = order["SOURCE_ID"],
-                                             AMOUNT = order["PAY_AMOUNT"],//== System.DBNull.Value ? 0 : order.Field<double>("PAY_AMOUNT"),
-                                             RECEIPT_NO = order["RECEIPT_NO"],
-                                             REASON_ID = order["REASON_ID"],
-                                             REASON_REFUND = order["REASON_REFUND"],
-                                             ADDRESS = order["ADDRESS"],
-                                             EXPLANATION = order["EXPLANATION"],
-                                             REQEST_BY = order["REQEST_BY"],
-                                             //CREATE_DATE = order["SR_OPEN_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("SR_OPEN_DATE"),
-                                             CREATE_DATE = order["SR_OPEN_DATE"],//== System.DBNull.Value ? (DateTime?)null : order["SR_OPEN_DATE"],
-                                             COMPLETE_BY = order["COMPLETE_BY"],
-                                             //COMPLETE_DATE = order["COMPLETE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("COMPLETE_DATE"),
-                                             //DUE_DATE = order["DUE_DATE"] == System.DBNull.Value ? (DateTime?)null : order.Field<DateTime>("DUE_DATE"),
-                                             COMPLETE_DATE = order["COMPLETE_DATE"],//== System.DBNull.Value ? (DateTime?)null : order["COMPLETE_DATE"],
-                                             DUE_DATE = order["DUE_DATE"],//== System.DBNull.Value ? (DateTime?)null : order["DUE_DATE"],
-                                             DOC_STATUS = order["DOC_STATUS"],
-                                             ACCOUNT_TYPE_FROM = order["ACCOUNT_TYPE_1"],
-                                             AR_BALANCE_FROM = order["AR_BALANCE_11"],//== System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_11"),
-                                             BEN_ACCOUNT_STATUS_FROM = order["BEN_STATUS_1"],
-                                             IDENTIFICATION_FROM = order["IDENT_1"],
-                                             CONVERGENCE_INDICATER_FROM = order["CONV_IND_1"],
-                                             CONVERGENCE_CODE_FROM = order["CONV_CODE_1"],
-                                             ACCOUNT_BC_ID_FROM = order["T_FORM_ACCOUNT_BC_ID"],
-                                             DESIGNATION_CODE_FROM = order["DESIGNATION_CODE_FROM"],
-                                             REF1_FROM = order["REF1_FROM"],
-                                             REF2_FROM = order["REF2_FROM"],
-                                             ACCOUNT_TYPE_TO = order["ACCOUNT_TYPE_2"],
-                                             AR_BALANCE_TO = order["AR_BALANCE_2"],//== System.DBNull.Value ? 0 : order.Field<double>("AR_BALANCE_2"),
-                                             BEN_ACCOUNT_STATUS_TO = order["BEN_STATUS_2"],
-                                             IDENTIFICATION_TO = order["IDENT_2"],
-                                             CONVERGENCE_INDICATER_TO = order["CONV_IND_2"],
-                                             CONVERGENCE_CODE_TO = order["CONV_CODE_2"],
-                                             ACCOUNT_BC_ID_TO = order["T_TO_ACCOUNT_BC_ID"],
-                                             DESIGNATION_CODE_TO = order["DESIGNATION_CODE_TO"],
-                                             REF1_TO = order["REF1_TO"],
-                                             REF2_TO = order["REF2_TO"],
-                                             CATEGORY = order["CATEGORY"],
-                                             SUB_CATEGORY = order["SUB_CATEGORY"],
-                                             ISSUE = order["ISSUE"],
-                                             BAN = order["BAN"],
-                                             PRIM_RESOURCE = order["PRIM_RESOURCE"],
-                                             DETAIL = order["SR_DETAILS"],
-                                             SR_DIVISION = order["SR_DIVISION"],
-                                             SR_OWNER = order["SR_OWNER"],
-
-                                         }).ToList();
-
-
-                        dataMapping = ReportService.ConvertListToDatatable(queryDiff);
-                    }
-                    #endregion
-                }
-                else
-                {
-                    #region mapping batch refund upload
-                    if (data.Rows.Count > 0)
-                    {
-                        dataUpload = data.AsEnumerable().CopyToDataTable();
-
-                        dataUpload.Columns.Add("RF_ID");
-                        dataUpload.Columns.Add("DOC_NO");
-                        dataUpload.Columns.Add("REF_NO");
-                        dataUpload.Columns.Add("REASON_ID");
-                        dataUpload.Columns.Add("REASON_REFUND");
-                        dataUpload.Columns.Add("ADDRESS");
-                        dataUpload.Columns.Add("EXPLANATION");
-                        dataUpload.Columns.Add("REQEST_BY");
-                        dataUpload.Columns.Add("COMPLETE_BY");
-                        dataUpload.Columns.Add("COMPLETE_DATE", typeof(DateTime));
-                        dataUpload.Columns.Add("DUE_DATE", typeof(DateTime));
-                        dataUpload.Columns.Add("DOC_STATUS");
-                        dataUpload.Columns.Add("DESIGNATION_CODE_FROM");
-                        dataUpload.Columns.Add("REF1_FROM");
-                        dataUpload.Columns.Add("REF2_FROM");
-                        dataUpload.Columns.Add("DESIGNATION_CODE_TO");
-                        dataUpload.Columns.Add("REF1_TO");
-                        dataUpload.Columns.Add("REF2_TO");
-
-
-                        //DataTable dtCol = new DataTable();
-                        //foreach (DataColumn item in dataUpload.Columns)
-                        //{
-                        //    dtCol.Columns.Add(item.ColumnName);
-                        //    dtCol.Columns[item.ColumnName].DataType = System.Type.GetType(item.DataType.FullName);
-                        //}
-                        var query = (from order in dataUpload.AsEnumerable()
+                    //DataTable dtCol = new DataTable();
+                    //foreach (DataColumn item in dataUpload.Columns)
+                    //{
+                    //    dtCol.Columns.Add(item.ColumnName);
+                    //    dtCol.Columns[item.ColumnName].DataType = System.Type.GetType(item.DataType.FullName);
+                    //}
+                    var queryDiff = (from order in dataUpload.AsEnumerable()
                                      select new
                                      {
                                          RF_ID = order["RF_ID"],
@@ -905,14 +813,10 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                                      }).ToList();
 
-                        dataMapping = ReportService.ConvertListToDatatable(query);
 
-                    }
-
-                    #endregion
-
+                    dataMapping = ReportService.ConvertListToDatatable(queryDiff);
                 }
-
+                #endregion
             }
             catch (Exception ex)
             {
@@ -1117,6 +1021,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         getDataset.Tables.Add(dataMerge);
                     }
 
+
                 }
 
 
@@ -1294,11 +1199,19 @@ namespace BBDEVSYS.Services.Adjustrefund
                     foreach (DataTable item in ds.Tables)
                     {
                         DataTable dataMerge = new DataTable();
-                        if (checkfileExist && formData.UserRequest == "0004444")
+                        if (checkfileExist && formData.UserRequest == "00004444")
                         {
-                            dataMerge = GenerateFormatFieldData(item.AsEnumerable().CopyToDataTable(), formData.UserRequest);
-                            dataMerge.TableName = item.TableName;
-                            getDataset.Tables.Add(dataMerge);
+                            if (item.TableName == "Batch Refund")
+                            {
+                                dataMerge = item.AsEnumerable().CopyToDataTable();
+                                dataMerge.TableName = "Verify#3";
+                                getDataset.Tables.Add(dataMerge);
+
+                                dataMerge = new DataTable();
+                                dataMerge = GenerateFormatFieldData(item.AsEnumerable().CopyToDataTable(), formData.UserRequest);
+                                dataMerge.TableName = item.TableName;
+                                getDataset.Tables.Add(dataMerge);
+                            }
                             break;
                         }
                         else
@@ -1310,7 +1223,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                             {
                                 var sh = sheetName.Where(n => sheetList.ToList().All(u => n != u)).FirstOrDefault();
                                 string sheetBan = sh != null ? sh.ToString() : "Sheet1";
-                                if (checkfileExist)
+                                if (checkfileExist )
                                 {
                                     dataMerge = item.AsEnumerable().CopyToDataTable();
                                 }
@@ -1368,6 +1281,16 @@ namespace BBDEVSYS.Services.Adjustrefund
                                select adj).CopyToDataTable();
                 }
                 else if (actionBy == "00002222")
+                {
+                    dataVer = (from adj in dataVerify.AsEnumerable()
+                               select adj).CopyToDataTable();
+                }
+                else if (actionBy == "00004444")
+                {
+                    dataVer = (from adj in dataVerify.AsEnumerable()
+                               select adj).CopyToDataTable();
+                }
+                else
                 {
                     dataVer = (from adj in dataVerify.AsEnumerable()
                                select adj).CopyToDataTable();
@@ -1758,6 +1681,101 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                         #endregion
                     }
+                    else if (actionBy == "00004444")
+                    {
+                        #region PRS  Diff-id
+                        dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
+                        dr["Data file Lot"] = dr["PYM Designation Code"];
+                        string reason = string.Empty;
+
+
+                        if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Fund Transfer")
+                        {
+                            reason = "Manual Fund Transfer ban cancel";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Refund"
+                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Refund")
+                        {
+                            reason = "Input Batch To Batch Refund";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Send To Verify"
+                           || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_diff_thai_id.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีโยกเงินต่างบุคคล";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_format_fail.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_not_indy.xlsx To Send To Verify")
+                        {
+                            reason = "Change owner to Payment_Resolution และ Feedback SR";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Fund Transfer")
+                        {
+                            reason = "Manual Fund Transfer";
+                        }
+                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_notfound.xlsx To Send To Verify")
+                        {
+                            reason = "ตรวจสอบกรณีไม่มียอดเงินเกิน";
+                        }
+                        else
+                        {
+                            reason = "0";
+                        }
+                        /*=IF(BO1="Manual Fund Transfer","Pending",IF(BO1="Manual Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
+                        dr["Result Reason"] = reason;
+
+                        string status = string.Empty;
+                        if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
+                        {
+                            status = "Complete";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Manual Fund Transfer ban cancel")
+                        {
+                            status = "Change Owner";
+                        }
+                        else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน"
+                            || dr["Result Reason"].ToString() == "Manual Fund Transfer")
+                        {
+                            status = "Pending";
+                        }
+                        else if (dr["Result Reason"].ToString() == "Change owner to Payment_Resolution และ Feedback SR")
+                        {
+                            status = "Rejected";
+                        }
+                        else
+                        {
+                            status = "0";
+                        }
+                        dr["Status"] = status;
+
+                        string actBy = string.Empty;
+                        if (dr["Status"].ToString() == "On Process")
+                        {
+                            actBy = "K.Siripong S."; // "P'Jeab, P'Tle, N'Nan";
+                        }
+                        else if (dr["Status"].ToString() == "Complete")
+                        {
+                            actBy = "K.Siripong S.";
+                        }
+                        else
+                        {
+                            actBy = "Payment_Resolution User";
+                        }
+                        /*=IF(BP1="On Process","P'Jeab, P'Tle, N'Nan", 
+                         * IF(BP1="Complete","K.Siripong S.","Payment_Resolution User"))*/
+                        dr["Action"] = actBy;
+
+                        #endregion
+                    }
                     else
                     {
                         #region RRM 
@@ -1888,6 +1906,19 @@ namespace BBDEVSYS.Services.Adjustrefund
                             dtResult = data.AsEnumerable().Where(p => ignoreReason.All(r => p.Field<String>("Result Reason") != r)).CopyToDataTable();
                         }
                     }
+                    else if (actionBy == "00004444")
+                    {
+                        List<string> ignoreReason = new List<string>();
+                        ignoreReason.Add("Change owner to Payment_Resolution และ Feedback SR");
+                        ignoreReason.Add("ตรวจสอบกรณีโยกเงินต่างบุคคล");
+                        ignoreReason.Add("ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch");
+                        ignoreReason.Add("ตรวจสอบกรณีไม่มียอดเงินเกิน");
+                        var listobj = data.Rows.Cast<DataRow>().Where(dr => ignoreReason.All(r => dr["Result Reason"].ToString() != r)).ToList();
+                        if (listobj.Any())
+                        {
+                            dtResult = data.AsEnumerable().Where(p => ignoreReason.All(r => p.Field<String>("Result Reason") != r)).CopyToDataTable();
+                        }
+                    }
                     else
                     {
                         dtResult = data.AsEnumerable().CopyToDataTable();
@@ -1920,26 +1951,26 @@ namespace BBDEVSYS.Services.Adjustrefund
                 //for (int i = 0; i < dataVerify.Rows.Count; i++)
                 //{
 
-                    foreach (DataRow dr in dataVerify.Rows)
+                foreach (DataRow dr in dataVerify.Rows)
+                {
+                    string ban_incorrect = dr["BAN_INCORRECT"] == DBNull.Value ? "0" : dr["BAN_INCORRECT"].ToString();
+                    double ban = Convert.ToDouble(ban_incorrect);
+                    var existsadj = (from m in adjdata.AsEnumerable()
+                                     where Convert.ToDouble(m["ACCOUNT_ID"] == DBNull.Value ? 0 : m["ACCOUNT_ID"]) == Convert.ToDouble(ban_incorrect)
+                                     select m).ToList();
+                    if (existsadj.Any())
                     {
-                        string ban_incorrect = dr["BAN_INCORRECT"] == DBNull.Value ? "0" : dr["BAN_INCORRECT"].ToString();
-                        double ban = Convert.ToDouble(ban_incorrect);
-                        var existsadj = (from m in adjdata.AsEnumerable()
-                                         where Convert.ToDouble(m["ACCOUNT_ID"] == DBNull.Value ? 0 : m["ACCOUNT_ID"]) == Convert.ToDouble(ban_incorrect)
-                                         select m).ToList();
-                        if (existsadj.Any())
+                        var adjList = existsadj.AsEnumerable().CopyToDataTable();
+                        foreach (DataRow dradj in adjList.Rows)
                         {
-                            var adjList = existsadj.AsEnumerable().CopyToDataTable();
-                            foreach (DataRow dradj in adjList.Rows)
-                            {
 
-                                dr["Last_Reason_Adjust"] = dradj[5].ToString();
-                                dr["Last_Adjust_Date"] = dradj[2];
-                                dr["Last_Adjust_Amount"] = Convert.ToDecimal(dradj[7]) + Convert.ToDecimal(dradj[8]);
-                            }
+                            dr["Last_Reason_Adjust"] = dradj[5].ToString();
+                            dr["Last_Adjust_Date"] = dradj[2];
+                            dr["Last_Adjust_Amount"] = Convert.ToDecimal(dradj[7]) + Convert.ToDecimal(dradj[8]);
                         }
-
                     }
+
+                }
                 //}
                 #endregion
 

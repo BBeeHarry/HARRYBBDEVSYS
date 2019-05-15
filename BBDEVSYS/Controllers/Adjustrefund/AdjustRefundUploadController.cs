@@ -546,7 +546,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
 
             shotNameTeam = SettingService.SetShortName(formData.UserRequest);
             string fileName = shotNameTeam + "_Summary Send out_" + DateTime.Now.Date.ToString("dd MMM yyyy") + "_Send Close SR & Done Activity";
-            if (formData.UserRequest == "00002222")
+            if (formData.UserRequest == "00002222" || formData.UserRequest =="00004444")
             {
                 fileName = shotNameTeam + "_Summary Send out_" + DateTime.Now.Date.ToString("dd MMM yyyy") + "_result_Send out";
             }
@@ -569,7 +569,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             //PaymentItemsService service = new PaymentItemsService();
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
             AdjustRefundUploadService service = new AdjustRefundUploadService();
-            model = service.InitialListSearch();
+            model = service.InitialListSearch("ALL");
             model.NameFormView = "AdjustrefundUploadMISDetail";
             model.UserRequest = "00003333";
             model.HeaderSummary = "Result Summary Upoload Data of "+DateTime.Now.Date.ToString("dd/MM/yyyy");
@@ -583,7 +583,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             ViewBag.Title = UtilityService.GetPagetTitlePrefix(ConstantVariableService.FormStateList);
             AdjustrefundUploadViewModel model = new AdjustrefundUploadViewModel();
             AdjustRefundUploadService service = new AdjustRefundUploadService();
-            model = service.InitialListSearch();
+            model = service.InitialListSearch("ALL");
             model.NameFormView = "AdjustrefundDoneAndClose";
             model.UserRequest = "00003333";
             return View("~/Views/Adjustrefund/AdjustrefundDoneAndClose.cshtml", model);
@@ -615,6 +615,7 @@ namespace BBDEVSYS.Controllers.Adjustrefund
 
 
             AdjustrefundUploadViewModel model = formData;
+
             if (!result.ErrorFlag)
             {
                 uploadViewModel = result.ReturnResult;
