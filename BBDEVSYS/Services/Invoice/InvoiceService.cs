@@ -74,7 +74,7 @@ namespace BBDEVSYS.Services.Invoice
             }
         }
 
-        private List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status, int seq_item)
+        public  List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status, int seq_item)
         {
             List<InvoiceViewModel> getInvList = new List<InvoiceViewModel>();
             try
@@ -513,6 +513,7 @@ namespace BBDEVSYS.Services.Invoice
                     var pymList = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE == true && m.COMPANY_CODE == companyCode && m.PAYMENT_ITEMS_NAME == pymItems select m).ToList();
                     var pymItemList = (from m in context.PAYMENT_ITEMS_CHAGE
                                        where m.COMPANY_CODE == companyCode
+                                       && m.IS_ACTIVE != false
                                        orderby m.SEQUENCE, m.ID
                                        select m).ToList();
 
@@ -604,7 +605,11 @@ namespace BBDEVSYS.Services.Invoice
 
                     int paymentitemId = getPaymentItems != null ? getPaymentItems.ID : 0;
                     var getPaymentItemsCharge = (from data in context.PAYMENT_ITEMS_CHAGE where data.PAYMENT_ITEMS_ID == paymentitemId && data.COMPANY_CODE == companyCode orderby data.SEQUENCE select data).ToList();
+                    if (formState!=ConstantVariableService.FormStateDisplay)
+                    {
+                        getPaymentItemsCharge = getPaymentItemsCharge.Where(m => m.IS_ACTIVE != false).ToList();
 
+                    }
 
                     var getcttList = (from data in context.COST_CENTER where data.COMPANY_CODE == companyCode select data).ToList();
                     invModel.COMPANY_NAME = getCompany != null ? getCompany.COMPANY_NAME_EN : "";
@@ -636,10 +641,12 @@ namespace BBDEVSYS.Services.Invoice
 
 
                         var list = new List<SelectListItem>();
+                        int seq = 1;
                         foreach (var item in getPaymentItemsCharge)
                         {
                             var chargeLst = new List<string>();
                             var getFeeInvItem = new InvoiceDetailViewModel();
+                            item.SEQUENCE = seq;
                             MVMMappingService.MoveData(item, getFeeInvItem);
 
                             getFeeInvItem.PAYMENT_ITEMS_FEE_ITEM = item.PAYMENT_ITEMS_FEE_NAME;
@@ -655,6 +662,7 @@ namespace BBDEVSYS.Services.Invoice
 
                             feeInvItemLst.Add(getFeeInvItem);
 
+                            seq++;
                         }
                         invModel.InvoiceDetailList.AddRange(feeInvItemLst);
                     }
@@ -682,6 +690,7 @@ namespace BBDEVSYS.Services.Invoice
                     var pymList = (from m in context.PAYMENT_ITEMS where m.IS_ACTIVE == true && m.COMPANY_CODE == lst.COMPANY_CODE && m.PAYMENT_ITEMS_CODE == lst.PAYMENT_ITEMS_CODE select m).ToList();
                     var pymItemList = (from m in context.PAYMENT_ITEMS_CHAGE
                                        where m.COMPANY_CODE == lst.COMPANY_CODE
+                                       && m.IS_ACTIVE != false
                                        orderby m.SEQUENCE, m.ID
                                        select m).ToList();
 

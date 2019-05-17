@@ -259,15 +259,31 @@
 
         $(btnedit).attr('data-id', accrueddetailIndex);
         var $this_id = $('[data-id=' + accrueddetailIndex + ']');
+        var row = $($this_id).parents('tr').find('.txtEnabletrxn').attr('data-id', 'txtEnabletrxn_' + accrueddetailIndex);
         var row = $($this_id).parents('tr').find('.txtEnableamt').attr('data-id', 'txtEnableamt_' + accrueddetailIndex);
+        var row = $($this_id).parents('tr').find('.txtEnableinvamt').attr('data-id', 'txtEnableinvamt_' + accrueddetailIndex);
 
-        var $this = $('[data-id=' + 'txtEnableamt_' + accrueddetailIndex + ']');
+        var $thisTrxn = $('[data-id=' + 'txtEnabletrxn_' + accrueddetailIndex + ']');
+        var $thisAmt = $('[data-id=' + 'txtEnableamt_' + accrueddetailIndex + ']');
+        var $thisInvamt = $('[data-id=' + 'txtEnableinvamt_' + accrueddetailIndex + ']');
 
-
-        var html = $($this).html();
-        var input = $('<input type="text" class = "  dec2digit " onchange="countEdit()"  data-id="enableamt_' + accrueddetailIndex + '"/>');
+        //Trxn
+        var html = $($thisTrxn).html();
+        var input = $('<input type="text" class = "  dec2digit " onchange="countEdit()"  data-id="enabletrxn_' + accrueddetailIndex + '"/>');
         input.val(html);
-        $($this).html(input);
+        $($thisTrxn).html(input);
+
+        //Amt
+        html = $($thisAmt).html();
+        input = $('<input type="text" class = "  dec2digit " onchange="countEdit()"  data-id="enableamt_' + accrueddetailIndex + '"/>');
+        input.val(html);
+        $($thisAmt).html(input);
+
+        //Invoice Amt
+        html = $($thisInvamt).html();
+        input = $('<input type="text" class = "  dec2digit " onchange="countEdit()"  data-id="enableinvamt_' + accrueddetailIndex + '"/>');
+        input.val(html);
+        $($thisInvamt).html(input);
 
 
         //$('#editParamValues').click(function () {
@@ -308,28 +324,39 @@
             //}
         });
     }
+  
     function calculateTotalAmt() {
         $(this).focus();
         var amtTotalSum = 0;
         $('#itemBody tr').each(function () {
 
             var rowId = $(this).find('input[name="AccruedItemList.index"]').val();
-            var $idTotal = $("#AccruedItemList_" + rowId + "__item_INV_AMOUNT");
-
-            amtTotalSum = amtTotalSum + parseFloat(isNaN($idTotal.val()) ? '0' : $idTotal.val())
+            var $idTotal = $('#AccruedItemList_' + rowId + '__item_INV_AMOUNT');
+            var amt =0;
+            amt =parseFloat($idTotal.val()==''? '0' : $idTotal.val());
+            amtTotalSum +=  amt
 
         });
         $("#TOTAL_AMT").val(amtTotalSum)
     }
     function countEdit() {
+       
         var id = $idList;
         //--remove evnt onchange
-        var $this = $('[data-id=' + 'enableamt_' + id + ']');
-        $this.removeAttr('onchange')
+        var $this = $('[data-id=' + 'enableinvamt_' + id + ']');
+
+        var $thisamt = $('[data-id=' + 'enableamt_' + id + ']');
+
+        var $thistrxn = $('[data-id=' + 'enabletrxn_' + id + ']');
+
+        //--$this.removeAttr('onchange')
 
 
         //--check count edit
         var $amt_id = '#AccruedItemList_' + id + '__item_INV_AMOUNT'
+
+        var $amout_id = '#AccruedItemList_' + id + '__item_AMOUNT'
+        var $trxn_id = '#AccruedItemList_' + id + '__item_TRANSACTIONS'
         var $count_id = '#AccruedItemList_' + id + '__item_EDITION';
         var $modified = '#AccruedItemList_' + id + '__item_MODIFIED_BY';
         var $modified_date = '#AccruedItemList_' + id + '__item_MODIFIED_DATE';
@@ -338,7 +365,14 @@
 
         var $json_id = '#AccruedItemList_' + id + '__item_AccruedJSON'
 
-        if (parseFloat($($amt_id).val()) != parseFloat($this.val())) {
+        //Amount
+        $($amout_id).val(parseFloat($thisamt.val()));
+
+        //Trxn
+        $($trxn_id).val(parseFloat($thistrxn.val()));
+
+       
+        //if (parseFloat($($amt_id).val()) != parseFloat($this.val())) {
             $val_count = $val_count + 1;
 
             $($modified).val($("#CREATE_BY").val() == '' ? $("#MODIFIED_BY").val() : $("#CREATE_BY").val())
@@ -348,24 +382,23 @@
             //Inv_Amount
             $($amt_id).val(parseFloat($this.val()));
 
-
             //TOTAL_CHARGE_AMOUNT
             var accJSON = jQuery.parseJSON($($json_id).val());
 
             $.each(accJSON.AccruedItemSubList, function (index, item) {
-                
+
                 accJSON.AccruedItemSubList[index].TOTAL_CHARGE_AMOUNT = parseFloat($this.val());
             });
             //var result = JSON.stringify(accJSON);
             //$($json_id).val();
             //$($json_id).val(accJSON);
-          
+
 
 
             //calculate  amount automate
             calculateTotalAmt();
 
-        }
+        //}
         $($count_id).val($val_count)
 
     }
@@ -384,9 +417,10 @@
             if (action == '@ConstantVariableService.FormActionValidate') {
                 detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'RedirectCallbackOkAction')
             }
-            else if (action == '@ConstantVariableService.FormActionCreate' || action == '@ConstantVariableService.FormActionEdit') {
+            else if (action == '@ConstantVariableService.FormActionCreate' || action == '@ConstantVariableService.FormActionEdit' || action == '@ConstantVariableService.FormActionDelete') {
                 detailOkActionPopupButton($('#FormState').val(), $('#FormAction').val(), 'detailForm', 'GOBACK')
             }
+          
         }
     }
     function actionButton(formAction) {
@@ -402,6 +436,11 @@
 
             headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody';
             bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmSaveBody';
+        }
+        else if (formAction == '@ConstantVariableService.FormActionDelete') {//|| formAction == '@ConstantVariableService.FormActionEdit') {
+
+            headerMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmDeleteHeader';
+            bodyMessage = '@BBDEVSYS.Content.text.ResourceText.PopupConfirmDeleteBody';
         }
 
         detailActionButton('@Model.FormState', formAction, 'detailForm', headerMessage, bodyMessage, 'default');
@@ -433,7 +472,7 @@
         }
     }
     function initialItem() {
-        
+
         $('#confirmDiv').modal('hide');
         if ($("#PERIOD_MONTH").val() != '' && $("#COMPANY_CODE").val() != '' && $("#PERIOD_YEAR").val() != '') {
 
@@ -482,7 +521,7 @@
                         //var message = '';
                         //for (var i = 0; i < response.errorList.length; i++) {
                         //    message = message + response.errorList[i].Message + "<br />";
-                        
+
                         //}
 
                         //deleteAllAttachFile('attachmentTable');
@@ -535,7 +574,7 @@
             //        //win.document.write(data);
             //    }
             //}).done(function (result) {
-        
+
             //    //window.open(url+'?'+form.serialize());
             //    //window.location.href = url;
             //    //unblockUI();

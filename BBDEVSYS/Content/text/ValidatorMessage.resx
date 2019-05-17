@@ -402,4 +402,7 @@
   <data name="lessthanandequal_error" xml:space="preserve">
     <value>{PropertyName} ต้องน้อยกว่าหรือเท่ากับ {0}</value>
   </data>
+  <data name="cannot_action_status_cancel_error" xml:space="preserve">
+    <value>ไม่สามารถทำรายการ{0} กรุณาทำจ่ายรายการค่าใช้จ่าย{1}ครบถ้วน บรรทัด {2}</value>
+  </data>
 </root>

@@ -9,6 +9,11 @@
             @Html.DropDownListFor(m => m.CHARGE_TYPE, new SelectList(Model.ChargeTypeList, "ValueKey", "ValueText"), "", new { @class = "form-control input-sm col-md-2", style = "width:100%;" })
 
         </td>
+        <td class="col-md-3" style="word-wrap:break-word;">
+           @Html.DropDownListFor(m => m.IS_ACTIVE, new SelectList(Model.IsActionList, "ValueKey", "ValueText", "1"), new { @class = "form-control input-sm col-md-2", style = "width:100%;" })
+
+        </td>
+        // 
         <td style="text-align:right;" class="true-table-column-fit-content col-md-2">
             <button type="button" class="true-table-detail-icon-button authManage" title="Up" onclick="moveItemRowUp(this)">
                 <i style="vertical-align:middle" class="glyphicon glyphicon-arrow-up"></i>

@@ -97,6 +97,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to ไม่สามารถทำรายการ{0} กรุณาทำจ่ายรายการค่าใช้จ่าย{1}ครบถ้วน บรรทัด {2}.
+        /// </summary>
+        public static string cannot_action_status_cancel_error {
+            get {
+                return ResourceManager.GetString("cannot_action_status_cancel_error", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to ไม่สามารถทำรายการกำหนดสิทธ์ผู้ใช้ได้ เนื่องจากไม่พบ Username.
         /// </summary>
         public static string cannot_assignuserrole_action {

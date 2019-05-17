@@ -10,6 +10,7 @@ using BBDEVSYS.Services.Shared;
 using System.Transactions;
 using BBDEVSYS.Models.Entities;
 using BBDEVSYS.Content.text;
+using BBDEVSYS.Services.Invoice;
 
 namespace BBDEVSYS.Services.CenterSetting.PaymentItems
 {
@@ -24,7 +25,7 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
             {
                 using (var context = new PYMFEEEntities())
                 {
-                    var entPymItems = (from m in context.PAYMENT_ITEMS where  m.ID == id select m).FirstOrDefault();
+                    var entPymItems = (from m in context.PAYMENT_ITEMS where m.ID == id select m).FirstOrDefault();
                     if (entPymItems != null)
                     {
                         MVMMappingService.MoveData(entPymItems, pymItemsModel);
@@ -38,8 +39,8 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
                             PaymentItemsChargeViewModel pymChargeModel = new PaymentItemsChargeViewModel();
                             MVMMappingService.MoveData(item, pymChargeModel);
                             pymChargeModel.ChargeTypeList = ValueHelpService.GetValueHelp(ConstantVariableService.CHARGETYPE).ToList();
+                            pymChargeModel.IsActionList = ValueHelpService.GetValueHelp(ConstantVariableService.ISACTIONTYPE);
 
-                           
                             pymItemsModel.pymItemsChargeList.Add(pymChargeModel);
                         }
                     }
@@ -153,6 +154,7 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
                             if (item.DeleteFlag)
                             {
                                 continue;
+
                             }
 
                             var entPYMItemsCharge = new PAYMENT_ITEMS_CHAGE();
@@ -482,12 +484,23 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
                             MVMMappingService.MoveData(item, entPYMItemsCharge);
                             if (item.DeleteFlag)
                             {
-                                if (entPYMItemsCharge.ID != 0)
+                                ValidationResult resultdel = new ValidationResult();
+                                resultdel = ValidateDeleteData(formData);
+                                //Error
+                                if (resultdel.ErrorFlag)
                                 {
-                                    //Delete item
-                                    context.Entry(entPYMItemsCharge).State = System.Data.Entity.EntityState.Deleted;
-                                    context.SaveChanges();
+                                    return resultdel;
+                                }
+                                else
+                                {
 
+                                    if (entPYMItemsCharge.ID != 0)
+                                    {
+                                        //Delete item
+                                        context.Entry(entPYMItemsCharge).State = System.Data.Entity.EntityState.Deleted;
+                                        context.SaveChanges();
+
+                                    }
                                 }
                             }
                             else
@@ -538,6 +551,8 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
                 pymItems.SEQUENCE = seq;
                 pymItems.ChargeTypeList = ValueHelpService.GetValueHelp("CHARGE_TYPE").ToList();
 
+                pymItems.IsActionList = ValueHelpService.GetValueHelp(ConstantVariableService.ISACTIONTYPE);
+
             }
             catch (Exception ex)
             {
@@ -546,10 +561,47 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
 
             return pymItems;
         }
+        public ValidationResult ValidateDeleteData(PaymentItemsViewModel formData, bool flagMain = false)
+        {
+            ValidationResult result = new ValidationResult();
+            try
+            {
+                using (var context = new PYMFEEEntities())
+                {
 
+                    //Get item => deleteFlag != true
+                    var itemList = formData.pymItemsChargeList.Where(m => m.DeleteFlag == true).ToList();
+                    foreach (var item in itemList)
+                    {
+                        var inv_item_ent = (from m in context.FEE_INVOICE_ITEM
+                                            where m.PAYMENT_ITEMS_CODE == formData.PAYMENT_ITEMS_CODE
+                                             && m.PAYMENT_ITEMS_FEE_ITEM.Contains(item.PAYMENT_ITEMS_FEE_NAME)
+                                             && m.COMPANY_CODE == formData.COMPANY_CODE
+                                            select m).FirstOrDefault();
+                        if (inv_item_ent != null)
+                        {
+                            result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_request_delete, item.PAYMENT_ITEMS_FEE_NAME)));
+
+                            result.ErrorFlag = true;
+                        }
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+
+            return result;
+        }
         public override ValidationResult ValidateFormData(PaymentItemsViewModel formData, ModelStateDictionary modelState)
         {
             ValidationResult result = new ValidationResult();
+            //User Type
+            User user = UserService.GetSessionUserInfo();
+
             try
             {
                 #region mark delete
@@ -625,6 +677,27 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
 
                                 result.ErrorFlag = true;
                             }
+                            //charge id not empty
+                            if (item.IS_ACTIVE == null)
+                            {
+                                result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.item_notempty_seq_at_error, ResourceText.Isactive, line.ToString())));
+
+                                result.ErrorFlag = true;
+                            }
+
+                            if (user.AuthorizeAdmin != ConstantVariableService.AuthorizeAdmin && item.IS_ACTIVE == false)
+                            {
+
+                                InvoiceService servoice_inv = new InvoiceService();
+                                var noneActivePro = servoice_inv.GetPaymentItemsList(formData.COMPANY_CODE, 1, DateTime.Now.Date.Month, 2018, DateTime.Now.Date.Year, formData.PAYMENT_ITEMS_NAME, "0", 0);
+
+                                if (noneActivePro.Any())
+                                {
+                                    result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_action_status_cancel_error, ResourceText.Isactive, formData.PAYMENT_ITEMS_NAME, line.ToString())));
+
+                                    result.ErrorFlag = true;
+                                }
+                            }
 
                             var dupPaymentItem = itemList.GroupBy(m => string.IsNullOrEmpty(m.PAYMENT_ITEMS_FEE_NAME) ? m.PAYMENT_ITEMS_FEE_NAME : m.PAYMENT_ITEMS_FEE_NAME.Trim()).Where(m => m.Count() > 1).ToList();
                             foreach (var itemDup in dupPaymentItem)
@@ -661,6 +734,17 @@ namespace BBDEVSYS.Services.CenterSetting.PaymentItems
                                 if (pymItems.Any())
                                 {
                                     result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.duplicate_error, ResourceText.PAYMENT_ITEMS_CODE + " " + formData.PAYMENT_ITEMS_NAME)));
+                                    result.ErrorFlag = true;
+                                }
+                            }
+                            //Delete Action
+                            if (formData.FormAction == ConstantVariableService.FormActionDelete)
+                            {
+                                var inv_ent = (from m in context.FEE_INVOICE where m.PAYMENT_ITEMS_CODE == formData.PAYMENT_ITEMS_CODE select m).FirstOrDefault();
+                                if (inv_ent != null)
+                                {
+                                    result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.cannot_request_delete, formData.PAYMENT_ITEMS_NAME)));
+
                                     result.ErrorFlag = true;
                                 }
                             }

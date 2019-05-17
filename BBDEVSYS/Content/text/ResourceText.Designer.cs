@@ -1222,6 +1222,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Status Active.
+        /// </summary>
+        public static string Isactive {
+            get {
+                return ResourceManager.GetString("Isactive", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to รายการ.
         /// </summary>
         public static string List {

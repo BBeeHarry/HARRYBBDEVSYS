@@ -129,7 +129,7 @@ namespace BBDEVSYS.Services.Shared
 
         //User Authorize
 
-        public const string AithorizeAdmin = "Administrator";
+        public const string AuthorizeAdmin = "Administrator";
 
 
     }

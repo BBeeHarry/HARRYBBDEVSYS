@@ -74,6 +74,7 @@ namespace BBDEVSYS.ViewModels.CenterSetting.PaymentItems
     {
         public PaymentItemsChargeViewModel() {
             ChargeTypeList = new List<ValueHelpViewModel>();
+            IsActionList = new List<ValueHelpViewModel>();
         }
 
         public Nullable<int> PAYMENT_ITEMS_ID { get; set; }
@@ -88,6 +89,9 @@ namespace BBDEVSYS.ViewModels.CenterSetting.PaymentItems
         public string ItemIndex { get; set; }
         public bool DeleteFlag { get; set; }
         public List<ValueHelpViewModel> ChargeTypeList { get;  set; }
+
+        public Nullable<bool> IS_ACTIVE { get; set; }
+        public List<ValueHelpViewModel> IsActionList { get;  set; }
     }
 
     public  class PaymentItemsViewModelValidator : AbstractValidator<PaymentItemsViewModel>

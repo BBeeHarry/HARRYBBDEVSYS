@@ -148,6 +148,8 @@
                                             <th>@BBDEVSYS.Content.text.ResourceText.SEQUENCE</th>
                                             <th>@BBDEVSYS.Content.text.ResourceText.Charge</th>
                                             <th>@BBDEVSYS.Content.text.ResourceText.FEE_TYPE</th>
+                                            <th>@BBDEVSYS.Content.text.ResourceText.Isactive</th>
+
                                             <th></th>
                                         </tr>
                                     </thead>
@@ -236,6 +238,9 @@
 
     @Html.HiddenFor(m => m.GROUP_SEQ_CHANNELS)
     @Html.HiddenFor(m => m.SEQ_CHANNELS)
+
+    @Html.HiddenFor(m => m.DURATION)
+    @Html.HiddenFor(m => m.IS_ACTIVE)
 
 
 

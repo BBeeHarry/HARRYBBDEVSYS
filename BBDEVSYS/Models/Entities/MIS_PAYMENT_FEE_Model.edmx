@@ -4,7 +4,7 @@
   <edmx:Runtime>
     <!-- SSDL content -->
     <edmx:StorageModels>
-      <Schema Namespace="MIS_PAYMENT_FEEModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+    <Schema Namespace="MIS_PAYMENT_FEEModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2008" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
         <EntityType Name="AppCompositeRole">
           <Key>
             <PropertyRef Name="ID" />
@@ -406,6 +406,7 @@
           <Property Name="CHARGE_TYPE" Type="nvarchar" MaxLength="40" />
           <Property Name="COMPANY_CODE" Type="nvarchar" MaxLength="30" />
           <Property Name="PAYMENT_ITEMS_NAME" Type="nvarchar(max)" />
+          <Property Name="IS_ACTIVE" Type="bit" />
         </EntityType>
         <!--Errors Found During Generation:
 warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USER_COMPANY' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
@@ -565,8 +566,7 @@ warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USERS' does not have a primar
     FROM [dbo].[USERS] AS [USERS]</DefiningQuery>
           </EntitySet>
         </EntityContainer>
-      </Schema>
-    </edmx:StorageModels>
+      </Schema></edmx:StorageModels>
     <!-- CSDL content -->
     <edmx:ConceptualModels>
       <Schema Namespace="MIS_PAYMENT_FEEModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
@@ -971,6 +971,7 @@ warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USERS' does not have a primar
           <Property Name="CHARGE_TYPE" Type="String" MaxLength="40" FixedLength="false" Unicode="true" />
           <Property Name="COMPANY_CODE" Type="String" MaxLength="30" FixedLength="false" Unicode="true" />
           <Property Name="PAYMENT_ITEMS_NAME" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="IS_ACTIVE" Type="Boolean" />
         </EntityType>
         <EntityType Name="UserRole">
           <Key>
@@ -1501,6 +1502,7 @@ warning 6002: The table/view '0MIS_PAYMENT_FEE.dbo.USERS' does not have a primar
           <EntitySetMapping Name="PAYMENT_ITEMS_CHAGE">
             <EntityTypeMapping TypeName="MIS_PAYMENT_FEEModel.PAYMENT_ITEMS_CHAGE">
               <MappingFragment StoreEntitySet="PAYMENT_ITEMS_CHAGE">
+                <ScalarProperty Name="IS_ACTIVE" ColumnName="IS_ACTIVE" />
                 <ScalarProperty Name="ID" ColumnName="ID" />
                 <ScalarProperty Name="SEQUENCE" ColumnName="SEQUENCE" />
                 <ScalarProperty Name="PAYMENT_ITEMS_ID" ColumnName="PAYMENT_ITEMS_ID" />

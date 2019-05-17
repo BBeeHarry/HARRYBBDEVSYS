@@ -1023,4 +1023,7 @@
   <data name="TitleAdjAndRfdDone" xml:space="preserve">
     <value>Adjust and Refund Summary Report for Send out</value>
   </data>
+  <data name="Isactive" xml:space="preserve">
+    <value>Status Active</value>
+  </data>
 </root>

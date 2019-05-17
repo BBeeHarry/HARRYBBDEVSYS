@@ -21,5 +21,6 @@ namespace BBDEVSYS.Models.Entities
         public string CHARGE_TYPE { get; set; }
         public string COMPANY_CODE { get; set; }
         public string PAYMENT_ITEMS_NAME { get; set; }
+        public Nullable<bool> IS_ACTIVE { get; set; }
     }
 }

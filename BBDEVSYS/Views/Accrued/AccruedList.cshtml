@@ -249,7 +249,7 @@
             { "data": "TOTAL_AMT", "title": "Total Amount", "type": "currency", "width": "10%", "className": "true-dt-column-align-right", render: $.fn.dataTable.render.number(',', '.', 2, '') },
             { "data": "CREATE_BY_NAME", "title": "Creator", "type": "string", "width": "15%" },
             { "data": "CREATE_DATE", "title": "Create Date", "type": "date-dd-mmm-yyyy", "width": "10%" },
-            { "data": null, "defaultContent": getDataTableButton(["display", "edit", "print"]), "orderable": false, "width": "15%", "className": "true-dt-button-column" },
+            { "data": null, "defaultContent": getDataTableButton(["display", "edit","delete","print"]), "orderable": false, "width": "15%", "className": "true-dt-button-column" },
             { "data": "ACCRUED_ID", "type": "num", "hidden": true }
         ];
         $('#dataListTable').on('preXhr.dt', function (e, settings, data) {

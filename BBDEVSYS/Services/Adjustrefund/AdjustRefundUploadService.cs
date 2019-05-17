@@ -1127,7 +1127,10 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                                 //          List<DataTable> tables =ds.Tables.Cast<DataTable>().Where(t => t.Columns.Cast<DataColumn>()
                                 //.All(c => columnNames.Contains(c.ColumnName)) ).Distinct().ToList();
-                                ds.Tables.Add(dtFile);
+                                if (dtFile.Rows.Count > 0)
+                                {
+                                    ds.Tables.Add(dtFile);
+                                }
                             }
                             else
                             {
@@ -1147,7 +1150,10 @@ namespace BBDEVSYS.Services.Adjustrefund
                                         dtFile.TableName = tbName.Trim();
                                     }
 
-                                    ds.Tables.Add(dtFile);
+                                    if (dtFile.Rows.Count > 0)
+                                    {
+                                        ds.Tables.Add(dtFile);
+                                    }
                                 }
                             }
                         }
@@ -1167,7 +1173,10 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             dtFile.TableName = tbName.Trim();
                         }
-                        ds.Tables.Add(dtFile);
+                        if (dtFile.Rows.Count > 0)
+                        {
+                            ds.Tables.Add(dtFile);
+                        }
                     }
 
                     oleExcelConnection.Close();
