@@ -395,7 +395,54 @@
 
             redirectTo(url);
         });
+        //Edit double click record
+        @*$('#dataListTable tbody').on('dblclick', 'tr', function () {
+            debugger
 
+            var id = $(this).GetDatatableData()["ID"];
+            var des_code = $(this).GetDatatableData()["PAYMENT_ITEMS_CODE"];
+            var status = $(this).GetDatatableData()["IS_STATUS"];
+
+            var month = $(this).GetDatatableData()["INV_MONTH"];
+            var year = $(this).GetDatatableData()["INV_YEAR"];
+            var company = $(this).GetDatatableData()["COMPANY_CODE"];
+            var available = $(this).GetDatatableData()["IS_STATUS"];
+            var authAdmin = $(this).GetDatatableData()["AuthAdmin"];
+            var flagAuth = false;
+            var message = "";
+            if (company == undefined || company == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.COMPANY_CODE) " + "<br />";
+
+            }
+            if (month == undefined || month == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_MONTH) " + "<br />";
+            }
+
+            if (year == undefined || year == '') {
+                message = message + "@BBDEVSYS.Content.text.ValidatorMessage.notempty_error.Replace("{PropertyName}", BBDEVSYS.Content.text.ResourceText.INV_YEAR) " + "<br />";
+
+            }
+            if (company != undefined && company != '' && month != undefined && month != '' && year != undefined && year != '') {
+                flagAuth = true;
+            }
+            if (flagAuth) {
+                if (available.toUpperCase() === "3" && authAdmin != '@ConstantVariableService.AuthorizeAdmin' ) {
+                    displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", "ใบแจ้งหนี้ทำการจ่ายสมบูรณ์แล้ว  ไม่สามาทำรายการ" + '@BBDEVSYS.Content.text.ResourceText.ButtonEdit' + " ได้", "E");
+                    $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+                }
+                else {
+                    $(this).find('span').attr('class', 'fa fa-spinner fa-pulse');
+                    var url = '@Url.Action("Manage", "Invoice", new { Area = "Invoice" })?recordKey=' + id + '&monthValue=' + month + '&yearValue=' + year + '&companyCode=' + company + '&paymentItemCode=' + des_code + '&formState=' + '@ConstantVariableService.FormStateEdit';
+
+                    redirectTo(url);
+
+                }
+            }
+            else {
+                displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", message, "E");
+                $('body').find('.true-dt-button-evaluate').find('span').attr('class', 'fa fa-list-ol');
+            }
+        });*@
         //Edit
         $('#dataListTable tbody').on('click', '.true-dt-button-edit_inv', function () {
 

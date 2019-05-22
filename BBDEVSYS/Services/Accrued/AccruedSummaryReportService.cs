@@ -1100,7 +1100,7 @@ namespace BBDEVSYS.Services.Accrued
                         #region set value column month  transaction
 
                         model.CHARGE = "Trxns.";
-                        while (_iLoop < _diffmonths)
+                        while (_iLoop <= _diffmonths)
                         {
                             if (_mnth == 13)
                             {
@@ -1139,7 +1139,10 @@ namespace BBDEVSYS.Services.Accrued
                         #region set value column month total transaction
                         model = new AccruedReportViewModel();
                         model.CHARGE = "Trxns Fee";
-                        while (_iLoop < _diffmonths)
+                        _iLoop = 0;
+                        _mnth = monthS;
+                        _yrr = yearS;
+                        while (_iLoop <= _diffmonths)
                         {
                             if (_mnth == 13)
                             {
@@ -1171,7 +1174,10 @@ namespace BBDEVSYS.Services.Accrued
                         model = new AccruedReportViewModel();
 
                         model.CHARGE = "Amount";
-                        while (_iLoop < _diffmonths)
+                        _iLoop = 0;
+                        _mnth = monthS;
+                        _yrr = yearS;
+                        while (_iLoop <= _diffmonths)
                         {
                             if (_mnth == 13)
                             {
@@ -1203,7 +1209,10 @@ namespace BBDEVSYS.Services.Accrued
                         model = new AccruedReportViewModel();
 
                         model.CHARGE = "Amount (MDR)";
-                        while (_iLoop < _diffmonths)
+                        _iLoop = 0;
+                        _mnth = monthS;
+                        _yrr = yearS;
+                        while (_iLoop <= _diffmonths)
                         {
                             if (_mnth == 13)
                             {
@@ -1473,7 +1482,11 @@ namespace BBDEVSYS.Services.Accrued
 
 
                         #region Trxn + Amt
+                        string channel = "";
+                        string feename = "";
+                        bool preRemoveval = false;
 
+                        int countTrxn = group_Trxncharge.Count();
                         foreach (var data_charge in group_charge)
                         {
 
@@ -1488,9 +1501,11 @@ namespace BBDEVSYS.Services.Accrued
 
                             var model = new AccruedReportViewModel();
                             rowfirst++;
-                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : "";
-                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : "";
+                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : preRemoveval ? channel : "";
+                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : preRemoveval ? feename : "";
                             model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME;
+                            channel = model.CHANNELS;
+                            feename = model.FEE;
 
 
                             #region value before calculate avg  Transaction and Amount
@@ -1703,12 +1718,19 @@ namespace BBDEVSYS.Services.Accrued
                             #region Check flag none Active Sub Price Catalog
                             if (data_charge.IS_ACTIVE == false)
                             {
+
+                                if (model.FEE != null)
+                                {
+                                    preRemoveval = true;
+                                }
+
                                 if (data_charge.CHARGE_TYPE == "TRXN")
                                 {
                                     if (arrMonthTrxn.ToList().All(m => m == 0))
                                     {
+                                        countTrxn--;
                                         model = new AccruedReportViewModel();
-                                        break;
+                                        continue;
                                     }
                                 }
                                 else
@@ -1716,7 +1738,28 @@ namespace BBDEVSYS.Services.Accrued
                                     if (arrMonthAMT.ToList().All(m => m == 0))
                                     {
                                         model = new AccruedReportViewModel();
-                                        break;
+                                        continue;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (data_charge.CHARGE_TYPE == "TRXN")
+                                {
+                                    if (arrMonthTrxn.ToList().All(m => m == 0))
+                                    {
+                                        countTrxn--;
+                                        model.CHARGE = string.Empty;
+                                        continue;
+                                    }
+                                }
+                                else
+                                {
+                                    if (arrMonthAMT.ToList().All(m => m == 0))
+                                    {
+                                       
+                                        model.CHARGE = string.Empty;
+                                        continue;
                                     }
                                 }
                             }
@@ -1725,9 +1768,10 @@ namespace BBDEVSYS.Services.Accrued
                             if (model != null)
                             {
                                 modelList.Add(model);
+                                preRemoveval = false;
                             }
                             #region Total Trxn
-                            if (rowfirst == group_Trxncharge.Count())
+                            if (rowfirst == countTrxn)
                             {
                                 chkTotalTrx = true;
                             }
@@ -1917,18 +1961,35 @@ namespace BBDEVSYS.Services.Accrued
                             #region Check flag none Active Sub Price Catalog
                             if (data_charge.IS_ACTIVE == false)
                             {
-                                if (arrMonthCharge.ToList().All(m => m == 0))
+
+                                if (model.FEE != null)
                                 {
-                                    model = new AccruedReportViewModel();
-                                    break;
+                                    preRemoveval = true;
                                 }
 
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                {
+
+                                    model = new AccruedReportViewModel();
+                                    continue;
+                                }
+
+                            }
+                            else
+                            {
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                {
+
+                                    model.CHARGE = string.Empty;
+                                    continue;
+                                }
                             }
                             #endregion
 
                             if (model != null)
                             {
                                 modelList.Add(model);
+                                preRemoveval = false;
                             }
                             // modelList.Add(model);
                         }//fee
@@ -2697,7 +2758,11 @@ namespace BBDEVSYS.Services.Accrued
 
 
                         #region Trxn + Amt
+                        string channel = string.Empty;
+                        string feename = string.Empty;
+                        bool preRemoveval = false;
 
+                        int countTrxn = group_Trxncharge.Count();
                         foreach (var data_charge in group_charge)
                         {
                             decimal[] arrMonthTrxn = new decimal[_diffmonths];
@@ -2710,11 +2775,11 @@ namespace BBDEVSYS.Services.Accrued
 
                             var model = new AccruedReportViewModel();
                             rowfirst++;
-                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : "";
-                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : "";
+                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : preRemoveval ? channel : "";
+                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : preRemoveval ? feename : "";
                             model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME;
-
-
+                            channel = model.CHANNELS;
+                            feename = model.FEE;
                             #region value before calculate avg  Transaction and Amount
                             //===charge ===
                             int mS = monthS;
@@ -2923,12 +2988,19 @@ namespace BBDEVSYS.Services.Accrued
                             #region Check flag none Active Sub Price Catalog
                             if (data_charge.IS_ACTIVE == false)
                             {
+
+                                if (model.FEE != null)
+                                {
+                                    preRemoveval = true;
+                                }
+
                                 if (data_charge.CHARGE_TYPE == "TRXN")
                                 {
                                     if (arrMonthTrxn.ToList().All(m => m == 0))
                                     {
+                                        countTrxn--;
                                         model = new AccruedReportViewModel();
-                                        break;
+                                        continue;
                                     }
                                 }
                                 else
@@ -2936,7 +3008,27 @@ namespace BBDEVSYS.Services.Accrued
                                     if (arrMonthAMT.ToList().All(m => m == 0))
                                     {
                                         model = new AccruedReportViewModel();
-                                        break;
+                                        continue;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (data_charge.CHARGE_TYPE == "TRXN")
+                                {
+                                    if (arrMonthTrxn.ToList().All(m => m == 0))
+                                    {
+                                        countTrxn--;
+                                        model.CHARGE=string.Empty;
+                                        continue;
+                                    }
+                                }
+                                else
+                                {
+                                    if (arrMonthAMT.ToList().All(m => m == 0))
+                                    {
+                                        model.CHARGE = string.Empty;
+                                        continue;
                                     }
                                 }
                             }
@@ -2945,11 +3037,12 @@ namespace BBDEVSYS.Services.Accrued
                             if (model != null)
                             {
                                 modelList.Add(model);
+                                preRemoveval = false;
                             }
 
                             //modelList.Add(model);
                             #region Total Trxn
-                            if (rowfirst == group_Trxncharge.Count())
+                            if (rowfirst == countTrxn)
                             {
                                 chkTotalTrx = true;
                             }
@@ -3139,19 +3232,36 @@ namespace BBDEVSYS.Services.Accrued
                             #region Check flag none Active Sub Price Catalog
                             if (data_charge.IS_ACTIVE == false)
                             {
-                               
-                                    if (arrMonthCharge.ToList().All(m => m == 0))
-                                    {
-                                        model = new AccruedReportViewModel();
-                                        break;
-                                    }
-                               
+
+                                if (model.FEE != null)
+                                {
+                                    preRemoveval = true;
+                                }
+
+
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                {
+
+                                    model = new AccruedReportViewModel();
+                                    continue;
+                                }
+
+                            }
+                            else
+                            {
+                                if (arrMonthCharge.ToList().All(m => m == 0))
+                                {
+
+                                    model.CHARGE = string.Empty;
+                                    continue;
+                                }
                             }
                             #endregion
 
                             if (model != null)
                             {
                                 modelList.Add(model);
+                                preRemoveval = false;
                             }
                             //modelList.Add(model);
                         }//fee
@@ -3473,7 +3583,10 @@ namespace BBDEVSYS.Services.Accrued
                         var group_charge = (from m in feeItemList where m.PAYMENT_ITEMS_ID == item.ID orderby m.CHARGE_TYPE descending select m).ToList();
                         var group_Trxncharge = group_charge.Where(m => m.CHARGE_TYPE == "TRXN").ToList();
                         #region Trxn + Amt
-
+                        string channel = string.Empty;
+                        string feename = string.Empty;
+                        bool preRemoveval = false;
+                        int countTrxn = group_Trxncharge.Count();
                         foreach (var data_charge in group_charge)
                         {
                             decimal[] arrMonthTrxn = new decimal[_diffmonths];
@@ -3486,10 +3599,13 @@ namespace BBDEVSYS.Services.Accrued
 
                             var model = new AccruedReportViewModel();
                             rowfirst++;
-                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : "";
-                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : "";
+                            model.CHANNELS = rowfirst == 1 ? item.CHANNELS : preRemoveval ? channel : "";
+                            model.FEE = rowfirst == 1 ? item.PAYMENT_ITEMS_NAME : preRemoveval ? feename : "";
                             model.CHARGE = data_charge.PAYMENT_ITEMS_FEE_NAME;
 
+
+                            channel = model.CHANNELS;
+                            feename = model.FEE;
 
                             #region value before calculate avg  Transaction and Amount
                             //===charge ===
@@ -3648,12 +3764,19 @@ namespace BBDEVSYS.Services.Accrued
                             #region Check flag none Active Sub Price Catalog
                             if (data_charge.IS_ACTIVE == false)
                             {
+
+                                if (model.FEE != null)
+                                {
+                                    preRemoveval = true;
+                                }
+
                                 if (data_charge.CHARGE_TYPE == "TRXN")
                                 {
                                     if (arrMonthTrxn.ToList().All(m => m == 0))
                                     {
+                                        countTrxn--;
                                         model = new AccruedReportViewModel();
-                                        break;
+                                        continue;
                                     }
                                 }
                                 else
@@ -3661,7 +3784,27 @@ namespace BBDEVSYS.Services.Accrued
                                     if (arrMonthAMT.ToList().All(m => m == 0))
                                     {
                                         model = new AccruedReportViewModel();
-                                        break;
+                                        continue;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                if (data_charge.CHARGE_TYPE == "TRXN")
+                                {
+                                    if (arrMonthTrxn.ToList().All(m => m == 0))
+                                    {
+                                        countTrxn--;
+                                        model.CHARGE = string.Empty;
+                                        continue;
+                                    }
+                                }
+                                else
+                                {
+                                    if (arrMonthAMT.ToList().All(m => m == 0))
+                                    {
+                                        model.CHARGE = string.Empty;
+                                        continue;
                                     }
                                 }
                             }
@@ -3670,10 +3813,11 @@ namespace BBDEVSYS.Services.Accrued
                             if (model != null)
                             {
                                 modelList.Add(model);
+                                preRemoveval = false;
                             }
                             //modelList.Add(model);
                             #region Total Trxn
-                            if (rowfirst == group_Trxncharge.Count())
+                            if (rowfirst == countTrxn)
                             {
                                 chkTotalTrx = true;
                             }
@@ -3862,18 +4006,34 @@ namespace BBDEVSYS.Services.Accrued
                                 #region Check flag none Active Sub Price Catalog
                                 if (data_charge.IS_ACTIVE == false)
                                 {
-                                        if (arrMonthCharge.ToList().All(m => m == 0))
-                                        {
-                                            model = new AccruedReportViewModel();
-                                            break;
-                                        }
-                                    
+
+                                    if (model.FEE != null)
+                                    {
+                                        preRemoveval = true;
+                                    }
+                                    if (arrMonthCharge.ToList().All(m => m == 0))
+                                    {
+
+                                        model = new AccruedReportViewModel();
+                                        continue;
+                                    }
+
+                                }
+                                else
+                                {
+                                    if (arrMonthCharge.ToList().All(m => m == 0))
+                                    {
+
+                                        model.CHARGE= string.Empty;
+                                        continue;
+                                    }
                                 }
                                 #endregion
 
                                 if (model != null)
                                 {
                                     modelList.Add(model);
+                                    preRemoveval = false;
                                 }
                                 //modelList.Add(model);
                             }//fee
