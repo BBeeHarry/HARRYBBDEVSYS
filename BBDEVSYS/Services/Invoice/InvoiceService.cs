@@ -818,6 +818,10 @@ namespace BBDEVSYS.Services.Invoice
                         }
                         else
                         {
+                            if (string.IsNullOrEmpty(formData.PRO_NO))
+                            {
+                                entFeeInv.IS_STATUS = "1";
+                            }
                             if (!string.IsNullOrEmpty(formData.PRO_NO))
                             {
                                 entFeeInv.IS_STATUS = "2";
@@ -1283,6 +1287,10 @@ namespace BBDEVSYS.Services.Invoice
                                 {
                                     if (!(formData.UPLOAD_TYPE ?? false))
                                     {
+                                        if (string.IsNullOrEmpty(formData.PRO_NO))
+                                        {
+                                            formData.IS_STATUS = "1";
+                                        }
                                         if (!string.IsNullOrEmpty(formData.PRO_NO))
                                         {
                                             formData.IS_STATUS = "2";
