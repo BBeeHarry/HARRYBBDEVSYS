@@ -1426,16 +1426,19 @@ namespace BBDEVSYS.Services.Accrued
                                 {
 
                                     int ym_accrued = data_accr.Max(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH).Value;
+
+                                    int ym_accrued_exists = ((year * 12) + month);
+
                                     var getdata_accr = data_assign_accr.Where(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH == ym_accrued
                                     && m.INV_MONTH == _month && m.INV_YEAR == _year
                                     ).ToList();
 
-                                    arrMonthTrxn[i - 1] = getdata_accr.Sum(m => (m.TRANSACTIONS ?? 0));
+                                    arrMonthTrxn[i - 1] = ym_accrued_exists == ym_accrued ?0: getdata_accr.Sum(m => (m.TRANSACTIONS ?? 0));
                                     //arrMonthAMT[i - 1] = getdata_accr.Sum(m => (m.ACTUAL_AMOUNT ?? 0));
                                     //arrMonthCharge[i - 1] = getdata_accr.Sum(m => (m.TOTAL_CHARGE_AMOUNT ?? 0));
-                                    arrMonthAMT[i - 1] = getdata_accr.Sum(m => (m.AMOUNT ?? 0));
+                                    arrMonthAMT[i - 1] = ym_accrued_exists == ym_accrued ? 0 : getdata_accr.Sum(m => (m.AMOUNT ?? 0));
 
-                                    arrMonthCharge[i - 1] = getdata_accr.Sum(m => (m.INV_AMOUNT ?? 0));
+                                    arrMonthCharge[i - 1] = ym_accrued_exists == ym_accrued ? 0 : getdata_accr.Sum(m => (m.INV_AMOUNT ?? 0));
                                 }
 
                                 _month++;
