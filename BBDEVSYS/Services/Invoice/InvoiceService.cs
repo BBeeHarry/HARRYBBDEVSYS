@@ -74,7 +74,7 @@ namespace BBDEVSYS.Services.Invoice
             }
         }
 
-        public  List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status, int seq_item)
+        public List<InvoiceViewModel> GetPaymentItemsList(string companyCode, int monthS, int monthE, int yearS, int yearE, string pymName, string status, int seq_item)
         {
             List<InvoiceViewModel> getInvList = new List<InvoiceViewModel>();
             try
@@ -86,7 +86,7 @@ namespace BBDEVSYS.Services.Invoice
                     //JavaScriptSerializer js = new JavaScriptSerializer();
                     //List<string> statusList = js.Deserialize<List<string>>(status);
 
-                   
+
 
                     var getPaymentItemList = (from data in context.PAYMENT_ITEMS where data.IS_ACTIVE == true orderby data.GROUP_SEQ_CHANNELS, data.ID select data).ToList();
                     var getFeeInvList = (from data in context.FEE_INVOICE select data).ToList();
@@ -605,7 +605,7 @@ namespace BBDEVSYS.Services.Invoice
 
                     int paymentitemId = getPaymentItems != null ? getPaymentItems.ID : 0;
                     var getPaymentItemsCharge = (from data in context.PAYMENT_ITEMS_CHAGE where data.PAYMENT_ITEMS_ID == paymentitemId && data.COMPANY_CODE == companyCode orderby data.SEQUENCE select data).ToList();
-                    if (formState!=ConstantVariableService.FormStateDisplay)
+                    if (formState != ConstantVariableService.FormStateDisplay)
                     {
                         getPaymentItemsCharge = getPaymentItemsCharge.Where(m => m.IS_ACTIVE != false).ToList();
 
@@ -968,40 +968,7 @@ namespace BBDEVSYS.Services.Invoice
                     //Copy data from viewmodel to model - for header
                     MVMMappingService.MoveData(formData, entfeeInv);
 
-                    if (!(formData.UPLOAD_TYPE ?? false))
-                    {
 
-                        //entfeeInv.IS_STATUS = "1";
-                        if (entfeeInv.IS_STATUS == "3")
-                        {
-                            entfeeInv.IS_STATUS = formData.IS_STATUS;
-                        }
-                        else if (entfeeInv.IS_STATUS == "4")
-                        {
-                            entfeeInv.IS_STATUS = formData.IS_STATUS;
-                        }
-                        else
-                        {
-                            if (!string.IsNullOrEmpty(formData.PRO_NO))
-                            {
-                                entfeeInv.IS_STATUS = "2";
-                            }
-                            if (formData.INV_APPROVED_DATE != null)
-                            {
-                                entfeeInv.IS_STATUS = "3";
-                            }
-                            //Status Not Accrued
-                            if (formData.REMARK == "Not Accrued")
-                            {
-                                entfeeInv.IS_STATUS = "0";
-                            }
-                            //Status Not Accrued Not Create PRO No.
-                            if (formData.REMARK == "For Accrued")
-                            {
-                                entfeeInv.IS_STATUS = "1";
-                            }
-                        }
-                    }
 
 
 
@@ -1310,6 +1277,34 @@ namespace BBDEVSYS.Services.Invoice
                                     result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.duplicate_error, ResourceText.INV_NO + " " + formData.INV_NO)));
                                     result.ErrorFlag = true;
                                 }
+                               var checkInvoiceNo = (from m in context.FEE_INVOICE where m.INV_NO == formData.INV_NO.Trim() && m.ID == formData.ID select m).FirstOrDefault();
+                                string status = checkInvoiceNo == null ?string.Empty : checkInvoiceNo.IS_STATUS;
+                                if (formData.IS_STATUS == status)
+                                {
+                                    if (!(formData.UPLOAD_TYPE ?? false))
+                                    {
+                                        if (!string.IsNullOrEmpty(formData.PRO_NO))
+                                        {
+                                            formData.IS_STATUS = "2";
+                                        }
+                                        if (formData.INV_APPROVED_DATE != null)
+                                        {
+                                            formData.IS_STATUS = "3";
+                                        }
+                                        //Status Not Accrued
+                                        if (formData.REMARK == "Not Accrued")
+                                        {
+                                            formData.IS_STATUS = "0";
+                                        }
+                                        //Status Not Accrued Not Create PRO No.
+                                        if (formData.REMARK == "For Accrued")
+                                        {
+                                            formData.IS_STATUS = "1";
+                                        }
+
+                                    }
+                                }
+                                
                             }
                             //Check Invoice Close
                             if (formData.FormAction == ConstantVariableService.FormActionClosed)
