@@ -1430,6 +1430,7 @@ namespace BBDEVSYS.Services.Accrued
                                     int ym_accrued_exists = ((year * 12) + month);
 
                                     var getdata_accr = data_assign_accr.Where(m => (m.ACCRUED_YEAR * 12) + m.ACCRUED_MONTH == ym_accrued
+                                    && m.PAYMENT_ITEMS_CODE == item.PAYMENT_ITEMS_CODE
                                     && m.INV_MONTH == _month && m.INV_YEAR == _year
                                     ).ToList();
 
