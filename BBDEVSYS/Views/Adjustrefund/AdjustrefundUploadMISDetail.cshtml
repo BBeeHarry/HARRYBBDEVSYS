@@ -128,7 +128,7 @@
                         </div>
                         <div class="col-xs-12" style="padding-top: 20px">
                             <div>
-                                <div class="table-responsive " style="height:400px;">
+                                <div class="table-responsive ">
                                     <table class="table table-bordered  table-striped true-datatable" id="previewItemTable" @*style="width:1900px"*@>
 
                                         @{
@@ -137,6 +137,20 @@
 
 
                                     </table>
+                                    @*<div class="form-group">
+                                        <label class="col-xs-12 col-md-3 true-control-label  ">
+                                           Transaction 
+                                        </label>
+                                        <div class="col-xs-12 col-md-3 true-text " style="font-weight:bold">
+                                            @Html.DisplayFor(m => m.TotalTransaction,new {  Value = String.Format("{0:0,000.00}", Model.TotalTransaction) })
+                                        </div>
+                                        <label class="col-xs-12 col-md-2 true-control-label  ">
+                                           Amount
+                                        </label>
+                                        <div class="col-xs-12 col-md-4 true-text" style="font-weight:bold">
+                                            @Html.DisplayFor(m => m.TotalAmount, new { Value = String.Format("{0:0,000.00}", Model.TotalTransaction) })
+                                        </div>
+                                    </div>*@
 
                                 </div>
 

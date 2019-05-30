@@ -34,6 +34,7 @@ namespace BBDEVSYS.Services.Adjustrefund
         public static SqlConnection sqlConn = new SqlConnection();
         public static SqlDataAdapter sqlDa = new SqlDataAdapter();
         public static SqlBulkCopy bulkCopy;
+        
         // SqlBulkCopy bulkCopy = new SqlBulkCopy();
         public ValidationWithReturnResult<List<AdjustrefundUploadViewModel>> ImportExcel(string fileName, string sheetName)
         {
@@ -1741,7 +1742,7 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                         if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Fund Transfer")
                         {
-                            reason = "Manual Fund Transfer ban cancel";
+                            reason = "Input Batch To Fund Transfer ban cancel";
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Refund"
                             || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Refund")
@@ -1767,7 +1768,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Fund Transfer")
                         {
-                            reason = "Manual Fund Transfer";
+                            reason = "Input Batch To Fund Transfer";
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_notfound.xlsx To Send To Verify")
                         {
@@ -1777,7 +1778,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             reason = "0";
                         }
-                        /*=IF(BO1="Manual Fund Transfer","Pending",IF(BO1="Manual Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
+                        /*=IF(BO1="Input Batch To Fund Transfer","Pending",IF(BO1="Input Batch To Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
                         dr["Result Reason"] = reason;
 
                         string status = string.Empty;
@@ -1785,17 +1786,17 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             status = "Complete";
                         }
-                        else if (dr["Result Reason"].ToString() == "Manual Fund Transfer ban cancel")
+                        else if (dr["Result Reason"].ToString() == "Input Batch To Fund Transfer ban cancel")
                         {
-                            status = "Change Owner";
+                            status = "Complete";// reason old "Change Owner";
                         }
                         else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน"
-                            || dr["Result Reason"].ToString() == "Manual Fund Transfer")
+                            || dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
                         {
-                            status = "Pending";
+                            status = "Complete"; // old "Pending";
                         }
                         else if (dr["Result Reason"].ToString() == "Change owner to Payment_Resolution และ Feedback SR")
                         {
@@ -1836,7 +1837,7 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                         if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Fund Transfer")
                         {
-                            reason = "Manual Fund Transfer ban cancel";
+                            reason = "Input Batch To Fund Transfer ban cancel";
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Refund"
                             || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Refund")
@@ -1862,7 +1863,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Fund Transfer")
                         {
-                            reason = "Manual Fund Transfer";
+                            reason = "Input Batch To Fund Transfer";
                         }
                         else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_notfound.xlsx To Send To Verify")
                         {
@@ -1872,7 +1873,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             reason = "0";
                         }
-                        /*=IF(BO1="Manual Fund Transfer","Pending",IF(BO1="Manual Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
+                        /*=IF(BO1="Input Batch To Fund Transfer","Pending",IF(BO1="Input Batch To Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
                         dr["Result Reason"] = reason;
 
                         string status = string.Empty;
@@ -1880,15 +1881,16 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             status = "Complete";
                         }
-                        else if (dr["Result Reason"].ToString() == "Manual Fund Transfer ban cancel")
+                        else if (dr["Result Reason"].ToString() == "Input Batch To Fund Transfer ban cancel"
+                            || dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
                         {
-                            status = "Change Owner";
+                            status = "Complete";//old "Change Owner";
                         }
                         else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
-                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน"
-                            || dr["Result Reason"].ToString() == "Manual Fund Transfer")
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
+                            //|| dr["Result Reason"].ToString() == "Manual Fund Transfer")
                         {
                             status = "Pending";
                         }
@@ -2621,12 +2623,115 @@ namespace BBDEVSYS.Services.Adjustrefund
             }
             return data;
         }
+        public  ValidationResult ValidateFormData(AdjustrefundUploadViewModel formData, ModelStateDictionary modelState)
+        {
+            ValidationResult result = new ValidationResult();
+            try
+            {
+                if (!modelState.IsValid)
+                {
+                    result.ModelStateErrorList = UtilityService.GetModelStateErrors(modelState);
+                    result.ErrorFlag = true;
+                }
+                else
+                {
 
+                    //'=== > server's detail
+                    string server_machine = "DESKTOP-S7KNP5L\\SQLEXPRESS2008R2";//"RM-T15-SOMCHAI";
+                    string server_user = "sa";
+                    string server_password = "p@ssw0rd";// "True2017";
+                    string server_dbname = "MIS_PAYMENT_ADJUST";// "MIS_PAYMENT";
+                    string server_table = "REFUND_PAYMENT_REQUSITION";
+
+                    //'=== > sql server variables
+                    sqlConn = new SqlConnection();
+                    sqlDa = new SqlDataAdapter();
+
+                    string strConn = "Data Source='" + server_machine + "';Initial Catalog= '" + server_dbname + "' ;User ID= '" + server_user + "'; Password= '" + server_password + "'";
+
+                    //using (sqlConn = new SqlConnection())
+                    //{
+                    //    if (sqlConn.State == ConnectionState.Open)
+                    //    {
+                    //        sqlConn.Close();
+
+                    //        //MessageBox.Show("database is connected")
+                    //    }
+                    //    sqlConn.ConnectionString = strConn;
+                    //    sqlConn.Open();
+                    //}
+                    ////'=== > connect sql server
+
+
+                    ////'=== > load data table to sql server
+                    //bulkCopy = new SqlBulkCopy(sqlConn);
+                    //bulkCopy.DestinationTableName = server_table;
+                    //bulkCopy.WriteToServer(dt);
+
+                    SqlConnectionStringBuilder builder = new SqlConnectionStringBuilder();
+                    builder.DataSource = server_machine;   // update me
+                    builder.UserID = server_user;              // update me
+                    builder.Password = server_password;      // update me
+                    builder.InitialCatalog = server_dbname;
+
+
+                    using (SqlConnection connection = new SqlConnection(builder.ConnectionString))
+                    {
+                        if (connection.State == ConnectionState.Open)
+                        {
+                            connection.Close();
+                            
+                        }
+                       
+                        List<string> srList = new List<string>() ;
+
+                        foreach (DataRow item in formData.adjDataTable.Rows)
+                        {
+                            srList.Add("'" + item["REQUEST_NO"].ToString() + "'");
+                        }
+                        string value ="("+ string.Join(",",srList.ToArray()) +")";
+                        string selectSql = "SELECT * FROM " +"[" + server_dbname + "].[dbo]."+ "["+ server_table + "] WHERE [REQUEST_NO] IN  "+ value;
+                        //Drop table Temp
+                        SqlCommand oCmd = new SqlCommand(selectSql, connection);
+                        connection.Open();
+
+                        //oCmd.Parameters.Add("@SRNOList", value);
+                        DataTable dt = new DataTable();
+                        sqlDa = new SqlDataAdapter(oCmd);
+                        oCmd.CommandType = CommandType.Text;
+                        sqlDa.Fill(dt);
+
+                        oCmd.ExecuteNonQuery();
+                        if (dt.Rows.Count > 0)
+                        {
+                            foreach (DataRow item in dt.Rows)
+                            {
+                                result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.duplicate_error, " SR No. ")+" "+ item["REQUEST_NO"].ToString() + " โปรดตรวจสอบ"));
+
+                                result.ErrorFlag = true;
+                            }
+                        }
+                        connection.Close();
+                    }
+
+                   
+                }
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+                result.ErrorFlag = true;
+            }
+            return result;
+        }
         public ValidationResult SubmitForm(AdjustrefundUploadViewModel formData, ModelStateDictionary modelState)
         {
             ValidationResult result = new ValidationResult();
             try
             {
+               
+
                 ValidationWithReturnResult<DataTable> resultDataTable = new ValidationWithReturnResult<DataTable>();
                 resultDataTable = InitialDataFormUploadViewModel(formData);
                 // write the data in the "dataTable"
@@ -2634,6 +2739,13 @@ namespace BBDEVSYS.Services.Adjustrefund
                 if (!resultDataTable.ErrorFlag)
                 {
                     formData.adjDataTable = resultDataTable.ReturnResult;
+
+                    result = ValidateFormData(formData, modelState);
+                    //Error
+                    if (result.ErrorFlag)
+                    {
+                        return result;
+                    }
 
                     //'=== > server's detail
                     string server_machine = "DESKTOP-S7KNP5L\\SQLEXPRESS2008R2";//"RM-T15-SOMCHAI";

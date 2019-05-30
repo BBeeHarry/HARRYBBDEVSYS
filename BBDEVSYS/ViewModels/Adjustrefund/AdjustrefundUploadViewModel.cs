@@ -66,6 +66,9 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
         public string JsonValue { get; set; }
 
         public string HeaderSummary { get; set; }
+
+        public string TotalAmount { get; set; }
+        public string TotalTransaction { get; set; }
         public List<SelectListItem> TypeUploadLst { get;  set; }
     }
     public class AdjustrefundUploadViewModelItems {
