@@ -1786,17 +1786,18 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             status = "Complete";
                         }
-                        else if (dr["Result Reason"].ToString() == "Input Batch To Fund Transfer ban cancel")
+                        else if (dr["Result Reason"].ToString() == "Input Batch To Fund Transfer ban cancel"
+                            || dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
                         {
                             status = "Complete";// reason old "Change Owner";
                         }
                         else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
-                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน"
-                            || dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
+                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
+                            //|| dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
                         {
-                            status = "Complete"; // old "Pending";
+                            status = "Pending"; 
                         }
                         else if (dr["Result Reason"].ToString() == "Change owner to Payment_Resolution และ Feedback SR")
                         {

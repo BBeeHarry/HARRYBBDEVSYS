@@ -1709,21 +1709,23 @@ namespace BBDEVSYS.Services.Shared
                         const bool compact = false;
                         const bool showAll = false;
 
+                        pivotTable.GridDropZones = false;
+                        pivotTable.ShowDrill = true;
+                        pivotTable.DataOnRows = false;
+
+
+
                         pivotTable.Compact = false;//compact;
                         pivotTable.CompactData = false;//compact;
-                        pivotTable.Outline = false;//outline;
+                        pivotTable.Outline = true;//outline;
                         pivotTable.OutlineData = false;// outline;
                         pivotTable.Indent = 0;
                         pivotTable.UseAutoFormatting = true;
                         pivotTable.ShowMemberPropertyTips = false;
-                        pivotTable.DataOnRows = false;
-                        pivotTable.ShowDrill = false;
                         pivotTable.EnableDrill = false;
                         pivotTable.RowGrandTotals = true;// false;
                         pivotTable.ColumGrandTotals = true;
                         pivotTable.MultipleFieldFilters = true;
-                        pivotTable.GridDropZones = false;
-
 
 
 
