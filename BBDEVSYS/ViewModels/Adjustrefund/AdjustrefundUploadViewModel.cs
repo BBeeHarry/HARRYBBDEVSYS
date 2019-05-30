@@ -24,7 +24,9 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
             adjDataTable = new DataTable();
             previewDataTable = new DataTable();
             UserRequestList = new List<ValueHelpViewModel>();
-            
+
+
+            TypeUploadLst = new List<SelectListItem>();
 
         }
         //Authorization
@@ -39,6 +41,9 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
 
         [DisplayName("User Id")]
         public string UserRequest { get; set; }
+
+        [DisplayName("TypeUploadFile")]
+        public string TypeUploadFile { get; set; }
 
 
 
@@ -61,6 +66,7 @@ namespace BBDEVSYS.ViewModels.Adjustrefund
         public string JsonValue { get; set; }
 
         public string HeaderSummary { get; set; }
+        public List<SelectListItem> TypeUploadLst { get;  set; }
     }
     public class AdjustrefundUploadViewModelItems {
         #region Data Field 

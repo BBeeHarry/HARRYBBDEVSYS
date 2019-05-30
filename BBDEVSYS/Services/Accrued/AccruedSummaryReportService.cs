@@ -1115,7 +1115,7 @@ namespace BBDEVSYS.Services.Accrued
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (_yrr * 12) + _mnth).ToList();
 
                             //--Check Sum Transaction Price Catalog Printing
-                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Quantity"))
+                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Print"))
                             {
                                 //List<string> pym_item_fee_charge = new List<string>(new string[] { "Seal Quantity", "Envelope Quantity" });
                                 item_acc_chrge = item_acc_chrge.Where(m => m.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity") || m.PAYMENT_ITEMS_FEE_ITEM.Contains("Envelope Quantity")).ToList();
@@ -1533,7 +1533,7 @@ namespace BBDEVSYS.Services.Accrued
                                         arrMonthTrxn[n - 1] = (item_chrge.TRANSACTIONS ?? 0);
 
                                         //--Check Sum Transaction Price Catalog Printing
-                                        if (item.PAYMENT_ITEMS_NAME.Contains("Quantity"))
+                                        if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
                                         {
                                             if (item_chrge != null)
                                             {
@@ -1591,7 +1591,7 @@ namespace BBDEVSYS.Services.Accrued
                                     arrMonthTrxn[iTrxn] = (get_data_inv != null ? get_data_inv.TRANSACTIONS ?? 0 : 0);
 
                                     //--Check Sum Transaction Price Catalog Printing
-                                    if (item.PAYMENT_ITEMS_NAME.Contains("Quantity"))
+                                    if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
                                     {
                                         if (get_data_inv != null)
                                         {
@@ -2392,7 +2392,7 @@ namespace BBDEVSYS.Services.Accrued
                             var item_inv_chrge = get_entFeeInvItem.Where(q => (q.INV_YEAR * 12) + q.INV_MONTH == (yrr * 12) + mnth).ToList();
 
                             //--Check Sum Transaction Price Catalog Printing
-                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Quantity"))
+                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Print"))
                             {
 
                                 item_acc_chrge = item_acc_chrge.Where(m => m.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity") || m.PAYMENT_ITEMS_FEE_ITEM.Contains("Envelope Quantity")).ToList();
@@ -4401,7 +4401,7 @@ namespace BBDEVSYS.Services.Accrued
                             string monthIndex = dateTimeInfo.AbbreviatedMonthNames[_getmnth - 1] + Convert.ToString(_getyr).Substring(2, 2);
                             var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
                             //--Check Sum Transaction Price Catalog Printing
-                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Quantity"))
+                            if (item.Key.PAYMENT_ITEMS_NAME.Contains("Print"))
                             {
 
                                 valueFeeLst = valueFeeLst.Where(m => m.n.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity") || m.n.PAYMENT_ITEMS_FEE_ITEM.Contains("Envelope Quantity")).ToList();
@@ -4807,7 +4807,7 @@ namespace BBDEVSYS.Services.Accrued
                                     var valueFeeLst = feeInv.Where(m => (m.n.INV_YEAR * 12) + m.n.INV_MONTH == (_getyr * 12) + _getmnth).ToList();
 
                                     //--Check Sum Transaction Price Catalog Printing
-                                    if (item.PAYMENT_ITEMS_NAME.Contains("Quantity"))
+                                    if (item.PAYMENT_ITEMS_NAME.Contains("Print"))
                                     {
 
                                         valueFeeLst = valueFeeLst.Where(m => m.n.PAYMENT_ITEMS_FEE_ITEM.Contains("Seal Quantity") || m.n.PAYMENT_ITEMS_FEE_ITEM.Contains("Envelope Quantity")).ToList();

@@ -20,61 +20,17 @@
 
                 <div class="box-body">
                     <div class="col-md-12">
-                        @*<div class="form-group">
-                                @Html.LabelFor(model => model.files, htmlAttributes: new { @class = "control-label col-md-2" })
-                                <div class="col-md-10">
-                                    @Html.TextBoxFor(model => model.files, "", new { @type = "file", @multiple = "multiple" })
-
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-offset-2 col-md-10">
-                                    <input type="submit" value="Upload" class="btn btn-primary" />
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-offset-2 col-md-10 text-success">
-                                    @ViewBag.UploadStatus
-                                </div>
-                            </div>*@
-
-
-
+                 
                         <div class="form-group">
-                            @*<label class="col-xs-12 col-md-2 true-control-label true-require-field">
-                                @Html.LabelFor(m => m.SheetFile1)
-                                </label>
-                                <div class="col-xs-12 col-md-2">
-                                @Html.TextBoxFor(m => m.SheetFile1, new { @class = "form-control " })
-                                </div>
-                                <label class="col-xs-12 col-md-1 true-control-label ">
-                                @BBDEVSYS.Content.text.ResourceText.File 1
-                                </label>
-                                <div class="col-xs-12 col-md-4  true-control-label " style="text-align:left">
 
-                                <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
-                                <i class="glyphicon glyphicon-plus"></i>
-                                <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
-                                <input id="fileUpload" type="file" name="files[]" class="file-upload" multiple="multiple">
+                            <label class="col-xs-12 col-md-2 true-control-label ">
+                                @Html.LabelFor(m => m.TypeUploadFile)
+                            </label>
+                            <div class="col-xs-12 col-md-5">
+                                 @Html.DropDownListFor(m => m.TypeUploadFile, new SelectList(Model.TypeUploadLst, "Value", "Text", "Multiple Files"), new { @class = "form-control ", style = "width:100%;" })
 
-                                </span>
-                                <div>
-                                <input type="hidden" id="lastSavedFilename" />
-                                <input type="hidden" id="attachFileNameVisible" value="true" />
-                                <input type="hidden" id="attachDocTypeValueType" value="" />
-                                <input type="hidden" id="attachSingleFile" value="true" />
-                                <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
-                                <input type="hidden" id="attachDocTypeValueType" value="" />
-                                <table class="no-footer" id="attachmentTable">
-                                <tbody id="attachmentBody">
-                                @foreach (var item in Model.AttachmentList)
-                                {
-                                Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
-                                }
-                                </tbody>
-                                </table>
-                                </div>
-                                </div>*@
+
+                            </div>
                         </div>
 
                         <div class="form-group">
@@ -87,7 +43,44 @@
                                 @Html.ValidationMessageFor(m => m.UserRequest, "", new { @class = "text-danger" })
                             </div>
                         </div>
-                        <div class="form-group">
+
+                        <div class="form-group mult-file">
+
+                            <div id="addmultiAttachment">
+                                <label class="col-xs-12 col-md-2 true-control-label">
+                                    @BBDEVSYS.Content.text.ResourceText.BrowseFile
+                                </label>
+                                <div class="col-xs-12 col-md-10">
+                                    <span class="btn btn-success btn-sm fileinput-button authManage" id="addAttachment">
+                                        <i class="glyphicon glyphicon-plus"></i>
+                                        <span class="cust-button-text">@BBDEVSYS.Content.text.ResourceText.BrowseFile</span>
+                                        <input id="fileUpload" type="file" name="files[]" class="file-upload" multiple="multiple" attach-div-id="addmultiAttachment">
+                                    </span>
+                                    <div>
+                                        <input type="hidden" id="lastSavedFilename" />
+                                        <input type="hidden" id="attachValidationType" value="UPLOADDATA" />
+                                        <input type="hidden" id="attachDocumentTypeVisible" value="false" />
+                                        <input type="hidden" id="attachFileNameVisible" value="true" />
+                                        <input type="hidden" id="attachSingleFile" value="false" />
+                                        <input type="hidden" id="attachDocTypeValueType" value="" />
+                                        <table class="no-footer" id="attachmentTable" attach-div-id="addmultiAttachment">
+                                            <tbody id="attachmentBody">
+                                                @foreach (var item in Model.AttachmentList)
+                                                {
+                                                    if (string.Equals(item.AttachmentGroup, "addmultiAttachment", StringComparison.OrdinalIgnoreCase))
+                                                    {
+                                                        Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
+                                                    }
+                                                }
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group once-file">
                             <div id="addAttachment1">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                     @Html.LabelFor(m => m.AttachSheet)
@@ -128,7 +121,7 @@
 
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group once-file">
 
                             <div id="addAttachment2">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
@@ -167,7 +160,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group once-file">
 
                             <div id="addAttachment3">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
@@ -206,7 +199,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group once-file">
                             <div id="addAttachment4">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                     @Html.LabelFor(m => m.AttachSheet)
@@ -244,7 +237,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group once-file">
                             <div id="addAttachment5">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                     @Html.LabelFor(m => m.AttachSheet)
@@ -282,7 +275,7 @@
                             </div>
                         </div>
 
-                        <div class="form-group">
+                        <div class="form-group once-file">
                             <div id="addAttachment6">
                                 <label class="col-xs-12 col-md-2 true-control-label true-require-field">
                                     @Html.LabelFor(m => m.AttachSheet)
@@ -456,7 +449,8 @@
                                             @Html.HiddenFor(m => m.MODIFIED_BY)
                                             @Html.HiddenFor(m => m.MODIFIED_DATE)
                                             @Html.HiddenFor(m => m.NameFormView)
-                                            @Html.HiddenFor(m =>m.UserRequest)
+                                            @Html.HiddenFor(m => m.UserRequest)
+                                            @*@Html.HiddenFor(m => m.files)*@
 
 
 
@@ -795,6 +789,30 @@
             filePath.html("<b>Selected File: </b>" + fileName);
             $("#TxtFile1").val(fileName);
 
+        });
+        if ( $("#TypeUploadFile").val() == "Multiple Files") {
+
+            $(".mult-file").show();
+
+            $(".once-file").hide();
+        }
+        else {
+            $(".mult-file").hide();
+
+            $(".once-file").show();
+        }
+        $("#TypeUploadFile").change(function () {
+            if ($(this).val() == "Multiple Files") {
+
+                $(".mult-file").show();
+
+                $(".once-file").hide();
+            }
+            else {
+                $(".mult-file").hide();
+
+                $(".once-file").show();
+            }
         });
 
     });

@@ -2662,6 +2662,15 @@ namespace BBDEVSYS.Content.text {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Type Upload File.
+        /// </summary>
+        public static string TypeUploadFile {
+            get {
+                return ResourceManager.GetString("TypeUploadFile", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Upload ข้อมูลโดย.
         /// </summary>
         public static string UploadBy {

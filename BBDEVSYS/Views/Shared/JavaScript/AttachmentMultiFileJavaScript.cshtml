@@ -111,8 +111,8 @@
             attachmentDivID = '';
         }
 
-        console.log("div id : " + attachmentDivID);
-        console.log("Doc type " + $(attachmentDivID + "#attachDocumentTypeVisible").val());
+        //console.log("div id : " + attachmentDivID);
+        //console.log("Doc type " + $(attachmentDivID + "#attachDocumentTypeVisible").val());
 
         var visible = $(attachmentDivID + "#attachDocumentDateVisible").val();
         if (visible) {
@@ -163,119 +163,18 @@
         else {
             attachmentDivID = '';
         }
-        //console.log("getAttachmentDivID : " + attachmentDivID);
         return attachmentDivID;
     }
 
     $(document).ready(function () {
 
-        //Upload single photo file with preview
-        $('.photo-file-upload').fileupload({
-            add: function (e, data) {
-                var encodeFileName = encodeURIComponent(data.originalFiles[0]['name']);
-
-                $.ajax({
-                    dataType: 'json',
-                    url: '@Url.Action("ValidatePhotoFile", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[0]['size'],
-                    cache: false,
-                    success: function (response) {
-                        if (response != null && response.success) {
-                            data.originalFiles[0].uploadID = response.fileUniqueKey;
-
-                            //Move old file to filenameToDelete for delete
-                            $("#FilenameToDelete").val($("#PhotoSavedFilename").val());
-                            $("#PhotoSavedFilename").val(response.savedFilename);
-                            $('#DeletedPhotoFlag').val(false); //Have photo to upload
-
-                            //For send data to model when submit form
-                            $("#Photo_FilenameToDelete").val($("#PhotoSavedFilename").val());
-                            $("#Photo_PhotoSavedFilename").val(response.savedFilename);
-                            $('#Photo_DeletedPhotoFlag').val(false); //Have photo to upload
-
-                            data.submit();
-                        } else {
-                            var popupPrefix = $('#attDisplayPopupPrefix').val();
-
-                            displayMessagePopup("@BBDEVSYS.Content.text.ResourceText.PopupErrorHeader", response.message, "E", popupPrefix);
-                        }
-                    },
-                });
-
-                //var uploadErrors = [];
-                //var acceptFileTypes = /^image\/(gif|jpe?g|png)$/i;
-                //if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
-                //    uploadErrors.push('Not an accepted file type');
-                //}
-                //if (data.originalFiles[0]['size'] > 1000000) {
-                //    uploadErrors.push('Filesize is too big');
-                //}
-                //if (uploadErrors.length > 0) {
-                //    alert(uploadErrors.join("\n"));
-                //} else {
-                //    //data.submit();
-                //    previewPhoto(data);
-                //}
-
-            },
-            type: 'POST',
-            dataType: 'JSON',
-            contentType: false,
-            url: '@Url.Action("UploadFileToTemp", "Attachment", new { Area = "Shared" })',
-            autoUpload: true,
-            formData: function () {
-                var arr = [];
-                arr.push({ name: "savedFilename", value: $("#PhotoSavedFilename").val() },
-                         { name: "filenameToDelete", value: $("#FilenameToDelete").val() });
-                return arr;
-            },
-            success: function (response) {
-                if (response != null && response.success) {
-                    waitForElement("#filedownloadurl_" + response.fileUniqueKey, 0, function () {
-                        $("#filename_" + response.fileUniqueKey).hide()
-                        $("#filedownloadurl_" + response.fileUniqueKey).show()
-                        $("a#filedownloadurl_" + response.fileUniqueKey).attr('href', response.downloadURL);
-                    });
-
-                } else {
-                }
-            },
-            error: function (error) {
-                //alert("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
-                //displayErrorPopup("เกิดข้อผิดพลาด โปรดตรวจสอบเอกสารแนบที่เลือก");
-            }
-        }).on('fileuploadsubmit', function (e, data) {
-            $('#photofilecon').show();
-        }).on('fileuploaddone', function (e, data) {
-            previewPhoto(data);
-        }).on('fileuploadfail', function (e, data) {
-            $("#fileerror_" + data.files[0].uploadID).text("- error");
-            //Set error flag
-            $("#error_" + data.files[0].uploadID).val(true);
-        }).on('fileuploadalways', function (e, data) {
-            waitForElement("#photofilecon", 0, function () {
-                $("#photofilecon").hide()
-                $('#photofileprogress').css(
-                    'width',
-                    '0%'
-                );
-                $("#photodelfile").show()
-            });
-
-        }).on('fileuploadprogress', function (e, data) {
-            var progress = parseInt(data.loaded / data.total * 100, 10);
-
-            $('#photofileprogress').css(
-                'width',
-                progress + '%'
-            );
-        });
-
-
 
 
         //Upload multiple file
+        var c = 0;
         $('.file-upload').fileupload({
             add: function (e, data) {
+                debugger;
                 var attachmentDivID = getAttachmentDivID($(this));
 
 
@@ -284,7 +183,7 @@
                     documentType = '';
                 }
 
-                var encodeFileName = encodeURIComponent(data.originalFiles[0]['name']);
+                var encodeFileName = encodeURIComponent(data.originalFiles[c]['name']);
 
                 var validationType = $(attachmentDivID + '#attachValidationType').val();
                 if (!validationType) {
@@ -294,20 +193,20 @@
                 if (!validationSheet) {
                     validationSheet = '';
                 }
-                var url = '@Url.Action("AddAttachmentLine", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[0]['size'] + "&documentTypeValueType=" + documentType + "&validationType=" + validationType;
+                var url = '@Url.Action("AddAttachmentLine", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[c]['size'] + "&documentTypeValueType=" + documentType + "&validationType=" + validationType;
 
-                if (validationSheet != '')
-                {
-                    url = '@Url.Action("AddAttachmentLine", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[0]['size'] + "&documentTypeValueType=" + documentType + "&validationType=" + validationType + "&sheet=" + validationSheet;
+                if (validationSheet != '') {
+                    url = '@Url.Action("AddAttachmentLine", "Attachment", new { Area = "Shared" })?' + "fileName=" + encodeFileName + "&fileSize=" + data.originalFiles[c]['size'] + "&documentTypeValueType=" + documentType + "&validationType=" + validationType + "&sheet=" + validationSheet;
 
                 }
+
                 $.ajax({
                     dataType: 'json',
-                    url:url,
+                    url: url,
                     cache: false,
                     success: function (response) {
-                        console.log(response)
                         if (response != null && response.success) {
+                            c = 0;
                             $.post(response.Url, function (partial) {
                                 $(attachmentDivID + "#attachmentBody").append(partial);
 
@@ -322,13 +221,14 @@
                                 }
 
                             });
-                            data.originalFiles[0].uploadID = response.fileUniqueKey;
+                            data.originalFiles[c].uploadID = response.fileUniqueKey;
                             $(attachmentDivID + "#lastSavedFilename").val(response.savedFilename);
 
                             //$("attachmentDivID + #filename_" + response.fileUniqueKey).show()
                             //$("attachmentDivID + #filedownloadurl_" + response.fileUniqueKey).hide()
-
+                            ;
                             data.submit();
+                            ;
                         } else {
                             var popupPrefix = $(attachmentDivID + '#attDisplayPopupPrefix').val();
 
@@ -336,7 +236,8 @@
                         }
                     },
                 });
-
+                //count file
+                c++;
             },
             type: 'POST',
             dataType: 'JSON',
@@ -344,9 +245,8 @@
             url: '@Url.Action("UploadFileToTemp", "Attachment", new { Area = "Shared" })',
             autoUpload: true,
             formData: function () {
-
-
-                var inputElem = $(this)[0].fileInput;
+                console.log($(this))
+                var inputElem = $(this)[c].fileInput;
                 var attachmentDivID = getAttachmentDivID(inputElem);
 
                 var arr = [];
@@ -355,7 +255,7 @@
             },
             success: function (response) {
 
-                var inputElem = $(this)[0].fileInput;
+                var inputElem = $(this)[c].fileInput;
                 var attachmentDivID = getAttachmentDivID(inputElem);
 
                 if (response != null && response.success) {
@@ -369,7 +269,6 @@
 
                         $(attachmentDivID + "#attachmentgroup_" + response.fileUniqueKey).val(attachmentGroup);
 
-                        console.log("success");
                         //Callback function
                         if ($.isFunction(window.callbackAddAttachFile)) {
                             callbackAddAttachFile();
@@ -377,6 +276,7 @@
                     });
 
                 } else {
+                    c = 0;
                 }
             },
             error: function (error) {
@@ -388,33 +288,39 @@
         }).on('fileuploaddone', function (e, data) {
 
         }).on('fileuploadfail', function (e, data) {
-
+            ;
             var attachmentDivID = getAttachmentDivID($(this));
 
             $(attachmentDivID + "#fileerror_" + data.files[0].uploadID).text("- error");
             //Set error flag
             $(attachmentDivID + "#error_" + data.files[0].uploadID).val(true);
         }).on('fileuploadalways', function (e, data) {
-            var attachmentDivID = getAttachmentDivID($(this));
+            if (data.originalFiles.length == 1) {
+                debugger;
+                var attachmentDivID = getAttachmentDivID($(this));
 
-            waitForElement(attachmentDivID + "#filecon_" + data.files[0].uploadID, 0, function () {
-                $(attachmentDivID + "#filecon_" + data.files[0].uploadID).hide()
-                $(attachmentDivID + "#delfile_" + data.files[0].uploadID).show()
-            });
-            console.log("alway");
+                waitForElement(attachmentDivID + "#filecon_" + data.files[0].uploadID, 0, function () {
+                    $(attachmentDivID + "#filecon_" + data.files[0].uploadID).hide()
+                    $(attachmentDivID + "#delfile_" + data.files[0].uploadID).show()
+
+                });
+            }
 
         }).on('fileuploadprogress', function (e, data) {
+            if (data.originalFiles.length == 1) {
 
-            var attachmentDivID = getAttachmentDivID($(this));
 
-            var progress = parseInt(data.loaded / data.total * 100, 10);
+                var attachmentDivID = getAttachmentDivID($(this));
 
-            $(attachmentDivID + "#filecon_" + data.files[0].uploadID).show()
+                var progress = parseInt(data.loaded / data.total * 100, 10);
 
-            $(attachmentDivID + '#fileprogress_' + data.files[0].uploadID).css(
-            'width',
-            progress + '%'
-            );
+                $(attachmentDivID + "#filecon_" + data.files[0].uploadID).show()
+
+                $(attachmentDivID + '#fileprogress_' + data.files[0].uploadID).css(
+                'width',
+                progress + '%'
+                );
+            }
         });
 
 

@@ -1026,4 +1026,7 @@
   <data name="Isactive" xml:space="preserve">
     <value>Status Active</value>
   </data>
+  <data name="TypeUploadFile" xml:space="preserve">
+    <value>Type Upload File</value>
+  </data>
 </root>

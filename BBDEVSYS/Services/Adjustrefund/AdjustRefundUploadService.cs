@@ -236,41 +236,105 @@ namespace BBDEVSYS.Services.Adjustrefund
 
 
                 int i = 1;
-                foreach (var item in formData.AttachmentList)
+                if (formData.files != null)
                 {
-                    //string fileName = "";
-                    string sheetName = "SheetFile" + i.ToString();
-                    //string fileNameIndex = "";
-                    var sheetModel = item.SheetNameExcel;//formData.GetType().GetProperty(sheetName).GetValue(formData);
-
-
-                    string tempFilePath = ConfigurationManager.AppSettings["TempFilePath"];
-                    tempFilePath = System.Web.HttpContext.Current.Server.MapPath(tempFilePath);
-
-                    string fileUniqueKey = AttachmentService.GetFileUniqueKey();
-                    string savedFileName = item.SavedFileName;// fileUniqueKey + "_" + item.FileName;
-
-
-                    DataTable dtFile = new DataTable();
-                    resultDataTable = ConvertExcelToDataTable(tempFilePath, savedFileName, Convert.ToString(sheetModel));
-
-                    if (!resultDataTable.ErrorFlag)
+                    foreach (var item in formData.files)
                     {
-                        dtFile = resultDataTable.ReturnResult.Copy();
+                        //string fileName = "";
+                        string sheetName = "SheetFile" + i.ToString();
+                        //string fileNameIndex = "";
+                        //var sheetModel = item.SheetNameExcel;//formData.GetType().GetProperty(sheetName).GetValue(formData);
 
-                        dtFile.Columns.Add("FileName", typeof(string));
-                        dtFile.Columns["FileName"].SetOrdinal(0);
-                        foreach (DataRow row in dtFile.Rows)
+                        //start
+                        //attachment.MimeType = request.Files[upload].ContentType;
+                        Stream fileStream = item.InputStream;
+                        byte[] fileData = new byte[item.ContentLength];
+                        fileStream.Read(fileData, 0, item.ContentLength);
+
+                        //Use physical path to store temp attachment
+                        HttpPostedFileBase hpf = item as HttpPostedFileBase;
+                        if (hpf.ContentLength == 0)
+                            continue;
+
+                        string tempFilePath = ConfigurationManager.AppSettings["TempFilePath"];
+                        tempFilePath = System.Web.HttpContext.Current.Server.MapPath(tempFilePath);
+                        //string savedFileName = Path.Combine(TempFilePath, Path.GetFileName(request.Files[upload].FileName));
+
+                        string filename = item.FileName.ToString(); // + "_" + request.Files[upload].FileName;
+                        string savedFileName = Path.Combine(tempFilePath, filename);
+                        hpf.SaveAs(savedFileName);
+                        //end
+
+
+                        //string 
+                        tempFilePath = ConfigurationManager.AppSettings["TempFilePath"];
+                        tempFilePath = System.Web.HttpContext.Current.Server.MapPath(tempFilePath);
+
+                        string fileUniqueKey = AttachmentService.GetFileUniqueKey();
+                        //string 
+                        savedFileName = item.FileName;// fileUniqueKey + "_" + item.FileName;
+
+
+                        DataTable dtFile = new DataTable();
+                        resultDataTable = ConvertExcelToDataTable(tempFilePath, savedFileName, Convert.ToString(""));
+
+                        if (!resultDataTable.ErrorFlag)
                         {
-                            row[0] = item.FileName;
+                            dtFile = resultDataTable.ReturnResult.Copy();
+                            dtFile.TableName = savedFileName;
+                            dtFile.Columns.Add("FileName", typeof(string));
+                            dtFile.Columns["FileName"].SetOrdinal(0);
+                            foreach (DataRow row in dtFile.Rows)
+                            {
+                                row[0] = item.FileName;
+                            }
+
                         }
+                        ds.Tables.Add(dtFile);
+                        ds.Tables[(i - 1)].TableName = item.FileName;
+                        i++;
+
 
                     }
-                    ds.Tables.Add(dtFile);
-                    ds.Tables[(i - 1)].TableName = item.FileName;
-                    i++;
+                }
+                else
+                {
+                    foreach (var item in formData.AttachmentList)
+                    {
+                        //string fileName = "";
+                        string sheetName = "SheetFile" + i.ToString();
+                        //string fileNameIndex = "";
+                        var sheetModel = item.SheetNameExcel;//formData.GetType().GetProperty(sheetName).GetValue(formData);
 
 
+                        string tempFilePath = ConfigurationManager.AppSettings["TempFilePath"];
+                        tempFilePath = System.Web.HttpContext.Current.Server.MapPath(tempFilePath);
+
+                        string fileUniqueKey = AttachmentService.GetFileUniqueKey();
+                        string savedFileName = item.SavedFileName;// fileUniqueKey + "_" + item.FileName;
+
+
+                        DataTable dtFile = new DataTable();
+                        resultDataTable = ConvertExcelToDataTable(tempFilePath, savedFileName, Convert.ToString(sheetModel));
+
+                        if (!resultDataTable.ErrorFlag)
+                        {
+                            dtFile = resultDataTable.ReturnResult.Copy();
+
+                            dtFile.Columns.Add("FileName", typeof(string));
+                            dtFile.Columns["FileName"].SetOrdinal(0);
+                            foreach (DataRow row in dtFile.Rows)
+                            {
+                                row[0] = item.FileName;
+                            }
+
+                        }
+                        ds.Tables.Add(dtFile);
+                        ds.Tables[(i - 1)].TableName = item.FileName;
+                        i++;
+
+
+                    }
                 }
                 #endregion
 
@@ -294,7 +358,8 @@ namespace BBDEVSYS.Services.Adjustrefund
                         DataTable sheetdataResultCheckLastadj = dataResultVerified3.AsEnumerable().CopyToDataTable();
                         #region sheet distinct
                         DataTable dataResultCheckLastadj = new DataTable();
-                        dataResultCheckLastadj = sheetdataResultCheckLastadj.DefaultView.ToTable(true, "BAN_INCORRECT").AsEnumerable().Where(m => m["BAN_INCORRECT"] != DBNull.Value).CopyToDataTable();
+                        //sheetdataResultCheckLastadj.DefaultView.ToTable(true, "BAN_INCORRECT").AsEnumerable().Where(m => m["BAN_INCORRECT"] != DBNull.Value).CopyToDataTable();
+                        dataResultCheckLastadj = ResultCheckAdjustRefund(sheetdataResultCheckLastadj);
                         dataResultCheckLastadj.TableName = "BAN Last Adjust";
                         getDataset.Tables.Add(dataResultCheckLastadj);
                         #endregion
@@ -342,6 +407,62 @@ namespace BBDEVSYS.Services.Adjustrefund
                 throw ex;
             }
             return getDataset;
+        }
+
+        private static DataTable ResultCheckAdjustRefund(DataTable dataAdjust)
+        {
+            DataTable data = new DataTable();
+            try
+            {
+                DataTable dataBan = new DataTable();
+                dataBan = dataAdjust.DefaultView.ToTable(true, "BAN_INCORRECT").AsEnumerable().Where(m => m["BAN_INCORRECT"] != DBNull.Value).CopyToDataTable();
+
+                dataBan.Columns.Add("RUN_SCRIPT", typeof(System.String));
+
+                string script_line1 = "SELECT account_id, credit_date, amount, tax_amount, credit_reason, val_row_number,sum(amount)over(partition by credit_date)amt_ofday,";
+                string script_line2 = "sum(tax_amount)over(partition by credit_date)tax_amt_ofday FROM(SELECT account_id, credit_date, amount, tax_amount, credit_reason, ";
+                string script_line3 = "ROW_NUMBER() OVER(PARTITION BY account_id ORDER BY credit_date DESC) AS val_row_number FROM AR1_CUSTOMER_CREDIT a) ";
+                string script_line4 = "WHERE val_row_number <= 1 and account_id  in ( ";
+                //dataBan.Columns["RUN_SCRIPT"][0] = script;
+                int loop = 0;
+
+                DataRow dr = dataBan.NewRow();
+                dataBan.Rows.Add(dr);
+                dr = dataBan.NewRow();
+                dataBan.Rows.Add(dr);
+                dr = dataBan.NewRow();
+                dataBan.Rows.Add(dr);
+                dr = dataBan.NewRow();
+                dataBan.Rows.Add(dr);
+
+                dataBan.Rows[loop]["RUN_SCRIPT"] = script_line1; loop++;
+                dataBan.Rows[loop]["RUN_SCRIPT"] = script_line2; loop++;
+                dataBan.Rows[loop]["RUN_SCRIPT"] = script_line3; loop++;
+                dataBan.Rows[loop]["RUN_SCRIPT"] = script_line4; loop++;
+
+                int last = dataBan.Rows.Count;
+                for (int i = 0; i < dataBan.Rows.Count; i++)
+                {
+                    if (i == (dataBan.Rows.Count - 5))
+                    {
+                        dataBan.Rows[(loop + i)]["RUN_SCRIPT"] = "'" + dataBan.Rows[i]["BAN_INCORRECT"] + "'  );";
+                        break;
+                    }
+                    else
+                    {
+                        dataBan.Rows[(loop + i)]["RUN_SCRIPT"] = "'" + dataBan.Rows[i]["BAN_INCORRECT"] + "',";
+                    }
+
+                }
+
+                data = dataBan.AsEnumerable().CopyToDataTable();
+            }
+            catch (Exception ex)
+            {
+
+                throw ex;
+            }
+            return data;
         }
 
         private static DataTable GenerateFundTransMemo(DataTable fundTransData)
@@ -505,8 +626,23 @@ namespace BBDEVSYS.Services.Adjustrefund
                             model.UserRequestList.Add(valueHelp);
 
                         }
+
                     }
                 }
+                //--Get List Type file
+                var list = new List<SelectListItem>();
+
+                List<string> lst = new List<string>();
+                lst.Add("Multiple Files");
+                lst.Add("One Files");
+                list.AddRange(lst
+              .Select(x => new SelectListItem
+              {
+                  Value = x,
+                  Text = (x).ToString()
+              }).ToList());
+                model.TypeUploadLst = list;
+
 
             }
             catch (Exception ex)
@@ -1232,7 +1368,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                             {
                                 var sh = sheetName.Where(n => sheetList.ToList().All(u => n != u)).FirstOrDefault();
                                 string sheetBan = sh != null ? sh.ToString() : "Sheet1";
-                                if (checkfileExist )
+                                if (checkfileExist)
                                 {
                                     dataMerge = item.AsEnumerable().CopyToDataTable();
                                 }
