@@ -34,7 +34,7 @@ namespace BBDEVSYS.Services.Adjustrefund
         public static SqlConnection sqlConn = new SqlConnection();
         public static SqlDataAdapter sqlDa = new SqlDataAdapter();
         public static SqlBulkCopy bulkCopy;
-        
+
         // SqlBulkCopy bulkCopy = new SqlBulkCopy();
         public ValidationWithReturnResult<List<AdjustrefundUploadViewModel>> ImportExcel(string fileName, string sheetName)
         {
@@ -1152,7 +1152,9 @@ namespace BBDEVSYS.Services.Adjustrefund
                     if (item.TableName.Contains("Verify#3"))
                     {
                         //dataMerge = item.AsEnumerable().CopyToDataTable();
-                        dataMerge = GenerateFormatAllSummaryReportData(item, formData.UserRequest).AsEnumerable().CopyToDataTable();
+
+                        dataMerge = GenerateFormatAllSummaryReportData(item, formData.UserRequest, ds).AsEnumerable().CopyToDataTable();
+
 
                         dataMerge.TableName = item.TableName;
                         getDataset.Tables.Add(dataMerge);
@@ -1413,11 +1415,15 @@ namespace BBDEVSYS.Services.Adjustrefund
             }
             return getDataset;
         }
-        private static DataTable GenerateFormatAllSummaryReportData(DataTable dataVerify, string actionBy)
+        private static DataTable GenerateFormatAllSummaryReportData(DataTable dataVerify, string actionBy, DataSet ds = null)
         {
             DataTable dtResult = new DataTable();
             DataTable dataVer = new DataTable();
             DataTable data = new DataTable();
+
+            DataTable dtBatchReund = new DataTable();
+            DataTable checkVerify = new DataTable();
+
             try
             {
                 if (actionBy == "00003333")
@@ -1628,8 +1634,28 @@ namespace BBDEVSYS.Services.Adjustrefund
                 }
                 data.Columns.Remove("PAY_AMOUNT");
 
+                List<string> srList = new List<string>();
+                if (actionBy == "00004444")
+                {
+                    dtBatchReund = ds.Tables["Batch Refund"].AsEnumerable().CopyToDataTable();
+
+                    checkVerify = (from adj in data.AsEnumerable()
+                                       //where adj.Field<string>("SR #") !=  ("REQUEST_NO") == dr["SR #"].ToString()
+                                   select adj).CopyToDataTable();
+
+                    checkVerify = (from adj in checkVerify.AsEnumerable()
+                                   where dtBatchReund.AsEnumerable().All(batch => adj.Field<string>("SR #") != batch.Field<string>("REQUEST_NO"))
+                                   select adj).CopyToDataTable();
+
+                    foreach (DataRow dr in checkVerify.Rows)
+                    {
+                        srList.Add(dr["SR #"].ToString());
+                    }
+                }
+
                 foreach (DataRow dr in data.Rows)
                 {
+
                     #region set data critirea
                     if (actionBy == "00003333")
                     {
@@ -1795,9 +1821,9 @@ namespace BBDEVSYS.Services.Adjustrefund
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
                             || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
-                            //|| dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
+                        //|| dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
                         {
-                            status = "Pending"; 
+                            status = "Pending";
                         }
                         else if (dr["Result Reason"].ToString() == "Change owner to Payment_Resolution และ Feedback SR")
                         {
@@ -1834,93 +1860,43 @@ namespace BBDEVSYS.Services.Adjustrefund
                         dr["Activity Date"] = DateTime.Now.Date.ToString("dd/MM/yyyy");
                         dr["Data file Lot"] = dr["PYM Designation Code"];
                         string reason = string.Empty;
+                        reason = "Input Batch To Batch Refund";
 
 
-                        if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Fund Transfer")
-                        {
-                            reason = "Input Batch To Fund Transfer ban cancel";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Batch Refund"
-                            || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Refund")
-                        {
-                            reason = "Input Batch To Batch Refund";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_ban_cancel.xlsx To Send To Verify"
-                           || dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Send To Verify")
-                        {
-                            reason = "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_diff_thai_id.xlsx To Send To Verify")
-                        {
-                            reason = "ตรวจสอบกรณีโยกเงินต่างบุคคล";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_format_fail.xlsx To Send To Verify")
-                        {
-                            reason = "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_not_indy.xlsx To Send To Verify")
-                        {
-                            reason = "Change owner to Payment_Resolution และ Feedback SR";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_refund.xlsx To Batch Fund Transfer")
-                        {
-                            reason = "Input Batch To Fund Transfer";
-                        }
-                        else if (dr["Result To Payment Resolution Team After Batch"].ToString() == "Payment_Resolution_output_notfound.xlsx To Send To Verify")
-                        {
-                            reason = "ตรวจสอบกรณีไม่มียอดเงินเกิน";
-                        }
-                        else
-                        {
-                            reason = "0";
-                        }
-                        /*=IF(BO1="Input Batch To Fund Transfer","Pending",IF(BO1="Input Batch To Fund Transfer ban cancel","Change Owner",IF(BO1="Input Batch To Batch Refund","Complete",IF(BO1="ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน","Pending",IF(BO1="ตรวจสอบกรณีโยกเงินต่างบุคคล","Pending",IF(BO1="ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch","Pending",IF(BO1="Change owner to Payment_Resolution และ Feedback SR","Rejected",IF(BO1="ตรวจสอบกรณีไม่มียอดเงินเกิน","Pending",0)))))))) */
                         dr["Result Reason"] = reason;
 
                         string status = string.Empty;
-                        if (dr["Result Reason"].ToString() == "Input Batch To Batch Refund")
-                        {
-                            status = "Complete";
-                        }
-                        else if (dr["Result Reason"].ToString() == "Input Batch To Fund Transfer ban cancel"
-                            || dr["Result Reason"].ToString() == "Input Batch To Fund Transfer")
-                        {
-                            status = "Complete";//old "Change Owner";
-                        }
-                        else if (dr["Result Reason"].ToString() == "ตรวจสอบเนื่องจากไม่สามารถโยกเงินเกิน"
-                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีโยกเงินต่างบุคคล"
-                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีใส่ข้อมูลไม่ตรง format batch"
-                            || dr["Result Reason"].ToString() == "ตรวจสอบกรณีไม่มียอดเงินเกิน")
-                            //|| dr["Result Reason"].ToString() == "Manual Fund Transfer")
-                        {
-                            status = "Pending";
-                        }
-                        else if (dr["Result Reason"].ToString() == "Change owner to Payment_Resolution และ Feedback SR")
-                        {
-                            status = "Rejected";
-                        }
-                        else
-                        {
-                            status = "0";
-                        }
+                        status = "Complete";
+
                         dr["Status"] = status;
 
                         string actBy = string.Empty;
-                        if (dr["Status"].ToString() == "On Process")
-                        {
-                            actBy = "K.Siripong S."; // "P'Jeab, P'Tle, N'Nan";
-                        }
-                        else if (dr["Status"].ToString() == "Complete")
-                        {
-                            actBy = "K.Siripong S.";
-                        }
-                        else
-                        {
-                            actBy = "Payment_Resolution User";
-                        }
+                        actBy = "K.Siripong S.";
+
+                        //actBy = "Payment_Resolution User";
+
                         /*=IF(BP1="On Process","P'Jeab, P'Tle, N'Nan", 
                          * IF(BP1="Complete","K.Siripong S.","Payment_Resolution User"))*/
                         dr["Action"] = actBy;
+
+                        var sendTover = srList.Where(m => m == dr["SR #"].ToString()).FirstOrDefault();
+
+                        if (sendTover != null)
+                        {
+                            reason = "Send To Verify";
+
+
+                            dr["Result Reason"] = reason;
+
+                            status = "Pending";
+
+                            dr["Status"] = status;
+
+                            actBy = "Payment_Resolution User";
+
+                            dr["Action"] = actBy;
+                        }
+
 
                         #endregion
                     }
@@ -2027,6 +2003,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                     }
                     #endregion
                 }
+
                 #endregion
                 data.TableName = "Data Summary";
                 if (data.Rows.Count > 0)
@@ -2499,6 +2476,12 @@ namespace BBDEVSYS.Services.Adjustrefund
             try
             {
                 adjfndModel.previewDataTable = InitialDataFormPreviewUploadViewModel(srData);
+
+                string i = "";
+                var sumTrxn = adjfndModel.previewDataTable.AsEnumerable().Sum(dra => dra.Field<int>(3));
+                var sumAmt = adjfndModel.previewDataTable.AsEnumerable().Sum(dra => dra.Field<decimal>(5));
+                adjfndModel.TotalTransaction = sumTrxn.ToString("#,###");
+                adjfndModel.TotalAmount = sumAmt.ToString("#,###.##");
             }
             catch (Exception ex)
             {
@@ -2624,7 +2607,7 @@ namespace BBDEVSYS.Services.Adjustrefund
             }
             return data;
         }
-        public  ValidationResult ValidateFormData(AdjustrefundUploadViewModel formData, ModelStateDictionary modelState)
+        public ValidationResult ValidateFormData(AdjustrefundUploadViewModel formData, ModelStateDictionary modelState)
         {
             ValidationResult result = new ValidationResult();
             try
@@ -2681,17 +2664,17 @@ namespace BBDEVSYS.Services.Adjustrefund
                         if (connection.State == ConnectionState.Open)
                         {
                             connection.Close();
-                            
+
                         }
-                       
-                        List<string> srList = new List<string>() ;
+
+                        List<string> srList = new List<string>();
 
                         foreach (DataRow item in formData.adjDataTable.Rows)
                         {
                             srList.Add("'" + item["REQUEST_NO"].ToString() + "'");
                         }
-                        string value ="("+ string.Join(",",srList.ToArray()) +")";
-                        string selectSql = "SELECT * FROM " +"[" + server_dbname + "].[dbo]."+ "["+ server_table + "] WHERE [REQUEST_NO] IN  "+ value;
+                        string value = "(" + string.Join(",", srList.ToArray()) + ")";
+                        string selectSql = "SELECT * FROM " + "[" + server_dbname + "].[dbo]." + "[" + server_table + "] WHERE [REQUEST_NO] IN  " + value;
                         //Drop table Temp
                         SqlCommand oCmd = new SqlCommand(selectSql, connection);
                         connection.Open();
@@ -2707,7 +2690,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         {
                             foreach (DataRow item in dt.Rows)
                             {
-                                result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.duplicate_error, " SR No. ")+" "+ item["REQUEST_NO"].ToString() + " โปรดตรวจสอบ"));
+                                result.ModelStateErrorList.Add(new ModelStateError("", string.Format(ValidatorMessage.duplicate_error, " SR No. ") + " " + item["REQUEST_NO"].ToString() + " โปรดตรวจสอบ"));
 
                                 result.ErrorFlag = true;
                             }
@@ -2715,7 +2698,7 @@ namespace BBDEVSYS.Services.Adjustrefund
                         connection.Close();
                     }
 
-                   
+
                 }
             }
             catch (Exception ex)
@@ -2731,7 +2714,7 @@ namespace BBDEVSYS.Services.Adjustrefund
             ValidationResult result = new ValidationResult();
             try
             {
-               
+
 
                 ValidationWithReturnResult<DataTable> resultDataTable = new ValidationWithReturnResult<DataTable>();
                 resultDataTable = InitialDataFormUploadViewModel(formData);

@@ -67,7 +67,7 @@
                                                 //}
                                                 Html.RenderPartial("~/Views/Shared/AttachmentItem.cshtml", item);
                                             }
-                                           
+
                                         </tbody>
                                     </table>
                                 </div>
@@ -120,7 +120,7 @@
                     </div>
                     <div class="row" id="previewDiv" style="display:none;">
                         <div class="box-header with-border">
-                            <h3 class="box-title">@Html.DisplayFor(m => m.HeaderSummary ,new { @id = "HeaderSummary" }) </h3>
+                            <h3 class="box-title">@Html.DisplayFor(m => m.HeaderSummary, new { @id = "HeaderSummary" }) </h3>
 
                             <div class="box-tools pull-right">
                                 <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
@@ -137,20 +137,23 @@
 
 
                                     </table>
-                                    @*<div class="form-group">
-                                        <label class="col-xs-12 col-md-3 true-control-label  ">
-                                           Transaction 
+                                    <label class="col-xs-12 col-md-2  true-control-label " style="text-align:right">
+                                        Total Transaction :
+                                    </label>
+                                    <label id="TRANSACTIONS" class="col-xs-12 col-md-3  true-control-label " style="text-align:left">
+                                    </label>
+                                    <label class="col-xs-12 col-md-2  true-control-label " style="text-align:right">
+                                        Sum Amount :
+                                    </label>
+                                    <label id="AMOUNT" class="col-xs-12 col-md-3  true-control-label " style="text-align:left">
+                                    </label>
+                                    @*<label class="col-xs-12 col-md-2 true-control-label ">
+                                            @Html.LabelFor(m => m.TRANSACTIONS)  :
                                         </label>
-                                        <div class="col-xs-12 col-md-3 true-text " style="font-weight:bold">
-                                            @Html.DisplayFor(m => m.TotalTransaction,new {  Value = String.Format("{0:0,000.00}", Model.TotalTransaction) })
-                                        </div>
-                                        <label class="col-xs-12 col-md-2 true-control-label  ">
-                                           Amount
-                                        </label>
-                                        <div class="col-xs-12 col-md-4 true-text" style="font-weight:bold">
-                                            @Html.DisplayFor(m => m.TotalAmount, new { Value = String.Format("{0:0,000.00}", Model.TotalTransaction) })
-                                        </div>
-                                    </div>*@
+
+                                        <label class="col-xs-12 col-md-2 true-control-label ">
+                                            @Html.LabelFor(m => m.AMT)  :
+                                        </label>*@
 
                                 </div>
 
@@ -267,7 +270,7 @@
         var uploadItemBody = "#uploadItemBody";
         var SheetFile = "#SheetFile1";
 
-        
+
 
         var fileName = $(lastSavedFilename).val();
         var row = $(uploadItemBody).children('tr:first');//!isNaN(seqFiles)?  $("'#" + "uploadItemBody" + seqFiles + "'").children('tr:first'):$('#uploadItemBody').children('tr:first') ;
@@ -276,7 +279,7 @@
         var formID = 'detailForm';
         var message = "";
         var form = $('#' + formID);
-        
+
         var errors = true;
         var requestName = $("#UserRequest").val();
         if (requestName == "00003333" && fileName.includes("RRM")) {
@@ -303,7 +306,7 @@
             data: form.serialize(),
             cache: false,
             success: function (response) {
-                
+
                 if (response.success && errors) {
                     $("#uploadItemTable").html(response.html);
                     var rowCount = "Data : " + $('#uploadItemBody tr').length + " lines";
@@ -409,6 +412,32 @@
         }
 
     }
+    function calSummary() {
+        //var amtSum = 0;
+        //var trxnSum = 0;
+        //$('#previewItemBody tr').each(function () {
+        //    var amtIncl = 0;
+        //    var valamtTotal = '';
+        //    var rowId = $(this).find('input[name="InvoiceDetailList.index"]').val();
+        //    var $idTotal = $("#InvoiceDetailList_" + rowId + "__TOTAL_CHARGE_AMOUNT");
+        //    valamtTotal = $idTotal.val();
+
+        //    if (valamtTotal == '') {
+        //        valamtTotal = '0';
+        //    }
+
+        //    amtTotal = parseFloat(valamtTotal)
+
+        //    if (!isNaN(amtTotal)) {
+        //        amtSum += amtTotal
+        //        if (amtSum < 0) {
+        //            amtSum = 0
+        //        }
+        //    }
+        //});
+        //$("#TotalTransaction").val(amtSum)
+        //$("#TotalAmount").val(amtSum)
+    }
     function submitFormPreviewData(jsonValue) {
         blockUI();
         var formID = 'detailForm';
@@ -438,8 +467,13 @@
                 if (response.success) {
 
                     $("#previewItemTable").html(response.html);
+                    console.log($("#TRANSACTIONS").text())
+                    console.log($("#TotalTransaction").val())
 
-
+                    $("#TRANSACTIONS").text($("#TotalTransaction").val())
+                    console.log($("#TRANSACTIONS").text())
+                    $("#AMOUNT").text($("#TotalAmount").val())
+                    debugger;
                 }
                 @*if (response.success) {
 

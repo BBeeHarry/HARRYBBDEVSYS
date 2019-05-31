@@ -208,15 +208,17 @@ namespace BBDEVSYS.Controllers.Adjustrefund
             //}
             return new JsonResult()
             {
-                Data = new
+                Data = new 
                 {
                     success = true,
                     responseText = "",
                     html = UtilityService.RenderPartialView(this, "~/Views/Adjustrefund/AdjustrefundPreviewItems.cshtml", model)
                 },
                 JsonRequestBehavior = JsonRequestBehavior.AllowGet,
+               
                 MaxJsonLength = Int32.MaxValue // Use this value to set your maximum size for all of your Requests
             };
+           // return Json(model, JsonRequestBehavior.AllowGet);
 
         }
 
