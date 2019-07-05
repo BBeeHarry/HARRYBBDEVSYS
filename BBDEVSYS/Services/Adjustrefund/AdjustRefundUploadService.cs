@@ -345,6 +345,7 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                     //List<AdjustrefundUploadViewModel> _data = MergeFormData();
                     DataTable dataMerge = MergeAllData(ds).AsEnumerable().CopyToDataTable();
+
                     dataMerge.TableName = "SQL_Results";
                     getDataset.Tables.Add(dataMerge);
 
@@ -375,18 +376,27 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                         DataTable sheetdataResultBatchFundTransfer = dataResultVerified3.AsEnumerable().CopyToDataTable();
                         DataTable dataResultBatchFundTransfer = new DataTable();
-                        dataResultBatchFundTransfer = (from m in sheetdataResultBatchFundTransfer.AsEnumerable()
-                                                       where m.Field<string>("Result_PRS_Before_Batch") == "Batch Fund Transfer"//Fund Transfer //Batch Refund
-                                                       select m).CopyToDataTable();
-                        dataResultBatchFundTransfer.TableName = "Batch Fund Transfer";
-                        getDataset.Tables.Add(dataResultBatchFundTransfer);
+                        // dataResultBatchFundTransfer 
+                        var fundTransData = (from m in sheetdataResultBatchFundTransfer.AsEnumerable()
+                                             where m.Field<string>("Result_PRS_Before_Batch") == "Batch Fund Transfer"//Fund Transfer //Batch Refund
+                                             select m);
+
+                        if (fundTransData.ToList().Count > 0)
+                        {
+                            dataResultBatchFundTransfer = fundTransData.CopyToDataTable();
 
 
-                        DataTable sheetdataFundTransferMemo = dataResultBatchFundTransfer.AsEnumerable().CopyToDataTable();
-                        DataTable dataFundTransferMemo = new DataTable();
-                        dataFundTransferMemo = GenerateFundTransMemo(sheetdataFundTransferMemo);
-                        dataFundTransferMemo.TableName = "Fund Transfer Memo";
-                        getDataset.Tables.Add(dataFundTransferMemo);
+                            dataResultBatchFundTransfer.TableName = "Batch Fund Transfer";
+                            getDataset.Tables.Add(dataResultBatchFundTransfer);
+
+
+
+                            DataTable sheetdataFundTransferMemo = dataResultBatchFundTransfer.AsEnumerable().CopyToDataTable();
+                            DataTable dataFundTransferMemo = new DataTable();
+                            dataFundTransferMemo = GenerateFundTransMemo(sheetdataFundTransferMemo);
+                            dataFundTransferMemo.TableName = "Fund Transfer Memo";
+                            getDataset.Tables.Add(dataFundTransferMemo);
+                        }
 
                         DataTable sheetdatadataResultBatch_Refund = dataResultVerified3.AsEnumerable().CopyToDataTable();
                         DataTable dataResultBatch_Refund = new DataTable();
@@ -1645,7 +1655,7 @@ namespace BBDEVSYS.Services.Adjustrefund
 
                     checkVerify = (from adj in checkVerify.AsEnumerable()
                                    where dtBatchReund.AsEnumerable().All(batch => adj.Field<string>("SR #") != batch.Field<string>("REQUEST_NO"))
-                                   select adj).CopyToDataTable();
+                                   select adj).AsEnumerable().CopyToDataTable();
 
                     foreach (DataRow dr in checkVerify.Rows)
                     {
